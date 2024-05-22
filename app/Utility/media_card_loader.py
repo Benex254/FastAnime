@@ -9,52 +9,16 @@ from pytube import YouTube
 from kivy.loader import _ThreadPool 
 from kivy.clock import Clock
 from kivy.cache import Cache
-
+from datetime import date
 
 Cache.register("anime")
 
-"""
-gotta learn how this works :)
-"""
-# class _Worker(Thread):
-#     def __init__(self, pool, tasks):
-#         Thread.__init__(self)
-#         self.tasks = tasks
-#         self.daemon = True
-#         self.pool = pool
-#         self.start()
-
-#     def run(self):
-#         while self.pool.running:
-#             func, args, kwargs = self.tasks.get()
-#             try:
-#                 func(*args, **kwargs)
-#             except Exception as e:
-#                 print(e)
-#             self.tasks.task_done()
-
-# class _ThreadPool(object):
-#     '''Pool of threads consuming tasks from a queue
-#     '''
-#     def __init__(self, num_threads):
-#         super(_ThreadPool, self).__init__()
-#         self.running = True
-#         self.tasks = queue.Queue()
-#         for _ in range(num_threads):
-#             _Worker(self, self.tasks)
-
-#     def add_task(self, func, *args, **kargs):
-#         '''Add a task to the queue
-#         '''
-#         self.tasks.put((func, args, kargs))
-
-#     def stop(self):
-#         self.running = False
-#         self.tasks.join()
-
 user_data = JsonStore("user_data.json")
 my_list = user_data.get("my_list")["list"] # returns a list of anime ids
-yt_stream_links = user_data.get("yt_stream_links")["links"]
+
+yt_cache = JsonStore("yt_cache.json")
+today = date.today()
+yt_stream_links = yt_cache.get("yt_stream_links")[f"{today}"]
 
 if yt_stream_links:
     for link in yt_stream_links:
@@ -118,7 +82,7 @@ class MediaCardDataLoader(object):
                 # sleep(0.5)
                 data = preview_image,video_stream_url
                 yt_stream_links.append((yt_watch_url,data))
-                user_data.put("yt_stream_links",links=yt_stream_links)
+                yt_cache.put("yt_stream_links",**{f"{today}":yt_stream_links})
             except:
                 data = preview_image,None
         return data

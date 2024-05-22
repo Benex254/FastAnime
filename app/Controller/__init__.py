@@ -1,3 +1,4 @@
-from .main_screen import MainScreenController
+from .home_screen import HomeScreenController
 from .search_screen import SearchScreenController
 from .my_list_screen import MyListScreenController
+from .anime_screen import AnimeScreenController

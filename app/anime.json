@@ -1,0 +1,969 @@
+{
+  "data": {
+    "Page": {
+      "media": [
+        {
+          "title": { "romaji": "Cowboy Bebop", "english": "Cowboy Bebop" },
+          "coverImage": {
+            "extraLarge": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx1-CXtrrkMpJ8Zq.png"
+          },
+          "episodes":24,
+          "characters": {
+            "edges": [
+              {
+                "node": {
+                  "name": { "full": "Spike Spiegel" },
+                  "gender": "Male",
+                  "dateOfBirth": { "year": 2044, "month": 6, "day": 26 },
+                  "age": "27",
+                  "image": {
+                    "medium": "https://s4.anilist.co/file/anilistcdn/character/medium/b1-ChxaldmieFlQ.png"
+                  },
+                  "description": "__Height:__ 185 cm   \n\nSpike Spiegel is a tall and lean 27-year-old bounty hunter born on Mars."
+                },
+                "voiceActors": [
+                  {
+                    "name": { "full": "Kouichi Yamadera" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/n95011-2RfLzncNyvbR.png"
+                    }
+                  },
+                  {
+                    "name": { "full": "Steven Blum" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/n95012-jnlK6VyCTf9P.png"
+                    }
+                  },
+                  {
+                    "name": { "full": "Massimo De Ambrosis" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/781.jpg"
+                    }
+                  },
+                  {
+                    "name": { "full": "Viktor Neumann" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/1638.jpg"
+                    }
+                  },
+                  {
+                    "name": { "full": "Zolt\u00e1n Juh\u00e1sz" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/default.jpg"
+                    }
+                  },
+                  {
+                    "name": { "full": "Yann Pichon" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/9237.jpg"
+                    }
+                  },
+                  {
+                    "name": { "full": "Ja hyeong Gu" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/14781.jpg"
+                    }
+                  },
+                  {
+                    "name": { "full": "Guilherme Briggs" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/n96099-n1wxTRslU9gj.jpg"
+                    }
+                  },
+                  {
+                    "name": { "full": "Yamil Atala" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/10028.jpg"
+                    }
+                  },
+                  {
+                    "name": { "full": "Genaro V\u00e1squez" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/n206333-oYkemxJhn4bk.png"
+                    }
+                  },
+                  {
+                    "name": { "full": "Jos\u00e9 Gilberto Vilchis" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/n105021-Bn6vy2ClY3uX.png"
+                    }
+                  }
+                ]
+              },
+              {
+                "node": {
+                  "name": { "full": "Faye Valentine" },
+                  "gender": "Female",
+                  "dateOfBirth": { "year": 1994, "month": 8, "day": 14 },
+                  "age": "23 (Physical), 77 (Actual)",
+                  "image": {
+                    "medium": "https://s4.anilist.co/file/anilistcdn/character/medium/b2-0Iszg6Izgt4p.png"
+                  },
+                  "description": "One of the members of the bounty hunting crew in the anime series Cowboy Bebop. Often seen with a cigarette and in a revealing outfit complete with bright yellow hot pants and a matching, revealing top, black suspenders, white boots, and a long-sleeved red shirt worn normally through the sleeves, not to mention her signature headband, she is unusually attractive, sporting a bob of violet hair, green eyes, fair skin, and a voluptuous body. \n\nAlthough appearing to be no more than her 23 years alive suggests, Faye is actually upwards of 74-years-old, having been put into cryogenic freeze after a space shuttle accident. During the course of the series (set in 2071), Faye manages to cross paths with Spike and Jet twice before she finally makes herself at home aboard their ship the second time, much to the consternation and disapproval of the two men, both of whom have their own reservations about women in general. Faye herself is brash, egotistical, and quite lazy, despite taking plenty of time to pamper and care for her own appearance. Faye has also been placed under arrest several times in the series and spends much time in handcuffs on the ship. She, at times, expects the boys to take care of bounties for her, while she sits by idly to reap the benefits and eat all their food, another source of conflict.  \n\nSeemingly little more than a thorn in her partners\u2019 sides, Faye is actually a well-rounded member of the team. She can handle herself exceptionally well for a woman of her slight appearance, displaying at least once in the series (in \"Cowboy Funk\") that she packs quite a mean punch. Adept at flying, Faye has stood her ground just as well as Spike has in an aerial dogfight in her ship Red Tail, at times even against Spike in an aerial dogfight. She also excels with guns, and is first seen in the series completely disabling a ship with a Heckler &amp; Koch MP5, though she is immediately apprehended afterward. In the movie, she is seen with the same gun, in addition to her normal companion: a Glock 30. Where Faye really shines, however, is with her mouth. She has an almost unstoppable attitude, and even her sometimes innocent smile can be seen as dangerous. Sarcastic and presumptuous, she rarely appears weak or in need of support. She brags and takes care of herself, never trusting others, cheating and lying her way from one day to the next.  \n\nShe is a woman who is skilled at getting what she wants; however, her indomitable exterior hides a more delicate interior. Upon awakening from her 54-year cryogenic sleep, not only was she saddled with a massive amount of debt that she had no means to pay, but she was also diagnosed with total amnesia, a stranger in a mysterious world that she was not a part of and did not understand, surrounded by people who claimed to be helping her but were only there to take advantage of her naivet\u00e9. The surname \"Valentine\" was merely a name given to her by the doctor who woke her; the circumstances of her accident, her previous life, and even her real name all remain a mystery, and are only gradually revealed as the series progresses. It has been hinted that she came from Singapore on Earth, and was the daughter of a very wealthy family, as the city's famous Merlion Statue features prominently in scenes of her childhood, and that memories and a film from her childhood showed her living in a large mansion. In an early episode, she states that she is descended from Roma people, but she may well have been lying. Utterly betrayed by someone she thought she could trust after waking, Faye found herself burdened with even more money to pay, and the situation resulted in the hardening of her personality to an extreme degree. She even says in Session 11: \u201cwe deceive or we are deceived\u201d, and that \u201cnothing good ever happened to me when I trusted others.\u201d  \n\nThroughout the series, though she retains her sarcastic demeanor and unpleasant nature up until the very end, it is easy to see her grow as a character. She learns to value her comrades, coming back to the Bebop when she realizes that it is the only home that she has left, naming it as the \u201conly place I could return to\u201d. She grows to understand the disadvantages of being a loner, and that even though her \"family\" is somewhat dysfunctional it is still a place where she will always belong."
+                },
+                "voiceActors": [
+                  {
+                    "name": { "full": "Megumi Hayashibara" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/n95014-VqxNuufY94V3.png"
+                    }
+                  },
+                  {
+                    "name": { "full": "Wendee Lee" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/n95036-UkyIYVtEhoPk.png"
+                    }
+                  },
+                  {
+                    "name": { "full": "Barbara De Bortoli" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/n95763-Ci0xdLc6Z3a0.jpg"
+                    }
+                  },
+                  {
+                    "name": { "full": "Barbara Szit\u00e1s" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/7828.jpg"
+                    }
+                  },
+                  {
+                    "name": { "full": "Antje von der Ahe" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/8549.jpg"
+                    }
+                  },
+                  {
+                    "name": { "full": "Mi Sook Jeong" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/8812.jpg"
+                    }
+                  },
+                  {
+                    "name": { "full": "Carmen Ambr\u00f3s" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/default.jpg"
+                    }
+                  },
+                  {
+                    "name": { "full": "B\u00e9rang\u00e8re Jean" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/n163357-UI9zFTe0wI6y.png"
+                    }
+                  },
+                  {
+                    "name": { "full": "Miriam Ficher" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/540.jpg"
+                    }
+                  },
+                  {
+                    "name": { "full": "Elsa Covi\u00e1n" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/n153194-gLoOTnSq8k6H.jpg"
+                    }
+                  },
+                  {
+                    "name": { "full": "Karla Falc\u00f3n" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/n181977-cMmWSouBCpJN.png"
+                    }
+                  }
+                ]
+              },
+              {
+                "node": {
+                  "name": { "full": "Edward Wong Hau Pepelu Tivrusky IV" },
+                  "gender": "Female",
+                  "dateOfBirth": { "year": 2058, "month": 1, "day": 1 },
+                  "age": "~13",
+                  "image": {
+                    "medium": "https://s4.anilist.co/file/anilistcdn/character/medium/b16-80wd87nl1Rue.png"
+                  },
+                  "description": "Ed is an eccentric, resourceful, childlike, tomboyish, and intelligent teenager. Ed first encounters the Bebop and its crew when she hacks the ship on its way to Earth. After Ed helps the Bebop crew cash in the Earth hacker bounty, she insists on joining the crew. When Faye tries to leave Earth without her, Ed hacks the Bebop and holds it hostage until she is permitted to join.\n\n~!\nLater in the story when the Bebop is back on Earth, the crew stumbles across an orphanage that Ed used to live in. After seeing some old friends there, Ed is informed that her father has come looking for her recently. Ed decides to make up a bounty on her father to convince Spike to find him. When Spike finds him, Ed decides to leave the Bebop with Ein to live with her father on Earth.!~"
+                },
+                "voiceActors": [
+                  {
+                    "name": { "full": "Melissa Fahn" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/n95452-ID2nbW1E8fLk.png"
+                    }
+                  },
+                  {
+                    "name": { "full": "Aoi Tada" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/n95658-paHKYOWkhoOd.png"
+                    }
+                  },
+                  {
+                    "name": { "full": "Isabel Marti\u00f1\u00f3n" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/1686.jpg"
+                    }
+                  },
+                  {
+                    "name": { "full": "Ilona Brokowski" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/6138.jpg"
+                    }
+                  },
+                  {
+                    "name": { "full": "Patricia Legrand" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/7223.jpg"
+                    }
+                  },
+                  {
+                    "name": { "full": "Jeong-Hwa Yang" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/14755.jpg"
+                    }
+                  },
+                  {
+                    "name": { "full": "Gemma Donati" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/default.jpg"
+                    }
+                  },
+                  {
+                    "name": { "full": "Leticia Celini" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/n180473-RxcWwuazq2t5.png"
+                    }
+                  }
+                ]
+              },
+              {
+                "node": {
+                  "name": { "full": "Jet Black" },
+                  "gender": "Male",
+                  "dateOfBirth": { "year": 2035, "month": 12, "day": 3 },
+                  "age": "36",
+                  "image": {
+                    "medium": "https://s4.anilist.co/file/anilistcdn/character/medium/b3-JjH9Si9UM1NZ.png"
+                  },
+                  "description": "Jet, known on his home satellite as the \"Black Dog\" for his tenacity, is a 36-year-old former cop from Ganymede (a Jovian satellite) and acts as Spike's foil during the series. Physically, Jet is very tall with a muscular build. He wears a beard with no mustache, and is completely bald save for the back of his head. Spike acts lazy and uninterested, whereas Jet is hard working and a jack-of-all-trades. Jet was once an investigator in the Inter Solar System Police (ISSP) for many years until he lost his arm in an investigation that went awry when his corrupt partner (and friend at the time) betrayed him. His arm was replaced with a cybernetic limb (later revealed to be by choice, as biological replacements were possible, he wanted the fake arm as a reminder of what happened), yet his loss of limb coupled with the general corruption of the police force prompted Jet to quit the ISSP in disgust and become a freelance bounty hunter. Jet also considers himself something of a renaissance man: he cultivates bonsai trees, cooks, enjoys jazz/blues music (he named his ship the Bebop, referring to a type of jazz), especially Charlie Parker, and even has interest in Goethe. As a character, Jet is the quintessential oyaji or \"dad\" even though he often wishes people would view him as a more brotherly figure (so as not to seem old).  Jet is skilled with handguns, typically carrying a pre-2004 Walther P99, as well as the use of the netgun. He is good with hand to hand combat as well. Unlike Spike, Jet tends to use more raw muscle than technique. He is also a great mechanic and pilot. Aside from the converted interplanetary fishing trawler vessel Bebop, Jet flies a smaller ship called Hammerhead. The Hammerhead appears to be a modified (Jet added larger engines and fuel tanks) salvage-craft that uses a mechanical arm equipped with a harpoon as its main weapon, which is somewhat analogous to his own mechanical arm. Both the Hammerhead and the Bebop are able to land on water, and have a fishing theme, most likely because Ganymede's surface is mostly covered with water (it is later revealed that the Bebop was originally a fishing ship that Jet \"customized\" with larger engines).  ~!During the series, it is revealed that Jet once lived with a woman named Alisa, who left him because he was too controlling. Later they meet up again when Alisa's new boyfriend Rhint is wanted for murder. Jet then ends up in a situation somewhat similar to that of Vicious, where he must hunt down a woman who broke his heart, and her lover.  In a later episode, another Vicious/Spike parallel is set up when Jet finds out that it was his old partner Fad who betrayed him (though in Jet's case, there was no love affair involved). Fad arranged for Jet's death in a setup, but he survived with only a missing arm and a scar on his face. It is worth noting that Jet managed to face the demons of his past and let them go, in contrast to Spike, who was killed when he confronted his. This is likely due to the contrast in the two approaches to the past. While Spike hid and fled from his past, Jet tracked it down and confronted it.!~"
+                },
+                "voiceActors": [
+                  {
+                    "name": { "full": "Unshou Ishizuka" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/n95357-umndcceko65h.png"
+                    }
+                  },
+                  {
+                    "name": { "full": "Beau Billingslea" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/n95358-WswC6Q3j7dnB.jpg"
+                    }
+                  },
+                  {
+                    "name": { "full": "Philippe Roullier" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/9256.jpg"
+                    }
+                  },
+                  {
+                    "name": { "full": "Alfonso Ram\u00edrez" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/n105030-gxZbxXNbufOh.jpg"
+                    }
+                  },
+                  {
+                    "name": { "full": "Gi hyeon Kim" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/14779.jpg"
+                    }
+                  },
+                  {
+                    "name": { "full": "Karl Schulz" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/default.jpg"
+                    }
+                  },
+                  {
+                    "name": { "full": "Nino Prester" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/default.jpg"
+                    }
+                  },
+                  {
+                    "name": { "full": "Mauro Ramos" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/n180569-d5ctTE6UNLfi.jpg"
+                    }
+                  },
+                  {
+                    "name": { "full": "Ricardo Tejedo" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/n182551-z5pxnDy9L0DJ.jpg"
+                    }
+                  }
+                ]
+              },
+              {
+                "node": {
+                  "name": { "full": "Ein" },
+                  "gender": null,
+                  "dateOfBirth": { "year": null, "month": null, "day": null },
+                  "age": null,
+                  "image": {
+                    "medium": "https://s4.anilist.co/file/anilistcdn/character/medium/4.jpg"
+                  },
+                  "description": "Ein is a Pembroke Welsh Corgi brought aboard the Bebop by Spike after a failed attempt to capture a bounty. Ein is a \"data dog\": while the televised series only briefly hints on the fact that this means Ein's brain was somehow enhanced drastically, the manga shows Ed accessing data stored in Ein's brain via a virtual reality-type interface with which she has a conversation with a human proprietor. It is obvious that Ein is abnormally intelligent, as he is able to answer the telephone, drive a car (just the wheel), use the SSW, play sh\u014dgi, and generally do a number of other things that an average canine should not be able to do, but he never talks in a human language during the show. He does, however, speak in Session 18 \"Speak Like A Child\" after the credits Ein tells Spike \"Next Episode: Wild Horses\". He is able to \"speak\" to other species, as demonstrated in Session 17, \"Mushroom Samba\" (he spoke to a cow with a subtitled bark of \"Thanks\", to which the cow has a subtitled moo back of \"No problem\"). It is likely that Ed is the only crew member with any idea of Ein's capabilities, as the other crew members are quick to dismiss Ein, and never seem to acknowledge him as more than a pet. Ein initially takes a shine to Jet, but when Ed joins the crew, he comes around to her as well. Frequently the two trade roles, with Ein expressing very human sentiments via facial expression and Ed regressing to a feral state. He went with Ed after she left the crew, probably because of his attachment to her. His name is a pun on the Japanese word for \"dog\" (\u72ac inu) but is also German for \"one\". \"Ein\" may also be short for \"Einstein\", after Albert Einstein, because of the extraordinary intelligence he possesses."
+                },
+                "voiceActors": [
+                  {
+                    "name": { "full": "Kouichi Yamadera" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/n95011-2RfLzncNyvbR.png"
+                    }
+                  },
+                  {
+                    "name": { "full": "Jonatas Carmona" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/n231351-hjXONdRlwtsG.jpg"
+                    }
+                  }
+                ]
+              },
+              {
+                "node": {
+                  "name": { "full": "Vicious" },
+                  "gender": "Male",
+                  "dateOfBirth": { "year": null, "month": null, "day": null },
+                  "age": null,
+                  "image": {
+                    "medium": "https://s4.anilist.co/file/anilistcdn/character/medium/b2734-aglO8RKNVxnn.jpg"
+                  },
+                  "description": "It&#039;s all in the name with Vicious: he is ruthless, bloodthirsty, cunning and ambitious, willing to do anything in order to secure a position of power. He is a member of the Red Dragon Crime Syndicate in Tharsis, and is often referred to or depicted as a venomous snake. His weapon of choice is not a firearm, but a katana which he wields skillfully, even against gun-wielders. \n\n~!After Spike&#039;s supposed death, Vicious also leaves the Red Dragons briefly to fight in the Titan War of 2068 although his precise motivations for enlisting are debated.!~"
+                },
+                "voiceActors": [
+                  {
+                    "name": { "full": "Norio Wakamoto" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/n95084-RTrZSU38POPF.png"
+                    }
+                  },
+                  {
+                    "name": { "full": "Skip Stellrecht" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/384.jpg"
+                    }
+                  },
+                  {
+                    "name": { "full": "Roberto Chevalier" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/1266.jpg"
+                    }
+                  },
+                  {
+                    "name": { "full": "Szabolcs P\u00e1lmai" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/7814.jpg"
+                    }
+                  },
+                  {
+                    "name": { "full": "Marcos Pati\u00f1o" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/n105020-ZpspJDXu5iTS.png"
+                    }
+                  },
+                  {
+                    "name": { "full": "Andreas Hosang" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/default.jpg"
+                    }
+                  },
+                  {
+                    "name": { "full": "Jacques Albaret" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/n113869-wF45sVu1JAxR.jpg"
+                    }
+                  },
+                  {
+                    "name": { "full": "William Viana" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/n153462-TiLeyrUYBRTa.jpg"
+                    }
+                  },
+                  {
+                    "name": { "full": "Rafael Pacheco" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/n182222-0Fz9qcwIYdVr.jpg"
+                    }
+                  },
+                  {
+                    "name": { "full": "Andr\u00e9s Guti\u00e9rrez Coto" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/n108301-MdWBMH4h79NP.png"
+                    }
+                  }
+                ]
+              },
+              {
+                "node": {
+                  "name": { "full": "Grencia Mars Elijah Guo Eckener" },
+                  "gender": null,
+                  "dateOfBirth": { "year": null, "month": null, "day": null },
+                  "age": null,
+                  "image": {
+                    "medium": "https://s4.anilist.co/file/anilistcdn/character/medium/b2736-0Eoluq9UxXu4.png"
+                  },
+                  "description": "Gren was once a soldier for the war on Titan, and appears in the two-part episodes of &#039;Jupiter Jazz&#039;. On Titan he fought beside Vicious, who he admired and found encouragement in, during the war. After the war, Gren came back hoping to be a jazz musician, but that plan was cut short when he was arrested on the pretense of being a spy. In prison, Gren heard that Vicious testified against him; this and the isolation drove him mad. The prison used prisoners for drug experiments, and he was forced to become a test subject. (from Wikipedia)    Height: 6ft 2 inches  Age : 29  Weight : 172 pounds    "
+                },
+                "voiceActors": [
+                  {
+                    "name": { "full": "Kenyuu Horiuchi" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/262.jpg"
+                    }
+                  },
+                  {
+                    "name": { "full": "Michael Gregory" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/668.jpg"
+                    }
+                  },
+                  {
+                    "name": { "full": "Seung jun Kim" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/14819.jpg"
+                    }
+                  },
+                  {
+                    "name": { "full": "Charles Rettinghaus" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/n156036-a3yI3vcZscWP.jpg"
+                    }
+                  },
+                  {
+                    "name": { "full": "Marcelo Campos" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/n96423-YaAvwaxG5fNk.jpg"
+                    }
+                  },
+                  {
+                    "name": { "full": "Luis Leonardo Su\u00e1rez" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/n182235-4nWPBHLcz65x.png"
+                    }
+                  },
+                  {
+                    "name": { "full": "Roberto Mendiola" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/n198310-yBOdbNEZylzU.png"
+                    }
+                  },
+                  {
+                    "name": { "full": "Vittorio De Angelis" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/n158538-6FsfCIOtHUzx.png"
+                    }
+                  }
+                ]
+              },
+              {
+                "node": {
+                  "name": { "full": "Julia" },
+                  "gender": null,
+                  "dateOfBirth": { "year": null, "month": null, "day": null },
+                  "age": null,
+                  "image": {
+                    "medium": "https://s4.anilist.co/file/anilistcdn/character/medium/b2735-0NRiXHK4PSWs.png"
+                  },
+                  "description": "Julia is a beautiful and mysterious woman from both Spike and Vicious&#039; pasts. A love triangle among the three caused Spike to leave the syndicate rather than challenge Vicious. Spike had wanted to take her with him when he left the syndicate, but she was blackmailed by Vicious into almost shooting Spike. Vicious found out they were planning to run away together and confronted Julia, telling her that she would have to kill Spike, or both of them would be killed. To protect not only herself but also the man she loved, she ran away, never meeting Spike at the cemetery as both of them had planned. (from Wikipedia)"
+                },
+                "voiceActors": [
+                  {
+                    "name": { "full": "Mary Elizabeth McGlynn" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/n95269-PhQ87wkVzLBb.jpg"
+                    }
+                  },
+                  {
+                    "name": { "full": "Gara Takashima" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/n95497-ZisMmeLQfZr7.png"
+                    }
+                  },
+                  {
+                    "name": { "full": "Orsolya Ol\u00e1h" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/default.jpg"
+                    }
+                  },
+                  {
+                    "name": { "full": "Susan Sindberg" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/n104747-3HN1vSuPSlEb.jpg"
+                    }
+                  },
+                  {
+                    "name": { "full": "Dulce Guerrero" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/n106424-aHMqVAmkh5OD.png"
+                    }
+                  },
+                  {
+                    "name": { "full": "Anke Reitzenstein" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/default.jpg"
+                    }
+                  },
+                  {
+                    "name": { "full": "Eleonora De Angelis" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/n157374-iq3dNBXijHRy.jpg"
+                    }
+                  },
+                  {
+                    "name": { "full": "Let\u00edcia Quinto" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/n100136-x5kzXdgnFpS2.jpg"
+                    }
+                  }
+                ]
+              },
+              {
+                "node": {
+                  "name": { "full": "Judy" },
+                  "gender": null,
+                  "dateOfBirth": { "year": null, "month": null, "day": null },
+                  "age": null,
+                  "image": {
+                    "medium": "https://s4.anilist.co/file/anilistcdn/character/medium/b6694-y0PmKzrcVa7A.png"
+                  },
+                  "description": "Co-hosts the TV show Big Shot along with Punch. The show features the duo in western attire and provides information on popular Bounty Heads throughout the star system. Judy acts like a stereotypical dumb-blonde, and wears a very revealing outfit. After Punch announces that the show has been cancelled, Judy reacts violently and exclaims that &quot;The station will hear from her agent about this!&quot;  Later, it is revealed that she is engaged to be married to her agent."
+                },
+                "voiceActors": [
+                  {
+                    "name": { "full": "Miki Nagasawa" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/n95209-9RHgLGkMrska.png"
+                    }
+                  },
+                  {
+                    "name": { "full": "Lia Sargent" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/835.jpg"
+                    }
+                  },
+                  {
+                    "name": { "full": "Rossella Acerbo" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/1677.jpg"
+                    }
+                  },
+                  {
+                    "name": { "full": "Angela Ringer" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/default.jpg"
+                    }
+                  },
+                  {
+                    "name": { "full": "Susan Sindberg" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/n104747-3HN1vSuPSlEb.jpg"
+                    }
+                  },
+                  {
+                    "name": { "full": "Cec\u00edlia Lemes" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/12095.jpg"
+                    }
+                  },
+                  {
+                    "name": { "full": "Alicia Barrag\u00e1n" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/n182221-N9LZsRKJBTCd.jpg"
+                    }
+                  },
+                  {
+                    "name": { "full": "Monserrat Mendoza" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/n139011-PtSpM8k7zwlf.png"
+                    }
+                  }
+                ]
+              },
+              {
+                "node": {
+                  "name": { "full": "Andy Von de Oniyate" },
+                  "gender": null,
+                  "dateOfBirth": { "year": null, "month": null, "day": null },
+                  "age": null,
+                  "image": {
+                    "medium": "https://s4.anilist.co/file/anilistcdn/character/medium/b23740-NCE7b9okKmeI.png"
+                  },
+                  "description": "Andy is a hunter who went after a criminal called Teddy Bomber whom he thought to be Spike. He is always with his mare, Onyx. He&#039;s a member of YMCA, Young Man&#039;s Cowboy Association. After fighting and losing he gives his cowboy title to Spike and turns into a samurai."
+                },
+                "voiceActors": [
+                  {
+                    "name": { "full": "Masashi Ebara" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/n95179-ZXxATX9muGcD.png"
+                    }
+                  },
+                  {
+                    "name": { "full": "Daran Norris" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/n95719-xM38IFuIRqgv.jpg"
+                    }
+                  },
+                  {
+                    "name": { "full": "N\u00e1ndor Holl" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/7786.jpg"
+                    }
+                  },
+                  {
+                    "name": { "full": "Constantin Pappas" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/n154153-y6Y8JWyyPnBG.png"
+                    }
+                  },
+                  {
+                    "name": { "full": "Marco Ant\u00f4nio Costa" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/n191888-8c9SpkajaMmq.png"
+                    }
+                  },
+                  {
+                    "name": { "full": "Idzi Dutkiewicz" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/n108299-vems5azPxtU5.png"
+                    }
+                  },
+                  {
+                    "name": { "full": "Ulises Zavala" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/n232410-ZNSOyFA2EHO7.png"
+                    }
+                  },
+                  {
+                    "name": { "full": "Sandro Acerbo" },
+                    "image": {
+                      "medium": "https://s4.anilist.co/file/anilistcdn/staff/medium/1096.jpg"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "studios": {
+            "nodes": [
+              { "name": "Sunrise", "isAnimationStudio": true },
+              { "name": "Bandai Visual", "isAnimationStudio": false },
+              { "name": "Bandai Entertainment", "isAnimationStudio": false }
+            ]
+          },
+          "season": "SPRING",
+          "format": "TV",
+          "status": "FINISHED",
+          "seasonYear": 1998,
+          "description": "Enter a world in the distant future, where Bounty Hunters roam the solar system. Spike and Jet, bounty hunting partners, set out on journeys in an ever struggling effort to win bounty rewards to survive.<br><br>\nWhile traveling, they meet up with other very interesting people. Could Faye, the beautiful and ridiculously poor gambler, Edward, the computer genius, and Ein, the engineered dog be a good addition to the group?",
+          "genres": ["Action", "Adventure", "Drama", "Sci-Fi"],
+          "synonyms": [
+            "\uce74\uc6b0\ubcf4\uc774 \ube44\ubc25",
+            "\u05e7\u05d0\u05d5\u05d1\u05d5\u05d9 \u05d1\u05d9\u05d1\u05d5\u05e4",
+            "\u0e04\u0e32\u0e27\u0e1a\u0e2d\u0e22 \u0e1a\u0e35\u0e1a\u0e4a\u0e2d\u0e1b",
+            "\u041a\u043e\u0432\u0431\u043e\u0439 \u0411\u0438\u0431\u043e\u043f",
+            "\u039a\u03b1\u03bf\u03c5\u03bc\u03c0\u03cc\u03b7\u03b4\u03b5\u03c2 \u03c4\u03bf\u03c5 \u0394\u03b9\u03b1\u03c3\u03c4\u03ae\u03bc\u03b1\u03c4\u03bf\u03c2",
+            "Kowboj Bebop"
+          ],
+          "startDate": { "year": 1998, "month": 4, "day": 3 },
+          "endDate": { "year": 1999, "month": 4, "day": 24 },
+          "duration": 24,
+          "countryOfOrigin": "JP",
+          "averageScore": 86,
+          "source": "ORIGINAL",
+          "hashtag": null,
+          "siteUrl": "https://anilist.co/anime/1",
+          "nextAiringEpisode": null,
+          "tags": [
+            { "name": "Space", "rank": 94 },
+            { "name": "Crime", "rank": 92 },
+            { "name": "Episodic", "rank": 88 },
+            { "name": "Ensemble Cast", "rank": 86 },
+            { "name": "Primarily Adult Cast", "rank": 85 },
+            { "name": "Tragedy", "rank": 80 },
+            { "name": "Travel", "rank": 80 },
+            { "name": "Noir", "rank": 80 },
+            { "name": "Male Protagonist", "rank": 78 },
+            { "name": "Guns", "rank": 78 },
+            { "name": "Cyberpunk", "rank": 77 },
+            { "name": "Philosophy", "rank": 72 },
+            { "name": "Tomboy", "rank": 71 },
+            { "name": "Martial Arts", "rank": 67 },
+            { "name": "Terrorism", "rank": 66 },
+            { "name": "Anti-Hero", "rank": 64 },
+            { "name": "Found Family", "rank": 60 },
+            { "name": "Amnesia", "rank": 60 },
+            { "name": "Cyborg", "rank": 58 },
+            { "name": "Gambling", "rank": 57 },
+            { "name": "Yakuza", "rank": 50 },
+            { "name": "Drugs", "rank": 49 },
+            { "name": "Cult", "rank": 42 },
+            { "name": "Police", "rank": 37 },
+            { "name": "Tanned Skin", "rank": 35 },
+            { "name": "Nudity", "rank": 30 },
+            { "name": "Circus", "rank": 10 }
+          ],
+          "reviews": {
+            "nodes": [
+              {
+                "summary": "I think it's time we blow this scene, get everybody and the stuff together... okay, three, two, one, let's jam.",
+                "user": {
+                  "name": "Pursueth",
+                  "avatar": {
+                    "medium": "https://s4.anilist.co/file/anilistcdn/user/avatar/medium/b5984516-vVhftslD3YbM.jpg"
+                  }
+                }
+              },
+              {
+                "summary": "Been carrying the weight for two years now. Truly my favorite anime.",
+                "user": {
+                  "name": "honkytonkwomen",
+                  "avatar": {
+                    "medium": "https://s4.anilist.co/file/anilistcdn/user/avatar/medium/b5382323-LaMixPweP4eB.jpg"
+                  }
+                }
+              },
+              {
+                "summary": "Okay, 3, 2, 1 let's jam",
+                "user": {
+                  "name": "TheRealKyuubey",
+                  "avatar": {
+                    "medium": "https://s4.anilist.co/file/anilistcdn/user/avatar/medium/b173334-U6tLWQoaepDP.png"
+                  }
+                }
+              },
+              {
+                "summary": "Cowboy Bebop: A Timeless Journey Through Space and Jazz",
+                "user": {
+                  "name": "3dnane",
+                  "avatar": {
+                    "medium": "https://s4.anilist.co/file/anilistcdn/user/avatar/medium/b6497672-U4Ljca8ZT4bn.jpg"
+                  }
+                }
+              },
+              {
+                "summary": "A story from the past that teaches us to look to the future",
+                "user": {
+                  "name": "Arikarikita",
+                  "avatar": {
+                    "medium": "https://s4.anilist.co/file/anilistcdn/user/avatar/medium/b883323-qLr1bYr6GGhv.png"
+                  }
+                }
+              },
+              {
+                "summary": "Cowboy Bebop was a bet.",
+                "user": {
+                  "name": "paradigm",
+                  "avatar": {
+                    "medium": "https://s4.anilist.co/file/anilistcdn/user/avatar/medium/b211063-M7bZqsY3D98s.png"
+                  }
+                }
+              }
+            ]
+          },
+          "recommendations": {
+            "nodes": [
+              {
+                "mediaRecommendation": {
+                  "title": {
+                    "romaji": "Samurai Champloo",
+                    "english": "Samurai Champloo"
+                  }
+                }
+              },
+              {
+                "mediaRecommendation": {
+                  "title": { "romaji": "TRIGUN", "english": "Trigun" }
+                }
+              },
+              {
+                "mediaRecommendation": {
+                  "title": {
+                    "romaji": "GREAT PRETENDER",
+                    "english": "Great Pretender"
+                  }
+                }
+              },
+              {
+                "mediaRecommendation": {
+                  "title": {
+                    "romaji": "Space\u2606Dandy",
+                    "english": "Space Dandy"
+                  }
+                }
+              },
+              {
+                "mediaRecommendation": {
+                  "title": {
+                    "romaji": "BLACK LAGOON",
+                    "english": "Black Lagoon"
+                  }
+                }
+              },
+              {
+                "mediaRecommendation": {
+                  "title": { "romaji": "Baccano!", "english": "Baccano!" }
+                }
+              },
+              {
+                "mediaRecommendation": {
+                  "title": {
+                    "romaji": "Michiko to Hatchin",
+                    "english": "Michiko & Hatchin"
+                  }
+                }
+              },
+              {
+                "mediaRecommendation": {
+                  "title": { "romaji": "Lupin III", "english": "Lupin the 3rd" }
+                }
+              },
+              {
+                "mediaRecommendation": {
+                  "title": {
+                    "romaji": "Koukaku Kidoutai: STAND ALONE COMPLEX",
+                    "english": "Ghost in the Shell: Stand Alone Complex"
+                  }
+                }
+              },
+              {
+                "mediaRecommendation": {
+                  "title": {
+                    "romaji": "Seihou Bukyou Outlaw Star",
+                    "english": "Outlaw Star"
+                  }
+                }
+              },
+              {
+                "mediaRecommendation": {
+                  "title": {
+                    "romaji": "TRIGUN STAMPEDE",
+                    "english": "TRIGUN STAMPEDE"
+                  }
+                }
+              },
+              {
+                "mediaRecommendation": {
+                  "title": {
+                    "romaji": "Shin Seiki Evangelion",
+                    "english": "Neon Genesis Evangelion"
+                  }
+                }
+              },
+              {
+                "mediaRecommendation": {
+                  "title": {
+                    "romaji": "Cyberpunk: Edgerunners",
+                    "english": "Cyberpunk: Edgerunners"
+                  }
+                }
+              },
+              {
+                "mediaRecommendation": {
+                  "title": {
+                    "romaji": "Kekkai Sensen",
+                    "english": "Blood Blockade Battlefront"
+                  }
+                }
+              },
+              {
+                "mediaRecommendation": {
+                  "title": { "romaji": "THE Big O", "english": "The Big O" }
+                }
+              }
+            ]
+          },
+          "relations": {
+            "nodes": [
+              {
+                "title": {
+                  "romaji": "Cowboy Bebop: Tengoku no Tobira",
+                  "english": "Cowboy Bebop: The Movie - Knockin' on Heaven's Door",
+                  "native": "\u30ab\u30a6\u30dc\u30fc\u30a4\u30d3\u30d0\u30c3\u30d7\u5929\u56fd\u306e\u6249"
+                }
+              },
+              {
+                "title": {
+                  "romaji": "Cowboy Bebop: Ein no Natsuyasumi",
+                  "english": "Ein's Summer Vacation",
+                  "native": "\u30a2\u30a4\u30f3\u306e\u306a\u3064\u3084\u3059\u307f"
+                }
+              },
+              {
+                "title": {
+                  "romaji": "Cowboy Bebop",
+                  "english": "Cowboy Bebop",
+                  "native": "\u30ab\u30a6\u30dc\u30fc\u30a4\u30d3\u30d0\u30c3\u30d7"
+                }
+              },
+              {
+                "title": {
+                  "romaji": "Shooting Star Bebop: Cowboy Bebop",
+                  "english": "Cowboy Bebop Shooting Star",
+                  "native": "\u30b7\u30e5\u30fc\u30c6\u30a3\u30f3\u30b0\u30b9\u30bf\u30fc\u30d3\u30d0\u30c3\u30d7 \u30ab\u30a6\u30dc\u30fc\u30a4\u30d3\u30d0\u30c3\u30d7"
+                }
+              },
+              {
+                "title": {
+                  "romaji": "Cowboy Bebop: Yoseatsume Blues",
+                  "english": null,
+                  "native": "\u30ab\u30a6\u30dc\u30fc\u30a4\u30d3\u30d0\u30c3\u30d7 \u3088\u305b\u3042\u3064\u3081\u30d6\u30eb\u30fc\u30b9"
+                }
+              }
+            ]
+          },
+          "externalLinks": [
+            {
+              "url": "http://www.hulu.com/cowboy-bebop",
+              "site": "Hulu",
+              "icon": "https://s4.anilist.co/file/anilistcdn/link/icon/7-rM06PQyWONGC.png"
+            },
+            {
+              "url": "http://www.crunchyroll.com/cowboy-bebop",
+              "site": "Crunchyroll",
+              "icon": "https://s4.anilist.co/file/anilistcdn/link/icon/5-AWN2pVlluCOO.png"
+            },
+            {
+              "url": "https://www.amazon.com/gp/video/detail/B00R2KO8ZE/",
+              "site": "Amazon Prime Video",
+              "icon": "https://s4.anilist.co/file/anilistcdn/link/icon/21-bDoNIomehkOx.png"
+            },
+            {
+              "url": "https://tubitv.com/series/2052",
+              "site": "Tubi TV",
+              "icon": "https://s4.anilist.co/file/anilistcdn/link/icon/30-H2h0Fxnog1Pr.png"
+            },
+            {
+              "url": "https://www.adultswim.com/videos/cowboy-bebop",
+              "site": "Adult Swim",
+              "icon": "https://s4.anilist.co/file/anilistcdn/link/icon/28-W1L8AHW0O4xE.png"
+            },
+            {
+              "url": "https://www.netflix.com/title/80001305",
+              "site": "Netflix",
+              "icon": "https://s4.anilist.co/file/anilistcdn/link/icon/10-rVGPom8RCiwH.png"
+            },
+            {
+              "url": "https://cowboy-bebop.net/",
+              "site": "Official Site",
+              "icon": null
+            }
+          ],
+          "rankings": [
+            { "rank": 44, "context": "highest rated all time" },
+            { "rank": 54, "context": "most popular all time" },
+            { "rank": 1, "context": "highest rated" },
+            { "rank": 1, "context": "most popular" }
+          ],
+          "bannerImage": "https://s4.anilist.co/file/anilistcdn/media/anime/banner/1-OquNCNB6srGe.jpg"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,34 @@
+<DescriptionHeader@MDLabel>    
+    adaptive_height:True
+    # halign:"center"
+    max_lines:0
+    shorten:False
+    bold:True
+    markup:True
+    font_style: "Body"
+    role: "large"
+    md_bg_color:self.theme_cls.secondaryContainerColor
+    padding:"10dp"
+
+<DescriptionContainer@MDBoxLayout>:
+    adaptive_height:True
+    md_bg_color:self.theme_cls.surfaceContainerLowColor
+    padding:"10dp"
+
+<DescriptionText@MDLabel>:
+    adaptive_height:True
+    max_lines:0
+    shorten:False
+    markup:True
+    font_style: "Body"
+    role: "small"
+<AnimeDescription>:
+    orientation:"vertical"
+    adaptive_height:True
+    DescriptionHeader:
+        text:"Description"
+    DescriptionContainer:
+        DescriptionText:
+            text:root.description
+        
+            

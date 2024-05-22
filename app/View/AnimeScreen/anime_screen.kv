@@ -1,0 +1,58 @@
+<AnimeScreenView>:
+    md_bg_color: self.theme_cls.backgroundColor
+    header:header
+    side_bar:side_bar
+    rankings_bar:rankings_bar
+    anime_description:anime_description
+    anime_characters:anime_characters
+    anime_reviews:anime_reviews
+    MDBoxLayout:
+        orientation: 'vertical'
+        MDBoxLayout:
+            orientation: 'vertical'
+            size_hint_y:None
+            height: self.minimum_height
+            MDBoxLayout:
+                adaptive_height:True
+                MDIconButton:
+                    icon: "arrow-left"
+                    on_release:
+                        root.manager_screens.current = root.manager_screens.previous()
+        MDScrollView:
+            size_hint:1,1
+            MDBoxLayout:
+                id:main_container
+                size_hint_y:None
+                padding:"10dp"
+                spacing:"10dp"
+                height: self.minimum_height 
+                orientation:"vertical"
+                AnimeHeader:
+                    id:header
+                MDBoxLayout:
+                    size_hint_y:None
+                    height: self.minimum_height
+                    AnimeSideBar:
+                        id:side_bar
+                        size_hint_y:None
+                        height:max(self.parent.height,self.minimum_height)
+
+                    MDBoxLayout:
+                        spacing:"10dp"
+                        orientation:"vertical"
+                        size_hint_y:None
+                        height: max(self.parent.height,self.minimum_height)
+                        RankingsBar:
+                            id:rankings_bar
+                        Controls:
+                        MDBoxLayout:
+                            adaptive_height:True
+                            padding:"20dp"
+                            orientation:"vertical"
+                            AnimeDescription:
+                                id:anime_description
+                            AnimeCharacters:
+                                id:anime_characters
+                            AnimeReviews:
+                                id:anime_reviews
+                        MDBoxLayout:

@@ -2,7 +2,7 @@ from kivy.properties import ObjectProperty
 from View.base_screen import BaseScreenView
 
 
-class MainScreenView(BaseScreenView):
+class HomeScreenView(BaseScreenView):
     main_container = ObjectProperty()
     def write_data(self):
         self.controller.write_data()

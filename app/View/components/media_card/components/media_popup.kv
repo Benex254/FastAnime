@@ -1,0 +1,164 @@
+#:import get_hex_from_color kivy.utils.get_hex_from_color
+#:set yellow [.9,.9,0,.9]
+
+<SingleLineLabel@MDLabel>:    
+    shorten:True
+    shorten_from:"right"
+    adaptive_height:True
+
+<PopupBoxLayout@MDBoxLayout>
+    adaptive_height:True
+
+<MediaPopup>
+    size_hint: None, None
+    height: dp(500)
+    width: dp(400)
+    radius:[5,5,5,5]
+    md_bg_color:self.theme_cls.backgroundColor
+    anchor_y: 'top'
+    player:player
+    MDBoxLayout:
+        orientation: 'vertical'
+        MDRelativeLayout:
+            size_hint_y: None
+            height: dp(250)
+            line_color:root.caller.has_trailer_color
+            line_width:2
+            MediaPopupVideoPlayer:
+                id:player
+                source:root.caller.trailer_url
+                preview:root.caller.preview_image
+                state:"play" if root.caller.trailer_url else "stop"
+                fit_mode:"fill"
+                size_hint_y: None
+                height: dp(250)
+            PopupBoxLayout:
+                padding: "10dp","5dp"
+                spacing:"5dp"
+                pos_hint: {'left': 1,'top': 1}
+                MDIcon:
+                    icon: "star"
+                    color:yellow
+                    disabled: not(root.caller.stars[0])
+                MDIcon:
+                    color:yellow
+                    disabled: not(root.caller.stars[1])
+                    icon: "star"
+                MDIcon:
+                    color:yellow
+                    disabled: not(root.caller.stars[2])
+                    icon: "star"
+                MDIcon:
+                    color:yellow
+                    disabled: not(root.caller.stars[3])
+                    icon: "star"
+                MDIcon:
+                    color:yellow
+                    icon: "star"
+                    disabled: not(root.caller.stars[4])
+                MDIcon:
+                    color: yellow
+                    icon: "star"
+                    disabled: not(root.caller.stars[5])
+
+                MDLabel:
+                    text: f"{root.caller.episodes} Episodes"
+                    halign:"right"
+                    font_style:"Label"
+                    role:"medium"
+                    bold:True
+                    pos_hint: {'center_y': 0.5}
+                    adaptive_height:True
+                    color: 0,0,0,.7
+            
+            PopupBoxLayout:
+                padding:"5dp"
+                pos_hint: {'bottom': 1}
+                SingleLineLabel:
+                    text:root.caller.media_status
+                    opacity:.8
+                    halign:"left"
+                    font_style:"Label"
+                    role:"medium"
+                    bold:True
+                    pos_hint: {'center_y': .5}
+                SingleLineLabel:
+                    text:root.caller.first_aired_on
+                    opacity:.8
+                    halign:"right"
+                    font_style:"Label"
+                    role:"medium"
+                    bold:True
+                    pos_hint: {'center_y': .5}
+        # header
+        MDBoxLayout:
+            orientation: 'vertical'
+            padding:"10dp"
+            spacing:"10dp"
+            PopupBoxLayout:
+                PopupBoxLayout:
+                    pos_hint: {'center_y': 0.5}
+                    TooltipMDIconButton:
+                        tooltip_text:root.caller.title
+                        icon: "play-circle"
+                        on_press: 
+                            root.dismiss()
+                            app.show_anime_screen(root.caller.anime_id)
+                    MDIconButton:
+                        icon: "plus-circle" if not(root.caller.is_in_my_list) else "check-circle"
+                        on_release:
+                            root.caller.is_in_my_list = not(root.caller.is_in_my_list)
+                            self.icon = "plus-circle" if not(root.caller.is_in_my_list) else "check-circle"
+                    MDIconButton:
+                        icon: "bell-circle" if not(root.caller.is_in_my_notify) else "bell-check"
+                PopupBoxLayout:
+                    pos_hint: {'center_y': 0.5}
+                    orientation: 'vertical'
+
+                    SingleLineLabel:
+                        font_style:"Label"
+                        role:"small"
+                        text: f"[color={get_hex_from_color(self.theme_cls.primaryColor)}]"+"Genres: "+"[/color]"+root.caller.genres
+                        markup:True
+                    PopupBoxLayout:
+                        SingleLineLabel:
+                            font_style:"Label"
+                            role:"small"
+                            markup:True
+                            text: f"[color={get_hex_from_color(self.theme_cls.primaryColor)}]"+"Popularity: "+"[/color]"+root.caller.popularity
+                        SingleLineLabel:
+                            font_style:"Label"
+                            markup:True
+                            role:"small"
+                            text: f"[color={get_hex_from_color(self.theme_cls.primaryColor)}]"+"Favourites: "+"[/color]"+root.caller.favourites
+            MDScrollView:
+                size_hint:1,1
+                do_scroll_y:True
+                MDLabel:
+                    font_style:"Body"
+                    role:"small"
+                    text:root.caller.description
+                    adaptive_height:True
+            # footer
+            PopupBoxLayout:
+                orientation:"vertical"
+                SingleLineLabel:
+                    font_style:"Label"
+                    role:"small"
+                    markup:True
+                    text: f"[color={get_hex_from_color(self.theme_cls.primaryColor)}]"+"Author: "+"[/color]"+root.caller.author
+                SingleLineLabel:
+                    font_style:"Label"
+                    markup:True
+                    role:"small"
+                    text: f"[color={get_hex_from_color(self.theme_cls.primaryColor)}]"+"Studios: "+"[/color]"+root.caller.studios
+                SingleLineLabel:
+                    font_style:"Label"
+                    markup:True
+                    role:"small"
+                    text: f"[color={get_hex_from_color(self.theme_cls.primaryColor)}]"+"Characters: "+"[/color]"+root.caller.characters
+                SingleLineLabel:
+                    font_style:"Label"
+                    markup:True
+                    role:"small"
+                    text: f"[color={get_hex_from_color(self.theme_cls.primaryColor)}]"+"Tags: "+"[/color]"+root.caller.tags

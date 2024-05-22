@@ -1,9 +1,19 @@
 from kivy.properties import ObjectProperty
+from kivymd.uix.navigationrail import MDNavigationRail
+from kivymd.uix.boxlayout import MDBoxLayout
 
 from kivymd.app import MDApp
 from kivymd.uix.screen import MDScreen
 
 from Utility.observer import Observer
+
+
+
+class NavRail(MDNavigationRail):
+    screen=ObjectProperty()
+
+class SearchBar(MDBoxLayout):
+    pass
 
 
 class BaseScreenView(MDScreen, Observer):

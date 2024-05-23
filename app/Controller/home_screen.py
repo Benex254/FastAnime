@@ -18,7 +18,8 @@ class HomeScreenController:
     def __init__(self, model:HomeScreenModel):
         self.model = model  # Model.main_screen.MainScreenModel
         self.view = HomeScreenView(controller=self, model=self.model)
-        Clock.schedule_once(lambda _:self.populate_home_screen())
+        if self.view.app.config.get("Preferences","is_startup_anime_enable")=="1":
+            Clock.schedule_once(lambda _:self.populate_home_screen())
     def get_view(self) -> HomeScreenView:
         return self.view
 

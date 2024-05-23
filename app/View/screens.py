@@ -1,5 +1,5 @@
-from Controller import SearchScreenController,HomeScreenController,MyListScreenController,AnimeScreenController
-from Model import HomeScreenModel,SearchScreenModel,MyListScreenModel,AnimeScreenModel
+from Controller import (SearchScreenController,HomeScreenController,MyListScreenController,AnimeScreenController,DownloadsScreenController,HelpScreenController,CrashLogScreenController)
+from Model import (HomeScreenModel,SearchScreenModel,MyListScreenModel,AnimeScreenModel,DownloadsScreenModel,HelpScreenModel,CrashLogScreenModel)
 
 
 screens = {
@@ -18,5 +18,17 @@ screens = {
     "anime screen": {
         "model": AnimeScreenModel,
         "controller": AnimeScreenController,
+    },
+    "crashlog screen": {
+        "model": CrashLogScreenModel,
+        "controller": CrashLogScreenController,
+    },
+    "downloads screen": {
+        "model": DownloadsScreenModel,
+        "controller": DownloadsScreenController,
+    },
+    "help screen": {
+        "model": HelpScreenModel,
+        "controller": HelpScreenController,
     },
 }

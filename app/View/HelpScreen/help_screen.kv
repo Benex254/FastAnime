@@ -1,0 +1,18 @@
+#:import get_color_from_hex kivy.utils.get_color_from_hex
+#:import StringProperty kivy.properties.StringProperty
+
+<HelpScreenView>
+    md_bg_color: self.theme_cls.backgroundColor
+    # main_container:main_container
+    MDBoxLayout:
+        NavRail:
+            screen:root
+        MDAnchorLayout:
+            anchor_y: 'top'
+            padding:"10dp"
+            MDBoxLayout:
+                orientation: 'vertical'
+                SearchBar:
+                
+                MDLabel:
+                    text:"Help Screen"

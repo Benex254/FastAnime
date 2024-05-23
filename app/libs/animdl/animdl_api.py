@@ -20,6 +20,21 @@ class AnimdlApi:
                 return run([py_path,"-m", "animdl", *cmds])
 
     @classmethod
+    def run_custom_command(cls,*cmds:tuple[str])->Popen:
+        """
+        Runs an AnimDl custom command with the full power of animdl and returns a subprocess(popen) for full control
+        """
+
+        # TODO: parse the commands
+        parsed_cmds = list(cmds)
+
+        if py_path:=shutil.which("python"): 
+            base_cmds = [py_path,"-m","animdl"]
+            child_process = Popen([*base_cmds,*parsed_cmds])
+            return child_process
+        
+
+    @classmethod
     def stream_anime_by_title(cls,title,episodes_range=None):
         anime = cls.get_anime_url_by_title(title)
         if not anime:
@@ -183,7 +198,7 @@ class AnimdlApi:
         possible_animes = cls.output_parser(result)
         if possible_animes:
             anime = max(possible_animes.items(),key=lambda anime_item:cls.get_anime_match(anime_item,title))
-            return anime # {"title","anime url"}
+            return anime # ("title","anime url")
         return None
     
     @classmethod

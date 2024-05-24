@@ -1,32 +1,27 @@
-from html.parser import HTMLParser
-import os
-from kivy.storage.jsonstore import JsonStore
 from collections import deque
-import threading
 from time import sleep
-from View.components import MediaCard
+import threading
+
 from pytube import YouTube
-from kivy.loader import _ThreadPool 
+
 from kivy.clock import Clock
 from kivy.cache import Cache
-from datetime import date,datetime
+from kivy.loader import _ThreadPool 
+from kivy.logger import Logger
 
+from View.components import MediaCard
+from Utility import anilist_data_helper, user_data_helper
+
+
+# Register anime cache in memory
 Cache.register("anime")
-today = date.today()
-now = datetime.now()
 
-user_data = JsonStore("user_data.json")
-my_list = user_data.get("my_list")["list"] # returns a list of anime ids
+user_anime_list = user_data_helper.get_user_animelist()
 
-yt_cache = JsonStore("yt_cache.json")
-yt_stream_links = []
-name_of_yt_cache = f"{today}{0 if now.hour>=12 else 1}"
-if yt_streams:=yt_cache.get("yt_stream_links").get(name_of_yt_cache):
-    yt_stream_links = yt_streams
-
-if yt_stream_links:
-    for link in yt_stream_links:
-        Cache.append("anime",link[0],tuple(link[1]))
+yt_stream_links = user_data_helper.get_anime_trailer_cache()
+for link in yt_stream_links:
+    Cache.append("anime",link[0],tuple(link[1]))
+    
 
 # for youtube video links gotten from from pytube which is blocking
 class MediaCardDataLoader(object):
@@ -78,15 +73,15 @@ class MediaCardDataLoader(object):
 
     def cached_fetch_data(self,yt_watch_url):
         data:tuple = Cache.get("anime",yt_watch_url) # type: ignore # trailer_url is the yt_watch_link
+
         if not data[0]:
             yt = YouTube(yt_watch_url)
             preview_image = yt.thumbnail_url 
             try:
                 video_stream_url = yt.streams.filter(progressive=True,file_extension="mp4")[-1].url
-                # sleep(0.5)
                 data = preview_image,video_stream_url
                 yt_stream_links.append((yt_watch_url,data))
-                yt_cache.put("yt_stream_links",**{f"{name_of_yt_cache}":yt_stream_links})
+                user_data_helper.update_anime_trailer_cache(yt_stream_links)
             except:
                 data = preview_image,None
         return data
@@ -106,6 +101,7 @@ class MediaCardDataLoader(object):
 
         self._q_done.appendleft((yt_watch_link, data))
         self._trigger_update()
+
     def _update(self,*largs):
         if self._start_wanted:
             if not self._running:
@@ -145,33 +141,51 @@ class MediaCardDataLoader(object):
 
         media_card = MediaCard()
         media_card.anime_id = anime_item["id"]
+
+        # TODO: ADD language preference
         if anime_item["title"]["english"]:
             media_card.title =  anime_item["title"]["english"]
         else:
             media_card.title =  anime_item["title"]["romaji"]
-        # if anime_item.get("cover_image"):
+
         media_card.cover_image_url =  anime_item["coverImage"]["medium"]
+
         media_card.popularity =  str(anime_item["popularity"])
+
         media_card.favourites =  str(anime_item["favourites"])
+
         media_card.episodes =  str(anime_item["episodes"])
+
         if anime_item.get("description"):
             media_card.description =  anime_item["description"]
-        media_card.first_aired_on =  f'{anime_item["startDate"]["day"]}-{anime_item["startDate"]["month"]}-{anime_item["startDate"]["year"]}'
-        media_card.studios =  ", ".join([studio["name"] for studio in anime_item["studios"]["nodes"]])
+        else:
+            media_card.description = "None"
+
+        # TODO: switch to season and year
+        media_card.first_aired_on =  f'{anilist_data_helper.format_anilist_date_object(anime_item["startDate"])}'
+
+        # TODO: update it to separate studio and producers
+        media_card.studios =  anilist_data_helper.format_list_data_with_comma([studio["name"] for studio in anime_item["studios"]["nodes"]])
+
         if anime_item.get("tags"):
-            media_card.tags =  ", ".join([tag["name"] for tag in anime_item["tags"]])
+            media_card.tags =  anilist_data_helper.format_list_data_with_comma([tag["name"] for tag in anime_item["tags"]])
+
         media_card.media_status =  anime_item["status"]
+
         if anime_item.get("genres"):
-            media_card.genres = ",".join(anime_item["genres"])
-        # media_card.characters = 
-        if anime_item["id"] in my_list:
+            media_card.genres = anilist_data_helper.format_list_data_with_comma(anime_item["genres"])
+        
+        if anime_item["id"] in user_anime_list:
             media_card.is_in_my_list = True
+
         if anime_item["averageScore"]:
             stars = int(anime_item["averageScore"]/100*6)
             if stars:
                 for i in range(stars):
                     media_card.stars[i] = 1
 
+        # TODO: ADD a default image if trailer not available
+        # Setting up trailer info to be gotten if available
         if anime_item["trailer"]:
             yt_watch_link = "https://youtube.com/watch?v="+anime_item["trailer"]["id"]
             data = Cache.get("anime",yt_watch_link) # type: ignore # trailer_url is the yt_watch_link
@@ -220,5 +234,5 @@ class LoaderThreadPool(MediaCardDataLoader):
             self.pool.add_task(self._load, parameters)
 
 MediaCardLoader = LoaderThreadPool()
-# Logger.info('Loader: using a thread pool of {} workers'.format(
-    # Loader.num_workers))
+Logger.info('MediaCardLoader: using a thread pool of {} workers'.format(
+    MediaCardLoader.num_workers))

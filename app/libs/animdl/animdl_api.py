@@ -1,15 +1,15 @@
 import os
-from subprocess import Popen, run, PIPE
-# from difflib import SequenceMatcher
-from fuzzywuzzy import fuzz
 import time
 import json
 import re
-import requests
 import shutil
+
+from subprocess import Popen, run, PIPE
+from fuzzywuzzy import fuzz
 
 broken_link_pattern = r"https://tools.fast4speed.rsvp/\w*"
 
+# TODO: WRITE Docs for each method
 class AnimdlApi:
     @classmethod
     def run_animdl_command(cls,cmds:list,capture = True):
@@ -33,7 +33,6 @@ class AnimdlApi:
             child_process = Popen([*base_cmds,*parsed_cmds])
             return child_process
         
-
     @classmethod
     def stream_anime_by_title(cls,title,episodes_range=None):
         anime = cls.get_anime_url_by_title(title)
@@ -187,7 +186,6 @@ class AnimdlApi:
         if isfailure:
             raise Exception
                    
-
     @classmethod
     def get_anime_match(cls,anime_item,title):
         return fuzz.ratio(title,anime_item[0])

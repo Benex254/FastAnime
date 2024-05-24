@@ -9,6 +9,7 @@
 <PopupBoxLayout@MDBoxLayout>
     adaptive_height:True
 
+# TODO: subdivide each main component to its own file
 <MediaPopup>
     size_hint: None, None
     height: dp(500)
@@ -104,12 +105,15 @@
                         on_press: 
                             root.dismiss()
                             app.show_anime_screen(root.caller.anime_id)
-                    MDIconButton:
+                    TooltipMDIconButton:
+                        tooltip_text:"Add to your anime list"
                         icon: "plus-circle" if not(root.caller.is_in_my_list) else "check-circle"
                         on_release:
                             root.caller.is_in_my_list = not(root.caller.is_in_my_list)
                             self.icon = "plus-circle" if not(root.caller.is_in_my_list) else "check-circle"
-                    MDIconButton:
+                    TooltipMDIconButton:
+                        disabled:True
+                        tooltip_text:"Coming soon"
                         icon: "bell-circle" if not(root.caller.is_in_my_notify) else "bell-check"
                 PopupBoxLayout:
                     pos_hint: {'center_y': 0.5}

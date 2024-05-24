@@ -16,3 +16,8 @@
         on_press: app.watch_on_allanime(root.screen.data["title"]["romaji"])
         MDButtonText:
             text:"Watch on AllAnime"
+    MDButton:
+        on_press: 
+            if root.screen:root.screen.open_download_anime_dialog()
+        MDButtonText:
+            text:"Download Anime"

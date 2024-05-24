@@ -1,0 +1,58 @@
+<DownloadDialogLabel@MDLabel>:
+    adaptive_height:True
+    max_lines:0
+    shorten:False
+    markup:True
+    font_style: "Label"
+    role: "medium"
+    bold:True
+<DownloadDialogHeaderLabel@MDLabel>:
+    adaptive_height:True
+    halign:"center"
+    max_lines:0
+    shorten:False
+    bold:True
+    markup:True
+    font_style: "Title"
+    role: "medium"
+    md_bg_color:self.theme_cls.secondaryContainerColor
+    padding:"10dp"
+
+
+
+<DownloadAnimeDialog>
+    md_bg_color:self.theme_cls.backgroundColor
+    radius:8
+    size_hint:None,None
+    height:"500dp"
+    width:"400dp"
+    MDBoxLayout:
+        spacing: '10dp'
+        padding:"10dp"
+        orientation:"vertical"
+        DownloadDialogHeaderLabel:
+            text:"Download Anime"
+        DownloadDialogLabel:
+            text:"Title"
+        MDTextField:
+            id:title_field
+            required:True
+        DownloadDialogLabel:
+            text:"Range"
+        MDTextField:
+            id:range_field
+            required:True
+        DownloadDialogLabel:
+            text:"Quality"
+        MDTextField:
+            id:quality_field
+            required:True
+        MDBoxLayout:
+            orientation:"vertical"
+            MDButton:
+                pos_hint: {'center_x': 0.5}
+                on_press:root.download_anime(app)
+                MDButtonIcon:
+                    icon:"download"
+                MDButtonText:
+                    text:"Download"

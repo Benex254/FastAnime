@@ -46,7 +46,7 @@ class AnimdlApi:
             return streaming_child_process
 
     @classmethod
-    def download_anime_by_title(cls,title,on_episode_download_progress,on_complete,output_path=os.getcwd(),episodes_range=None,quality="best"):
+    def download_anime_by_title(cls,title,on_episode_download_progress,on_complete,output_path,episodes_range:str|None=None,quality:str="best"):
         data = cls.get_stream_urls_by_anime_title(title,episodes_range)
         if not data:
             return None,None
@@ -127,7 +127,7 @@ class AnimdlApi:
                 successful_downloads.append(episode_number)
             except:
                 failed_downloads.append(episode_number)
-        on_complete(successful_downloads,failed_downloads)
+        on_complete(successful_downloads,failed_downloads,anime_title)
 
     @classmethod
     def download_with_mpv(cls,url,output_path,on_progress):

@@ -4,9 +4,12 @@
     spacing:"10dp"
     pos_hint: {'center_x': 0.5}
     MDButton:
-        on_press: print("presed")
+        on_press:
+            root.screen.add_to_user_anime_list()
+            add_to_user_list_label.text = "Added to MyAnimeList"
         MDButtonText:
-            text:"Add to MyList"
+            id:add_to_user_list_label
+            text:"Add to MyAnimeList"
     MDButton:
         on_press: 
             if root.screen:root.screen.stream_anime_with_custom_cmds_dialog()

@@ -1,9 +1,10 @@
 from kivy.properties import ObjectProperty,StringProperty,DictProperty
+from kivy.clock import Clock
 from View.base_screen import BaseScreenView
 
 
 class MyListScreenView(BaseScreenView):
-    my_list_container = ObjectProperty()
+    user_anime_list_container = ObjectProperty()
     def model_is_changed(self) -> None:
         """
         Called whenever any change has occurred in the data model.
@@ -11,8 +12,9 @@ class MyListScreenView(BaseScreenView):
         according to these changes.
         """
     
+    def on_enter(self):
+        Clock.schedule_once(lambda _:self.controller.requested_update_my_list_screen())
    
     def update_layout(self,widget):
-        pass
-    def add_pagination(self,pagination_info):
-        pass
+        self.user_anime_list_container.add_widget(widget)
+

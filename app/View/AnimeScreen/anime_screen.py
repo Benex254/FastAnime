@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from kivy.properties import ObjectProperty,DictProperty
+from kivy.properties import ObjectProperty,DictProperty,StringProperty
 
 from Utility import anilist_data_helper
 from View.base_screen import BaseScreenView
@@ -8,6 +8,7 @@ from .components import (AnimeHeader,AnimeSideBar,AnimeDescription,AnimeReviews,
 
 
 class AnimeScreenView(BaseScreenView):
+    caller_screen_name = StringProperty()
     header:AnimeHeader = ObjectProperty()
     side_bar:AnimeSideBar = ObjectProperty()
     rankings_bar:RankingsBar = ObjectProperty()
@@ -15,8 +16,9 @@ class AnimeScreenView(BaseScreenView):
     anime_characters:AnimeCharacters = ObjectProperty()
     anime_reviews:AnimeReviews = ObjectProperty()
     data = DictProperty()
-
-    def update_layout(self,data):
+    anime_id = 0
+    def update_layout(self,data:dict,caller_screen_name:str):
+        self.caller_screen_name = caller_screen_name
         self.data = data
         # uitlity functions
         
@@ -114,3 +116,5 @@ class AnimeScreenView(BaseScreenView):
 
         DownloadAnimeDialog(self.data).open()
 
+    def add_to_user_anime_list(self,*args):
+        self.app.add_anime_to_user_anime_list(self.model.anime_id)

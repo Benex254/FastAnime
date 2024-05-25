@@ -17,7 +17,7 @@
                 MDIconButton:
                     icon: "arrow-left"
                     on_release:
-                        root.manager_screens.current = root.manager_screens.previous()
+                        root.manager_screens.current = root.caller_screen_name
         MDScrollView:
             size_hint:1,1
             MDBoxLayout:
@@ -57,4 +57,4 @@
                                 id:anime_characters
                             AnimeReviews:
                                 id:anime_reviews
-                        MDBoxLayout:
+                        BoxLayout:

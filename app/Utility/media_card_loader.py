@@ -14,13 +14,13 @@ from Utility import anilist_data_helper, user_data_helper
 
 
 # Register anime cache in memory
-Cache.register("anime")
+Cache.register("yt_stream_links.anime")
 
-user_anime_list = user_data_helper.get_user_animelist()
+user_anime_list = user_data_helper.get_user_anime_list()
 
 yt_stream_links = user_data_helper.get_anime_trailer_cache()
 for link in yt_stream_links:
-    Cache.append("anime",link[0],tuple(link[1]))
+    Cache.append("yt_stream_links.anime",link[0],tuple(link[1]))
     
 
 # for youtube video links gotten from from pytube which is blocking
@@ -72,7 +72,7 @@ class MediaCardDataLoader(object):
             self._resume_cond.release()
 
     def cached_fetch_data(self,yt_watch_url):
-        data:tuple = Cache.get("anime",yt_watch_url) # type: ignore # trailer_url is the yt_watch_link
+        data:tuple = Cache.get("yt_stream_links.anime",yt_watch_url) # type: ignore # trailer_url is the yt_watch_link
 
         if not data[0]:
             yt = YouTube(yt_watch_url)
@@ -94,10 +94,9 @@ class MediaCardDataLoader(object):
         yt_watch_link = kwargs['yt_watch_link']
         try:
             data = self.cached_fetch_data(yt_watch_link)
-            print("Update: ",data)
         except Exception as e:
             data = None
-            print(f"Not accesible:{e} ")
+            Logger.error("Pytube:{e}")
 
         self._q_done.appendleft((yt_watch_link, data))
         self._trigger_update()
@@ -118,20 +117,18 @@ class MediaCardDataLoader(object):
                 yt_watch_link, data= self._q_done.pop()
             except IndexError:
                 return
-                    # update client
+            # update client
             for c_yt_watch_link, client in self._client[:]:
                 if yt_watch_link != c_yt_watch_link:
                     continue
 
                 # got one client to update
                 if data:
-                    # client.set_preview_image(data[0])
                     trailer_url = data[1]
-                    print(trailer_url,"-----------------")
                     if trailer_url:
                         client.set_trailer_url(trailer_url)
-                        print(client.title,self._running)
-                        Cache.append("anime",yt_watch_link,data)
+                        Logger.info(f"Pytube:Found trailer url for {client.title}")
+                        Cache.append("yt_stream_links.anime",yt_watch_link,data)
                 self._client.remove((c_yt_watch_link, client))
                     
         self._trigger_update()
@@ -140,10 +137,10 @@ class MediaCardDataLoader(object):
               **kwargs):
 
         media_card = MediaCard()
-        media_card.anime_id = anime_item["id"]
+        media_card.anime_id = anime_id = anime_item["id"]
 
         # TODO: ADD language preference
-        if anime_item["title"]["english"]:
+        if anime_item["title"].get("english"):
             media_card.title =  anime_item["title"]["english"]
         else:
             media_card.title =  anime_item["title"]["romaji"]
@@ -175,7 +172,7 @@ class MediaCardDataLoader(object):
         if anime_item.get("genres"):
             media_card.genres = anilist_data_helper.format_list_data_with_comma(anime_item["genres"])
         
-        if anime_item["id"] in user_anime_list:
+        if anime_id in user_anime_list:
             media_card.is_in_my_list = True
 
         if anime_item["averageScore"]:
@@ -188,7 +185,7 @@ class MediaCardDataLoader(object):
         # Setting up trailer info to be gotten if available
         if anime_item["trailer"]:
             yt_watch_link = "https://youtube.com/watch?v="+anime_item["trailer"]["id"]
-            data = Cache.get("anime",yt_watch_link) # type: ignore # trailer_url is the yt_watch_link
+            data = Cache.get("yt_stream_links.anime",yt_watch_link) # type: ignore # trailer_url is the yt_watch_link
             if data:
                 if data[1] not in (None,False): 
                     media_card.set_preview_image(data[0])
@@ -204,7 +201,7 @@ class MediaCardDataLoader(object):
                     'current_anime':anime_item["id"],
                     'kwargs': kwargs})
                 if not kwargs.get('nocache', False):
-                    Cache.append('anime',yt_watch_link, (False,False))
+                    Cache.append('yt_stream_links.anime',yt_watch_link, (False,False))
                 self._start_wanted = True
                 self._trigger_update()
         return media_card
@@ -235,4 +232,4 @@ class LoaderThreadPool(MediaCardDataLoader):
 
 MediaCardLoader = LoaderThreadPool()
 Logger.info('MediaCardLoader: using a thread pool of {} workers'.format(
-    MediaCardLoader.num_workers))
+    MediaCardLoader._num_workers))

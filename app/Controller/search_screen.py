@@ -1,17 +1,21 @@
-
 from inspect import isgenerator
-from Utility import show_notification
+
+from kivy.clock import Clock
+from kivy.logger import Logger
+
 from View import SearchScreenView
 from Model import SearchScreenModel
-from kivy.clock import Clock
+from Utility import show_notification
 
 class SearchScreenController:
 
     def __init__(self, model:SearchScreenModel):
         self.model = model  # Model.main_screen.MainScreenModel
         self.view = SearchScreenView(controller=self, model=self.model)
+
     def get_view(self) -> SearchScreenView:
         return self.view
+    
     def update_trending_anime(self):
         trending_cards_generator = self.model.get_trending_anime()
         if isgenerator(trending_cards_generator):
@@ -21,6 +25,7 @@ class SearchScreenController:
                 card.pos_hint =  {'center_x': 0.5}
                 self.view.update_trending_sidebar(card)
         else:
+            Logger.error("Home Screen:Failed to load trending anime")
             self.populate_errors.append("trending Anime")
 
     def requested_search_for_anime(self,anime_title,**kwargs):
@@ -33,5 +38,6 @@ class SearchScreenController:
             Clock.schedule_once(lambda _:self.view.update_pagination(self.model.pagination_info))
             Clock.schedule_once(lambda _:self.update_trending_anime())
         else:
+            Logger.error(f"Home Screen:Failed to search for {anime_title}")
             show_notification("Failed to search",f"{search_Results.get('Error')}")
         self.view.is_searching = False

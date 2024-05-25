@@ -1,6 +1,7 @@
 optional_variables = "\
 $page:Int,\
 $sort:[MediaSort],\
+$id_in:[Int],\
 $genre_in:[String],\
 $genre_not_in:[String],\
 $tag_in:[String],\
@@ -29,6 +30,7 @@ query($query:String,%s){
     }
     media(
       search:$query,
+      id_in:$id_in,
       genre_in:$genre_in,
       genre_not_in:$genre_not_in,
       tag_in:$tag_in,

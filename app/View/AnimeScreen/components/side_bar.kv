@@ -16,17 +16,19 @@
     markup:True
     font_style: "Label"
     role: "medium"
-    # pos_hint: {'center_x': 0.5}
-<SideBarHeaderLabel>:
+<HeaderLabel>:
     adaptive_height:True
-    halign:"center"
-    max_lines:0
-    shorten:False
-    bold:True
-    font_style: "Label"
-    role: "large"
     md_bg_color:self.theme_cls.secondaryContainerColor
-    padding:"10dp"
+    MDLabel:
+        text:root.text
+        adaptive_height:True
+        halign:root.halign
+        max_lines:0
+        shorten:False
+        bold:True
+        font_style: "Label"
+        role: "large"
+        padding:"10dp"
 
 <AnimeSideBar>:
     size_hint_x: None
@@ -51,7 +53,7 @@
             MDButtonText:
                 text:"Watch on Animdl"
     FitBoxLayout:
-        SideBarHeaderLabel:
+        HeaderLabel:
             text:"Alternative Titles"
         SideBarLabel:
             text: "[color={}]Synonyms:[/color] {}".format(get_hex_from_color(self.theme_cls.primaryColor),root.alternative_titles["synonyms"])
@@ -60,7 +62,7 @@
         SideBarLabel:
             text: "[color={}]Japanese:[/color] {}".format(get_hex_from_color(self.theme_cls.primaryColor),root.alternative_titles["japanese"])
     FitBoxLayout:
-        SideBarHeaderLabel:
+        HeaderLabel:
             text:"Information"
         SideBarLabel:
             text: "[color={}]Episodes:[/color] {}".format(get_hex_from_color(self.theme_cls.primaryColor),root.information["episodes"])
@@ -87,17 +89,17 @@
         SideBarLabel:
             text: "[color={}]Genres:[/color] {}".format(get_hex_from_color(self.theme_cls.primaryColor),root.information["genres"])
         SideBarLabel:
-            text: "[color={}]Duration:[/color] {}".format(get_hex_from_color(self.theme_cls.primaryColor),root.information["duration"])
+            text: "[color={}]Duration:[/color] {} minutes".format(get_hex_from_color(self.theme_cls.primaryColor),root.information["duration"])
     FitBoxLayout:
         id:statistics_container
-        SideBarHeaderLabel:
+        HeaderLabel:
             text:"Rankings"
     FitBoxLayout:
         id:tags_container
-        SideBarHeaderLabel:
+        HeaderLabel:
             text:"Tags"
     FitBoxLayout:
         id:external_links_container
-        SideBarHeaderLabel:
+        HeaderLabel:
             text:"External Links"
     BoxLayout:

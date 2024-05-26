@@ -2,16 +2,18 @@
     adaptive_height:True
     orientation: 'vertical'
     # padding:"10dp"
-    MDLabel:
-        text: root.titles
+    MDBoxLayout:
         adaptive_height:True
         md_bg_color:self.theme_cls.secondaryContainerColor
-        padding:"5dp"
-        bold:True
-        shorten:False
-        max_lines:2
-        font_style:"Label"
-        role:"large"
+        MDLabel:
+            text: root.titles
+            adaptive_height:True
+            padding:"5dp"
+            bold:True
+            shorten:False
+            max_lines:2
+            font_style:"Label"
+            role:"large"
     FitImage:
         size_hint_y: None
         height: dp(250)

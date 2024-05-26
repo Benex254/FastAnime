@@ -1,16 +1,5 @@
 #:import get_hex_from_color kivy.utils.get_hex_from_color
 
-<ReviewHeaderText@MDLabel>    
-    adaptive_height:True
-    # halign:"center"
-    max_lines:0
-    shorten:False
-    md_bg_color:self.theme_cls.secondaryContainerColor
-    bold:True
-    markup:True
-    font_style: "Body"
-    role: "large"
-    padding:"10dp"
 
 <ReviewContainer@MDBoxLayout>:
     adaptive_height:True
@@ -54,7 +43,8 @@
     container:container
     adaptive_height:True
     orientation:"vertical"
-    ReviewHeaderText:
+    HeaderLabel:
+        halign:"left"
         text:"reviews"
     ReviewContainer:
         id:container

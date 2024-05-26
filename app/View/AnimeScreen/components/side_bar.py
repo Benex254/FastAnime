@@ -1,13 +1,16 @@
 from kivy.properties import ObjectProperty,StringProperty,DictProperty,ListProperty
 from kivy.utils import get_hex_from_color
+from kivy.factory import Factory
 
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.label import MDLabel
 
-class SideBarHeaderLabel(MDLabel):
-    pass
 
+class HeaderLabel(MDBoxLayout):
+    text = StringProperty()
+    halign = StringProperty("center")
 
+Factory.register("HeaderLabel", HeaderLabel)
 class SideBarLabel(MDLabel):
     pass
 
@@ -44,7 +47,7 @@ class AnimeSideBar(MDBoxLayout):
 
     def on_statistics(self,instance,value):
         self.statistics_container.clear_widgets()
-        header = SideBarHeaderLabel()
+        header = HeaderLabel()
         header.text = "Rankings"
         self.statistics_container.add_widget(header)
         for stat in value:
@@ -58,7 +61,7 @@ class AnimeSideBar(MDBoxLayout):
 
     def on_tags(self,instance,value):
         self.tags_container.clear_widgets()
-        header = SideBarHeaderLabel()
+        header = HeaderLabel()
         header.text = "Tags"
         self.tags_container.add_widget(header)
         for tag in value:
@@ -72,7 +75,7 @@ class AnimeSideBar(MDBoxLayout):
 
     def on_external_links(self,instance,value):
         self.external_links_container.clear_widgets()
-        header = SideBarHeaderLabel()
+        header = HeaderLabel()
         header.text = "External Links"
         self.external_links_container.add_widget(header)
         for site in value:

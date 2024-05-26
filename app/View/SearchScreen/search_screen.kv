@@ -32,7 +32,7 @@
                                 MDBoxLayout:
                                     orientation: 'vertical'
                                     size_hint_y:None
-                                    height:self.minimum_height
+                                    height:max(self.parent.parent.height,self.minimum_height)
                                     MDGridLayout:
                                         pos_hint: {'center_x': 0.5}
                                         id:search_results_container
@@ -40,7 +40,7 @@
                                         padding: "75dp","50dp","75dp","200dp"
                                         cols:5
                                         size_hint_y:None
-                                        height:self.minimum_height
+                                        height:max(self.parent.parent.height,self.minimum_height)
                                     SearchResultsPagination:
                                         id:search_results_pagination
                                         search_view:root
@@ -49,17 +49,10 @@
                         size_hint_y:1
                         size_hint_x:None
                         width: dp(250)
-                        MDLabel:
+                        HeaderLabel:
                             text:"Trending"
-                            adaptive_height:True
-                            halign:"center"
-                            max_lines:0
-                            # md_bg_color:Stat
-                            shorten:False
-                            bold:True
-                            font_style: "Label"
-                            role: "large"
-                            padding:"10dp"
                         MDScrollView:
                             TrendingAnimeSideBar:
                                 id:trending_anime_sidebar
+                                height:max(self.parent.parent.height,self.minimum_height)
+

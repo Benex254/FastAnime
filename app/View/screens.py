@@ -1,5 +1,21 @@
-from Controller import (SearchScreenController,HomeScreenController,MyListScreenController,AnimeScreenController,DownloadsScreenController,HelpScreenController,CrashLogScreenController)
-from Model import (HomeScreenModel,SearchScreenModel,MyListScreenModel,AnimeScreenModel,DownloadsScreenModel,HelpScreenModel,CrashLogScreenModel)
+from Controller import (
+    SearchScreenController,
+    HomeScreenController,
+    MyListScreenController,
+    AnimeScreenController,
+    DownloadsScreenController,
+    HelpScreenController,
+    CrashLogScreenController,
+)
+from Model import (
+    HomeScreenModel,
+    SearchScreenModel,
+    MyListScreenModel,
+    AnimeScreenModel,
+    DownloadsScreenModel,
+    HelpScreenModel,
+    CrashLogScreenModel,
+)
 
 
 screens = {

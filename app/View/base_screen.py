@@ -1,29 +1,28 @@
-from kivy.properties import ObjectProperty,StringProperty
+from kivy.properties import ObjectProperty, StringProperty
 
 from kivymd.app import MDApp
 from kivymd.uix.screen import MDScreen
 from kivymd.uix.navigationrail import MDNavigationRail
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.button import MDIconButton
-from kivymd.uix.tooltip import MDTooltip 
+from kivymd.uix.tooltip import MDTooltip
 
 from Utility.observer import Observer
 
 
-
 class NavRail(MDNavigationRail):
-    screen=ObjectProperty()
+    screen = ObjectProperty()
 
 
 class SearchBar(MDBoxLayout):
-    screen=ObjectProperty()
+    screen = ObjectProperty()
 
 
 class Tooltip(MDTooltip):
     pass
 
 
-class TooltipMDIconButton(Tooltip,MDIconButton):
+class TooltipMDIconButton(Tooltip, MDIconButton):
     tooltip_text = StringProperty()
 
 
@@ -61,6 +60,8 @@ class BaseScreenView(MDScreen, Observer):
         super().__init__(**kw)
         # Often you need to get access to the application object from the view
         # class. You can do this using this attribute.
-        self.app = MDApp.get_running_app()
+        from main import AniXStreamApp
+
+        self.app: AniXStreamApp = MDApp.get_running_app()  # type: ignore
         # Adding a view class as observer.
         self.model.add_observer(self)

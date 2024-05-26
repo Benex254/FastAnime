@@ -148,19 +148,19 @@
                 orientation:"vertical"
                 SingleLineLabel:
                     font_style:"Label"
+                    markup:True
+                    role:"small"
+                    text: f"[color={get_hex_from_color(self.theme_cls.primaryColor)}]"+"Next Airing Episode: "+"[/color]"+root.caller.next_airing_episode
+                SingleLineLabel:
+                    font_style:"Label"
                     role:"small"
                     markup:True
-                    text: f"[color={get_hex_from_color(self.theme_cls.primaryColor)}]"+"Author: "+"[/color]"+root.caller.author
+                    text: f"[color={get_hex_from_color(self.theme_cls.primaryColor)}]"+"Studios: " + "[/color]"+root.caller.studios
                 SingleLineLabel:
                     font_style:"Label"
                     markup:True
                     role:"small"
-                    text: f"[color={get_hex_from_color(self.theme_cls.primaryColor)}]"+"Studios: "+"[/color]"+root.caller.studios
-                SingleLineLabel:
-                    font_style:"Label"
-                    markup:True
-                    role:"small"
-                    text: f"[color={get_hex_from_color(self.theme_cls.primaryColor)}]"+"Characters: "+"[/color]"+root.caller.characters
+                    text: f"[color={get_hex_from_color(self.theme_cls.primaryColor)}]"+"Producers: " + "[/color]"+root.caller.producers
                 SingleLineLabel:
                     font_style:"Label"
                     markup:True

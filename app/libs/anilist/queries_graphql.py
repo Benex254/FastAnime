@@ -1,3 +1,8 @@
+"""
+This module contains all the preset queries for the sake of neatness and convinience
+Mostly for internal usage
+"""
+
 optional_variables = "\
 $page:Int,\
 $sort:[MediaSort],\
@@ -20,7 +25,8 @@ $endDate_lesser:FuzzyDateInt\
 "
 # FuzzyDateInt = (yyyymmdd)
 # MediaStatus = (FINISHED,RELEASING,NOT_YET_RELEASED,CANCELLED,HIATUS)
-search_query = """
+search_query = (
+    """
 query($query:String,%s){
   Page(perPage:30,page:$page){
     pageInfo{
@@ -71,7 +77,7 @@ query($query:String,%s){
       studios{
         nodes{
           name
-          favourites
+          isAnimationStudio
         }
       }
       tags {
@@ -97,13 +103,15 @@ query($query:String,%s){
     }
   }
 }
-""" % optional_variables
+"""
+    % optional_variables
+)
 
 trending_query = """
 query{  
   Page(perPage:15){
     
-    media(sort:TRENDING_DESC,type:ANIME){
+    media(sort:TRENDING_DESC,type:ANIME,genre_not_in:["hentai"]){
       id
       title{
         romaji
@@ -125,7 +133,7 @@ query{
       studios {
         nodes {
           name
-          favourites
+          isAnimationStudio
         }
       }
       tags {
@@ -156,7 +164,7 @@ query{
 most_favourite_query = """
 query{
   Page(perPage:15){    
-    media(sort:FAVOURITES_DESC,type:ANIME){
+    media(sort:FAVOURITES_DESC,type:ANIME,genre_not_in:["hentai"]){
       id
       title{
         romaji
@@ -179,7 +187,7 @@ query{
       studios {
         nodes {
           name
-          favourites
+          isAnimationStudio
         }
       }
       tags {
@@ -209,7 +217,7 @@ query{
 most_scored_query = """
 query{
   Page(perPage:15){
-    media(sort:SCORE_DESC,type:ANIME){
+    media(sort:SCORE_DESC,type:ANIME,genre_not_in:["hentai"]){
       id
       title{
         romaji
@@ -232,7 +240,7 @@ query{
       studios {
         nodes {
           name
-          favourites
+          isAnimationStudio
         }
       }
       tags {
@@ -262,7 +270,7 @@ query{
 most_popular_query = """
 query{  
   Page(perPage:15){
-    media(sort:POPULARITY_DESC,type:ANIME){
+    media(sort:POPULARITY_DESC,type:ANIME,genre_not_in:["hentai"]){
       id
       title{
         romaji
@@ -285,7 +293,7 @@ query{
       studios {
         nodes {
           name
-          favourites
+          isAnimationStudio
         }
       }
       tags {
@@ -314,7 +322,7 @@ query{
 
 most_recently_updated_query = """
 query{
-  Page(perPage:15){
+  Page(perPage:15,genre_not_in:["hentai"]){
     media(sort:UPDATED_AT_DESC,type:ANIME,averageScore_greater:50){
       id
       title{
@@ -337,7 +345,7 @@ query{
       studios {
         nodes {
           name
-          favourites
+          isAnimationStudio
         }
       }
       tags {
@@ -367,7 +375,7 @@ query{
 recommended_query = """
 query  {
   Page(perPage:15) {
-    media( type: ANIME) {
+    media( type: ANIME,genre_not_in:["hentai"]) {
       recommendations(sort:RATING_DESC){
         nodes{
           media{
@@ -455,7 +463,7 @@ query($id:Int){
 anime_relations_query = """
 query ($id: Int) {
   Page(perPage: 20) {
-    media(id: $id, sort: POPULARITY_DESC, type: ANIME) {
+    media(id: $id, sort: POPULARITY_DESC, type: ANIME,genre_not_in:["hentai"]) {
       relations {
         nodes {
           id
@@ -529,7 +537,7 @@ query ($page: Int) {
       currentPage
       hasNextPage
     }
-    media(type: ANIME, status: NOT_YET_RELEASED,sort:POPULARITY_DESC) {
+    media(type: ANIME, status: NOT_YET_RELEASED,sort:POPULARITY_DESC,genre_not_in:["hentai"]) {
       id
       title {
         romaji
@@ -551,7 +559,7 @@ query ($page: Int) {
       studios {
         nodes {
           name
-          favourites
+          isAnimationStudio
         }
       }
       tags {

@@ -16,7 +16,7 @@ from kivy.config import Config
 
 from  kivy.loader import Loader
 Loader.num_workers = 5
-Loader.max_upload_per_frame = 5
+Loader.max_upload_per_frame = 10
 
 from kivy.clock import Clock
 from kivy.logger import Logger
@@ -39,6 +39,7 @@ if not (user_data_helper.user_data.exists("user_anime_list")):
 if not (user_data_helper.yt_cache.exists("yt_stream_links")):
     user_data_helper.update_anime_trailer_cache([])
 
+# TODO: Confirm data integrity from user_data and yt_cache
 
 # TODO: Arrange the app methods
 class AniXStreamApp(MDApp):

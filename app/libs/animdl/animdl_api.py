@@ -27,7 +27,7 @@ class AnimdlApi:
         """
         Runs an AnimDl custom command with the full power of animdl and returns a subprocess(popen) for full control
         """
-
+# Todo: add a parserr function 
         # TODO: parse the commands
         parsed_cmds = list(cmds)
 
@@ -44,6 +44,7 @@ class AnimdlApi:
         anime = cls.get_anime_url_by_title(title)
         if not anime:
             return None
+# Todo: shift to run custom animdl cmd
         if py_path:=shutil.which("python"): 
             base_cmds = [py_path,"-m", "animdl","stream",anime[1]]   
             cmd = [*base_cmds,"-r",episodes_range] if episodes_range else base_cmds
@@ -52,6 +53,7 @@ class AnimdlApi:
 
     @classmethod
     def download_anime_by_title(cls,title,on_episode_download_progress,on_complete,output_path,episodes_range:str|None=None,quality:str="best"):
+# TODO: add on download episode complete 
         data = cls.get_stream_urls_by_anime_title(title,episodes_range)
         if not data:
             return None,None
@@ -70,7 +72,7 @@ class AnimdlApi:
         download_location = os.path.join(output_path,parsed_anime_title)
         if not os.path.exists(download_location):
             os.mkdir(download_location)
-
+# TODO: use a generator that gives already filtered by quality streams
         for episode in episodes_to_download:
             episode_number = episode["episode"]
             episode_title = f"Episode {episode_number}"
@@ -78,6 +80,7 @@ class AnimdlApi:
                 streams = episode["streams"]
 
                 # remove the brocken streams
+# TODO: make the filter broken streams a global internal method
                 filter_broken_stream = lambda stream: True if not re.match(broken_link_pattern,stream.get("stream_url")) else False
                 streams = list(filter(filter_broken_stream,streams))
 
@@ -201,11 +204,13 @@ class AnimdlApi:
     
     @classmethod
     def get_anime_url_by_title(cls,title:str):
+# TODO: rename to animdl anime url
         result = cls.run_animdl_command(["search",title])
         possible_animes = cls.output_parser(result)
         if possible_animes:
             anime = max(possible_animes.items(),key=lambda anime_item:cls.get_anime_match(anime_item,title))
             return anime # ("title","anime url")
+# TODO: make it raise animdl anime url not found exception
         return None
     
     @classmethod
@@ -223,9 +228,10 @@ class AnimdlApi:
     def get_stream_urls_by_anime_title(cls,title:str,episodes_range=None):
         anime = cls.get_anime_url_by_title(title)
         if not anime:
+# TODO: raise nostreams exception 
             return None            
         return anime[0],cls.get_stream_urls_by_anime_url(anime[1],episodes_range)
-
+# MOVE ANIMDL DATA PARSERS TO ANOTHER FILE
     @classmethod
     def contains_only_spaces(cls,input_string):
         return all(char.isspace() for char in input_string)
@@ -259,8 +265,8 @@ class AnimdlApi:
             except:
                 pass
         return parsed_data
-
-
+# TODO: ADD RUN_MPV_COMMAND = RAISES MPV NOT FOR ND EXCEPTION 
+# TODO: ADD STREAM WITH MPV
 if __name__ == "__main__":
     # for anime_title,url in AnimdlApi.get_anime_url_by_title("jujutsu").items():
     start = time.time()

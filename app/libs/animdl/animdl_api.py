@@ -3,288 +3,459 @@ import time
 import json
 import re
 import shutil
+from subprocess import Popen, run, PIPE, CompletedProcess
+from typing import Callable
 
-from subprocess import Popen, run, PIPE
-from fuzzywuzzy import fuzz
+
+from .extras import Logger
+from .animdl_data_helper import (
+    filter_broken_streams,
+    filter_streams_by_quality,
+    path_parser,
+    search_output_parser,
+    anime_title_percentage_match,
+    parse_stream_urls_data,
+)
+from .animdl_exceptions import (
+    AnimdlAnimeUrlNotFoundException,
+    InvalidAnimdlCommandsException,
+    MPVNotFoundException,
+    NoValidAnimeStreamsException,
+    Python310NotFoundException,
+)
+from .animdl_types import AnimdlAnimeUrlAndTitle, AnimdlData
+
 
 broken_link_pattern = r"https://tools.fast4speed.rsvp/\w*"
 
-def path_parser(path:str)->str:
-    return path.replace(":","").replace("/", "").replace("\\","").replace("\"","").replace("'","").replace("<","").replace(">","").replace("|","").replace("?","").replace(".","").replace("*","")
+
+def run_mpv_command(*cmds) -> Popen:
+    if mpv := shutil.which("mpv"):
+        Logger.info({"Animdl Api: Started mpv command"})
+        child_process = Popen(
+            [mpv, *cmds],
+            stderr=PIPE,
+            text=True,
+            stdout=PIPE,
+        )
+        return child_process
+    else:
+        raise MPVNotFoundException("MPV is required to be on path for this to work")
+
 
 # TODO: WRITE Docs for each method
 class AnimdlApi:
     @classmethod
-    def run_animdl_command(cls,cmds:list,capture = True):
-        if py_path:=shutil.which("python"):    
+    def _run_animdl_command(cls, cmds: list[str], capture=True) -> CompletedProcess:
+        """The core abstraction over the animdl cli that executes valid animdl commands
+
+        Args:
+            cmds (list): a list of valid animdl commands and options
+            capture (bool, optional): whether to capture the command output or not. Defaults to True.
+
+        Raises:
+            Python310NotFoundException: An exception raised when the machine doesn't have python 3.10 in path which is required by animdls dependencies
+
+        Returns:
+            CompletedProcess: the completed animdl process
+        """
+        if py_path := shutil.which("python"):
+            Logger.info("Animdl Api: Started Animdl command")
             if capture:
-                return run([py_path,"-m", "animdl", *cmds],capture_output=True,stdin=PIPE,text=True)
+                return run(
+                    [py_path, "-m", "animdl", *cmds],
+                    capture_output=True,
+                    stdin=PIPE,
+                    text=True,
+                )
             else:
-                return run([py_path,"-m", "animdl", *cmds])
+                return run([py_path, "-m", "animdl", *cmds])
+        else:
+            raise Python310NotFoundException(
+                "Python 3.10 is required to be in path for this to work"
+            )
 
     @classmethod
-    def run_custom_command(cls,cmds:list[str])->Popen|None:
+    def _run_animdl_command_and_get_subprocess(cls, cmds: list[str]) -> Popen:
+        """An abstraction over animdl cli but offers more control as compered to  _run_animdl_command
+
+        Args:
+            cmds (list[str]): valid animdl commands and options
+
+        Raises:
+            Python310NotFoundException: An exception raised when the machine doesn't have python 3.10 in path which is required by animdls dependencies
+
+        Returns:
+            Popen: returns a subprocess in order to offer more control
         """
-        Runs an AnimDl custom command with the full power of animdl and returns a subprocess(popen) for full control
-        """
-# Todo: add a parserr function 
+
         # TODO: parse the commands
         parsed_cmds = list(cmds)
 
-        if py_path:=shutil.which("python"): 
-            base_cmds = [py_path,"-m","animdl"]
-            cmds_ = [*base_cmds,*parsed_cmds]
+        if py_path := shutil.which("python"):
+            Logger.info("Animdl Api: Started Animdl command")
+            base_cmds = [py_path, "-m", "animdl"]
+            cmds_ = [*base_cmds, *parsed_cmds]
             child_process = Popen(cmds_)
             return child_process
         else:
-            return None
-        
-    @classmethod
-    def stream_anime_by_title(cls,title,episodes_range=None)->Popen|None:
-        anime = cls.get_anime_url_by_title(title)
-        if not anime:
-            return None
-# Todo: shift to run custom animdl cmd
-        if py_path:=shutil.which("python"): 
-            base_cmds = [py_path,"-m", "animdl","stream",anime[1]]   
-            cmd = [*base_cmds,"-r",episodes_range] if episodes_range else base_cmds
-            streaming_child_process = Popen(cmd)
-            return streaming_child_process
+            raise Python310NotFoundException(
+                "Python 3.10 is required to be in path for this to work"
+            )
 
     @classmethod
-    def download_anime_by_title(cls,title,on_episode_download_progress,on_complete,output_path,episodes_range:str|None=None,quality:str="best"):
-# TODO: add on download episode complete 
-        data = cls.get_stream_urls_by_anime_title(title,episodes_range)
-        if not data:
-            return None,None
+    def get_anime_url_by_title(
+        cls, actual_user_requested_title: str
+    ) -> AnimdlAnimeUrlAndTitle:
+        """Searches for the title using animdl and gets the animdl anime url associated with a particular title which is used by animdl for scraping
+
+        Args:
+            actual_user_requested_title (str): any anime title the user wants
+
+        Raises:
+            AnimdlAnimeUrlNotFoundException: raised if no anime title is found
+
+        Returns:
+            AnimdlAnimeTitleAndUrl: The animdl anime url and title for the most likely one the user wants.NOTE: not always correct
+        """
+        result = cls._run_animdl_command(["search", actual_user_requested_title])
+        possible_animes = search_output_parser(result.stderr)
+        if possible_animes:
+            most_likely_anime_url_and_title = max(
+                possible_animes,
+                key=lambda possible_data: anime_title_percentage_match(
+                    possible_data.anime_title, actual_user_requested_title
+                ),
+            )
+            return most_likely_anime_url_and_title  # ("title","anime url")
+        else:
+            raise AnimdlAnimeUrlNotFoundException
+
+    @classmethod
+    def stream_anime_by_title_on_animdl(
+        cls, title, episodes_range=None, quality: str = "best"
+    ) -> Popen:
+        anime = cls.get_anime_url_by_title(title)
+
+        base_cmds = ["stream", anime[1], "-q", quality]
+        cmd = [*base_cmds, "-r", episodes_range] if episodes_range else base_cmds
+        return cls._run_animdl_command_and_get_subprocess(cmd)
+
+    @classmethod
+    def stream_anime_with_mpv(
+        cls, title: str, episodes_range: str | None = None, quality: str = "best"
+    ):
+        anime_data = cls.get_all_stream_urls_by_anime_title(title, episodes_range)
+        stream = []
+        for episode in anime_data.episodes:
+            if streams := filter_broken_streams(episode["streams"]):
+                stream = filter_streams_by_quality(streams, quality)
+
+                episode_title = str(episode["episode"])
+                if e_title := stream.get("title"):
+                    episode_title = f"{episode_title}-{e_title}"
+
+                window_title = (
+                    f"{anime_data.anime_title} episode {episode_title}".title()
+                )
+
+                cmds = [stream["stream_url"], f"--title={window_title}"]
+                if audio_tracks := stream.get("audio_tracks"):
+                    tracks = ";".join(audio_tracks)
+                    cmds = [*cmds, f"--audio-files={tracks}"]
+
+                if subtitles := stream.get("subtitle"):
+                    subs = ";".join(subtitles)
+                    cmds = [*cmds, f"--sub-files={subs}"]
+
+                Logger.info(
+                    f"Animdl Api Mpv Streamer: Starting to stream on mpv with commands: {cmds}"
+                )
+                yield run_mpv_command(*cmds)
+                Logger.info(
+                    f"Animdl Api Mpv Streamer: Finished to stream episode {episode['episode']} on mpv"
+                )
+            else:
+                Logger.info(
+                    f"Animdl Api Mpv Streamer: Failed to stream episode {episode['episode']} no valid streams"
+                )
+        else:
+            Logger.info(
+                f"Animdl Api Mpv Streamer: Failed to stream {title} no valid streams found for alll episdes"
+            )
+
+    @classmethod
+    def get_all_anime_stream_urls_by_anime_url(
+        cls, anime_url: str, episodes_range=None
+    ):
+        cmd = (
+            ["grab", anime_url, "-r", episodes_range]
+            if episodes_range
+            else ["grab", anime_url]
+        )
+        result = cls._run_animdl_command(cmd)
+        return parse_stream_urls_data(result.stdout)  # type: ignore
+
+    @classmethod
+    def get_all_stream_urls_by_anime_title(
+        cls, title: str, episodes_range: str | None = None
+    ) -> AnimdlData:
+        """retrieves all anime stream urls of the given episode range from animdl
+
+        Args:
+            title (str): the anime title
+            episodes_range (str, optional): an animdl episodes range. Defaults to None.
+
+        Returns:
+            _type_: _description_
+        """
+        possible_anime = cls.get_anime_url_by_title(title)
+        return AnimdlData(
+            possible_anime.anime_title,
+            cls.get_all_anime_stream_urls_by_anime_url(
+                possible_anime.animdl_anime_url, episodes_range
+            ),
+        )
+
+    # TODO: Should i finish??
+    @classmethod
+    def get_stream_urls_by_anime_title_and_quality(
+        cls, title: str, quality="best", episodes_range=None
+    ):
+        (cls.get_all_stream_urls_by_anime_title(title))
+
+    @classmethod
+    def download_anime_by_title(
+        cls,
+        _anime_title: str,
+        on_episode_download_progress: Callable,
+        on_episode_download_complete: Callable,
+        on_complete: Callable,
+        output_path: str,
+        episodes_range: str | None = None,
+        quality: str = "best",
+    ) -> tuple[list[int], list[int]]:
+
+        anime_streams_data = cls.get_all_stream_urls_by_anime_title(
+            _anime_title, episodes_range
+        )
+
         failed_downloads = []
         successful_downloads = []
-        anime_title,episodes_to_download = data
-        anime_title:str = anime_title.capitalize()
-        
-        if not episodes_to_download:
-            return False,None
-        
-        # determine download location
 
+        anime_title = anime_streams_data.anime_title.capitalize()
+
+        # determine and parse download location
         parsed_anime_title = path_parser(anime_title)
+        download_location = os.path.join(output_path, parsed_anime_title)
 
-        download_location = os.path.join(output_path,parsed_anime_title)
         if not os.path.exists(download_location):
             os.mkdir(download_location)
-# TODO: use a generator that gives already filtered by quality streams
-        for episode in episodes_to_download:
+
+        Logger.info(f"Animdl Api Downloader: Started downloading: {anime_title}")
+        for episode in anime_streams_data.episodes:
             episode_number = episode["episode"]
             episode_title = f"Episode {episode_number}"
             try:
-                streams = episode["streams"]
+                streams = filter_broken_streams(episode["streams"])
 
-                # remove the brocken streams
-# TODO: make the filter broken streams a global internal method
-                filter_broken_stream = lambda stream: True if not re.match(broken_link_pattern,stream.get("stream_url")) else False
-                streams = list(filter(filter_broken_stream,streams))
+                # raises an exception if no streams for current episodes
+                episode_stream = filter_streams_by_quality(streams, quality)
 
-                # get the appropriate stream or default to best
-                get_quality_func = lambda stream_: stream_.get("quality") if stream_.get("quality") else 0
-                quality_args = quality.split("/")
-                if quality_args[0] == "best":
-                    stream=max(streams,key=get_quality_func)
-                elif quality_args[0] == "worst":
-                    stream=min(streams,key=get_quality_func)
-                else:
-                    success = False
-                    try:
-                        for stream_ in streams:
-                            if str(stream_.get("quality")) == quality_args[0]:
-                                if stream_url_:=stream.get("stream_url"):
-                                    stream = stream_url_
-                                    success=True  
-                                    break
-                        if not success:
-                            if quality_args[1] == "worst":
-                                stream=min(streams,key=get_quality_func)
-                            else:
-                                stream=max(streams,key=get_quality_func)
-                    except Exception as e:
-                        stream=max(streams,key=get_quality_func)
-                        
                 # determine episode_title
-                if title:=stream.get("title"):
-                    episode_title = f"{episode_title} - {path_parser(title)}"
-                    
-                parsed_episode_title = episode_title.replace(":","").replace("/", "").replace("\\","")
-                episode_download_location = os.path.join(download_location,parsed_episode_title)
+                if _episode_title := episode_stream.get("title"):
+                    episode_title = f"{episode_title} - {path_parser(_episode_title)}"
+
+                # determine episode download location
+                parsed_episode_title = path_parser(episode_title)
+                episode_download_location = os.path.join(
+                    download_location, parsed_episode_title
+                )
                 if not os.path.exists(episode_download_location):
                     os.mkdir(episode_download_location)
 
-                stream_url = stream.get("stream_url")
-                audio_tracks = stream.get("audio_tracks")
-                subtitles = stream.get("subtitle")
+                # init download process
+                stream_url = episode_stream["stream_url"]
+                audio_tracks = episode_stream.get("audio_tracks")
+                subtitles = episode_stream.get("subtitle")
 
                 episode_info = {
-                    "episode":parsed_episode_title,
-                    "anime_title": anime_title
+                    "episode": episode_title,
+                    "anime_title": anime_title,
                 }
 
                 # check if its adaptive or progressive and call the appropriate downloader
                 if stream_url and subtitles and audio_tracks:
-                    cls.download_adaptive(stream_url,audio_tracks[0],subtitles[0],episode_download_location,on_episode_download_progress,episode_info)
+                    Logger.info(
+                        f"Animdl api Downloader: Downloading adaptive episode {anime_title}-{episode_title}"
+                    )
+                    cls.download_adaptive(
+                        stream_url,
+                        audio_tracks[0],
+                        subtitles[0],
+                        episode_download_location,
+                        on_episode_download_progress,
+                        episode_info,
+                    )
                 elif stream_url and subtitles:
                     # probably wont occur
-                    cls.download_video_and_subtitles(stream_url,subtitles[0],episode_download_location,on_episode_download_progress,episode_info)
+                    Logger.info(
+                        f"Animdl api Downloader: downloading ? episode {anime_title}-{episode_title}"
+                    )
+                    cls.download_video_and_subtitles(
+                        stream_url,
+                        subtitles[0],
+                        episode_download_location,
+                        on_episode_download_progress,
+                        episode_info,
+                    )
                 else:
-                    cls.download_progressive(stream_url,episode_download_location,episode_info,on_episode_download_progress)
+                    Logger.info(
+                        f"Animdl api Downloader: Downloading progressive episode {anime_title}-{episode_title}"
+                    )
+                    cls.download_progressive(
+                        stream_url,
+                        episode_download_location,
+                        episode_info,
+                        on_episode_download_progress,
+                    )
 
+                # epiosode download complete
+                on_episode_download_complete(anime_title, episode_title)
                 successful_downloads.append(episode_number)
-            except:
+                Logger.info(
+                    f"Animdl api Downloader: Success in dowloading {anime_title}-{episode_title}"
+                )
+            except Exception as e:
+                Logger.info(
+                    f"Animdl api Downloader: Failed in dowloading {anime_title}-{episode_title}; reason {e}"
+                )
                 failed_downloads.append(episode_number)
-        on_complete(successful_downloads,failed_downloads,anime_title)
+
+        Logger.info(
+            f"Animdl api Downloader: Completed in dowloading {anime_title}-{episodes_range}; Successful:{len(successful_downloads)}, Failed:{len(failed_downloads)}"
+        )
+        on_complete(successful_downloads, failed_downloads, anime_title)
+        return (successful_downloads, failed_downloads)
 
     @classmethod
-    def download_with_mpv(cls,url,output_path,on_progress):
-        if mpv:=shutil.which("mpv"):
-            process = Popen([mpv,url,f"--stream-dump={output_path}"],stderr=PIPE,text=True,stdout=PIPE)
-            progress_regex = re.compile(r"\d+/\d+") # eg Dumping 2044776/125359745
+    def download_with_mpv(cls, url: str, output_path: str, on_progress: Callable):
+        mpv_child_process = run_mpv_command(url, f"--stream-dump={output_path}")
+        progress_regex = re.compile(r"\d+/\d+")  # eg Dumping 2044776/125359745
 
-            for stream in process.stderr: # type: ignore
-                if matches:=progress_regex.findall(stream):
-                    current_bytes,total_bytes = [float(val) for val in matches[0].split("/")]
-                    on_progress(current_bytes,total_bytes)
-            return process.returncode
-        else:
-            return False
-
-    @classmethod
-    def download_adaptive(cls,video_url,audio_url,sub_url,output_path,on_progress,episode_info):
-        on_progress_ = lambda current_bytes,total_bytes: on_progress(current_bytes,total_bytes,episode_info)
-        episode = episode_info.get("anime_title") + " - " + episode_info.get("episode").replace(" - ","; ")
-        sub_filename = episode + ".ass"
-        sub_filepath = os.path.join(output_path,sub_filename)
-        is_sub_failure = cls.download_with_mpv(sub_url,sub_filepath,on_progress_)
-
-        audio_filename = episode + ".mp3"
-        audio_filepath = os.path.join(output_path,audio_filename)
-        is_audio_failure = cls.download_with_mpv(audio_url,audio_filepath,on_progress_)
-
-        video_filename = episode + ".mp4"
-        video_filepath = os.path.join(output_path,video_filename)
-        is_video_failure = cls.download_with_mpv(video_url,video_filepath,on_progress_)
-
-        if is_video_failure:
-            raise Exception
-                    
-    @classmethod
-    def download_video_and_subtitles(cls,video_url,sub_url,output_path,on_progress,episode_info):
-        on_progress_ = lambda current_bytes,total_bytes: on_progress(current_bytes,total_bytes,episode_info)
-        episode = episode_info.get("anime_title") + " - " + episode_info.get("episode").replace(" - ","; ")
-        sub_filename = episode + ".ass"
-        sub_filepath = os.path.join(output_path,sub_filename)
-        is_sub_failure = cls.download_with_mpv(sub_url,sub_filepath,on_progress_)
-        
-        video_filename = episode + ".mp4"
-        video_filepath = os.path.join(output_path,video_filename)
-        is_video_failure = cls.download_with_mpv(video_url,video_filepath,on_progress_)
-
-        if is_video_failure:
-            raise Exception
+        # extract progress info from mpv
+        for stream in mpv_child_process.stderr:  # type: ignore
+            Logger.info(f"Animdl Api Downloader: {stream}")
+            if progress_matches := progress_regex.findall(stream):
+                current_bytes, total_bytes = [
+                    float(val) for val in progress_matches[0].split("/")
+                ]
+                on_progress(current_bytes, total_bytes)
+        return mpv_child_process.returncode
 
     @classmethod
-    def download_progressive(cls,video_url,output_path,episode_info,on_progress):
-        episode = episode_info.get("anime_title") + " - " + episode_info.get("episode").replace(" - ","; ")
+    def download_progressive(
+        cls,
+        video_url: str,
+        output_path: str,
+        episode_info: dict[str, str],
+        on_progress: Callable,
+    ):
+        episode = (
+            path_parser(episode_info["anime_title"])
+            + " - "
+            + path_parser(episode_info["episode"])
+        )
         file_name = episode + ".mp4"
-        download_location = os.path.join(output_path,file_name)
-        on_progress_ = lambda current_bytes,total_bytes: on_progress(current_bytes,total_bytes,episode_info)
-        isfailure = cls.download_with_mpv(video_url,download_location,on_progress_)
+        download_location = os.path.join(output_path, file_name)
+        on_progress_ = lambda current_bytes, total_bytes: on_progress(
+            current_bytes, total_bytes, episode_info
+        )
+        isfailure = cls.download_with_mpv(video_url, download_location, on_progress_)
         if isfailure:
             raise Exception
-                   
-    @classmethod
-    def get_anime_match(cls,anime_item,title):
-        return fuzz.ratio(title,anime_item[0])
-    
-    @classmethod
-    def get_anime_url_by_title(cls,title:str):
-# TODO: rename to animdl anime url
-        result = cls.run_animdl_command(["search",title])
-        possible_animes = cls.output_parser(result)
-        if possible_animes:
-            anime = max(possible_animes.items(),key=lambda anime_item:cls.get_anime_match(anime_item,title))
-            return anime # ("title","anime url")
-# TODO: make it raise animdl anime url not found exception
-        return None
-    
-    @classmethod
-    def get_stream_urls_by_anime_url(cls,anime_url:str,episodes_range=None):
-        if not anime_url:
-            return None
-        try:
-            cmd = ["grab",anime_url,"-r",episodes_range] if episodes_range else ["grab",anime_url] 
-            result = cls.run_animdl_command(cmd)
-            return [json.loads(episode.strip()) for episode in result.stdout.strip().split("\n")] # type: ignore
-        except:
-            return None
-    
-    @classmethod
-    def get_stream_urls_by_anime_title(cls,title:str,episodes_range=None):
-        anime = cls.get_anime_url_by_title(title)
-        if not anime:
-# TODO: raise nostreams exception 
-            return None            
-        return anime[0],cls.get_stream_urls_by_anime_url(anime[1],episodes_range)
-# MOVE ANIMDL DATA PARSERS TO ANOTHER FILE
-    @classmethod
-    def contains_only_spaces(cls,input_string):
-        return all(char.isspace() for char in input_string)
 
     @classmethod
-    def output_parser(cls,result_of_cmd):
-        data = result_of_cmd.stderr.split("\n")[3:] # type: ignore
-        parsed_data = {}
-        pass_next = False
-        for i,data_item in enumerate(data[:]):
-            if pass_next:
-                pass_next = False
-                continue
-            if not data_item or cls.contains_only_spaces(data_item):
-                continue
-            item = data_item.split(" / ")
-            numbering = r"^\d*\.\s*"
-            try:
+    def download_adaptive(
+        cls,
+        video_url: str,
+        audio_url: str,
+        sub_url: str,
+        output_path: str,
+        on_progress: Callable,
+        episode_info: dict[str, str],
+    ):
+        on_progress_ = lambda current_bytes, total_bytes: on_progress(
+            current_bytes, total_bytes, episode_info
+        )
+        episode = (
+            path_parser(episode_info["anime_title"])
+            + " - "
+            + path_parser(episode_info["episode"])
+        )
+        sub_filename = episode + ".ass"
+        sub_filepath = os.path.join(output_path, sub_filename)
+        is_sub_failure = cls.download_with_mpv(sub_url, sub_filepath, on_progress_)
 
-                anime_title = re.sub(numbering,'',item[0]).lower()
-                # special case for onepiece since allanime labels it as 1p instead of onepiece
-                one_piece_regex = re.compile(r"1p",re.IGNORECASE)
-                if one_piece_regex.match(anime_title):
-                    anime_title = "one piece"
+        audio_filename = episode + ".mp3"
+        audio_filepath = os.path.join(output_path, audio_filename)
+        is_audio_failure = cls.download_with_mpv(
+            audio_url, audio_filepath, on_progress_
+        )
 
-                if item[1] == "" or cls.contains_only_spaces(item[1]):
-                    pass_next = True
-                    parsed_data.update({f"{anime_title}":f"{data[i+1]}"})
-                else:                
-                    parsed_data.update({f"{anime_title}":f"{item[1]}"})
-            except:
-                pass
-        return parsed_data
-# TODO: ADD RUN_MPV_COMMAND = RAISES MPV NOT FOR ND EXCEPTION 
+        video_filename = episode + ".mp4"
+        video_filepath = os.path.join(output_path, video_filename)
+        is_video_failure = cls.download_with_mpv(
+            video_url, video_filepath, on_progress_
+        )
+
+        if is_video_failure:
+            raise Exception
+
+    @classmethod
+    def download_video_and_subtitles(
+        cls,
+        video_url: str,
+        sub_url: str,
+        output_path: str,
+        on_progress: Callable,
+        episode_info: dict[str, str],
+    ):
+        on_progress_ = lambda current_bytes, total_bytes: on_progress(
+            current_bytes, total_bytes, episode_info
+        )
+        episode = (
+            path_parser(episode_info["anime_title"])
+            + " - "
+            + path_parser(episode_info["episode"])
+        )
+        sub_filename = episode + ".ass"
+        sub_filepath = os.path.join(output_path, sub_filename)
+        is_sub_failure = cls.download_with_mpv(sub_url, sub_filepath, on_progress_)
+
+        video_filename = episode + ".mp4"
+        video_filepath = os.path.join(output_path, video_filename)
+        is_video_failure = cls.download_with_mpv(
+            video_url, video_filepath, on_progress_
+        )
+
+        if is_video_failure:
+            raise Exception
+
+
+# TODO: ADD RUN_MPV_COMMAND = RAISES MPV NOT FOR ND EXCEPTION
 # TODO: ADD STREAM WITH MPV
 if __name__ == "__main__":
-    # for anime_title,url in AnimdlApi.get_anime_url_by_title("jujutsu").items():
-    start = time.time()
-    # t = AnimdlApi.get_stream_urls_by_anime_url("https://allanime.to/anime/LYKSutL2PaAjYyXWz")
     title = input("enter title: ")
     e_range = input("enter range: ")
-    # t = AnimdlApi.download_anime_by_title(title,lambda *args:print(f"done ep: {args}"),lambda *args:print(f"done {args}"),episodes_range=e_range,quality="worst")
-    t=AnimdlApi.stream_anime_by_title(title,e_range)
-    # t = os.mkdir("kol")
-    # t = run([shutil.which("python"),"--version"])
-    # while t.stderr:
-    #     print(p,t.stderr)
-    # for line in t.stderr:
-    
-    #     print(line)
-    #     print("o")
+    start = time.time()
+    # t = AnimdlApi.download_anime_by_title(
+    #     title, lambda *u: print(u), lambda *u: print(u)
+    # ,lambda *u:print(u),".",episodes_range=e_range)
+    streamer = AnimdlApi.stream_anime_with_mpv(title, e_range, quality="720")
+    # with open("test.json","w") as file:
+    #     print(json.dump(t,file))
+    for stream in streamer:
+        print(stream.communicate())
     delta = time.time() - start
-    print(t,shutil.which("python"))
-    # print(json.dumps(t[1]))
     print(f"Took: {delta} secs")
-    

@@ -117,12 +117,12 @@ class AnimeScreenView(BaseScreenView):
 
         self.anime_reviews.reviews = data["reviews"]["nodes"]
 
-    def stream_anime_with_custom_cmds_dialog(self):
+    def stream_anime_with_custom_cmds_dialog(self,mpv=False):
         """
         Called when user wants to stream with custom commands
         """
 
-        AnimdlStreamDialog(self.data).open()
+        AnimdlStreamDialog(self.data,mpv).open()
 
     def open_download_anime_dialog(self):
         """

@@ -14,7 +14,8 @@ from kivy.config import Config
 # Config.set('kivy', 'window_icon', "logo.ico")
 # Config.write()
 
-from  kivy.loader import Loader
+from kivy.loader import Loader
+
 Loader.num_workers = 5
 Loader.max_upload_per_frame = 10
 
@@ -27,9 +28,8 @@ from kivymd.icon_definitions import md_icons
 from kivymd.app import MDApp
 
 from View.screens import screens
-from libs.animdl.animdl_api import AnimdlApi
+from libs.animdl import AnimdlApi
 from Utility import themes_available, show_notification, user_data_helper
-
 
 
 # Ensure the user data fields exist
@@ -40,6 +40,7 @@ if not (user_data_helper.yt_cache.exists("yt_stream_links")):
     user_data_helper.update_anime_trailer_cache([])
 
 # TODO: Confirm data integrity from user_data and yt_cache
+
 
 # TODO: Arrange the app methods
 class AniXStreamApp(MDApp):
@@ -141,7 +142,10 @@ class AniXStreamApp(MDApp):
     def on_stop(self):
         del self.downloads_worker_thread
         if self.animdl_streaming_subprocess:
+            self.stop_streaming = True
             self.animdl_streaming_subprocess.terminate()
+            del self.worker_thread
+
             Logger.info("Animdl:Successfully terminated existing animdl subprocess")
 
     # custom methods
@@ -193,7 +197,9 @@ class AniXStreamApp(MDApp):
             *args
         )
         output_path = self.config.get("Preferences", "downloads_dir")  # type: ignore
-        self.download_screen.on_new_download_task(default_cmds["title"],default_cmds.get("episodes_range"))
+        self.download_screen.on_new_download_task(
+            default_cmds["title"], default_cmds.get("episodes_range")
+        )
         if episodes_range := default_cmds.get("episodes_range"):
             download_task = lambda: AnimdlApi.download_anime_by_title(
                 default_cmds["title"],
@@ -210,6 +216,7 @@ class AniXStreamApp(MDApp):
             download_task = lambda: AnimdlApi.download_anime_by_title(
                 default_cmds["title"],
                 on_progress,
+                lambda *arg:print(arg),
                 self.download_anime_complete,
                 output_path,
             )  # ,default_cmds.get("quality")
@@ -217,6 +224,7 @@ class AniXStreamApp(MDApp):
             Logger.info(
                 f"Downloader:Successfully Queued {default_cmds['title']} for downloading"
             )
+
     def watch_on_allanime(self, title_):
         """
         Opens the given anime in your default browser on allanimes site
@@ -250,20 +258,37 @@ class AniXStreamApp(MDApp):
             )
 
     def stream_anime_with_custom_input_cmds(self, *cmds):
-        self.animdl_streaming_subprocess = AnimdlApi.run_custom_command(
-            ["stream", *cmds]
+        self.animdl_streaming_subprocess = (
+            AnimdlApi._run_animdl_command_and_get_subprocess(["stream", *cmds])
         )
 
     def stream_anime_by_title_with_animdl(
         self, title, episodes_range: str | None = None
     ):
-        self.animdl_streaming_subprocess = AnimdlApi.stream_anime_by_title(
+        self.stop_streaming = False
+        self.animdl_streaming_subprocess = AnimdlApi.stream_anime_by_title_on_animdl(
             title, episodes_range
         )
 
+    def stream_anime_with_mpv(
+        self, title, episodes_range: str | None = None,quality:str="best"
+    ):
+        self.stop_streaming = False
+        streams = AnimdlApi.stream_anime_with_mpv(title,episodes_range,quality)
+        # TODO: End mpv child process properly 
+        for stream in streams:
+            self.animdl_streaming_subprocess= stream
+            for line in self.animdl_streaming_subprocess.stderr: # type: ignore
+                if self.stop_streaming:
+                    if stream:
+                        stream.terminate()
+                        stream.kill()
+                    del stream
+                    return 
+
     def watch_on_animdl(
         self,
-        title_dict: dict | None = None,
+        stream_with_mpv_options: dict | None = None,
         episodes_range: str | None = None,
         custom_options: tuple[str] | None = None,
     ):
@@ -278,27 +303,23 @@ class AniXStreamApp(MDApp):
         a tuple containing valid animdl stream commands
         """
         if self.animdl_streaming_subprocess:
-            self.animdl_streaming_subprocess.terminate()
+            self.animdl_streaming_subprocess.kill()
+            self.stop_streaming = True
 
-        if title_dict:
-            if title := title_dict.get("japanese"):
-                stream_func = lambda: self.stream_anime_by_title_with_animdl(
-                    title, episodes_range
-                )
-                self.queue.put(stream_func)
-                Logger.info(f"Animdl:Successfully started to stream {title}")
-            elif title := title_dict.get("english"):
-                stream_func = lambda: self.stream_anime_by_title_with_animdl(
-                    title, episodes_range
-                )
-                self.queue.put(stream_func)
-                Logger.info(f"Animdl:Successfully started to stream {title}")
+
+        if stream_with_mpv_options:
+            stream_func = lambda: self.stream_anime_with_mpv(
+                stream_with_mpv_options["title"], stream_with_mpv_options.get("episodes_range"),stream_with_mpv_options["quality"]
+            )
+            self.queue.put(stream_func)
+
+            Logger.info(f"Animdl:Successfully started to stream {stream_with_mpv_options['title']}")
         else:
             stream_func = lambda: self.stream_anime_with_custom_input_cmds(
                 *custom_options
             )
             self.queue.put(stream_func)
-
+        show_notification("Streamer","Started streaming")
 
 if __name__ == "__main__":
     AniXStreamApp().run()

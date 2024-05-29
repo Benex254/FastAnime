@@ -4,9 +4,10 @@ from kivymd.uix.behaviors import StencilBehavior,CommonElevationBehavior,Backgro
 from kivymd.theming import ThemableBehavior
 
 class AnimdlStreamDialog(ThemableBehavior,StencilBehavior,CommonElevationBehavior,BackgroundColorBehavior,ModalView):
-    def __init__(self,data,**kwargs):
-        super(AnimdlStreamDialog,self).__init__(**kwargs)
+    def __init__(self,data,mpv,**kwargs):
+        super().__init__(**kwargs)
         self.data = data
+        self.mpv=mpv
         if title:=data["title"].get("romaji"):
             self.ids.title_field.text = title
         elif title:=data["title"].get("english"):
@@ -14,20 +15,37 @@ class AnimdlStreamDialog(ThemableBehavior,StencilBehavior,CommonElevationBehavio
 
         self.ids.quality_field.text = "best"
     def stream_anime(self,app):
-        cmds = []
-        title = self.ids.title_field.text
-        cmds.append(title)
+        if self.mpv:
+            streaming_cmds = {}
+            title = self.ids.title_field.text
+            streaming_cmds["title"] = title
 
-        episodes_range = self.ids.range_field.text
-        if episodes_range:
-            cmds = [*cmds,"-r",episodes_range]
+            episodes_range = self.ids.range_field.text
+            if episodes_range:
+                streaming_cmds["episodes_range"] = episodes_range
 
-        latest = self.ids.latest_field.text
-        if latest:
-            cmds = [*cmds,"-s",latest]
+            quality = self.ids.quality_field.text
+            if quality:
+                streaming_cmds["quality"] = quality
+            else: 
+                streaming_cmds["quality"] = "best"
 
-        quality = self.ids.quality_field.text
-        if quality:
-            cmds = [*cmds,"-q",quality]
+            app.watch_on_animdl(streaming_cmds)
+        else:
+            cmds = []
+            title = self.ids.title_field.text
+            cmds.append(title)
 
-        app.watch_on_animdl(custom_options = cmds)
+            episodes_range = self.ids.range_field.text
+            if episodes_range:
+                cmds = [*cmds,"-r",episodes_range]
+
+            latest = self.ids.latest_field.text
+            if latest:
+                cmds = [*cmds,"-s",latest]
+
+            quality = self.ids.quality_field.text
+            if quality:
+                cmds = [*cmds,"-q",quality]
+
+            app.watch_on_animdl(custom_options = cmds)

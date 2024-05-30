@@ -128,7 +128,7 @@ class AnimdlApi:
             return most_likely_anime_url_and_title  # ("title","anime url")
         else:
             raise AnimdlAnimeUrlNotFoundException(
-                "The anime your searching for doesnt exist or animdl is broken or not in your system path"
+                "The anime your searching for doesnt exist or animdl provider is broken or animdl not in your system path\nTry changing the default provider"
             )
 
     @classmethod
@@ -201,10 +201,7 @@ class AnimdlApi:
                 Logger.info(
                     f"Animdl Api Mpv Streamer: Failed to stream episode {episode['episode']} no valid streams"
                 )
-        else:
-            Logger.info(
-                f"Animdl Api Mpv Streamer: Failed to stream {title} no valid streams found for alll episdes"
-            )
+                yield f"Epiosde {episode['episode']} doesnt have any valid stream links"
 
     @classmethod
     def get_all_anime_stream_urls_by_anime_url(

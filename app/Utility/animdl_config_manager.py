@@ -10,6 +10,7 @@ class AnimdlConfig(TypedDict):
     default_provider: str
     quality_string: str
 
+print(os.getenv("LOCALAPPDATA"))
 
 user_profile_path = plyer.storagepath.get_home_dir()  # type: ignore
 animdl_config_folder_location = os.path.join(user_profile_path, ".animdl")

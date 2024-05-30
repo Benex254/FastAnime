@@ -11,15 +11,15 @@
     "key": "default_provider",
     "options": [
       "9anime",
-      "AllAnime",
-      "AnimePahe",
-      "AnimeOut",
-      "Animtime",
-      "Kawaifu",
-      "GoGoAnime",
-      "Haho",
-      "Marin",
-      "Zoro"
+      "allanime",
+      "animepahe",
+      "animeout",
+      "animtime",
+      "kawaifu",
+      "gogoanime",
+      "haho",
+      "marin",
+      "zoro"
     ]
   },
   {

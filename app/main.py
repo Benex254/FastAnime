@@ -1,4 +1,5 @@
 import os
+import random
 
 os.environ["KIVY_VIDEO"] = "ffpyplayer"
 
@@ -10,10 +11,16 @@ import webbrowser
 import plyer
 
 from kivy.config import Config
+from kivy.resources import resource_find,resource_add_path
+resource_add_path("_internal")
+resource_add_path("assets")
+resource_add_path("configs")
+resource_add_path("data")
+
 Config.set("graphics","width","1000")
 Config.set("graphics","minimum_width","1000")
 
-# Config.set('kivy', 'window_icon', "logo.ico")
+Config.set('kivy', 'window_icon', resource_find("logo.ico"))
 Config.write()
 
 # from kivy.core.window import Window
@@ -55,6 +62,8 @@ class AniXStreamApp(MDApp):
     queue = Queue()
     downloads_queue = Queue()
     animdl_streaming_subprocess: Popen | None = None
+    default_anime_image = resource_find(random.choice(["default_1.jpg","default.jpg"]))
+    default_banner_image = resource_find(random.choice(["banner_1.jpg","banner.jpg"]))
 
     def worker(self, queue: Queue):
         while True:
@@ -76,6 +85,7 @@ class AniXStreamApp(MDApp):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.icon = resource_find("logo.png")
 
         self.load_all_kv_files(self.directory)
         self.theme_cls.theme_style = "Dark"
@@ -169,10 +179,10 @@ class AniXStreamApp(MDApp):
 
     def build_settings(self, settings: Settings):
         settings.add_json_panel(
-            "Settings", self.config, "./general_settings_panel.json"
+            "Settings", self.config, resource_find("general_settings_panel.json")
         )
         settings.add_json_panel(
-            "Animdl Config", self.config, "./animdl_config_panel.json"
+            "Animdl Config", self.config, resource_find("animdl_config_panel.json")
         )
 
     def on_config_change(self, config, section, key, value):

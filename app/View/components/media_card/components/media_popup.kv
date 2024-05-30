@@ -28,7 +28,7 @@
             MediaPopupVideoPlayer:
                 id:player
                 source:root.caller.trailer_url
-                preview:root.caller.preview_image
+                preview:app.default_anime_image
                 state:"play" if root.caller.trailer_url else "stop"
                 fit_mode:"fill"
                 size_hint_y: None

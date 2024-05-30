@@ -16,5 +16,5 @@
     FitImage:
         size_hint_y: None
         height: dp(250)
-        source:root.banner_image
+        source: root.banner_image if root.banner_image else app.default_banner_image
     

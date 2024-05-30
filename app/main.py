@@ -29,7 +29,12 @@ from kivymd.app import MDApp
 
 from View.screens import screens
 from libs.animdl import AnimdlApi
-from Utility import themes_available, show_notification, user_data_helper
+from Utility import (
+    themes_available,
+    show_notification,
+    user_data_helper,
+    animdl_config_manager,
+)
 
 
 # Ensure the user data fields exist
@@ -53,7 +58,7 @@ class AniXStreamApp(MDApp):
             try:
                 task()
             except Exception as e:
-                show_notification("An error occured while streaming",f"{e}")
+                show_notification("An error occured while streaming", f"{e}")
             self.queue.task_done()
 
     def downloads_worker(self, queue: Queue):
@@ -62,7 +67,7 @@ class AniXStreamApp(MDApp):
             try:
                 download_task()
             except Exception as e:
-                show_notification("An error occured while downloading",f"{e}")
+                show_notification("An error occured while downloading", f"{e}")
             self.downloads_queue.task_done()
 
     def __init__(self, **kwargs):
@@ -116,6 +121,8 @@ class AniXStreamApp(MDApp):
             self.manager_screens.add_widget(view)
 
     def build_config(self, config):
+
+        # General settings setup
         if vid_path := plyer.storagepath.get_videos_dir():  # type: ignore
             downloads_dir = os.path.join(vid_path, "anixstream")
             if not os.path.exists(downloads_dir):
@@ -134,10 +141,37 @@ class AniXStreamApp(MDApp):
             },
         )
 
+        # animdl config settings setup
+        animdl_config = animdl_config_manager.get_animdl_config()
+        config.setdefaults(
+            "Providers",
+            {
+                "default_provider": animdl_config["default_provider"],
+            },
+        )
+        config.setdefaults(
+            "Quality",
+            {
+                "quality_string": animdl_config["quality_string"],
+            },
+        )
+        config.setdefaults(
+            "PlayerSelection",
+            {
+                "default_player": animdl_config["default_player"],
+            },
+        )
+
     def build_settings(self, settings: Settings):
-        settings.add_json_panel("Settings", self.config, "settings.json")
+        settings.add_json_panel(
+            "Settings", self.config, "./general_settings_panel.json"
+        )
+        settings.add_json_panel(
+            "Animdl Config", self.config, "./animdl_config_panel.json"
+        )
 
     def on_config_change(self, config, section, key, value):
+        # TODO: Change to match case
         if section == "Preferences":
             match key:
                 case "theme_color":
@@ -151,6 +185,12 @@ class AniXStreamApp(MDApp):
                         config.write()
                 case "theme_style":
                     self.theme_cls.theme_style = value
+        elif section == "Providers":
+            animdl_config_manager.update_animdl_config("default_provider", value)
+        elif section == "Quality":
+            animdl_config_manager.update_animdl_config("quality_string", value)
+        elif section == "PlayerSelection":
+            animdl_config_manager.update_animdl_config("default_player", value)
 
     def on_stop(self):
         del self.downloads_worker_thread

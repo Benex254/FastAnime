@@ -24,6 +24,7 @@ for link in yt_stream_links:
     Cache.append("yt_stream_links.anime", link[0], tuple(link[1]))
 
 
+# TODO: Make this process more efficient
 # for youtube video links gotten from from pytube which is blocking
 class MediaCardDataLoader(object):
     """this class loads an anime media card and gets the trailer url from pytube"""

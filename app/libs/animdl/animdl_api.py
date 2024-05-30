@@ -1,11 +1,9 @@
 import os
 import time
-import json
 import re
 import shutil
 from subprocess import Popen, run, PIPE, CompletedProcess
 from typing import Callable
-
 
 from .extras import Logger
 from .animdl_data_helper import (
@@ -23,7 +21,7 @@ from .animdl_exceptions import (
     NoValidAnimeStreamsException,
     Python310NotFoundException,
 )
-from .animdl_types import AnimdlAnimeUrlAndTitle, AnimdlData
+from .animdl_types import AnimdlAnimeEpisode, AnimdlAnimeUrlAndTitle, AnimdlData
 
 
 broken_link_pattern = r"https://tools.fast4speed.rsvp/\w*"
@@ -129,12 +127,25 @@ class AnimdlApi:
             )
             return most_likely_anime_url_and_title  # ("title","anime url")
         else:
-            raise AnimdlAnimeUrlNotFoundException
+            raise AnimdlAnimeUrlNotFoundException(
+                "The anime your searching for doesnt exist or animdl is broken or not in your system path"
+            )
 
     @classmethod
     def stream_anime_by_title_on_animdl(
-        cls, title, episodes_range=None, quality: str = "best"
+        cls, title: str, episodes_range: str | None = None, quality: str = "best"
     ) -> Popen:
+        """Streams the anime title on animdl
+
+        Args:
+            title (str): the anime title you want to stream
+            episodes_range (str, optional): the episodes you want to stream; should be a valid animdl range. Defaults to None.
+            quality (str, optional): the quality of the stream. Defaults to "best".
+
+        Returns:
+            Popen: the stream child subprocess for mor control
+        """
+
         anime = cls.get_anime_url_by_title(title)
 
         base_cmds = ["stream", anime[1], "-q", quality]
@@ -145,6 +156,17 @@ class AnimdlApi:
     def stream_anime_with_mpv(
         cls, title: str, episodes_range: str | None = None, quality: str = "best"
     ):
+        """Stream an anime directly with mpv without having to interact with animdl cli
+
+        Args:
+            title (str): the anime title you want to stream
+            episodes_range (str | None, optional): a valid animdl episodes range you want ito watch. Defaults to None.
+            quality (str, optional): the quality of the stream. Defaults to "best".
+
+        Yields:
+            Popen: the child subprocess you currently are watching
+        """
+
         anime_data = cls.get_all_stream_urls_by_anime_title(title, episodes_range)
         stream = []
         for episode in anime_data.episodes:
@@ -186,8 +208,18 @@ class AnimdlApi:
 
     @classmethod
     def get_all_anime_stream_urls_by_anime_url(
-        cls, anime_url: str, episodes_range=None
-    ):
+        cls, anime_url: str, episodes_range: str | None = None
+    ) -> list[AnimdlAnimeEpisode]:
+        """gets all the streams for the animdl url
+
+        Args:
+            anime_url (str): an animdl url used in scraping
+            episodes_range (str | None, optional): a valid animdl episodes range. Defaults to None.
+
+        Returns:
+            list[AnimdlAnimeEpisode]: A list of anime episodes gotten from animdl
+        """
+
         cmd = (
             ["grab", anime_url, "-r", episodes_range]
             if episodes_range
@@ -207,8 +239,9 @@ class AnimdlApi:
             episodes_range (str, optional): an animdl episodes range. Defaults to None.
 
         Returns:
-            _type_: _description_
+            AnimdlData: The parsed data from animdl grab
         """
+
         possible_anime = cls.get_anime_url_by_title(title)
         return AnimdlData(
             possible_anime.anime_title,
@@ -235,6 +268,23 @@ class AnimdlApi:
         episodes_range: str | None = None,
         quality: str = "best",
     ) -> tuple[list[int], list[int]]:
+        """Downloads anime either adaptive, progressive, or .m3u streams and uses mpv to achieve this
+
+        Args:
+            _anime_title (str): the anime title you want to download
+            on_episode_download_progress (Callable): the callback when a chunk of an episode is downloaded
+            on_episode_download_complete (Callable): the callback when an episode has been successfully downloaded
+            on_complete (Callable): callback when the downloading process is complete
+            output_path (str): the directory | folder to download the anime
+            episodes_range (str | None, optional): a valid animdl episode range. Defaults to None.
+            quality (str, optional): the anime quality. Defaults to "best".
+
+        Raises:
+            NoValidAnimeStreamsException: raised when no valid streams were found for a particular episode
+
+        Returns:
+            tuple[list[int], list[int]]: a tuple containing successful, and failed downloads list
+        """
 
         anime_streams_data = cls.get_all_stream_urls_by_anime_title(
             _anime_title, episodes_range
@@ -260,6 +310,11 @@ class AnimdlApi:
                 streams = filter_broken_streams(episode["streams"])
 
                 # raises an exception if no streams for current episodes
+                if not streams:
+                    raise NoValidAnimeStreamsException(
+                        f"No valid streams were found for episode {episode_number}"
+                    )
+
                 episode_stream = filter_streams_by_quality(streams, quality)
 
                 # determine episode_title
@@ -340,6 +395,17 @@ class AnimdlApi:
 
     @classmethod
     def download_with_mpv(cls, url: str, output_path: str, on_progress: Callable):
+        """The method used to download a remote resource with mpv
+
+        Args:
+            url (str): the url of the remote resource to download
+            output_path (str): the location to download the resource to
+            on_progress (Callable): the callback when a chunk of the resource is downloaded
+
+        Returns:
+            subprocess return code: the return code of the mpv subprocess
+        """
+
         mpv_child_process = run_mpv_command(url, f"--stream-dump={output_path}")
         progress_regex = re.compile(r"\d+/\d+")  # eg Dumping 2044776/125359745
 
@@ -361,6 +427,18 @@ class AnimdlApi:
         episode_info: dict[str, str],
         on_progress: Callable,
     ):
+        """the progressive downloader of mpv
+
+        Args:
+            video_url (str): a video url
+            output_path (str): download location
+            episode_info (dict[str, str]): the details of the episode we downloading
+            on_progress (Callable): the callback when a chunk is downloaded
+
+        Raises:
+            Exception: exception raised when anything goes wrong
+        """
+
         episode = (
             path_parser(episode_info["anime_title"])
             + " - "
@@ -385,6 +463,20 @@ class AnimdlApi:
         on_progress: Callable,
         episode_info: dict[str, str],
     ):
+        """the adaptive downloader
+
+        Args:
+            video_url (str): url of video you want ot download
+            audio_url (str): url of audio file you want ot download
+            sub_url (str): url of sub file you want ot download
+            output_path (str): download location
+            on_progress (Callable): the callback when a chunk is downloaded
+            episode_info (dict[str, str]): episode details
+
+        Raises:
+            Exception: incase anything goes wrong
+        """
+
         on_progress_ = lambda current_bytes, total_bytes: on_progress(
             current_bytes, total_bytes, episode_info
         )
@@ -421,6 +513,19 @@ class AnimdlApi:
         on_progress: Callable,
         episode_info: dict[str, str],
     ):
+        """only downloads video and subs
+
+        Args:
+            video_url (str): url of video you want ot download
+            sub_url (str): url of sub you want ot download
+            output_path (str): the download location
+            on_progress (Callable): the callback for when a chunk is downloaded
+            episode_info (dict[str, str]): episode details
+
+        Raises:
+            Exception: when anything goes wrong
+        """
+
         on_progress_ = lambda current_bytes, total_bytes: on_progress(
             current_bytes, total_bytes, episode_info
         )
@@ -441,21 +546,3 @@ class AnimdlApi:
 
         if is_video_failure:
             raise Exception
-
-
-# TODO: ADD RUN_MPV_COMMAND = RAISES MPV NOT FOR ND EXCEPTION
-# TODO: ADD STREAM WITH MPV
-if __name__ == "__main__":
-    title = input("enter title: ")
-    e_range = input("enter range: ")
-    start = time.time()
-    # t = AnimdlApi.download_anime_by_title(
-    #     title, lambda *u: print(u), lambda *u: print(u)
-    # ,lambda *u:print(u),".",episodes_range=e_range)
-    streamer = AnimdlApi.stream_anime_with_mpv(title, e_range, quality="720")
-    # with open("test.json","w") as file:
-    #     print(json.dump(t,file))
-    for stream in streamer:
-        print(stream.communicate())
-    delta = time.time() - start
-    print(f"Took: {delta} secs")

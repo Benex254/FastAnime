@@ -8,6 +8,8 @@ from Model import SearchScreenModel
 
 
 class SearchScreenController:
+    """The search screen controller
+    """
 
     def __init__(self, model: SearchScreenModel):
         self.model = model
@@ -17,6 +19,8 @@ class SearchScreenController:
         return self.view
 
     def update_trending_anime(self):
+        """Gets and adds the trending anime to the search screen
+        """
         trending_cards_generator = self.model.get_trending_anime()
         if isgenerator(trending_cards_generator):
             self.view.trending_anime_sidebar.clear_widgets()
@@ -37,7 +41,7 @@ class SearchScreenController:
             Clock.schedule_once(
                 lambda _: self.view.update_pagination(self.model.pagination_info)
             )
-            Clock.schedule_once(lambda _: self.update_trending_anime())
+            self.update_trending_anime()
         else:
             Logger.error(f"Home Screen:Failed to search for {anime_title}")
         self.view.is_searching = False

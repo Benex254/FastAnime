@@ -26,6 +26,8 @@ for link in yt_stream_links:
 
 # for youtube video links gotten from from pytube which is blocking
 class MediaCardDataLoader(object):
+    """this class loads an anime media card and gets the trailer url from pytube"""
+
     def __init__(self):
         self._resume_cond = threading.Condition()
         self._num_workers = 5

@@ -1,5 +1,9 @@
 from datetime import datetime
-from libs.anilist.anilist_data_schema import AnilistDateObject,AnilistMediaNextAiringEpisode
+
+from libs.anilist.anilist_data_schema import (
+    AnilistDateObject,
+    AnilistMediaNextAiringEpisode,
+)
 
 
 # TODO: Add formating options for the final date
@@ -24,7 +28,7 @@ def format_list_data_with_comma(data: list | None):
         return "None"
 
 
-def extract_next_airing_episode(airing_episode:AnilistMediaNextAiringEpisode):
+def extract_next_airing_episode(airing_episode: AnilistMediaNextAiringEpisode):
     if airing_episode:
         return f"Episode: {airing_episode['episode']} on {format_anilist_timestamp(airing_episode['airingAt'])}"
     else:

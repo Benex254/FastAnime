@@ -1,11 +1,12 @@
 
-from inspect import isgenerator
 from View import CrashLogScreenView
 from Model import CrashLogScreenModel
-from View.components import MediaCardsContainer
-from Utility import show_notification
-from kivy.clock import Clock
+
+
+
 class CrashLogScreenController:
+    """The crash log screen controller
+    """
     def __init__(self, model:CrashLogScreenModel):
         self.model = model
         self.view = CrashLogScreenView(controller=self, model=self.model)

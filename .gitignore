@@ -9,7 +9,7 @@ vids/*
 __pycache__/
 *.py[cod]
 *$py.class
-
+anixstream.ini
 # C extensions
 *.so
 

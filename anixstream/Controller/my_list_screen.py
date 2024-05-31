@@ -49,3 +49,5 @@ class MyListScreenController:
                     result_card.screen = self.view
                     self.view.update_layout(result_card)
             return []
+        else:
+            return []

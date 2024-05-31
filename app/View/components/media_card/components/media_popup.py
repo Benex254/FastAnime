@@ -26,6 +26,7 @@ class MediaPopup(
     def __init__(self, caller, *args, **kwarg):
         self.caller = caller
         super(MediaPopup, self).__init__(*args, **kwarg)
+        self.player.bind(fullscreen=self.handle_clean_fullscreen_transition)
 
     def open(self, *_args, **kwargs):
         """Display the modal in the Window.
@@ -62,7 +63,25 @@ class MediaPopup(
 
     def on_leave(self, *args):
         def _leave(dt):
+            self.player.state = "stop"
+            if self.player._video:
+                self.player._video.unload()
+
             if not self.hovering:
                 self.dismiss()
 
         Clock.schedule_once(_leave, 2)
+
+    def handle_clean_fullscreen_transition(self,instance,fullscreen):
+        if not fullscreen:
+            if not self._is_open:
+                instance.state = "stop"
+                if vid:=instance._video:
+                    vid.unload()
+            else:
+                instance.state = "stop"
+                if vid:=instance._video:
+                    vid.unload()
+                self.dismiss()
+
+                

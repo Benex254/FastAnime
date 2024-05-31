@@ -43,6 +43,6 @@
     "desc": "Sets the animdl default player to use",
     "section": "PlayerSelection",
     "key": "default_player",
-    "options": ["mpv", "vlc", "ffpyplayer", "celluloid", "iina"]
+    "options": ["mpv", "vlc", "ffplay", "celluloid", "iina"]
   }
 ]

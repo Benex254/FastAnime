@@ -39,3 +39,4 @@ class DownloadAnimeDialog(
             default_cmds["quality"] = quality
 
         app.download_anime(self.anime_id, default_cmds)
+        self.dismiss()

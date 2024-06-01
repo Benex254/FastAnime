@@ -1,5 +1,5 @@
-from Model.base_model import BaseScreenModel
-from libs.anilist import AniList
+from .base_model import BaseScreenModel
+from anixstream.libs.anilist import AniList
 
 class AnimeScreenModel(BaseScreenModel):
     """the Anime screen model

@@ -1,11 +1,10 @@
-from datetime import datetime
 
 from kivy.properties import ObjectProperty, DictProperty, StringProperty
 
-from Utility import anilist_data_helper
-from libs.anilist import AnilistBaseMediaDataSchema
+from anixstream.Utility import anilist_data_helper
+from anixstream.libs.anilist import AnilistBaseMediaDataSchema
 
-from View.base_screen import BaseScreenView
+from anixstream.View.base_screen import BaseScreenView
 from .components import (
     AnimeHeader,
     AnimeSideBar,

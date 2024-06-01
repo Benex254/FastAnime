@@ -4,10 +4,10 @@ from inspect import isgenerator
 from kivy.clock import Clock
 from kivy.logger import Logger
 
-from View import HomeScreenView
-from Model import HomeScreenModel
-from View.components import MediaCardsContainer
-from Utility import show_notification
+from anixstream.View import HomeScreenView
+from anixstream.Model import HomeScreenModel
+from anixstream.View.components import MediaCardsContainer
+from anixstream.Utility import show_notification
 
 
 # TODO:Move the update home screen to homescreen.py

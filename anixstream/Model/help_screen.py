@@ -1,4 +1,5 @@
-from Model.base_model import BaseScreenModel
+from .base_model import BaseScreenModel
+
 
 
 class HelpScreenModel(BaseScreenModel):

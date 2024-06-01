@@ -1,4 +1,4 @@
-from Controller import (
+from anixstream.Controller import (
     SearchScreenController,
     HomeScreenController,
     MyListScreenController,
@@ -7,7 +7,7 @@ from Controller import (
     HelpScreenController,
     CrashLogScreenController,
 )
-from Model import (
+from anixstream.Model import (
     HomeScreenModel,
     SearchScreenModel,
     MyListScreenModel,

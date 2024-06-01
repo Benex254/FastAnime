@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from libs.anilist.anilist_data_schema import (
+from anixstream.libs.anilist.anilist_data_schema import (
     AnilistDateObject,
     AnilistMediaNextAiringEpisode,
 )

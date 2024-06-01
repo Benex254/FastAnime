@@ -7,7 +7,7 @@ from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.button import MDIconButton
 from kivymd.uix.tooltip import MDTooltip
 
-from Utility.observer import Observer
+from anixstream.Utility.observer import Observer
 
 
 class NavRail(MDNavigationRail):
@@ -65,7 +65,7 @@ class BaseScreenView(MDScreen, Observer):
         super().__init__(**kw)
         # Often you need to get access to the application object from the view
         # class. You can do this using this attribute.
-        from main import AniXStreamApp
+        from anixstream.__main__ import AniXStreamApp
 
         self.app: AniXStreamApp = MDApp.get_running_app()  # type: ignore
         # Adding a view class as observer.

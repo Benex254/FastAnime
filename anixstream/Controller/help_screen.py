@@ -1,6 +1,6 @@
 
-from View import HelpScreenView
-from Model import HelpScreenModel
+from anixstream.View import HelpScreenView
+from anixstream.Model import HelpScreenModel
 
 
 class HelpScreenController:

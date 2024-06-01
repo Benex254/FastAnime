@@ -1,6 +1,6 @@
-from Model.base_model import BaseScreenModel
-from libs.anilist import AniList
-from Utility import MediaCardLoader, show_notification
+from .base_model import BaseScreenModel
+from anixstream.libs.anilist import AniList
+from anixstream.Utility import MediaCardLoader, show_notification
 
 
 class SearchScreenModel(BaseScreenModel):

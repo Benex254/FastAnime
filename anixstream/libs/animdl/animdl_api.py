@@ -408,7 +408,7 @@ class AnimdlApi:
 
         # extract progress info from mpv
         for stream in mpv_child_process.stderr:  # type: ignore
-            Logger.info(f"Animdl Api Downloader: {stream}")
+            # Logger.info(f"Animdl Api Downloader: {stream}")
             if progress_matches := progress_regex.findall(stream):
                 current_bytes, total_bytes = [
                     float(val) for val in progress_matches[0].split("/")

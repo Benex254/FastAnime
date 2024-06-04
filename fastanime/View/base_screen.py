@@ -64,7 +64,7 @@ class BaseScreenView(MDScreen, Observer):
         super().__init__(**kw)
         # Often you need to get access to the application object from the view
         # class. You can do this using this attribute.
-        from anixstream.__main__ import AniXStreamApp
+        from ..__main__ import AniXStreamApp
 
         self.app: AniXStreamApp = MDApp.get_running_app()  # type: ignore
         # Adding a view class as observer.

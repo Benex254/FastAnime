@@ -14,12 +14,15 @@ data_folder = os.path.join(app_dir, "data")
 today = date.today()
 now = datetime.now()
 
-if user_data_path := os.path.exists(os.path.join(data_folder, "user_data.json")):
-    user_data = JsonStore(user_data_path)
+if os.path.exists(os.path.join(data_folder, "user_data.json")):
+    user_data = JsonStore(os.path.join(data_folder, "user_data.json"))
 else:
-    os.makedirs(data_folder, exist_ok=True)
+    # os.makedir(data_folder, exist_ok=True)
+    print("op2")
     user_data_path = os.path.join(data_folder, "user_data.json")
     user_data = JsonStore(user_data_path)
+
+    print("op2")
 
 
 # Get the user data

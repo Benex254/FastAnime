@@ -11,7 +11,7 @@ from kivy.uix.behaviors import ButtonBehavior
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.behaviors import HoverBehavior
 
-from .components import MediaPopup
+from .components.media_popup import media_card_popup, MediaPopup
 
 
 class MediaCard(ButtonBehavior, HoverBehavior, MDBoxLayout):
@@ -36,7 +36,7 @@ class MediaCard(ButtonBehavior, HoverBehavior, MDBoxLayout):
     stars = ListProperty([0, 0, 0, 0, 0, 0])
     cover_image_url = StringProperty()
     preview_image = StringProperty()
-    has_trailer_color = ListProperty([.5, .5, .5, .5])
+    has_trailer_color = ListProperty([0.5, 0.5, 0.5, 0.5])
 
     def __init__(self, trailer_url=None, **kwargs):
         super().__init__(**kwargs)
@@ -63,8 +63,8 @@ class MediaCard(ButtonBehavior, HoverBehavior, MDBoxLayout):
 
     def on_dismiss(self, popup: MediaPopup):
         popup.player.state = "stop"
-        if popup.player._video:
-            popup.player._video.unload()
+        # if popup.player._video:
+        # popup.player._video.unload()
 
     def set_preview_image(self, image):
         self.preview_image = image
@@ -74,10 +74,10 @@ class MediaCard(ButtonBehavior, HoverBehavior, MDBoxLayout):
         self.has_trailer_color = self.theme_cls.primaryColor
 
     def open(self, *_):
-        popup = MediaPopup(self)
-        popup.title = self.title
-        popup.bind(on_dismiss=self.on_dismiss, on_open=self.on_popup_open)
-        popup.open(self)
+        media_card_popup.caller = self
+        media_card_popup.title = self.title
+        media_card_popup.bind(on_dismiss=self.on_dismiss, on_open=self.on_popup_open)
+        media_card_popup.open(self)
 
     # ---------------respond to user actions and call appropriate model-------------------------
     def on_is_in_my_list(self, instance, in_user_anime_list):

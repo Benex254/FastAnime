@@ -23,7 +23,7 @@ class MediaPopup(
     caller = ObjectProperty()
     player = ObjectProperty()
 
-    def __init__(self, caller, *args, **kwarg):
+    def __init__(self, caller=None, *args, **kwarg):
         self.caller = caller
         super(MediaPopup, self).__init__(*args, **kwarg)
         self.player.bind(fullscreen=self.handle_clean_fullscreen_transition)
@@ -37,51 +37,59 @@ class MediaPopup(
             view.open(animation=False)
 
         """
-        from kivy.core.window import Window
+        if self.caller:
+            from kivy.core.window import Window
 
-        if self._is_open:
-            return
-        self._window = Window
-        self._is_open = True
-        self.dispatch("on_pre_open")
-        Window.add_widget(self)
-        Window.bind(on_resize=self._align_center, on_keyboard=self._handle_keyboard)
-        self.center = self.caller.to_window(*self.caller.center)
-        self.fbind("center", self._align_center)
-        self.fbind("size", self._align_center)
-        if kwargs.get("animation", True):
-            ani = Animation(_anim_alpha=1.0, d=self._anim_duration)
-            ani.bind(on_complete=lambda *_args: self.dispatch("on_open"))
-            ani.start(self)
+            if self._is_open:
+                return
+            self._window = Window
+            self._is_open = True
+            self.dispatch("on_pre_open")
+            Window.add_widget(self)
+            Window.bind(on_resize=self._align_center, on_keyboard=self._handle_keyboard)
+            self.center = self.caller.to_window(*self.caller.center)
+            self.fbind("center", self._align_center)
+            self.fbind("size", self._align_center)
+            if kwargs.get("animation", True):
+                ani = Animation(_anim_alpha=1.0, d=self._anim_duration)
+                ani.bind(on_complete=lambda *_args: self.dispatch("on_open"))
+                ani.start(self)
+            else:
+                self._anim_alpha = 1.0
+                self.dispatch("on_open")
         else:
-            self._anim_alpha = 1.0
-            self.dispatch("on_open")
+            super().open(*_args, **kwargs)
 
     def _align_center(self, *_args):
-        if self._is_open:
-            self.center = self.caller.to_window(*self.caller.center)
+
+        if self.caller:
+            if self._is_open:
+                self.center = self.caller.to_window(*self.caller.center)
+        else:
+            super()._align_center(*_args)
 
     def on_leave(self, *args):
         def _leave(dt):
             self.player.state = "stop"
-            if self.player._video:
-                self.player._video.unload()
+            # if self.player._video:
+            # self.player._video.unload()
 
             if not self.hovering:
                 self.dismiss()
 
         Clock.schedule_once(_leave, 2)
 
-    def handle_clean_fullscreen_transition(self,instance,fullscreen):
+    def handle_clean_fullscreen_transition(self, instance, fullscreen):
         if not fullscreen:
             if not self._is_open:
                 instance.state = "stop"
-                if vid:=instance._video:
-                    vid.unload()
+                # if vid := instance._video:
+                # vid.unload()
             else:
                 instance.state = "stop"
-                if vid:=instance._video:
-                    vid.unload()
+                # if vid := instance._video:
+                # vid.unload()
                 self.dismiss()
 
-                
+
+media_card_popup = MediaPopup()

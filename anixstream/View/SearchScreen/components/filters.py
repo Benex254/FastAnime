@@ -1,5 +1,4 @@
-from kivy.properties import StringProperty, DictProperty
-
+from kivy.properties import DictProperty, StringProperty
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.dropdownitem import MDDropDownItem
 from kivymd.uix.menu import MDDropdownMenu

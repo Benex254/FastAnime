@@ -2,16 +2,24 @@
 Contains Helper functions to read and write the user data files
 """
 
-from kivy.storage.jsonstore import JsonStore
+import os
 from datetime import date, datetime
-from kivy.logger import Logger
-from kivy.resources import resource_find
 
+from kivy.logger import Logger
+
+from kivy.storage.jsonstore import JsonStore
+
+app_dir = os.path.dirname(__file__)
+data_folder = os.path.join(app_dir, "data")
 today = date.today()
 now = datetime.now()
 
-user_data = JsonStore(resource_find("user_data.json"))
-yt_cache = JsonStore(resource_find("yt_cache.json"))
+if user_data_path := os.path.exists(os.path.join(data_folder, "user_data.json")):
+    user_data = JsonStore(user_data_path)
+else:
+    os.makedirs(data_folder, exist_ok=True)
+    user_data_path = os.path.join(data_folder, "user_data.json")
+    user_data = JsonStore(user_data_path)
 
 
 # Get the user data
@@ -63,20 +71,3 @@ else:
     t = 4
 
 yt_anime_trailer_cache_name = f"{today}{t}"
-
-
-def get_anime_trailer_cache() -> list:
-    try:
-        return yt_cache["yt_stream_links"][f"{yt_anime_trailer_cache_name}"]
-    except Exception as e:
-        Logger.warning(f"User Data:Read failure:{e}")
-        return []
-
-
-def update_anime_trailer_cache(yt_stream_links: list):
-    try:
-        yt_cache.put(
-            "yt_stream_links", **{f"{yt_anime_trailer_cache_name}": yt_stream_links}
-        )
-    except Exception as e:
-        Logger.warning(f"User Data:Update failure:{e}")

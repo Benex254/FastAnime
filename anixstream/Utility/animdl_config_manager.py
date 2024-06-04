@@ -1,6 +1,7 @@
-from typing import TypedDict
-import plyer
 import os
+from typing import TypedDict
+
+import plyer
 
 from .yaml_parser import YamlParser
 
@@ -10,9 +11,9 @@ class AnimdlConfig(TypedDict):
     default_provider: str
     quality_string: str
 
- 
-if local_data_path:=os.getenv("LOCALAPPDATA"):
-    config_dir = os.path.join(local_data_path,".config")
+
+if local_data_path := os.getenv("LOCALAPPDATA"):
+    config_dir = os.path.join(local_data_path, ".config")
     if not os.path.exists(config_dir):
         os.mkdir(config_dir)
     animdl_config_folder_location = os.path.join(config_dir, "animdl")

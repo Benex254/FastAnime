@@ -1,12 +1,11 @@
 from kivy.clock import Clock
 from kivy.uix.modalview import ModalView
-
-from kivymd.uix.behaviors import (
-    StencilBehavior,
-    CommonElevationBehavior,
-    BackgroundColorBehavior,
-)
 from kivymd.theming import ThemableBehavior
+from kivymd.uix.behaviors import (
+    BackgroundColorBehavior,
+    CommonElevationBehavior,
+    StencilBehavior,
+)
 
 
 class AnimdlStreamDialog(
@@ -65,5 +64,6 @@ class AnimdlStreamDialog(
 
             app.watch_on_animdl(custom_options=cmds)
         self.dismiss()
+
     def stream_anime(self, app):
         Clock.schedule_once(lambda _: self._stream_anime(app))

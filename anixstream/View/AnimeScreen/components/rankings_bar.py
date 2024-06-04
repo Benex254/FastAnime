@@ -1,5 +1,4 @@
 from kivy.properties import DictProperty
-
 from kivymd.uix.boxlayout import MDBoxLayout
 
 

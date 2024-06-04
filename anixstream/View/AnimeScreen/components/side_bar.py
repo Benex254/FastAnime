@@ -1,7 +1,6 @@
-from kivy.properties import ObjectProperty, StringProperty, DictProperty, ListProperty
-from kivy.utils import get_hex_from_color
 from kivy.factory import Factory
-
+from kivy.properties import DictProperty, ListProperty, ObjectProperty, StringProperty
+from kivy.utils import get_hex_from_color
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.label import MDLabel
 

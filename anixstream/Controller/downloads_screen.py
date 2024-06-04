@@ -1,15 +1,13 @@
-
-from anixstream.View import DownloadsScreenView
-from anixstream.Model import DownloadsScreenModel
+from ..Model import DownloadsScreenModel
+from ..View import DownloadsScreenView
 
 
 class DownloadsScreenController:
-    """The controller for the download screen
-    """
-    def __init__(self, model:DownloadsScreenModel):
+    """The controller for the download screen"""
+
+    def __init__(self, model: DownloadsScreenModel):
         self.model = model
         self.view = DownloadsScreenView(controller=self, model=self.model)
 
     def get_view(self) -> DownloadsScreenView:
         return self.view
-            

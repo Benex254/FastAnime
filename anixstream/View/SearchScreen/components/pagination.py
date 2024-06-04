@@ -1,5 +1,4 @@
-from kivy.properties import ObjectProperty, NumericProperty
-
+from kivy.properties import NumericProperty, ObjectProperty
 from kivymd.uix.boxlayout import MDBoxLayout
 
 

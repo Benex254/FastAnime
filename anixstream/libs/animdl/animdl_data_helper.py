@@ -1,15 +1,14 @@
-import re
 import json
+import re
 
 from fuzzywuzzy import fuzz
 
-from .extras import Logger
 from .animdl_types import (
-    AnimdlAnimeUrlAndTitle,
     AnimdlAnimeEpisode,
+    AnimdlAnimeUrlAndTitle,
     AnimdlEpisodeStream,
 )
-
+from .extras import Logger
 
 # Currently this links don't work so we filter it out
 broken_link_pattern = r"https://tools.fast4speed.rsvp/\w*"
@@ -65,7 +64,7 @@ def anime_title_percentage_match(
     """
 
     percentage_ratio = fuzz.ratio(title, possible_user_requested_anime_title)
-    Logger.info(
+    Logger.debug(
         f"Animdl Api Fuzzy: Percentage match of {possible_user_requested_anime_title} against {title}: {percentage_ratio}%"
     )
     return percentage_ratio
@@ -83,9 +82,11 @@ def filter_broken_streams(
         list[AnimdlEpisodeStream]: the valid streams
     """
 
-    stream_filter = lambda stream: (
-        True if not re.match(broken_link_pattern, stream["stream_url"]) else False
-    )
+    def stream_filter(stream):
+        return (
+            True if not re.match(broken_link_pattern, stream["stream_url"]) else False
+        )
+
     return list(filter(stream_filter, streams))
 
 
@@ -104,9 +105,9 @@ def filter_streams_by_quality(
     """
 
     # get the appropriate stream or default to best
-    get_quality_func = lambda stream_: (
-        stream_.get("quality") if stream_.get("quality") else 0
-    )
+    def get_quality_func(stream_):
+        return stream_.get("quality") if stream_.get("quality") else 0
+
     match quality:
         case "best":
             return max(anime_episode_streams, key=get_quality_func)
@@ -118,7 +119,7 @@ def filter_streams_by_quality(
                     return episode_stream
             else:
                 # if not strict:
-                Logger.info(f"Animdl Api: Not strict so defaulting to best")
+                Logger.debug("Animdl Api: Not strict so defaulting to best")
                 return max(anime_episode_streams, key=get_quality_func)
                 # else:
                 #     Logger.warning(
@@ -195,6 +196,6 @@ def search_output_parser(raw_data: str) -> list[AnimdlAnimeUrlAndTitle]:
                 parsed_data.append(AnimdlAnimeUrlAndTitle(anime_title, data[(i + 1)]))
             else:
                 parsed_data.append(AnimdlAnimeUrlAndTitle(anime_title, item[1]))
-        except:
+        except Exception:
             pass
     return parsed_data  # anime title,url

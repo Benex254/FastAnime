@@ -1,13 +1,12 @@
 from kivy.properties import ObjectProperty, StringProperty
-
 from kivymd.app import MDApp
-from kivymd.uix.screen import MDScreen
-from kivymd.uix.navigationrail import MDNavigationRail, MDNavigationRailItem
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.button import MDIconButton
+from kivymd.uix.navigationrail import MDNavigationRail, MDNavigationRailItem
+from kivymd.uix.screen import MDScreen
 from kivymd.uix.tooltip import MDTooltip
 
-from anixstream.Utility.observer import Observer
+from ..Utility.observer import Observer
 
 
 class NavRail(MDNavigationRail):

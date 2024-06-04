@@ -3,13 +3,12 @@ from inspect import isgenerator
 from kivy.clock import Clock
 from kivy.logger import Logger
 
-from anixstream.View import SearchScreenView
-from anixstream.Model import SearchScreenModel
+from ..Model import SearchScreenModel
+from ..View import SearchScreenView
 
 
 class SearchScreenController:
-    """The search screen controller
-    """
+    """The search screen controller"""
 
     def __init__(self, model: SearchScreenModel):
         self.model = model
@@ -19,8 +18,7 @@ class SearchScreenController:
         return self.view
 
     def update_trending_anime(self):
-        """Gets and adds the trending anime to the search screen
-        """
+        """Gets and adds the trending anime to the search screen"""
         trending_cards_generator = self.model.get_trending_anime()
         if isgenerator(trending_cards_generator):
             self.view.trending_anime_sidebar.clear_widgets()

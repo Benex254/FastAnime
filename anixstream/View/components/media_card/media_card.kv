@@ -13,7 +13,7 @@
         width: dp(100)
         height: dp(150)
     MDDivider:
-        color:root.has_trailer_color
+        color:root.theme_cls.primaryColor if root._trailer_url else [0.5, 0.5, 0.5, 0.5] 
     SingleLineLabel:
         font_style:"Label"
         role:"medium"

@@ -1,6 +1,6 @@
-import yaml
-
 import os
+
+import yaml
 
 
 class YamlParser:
@@ -15,7 +15,7 @@ class YamlParser:
             try:
                 with open(self.file_path, "r") as yaml_file:
                     self.data = yaml.safe_load(yaml_file)
-            except:
+            except Exception:
                 self.data = default
                 with open(file_path, "w") as yaml_file:
                     yaml.dump(default, yaml_file)

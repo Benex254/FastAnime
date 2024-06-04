@@ -1,17 +1,17 @@
+from kivy.clock import Clock
 from kivy.properties import (
-    ObjectProperty,
-    StringProperty,
     BooleanProperty,
     ListProperty,
     NumericProperty,
+    ObjectProperty,
+    StringProperty,
 )
-from kivy.clock import Clock
 from kivy.uix.behaviors import ButtonBehavior
-
-from kivymd.uix.boxlayout import MDBoxLayout
+from kivymd.app import MDApp
 from kivymd.uix.behaviors import HoverBehavior
+from kivymd.uix.boxlayout import MDBoxLayout
 
-from .components.media_popup import media_card_popup, MediaPopup
+from .components.media_popup import MediaPopup
 
 
 class MediaCard(ButtonBehavior, HoverBehavior, MDBoxLayout):
@@ -20,6 +20,7 @@ class MediaCard(ButtonBehavior, HoverBehavior, MDBoxLayout):
     title = StringProperty()
     is_play = ObjectProperty()
     trailer_url = StringProperty()
+    _trailer_url: str | None = StringProperty()
     episodes = StringProperty()
     favourites = StringProperty()
     popularity = StringProperty()
@@ -42,6 +43,8 @@ class MediaCard(ButtonBehavior, HoverBehavior, MDBoxLayout):
         super().__init__(**kwargs)
         self.orientation = "vertical"
 
+        self.app: MDApp | None = MDApp.get_running_app()
+
         if trailer_url:
             self.trailer_url = trailer_url
         self.adaptive_size = True
@@ -63,21 +66,38 @@ class MediaCard(ButtonBehavior, HoverBehavior, MDBoxLayout):
 
     def on_dismiss(self, popup: MediaPopup):
         popup.player.state = "stop"
-        # if popup.player._video:
-        # popup.player._video.unload()
+        if popup.player._video:
+            popup.player._video.unload()
 
     def set_preview_image(self, image):
         self.preview_image = image
 
     def set_trailer_url(self, trailer_url):
         self.trailer_url = trailer_url
-        self.has_trailer_color = self.theme_cls.primaryColor
 
     def open(self, *_):
-        media_card_popup.caller = self
-        media_card_popup.title = self.title
-        media_card_popup.bind(on_dismiss=self.on_dismiss, on_open=self.on_popup_open)
-        media_card_popup.open(self)
+        if app := self.app:
+            popup: MediaPopup = app.media_card_popup
+            # self.popup.caller = self
+            popup.update_caller(self)
+            popup.title = self.title
+            popup.bind(on_dismiss=self.on_dismiss, on_open=self.on_popup_open)
+            popup.open(self)
+
+        # trailer stuff
+        from ....Utility.media_card_loader import media_card_loader
+
+        if trailer := self._trailer_url:
+            # from ....Utility import show_notification
+
+            # TODO: show an indefinate progress while traile is still not available
+            # show_notification("Pytube", "Please wait for trailer to load")
+            if trailer_url := media_card_loader.get_trailer_from_pytube(
+                trailer, self.title
+            ):
+                self.trailer_url = trailer_url
+            else:
+                self._trailer_url = None
 
     # ---------------respond to user actions and call appropriate model-------------------------
     def on_is_in_my_list(self, instance, in_user_anime_list):

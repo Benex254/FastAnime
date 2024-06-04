@@ -2,8 +2,6 @@
 *.mp4
 *.mp3
 *.ass
-user_data.json
-yt_cache.json
 vids/*
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -12,7 +10,7 @@ __pycache__/
 anixstream.ini
 # C extensions
 *.so
-
+data/
 # Distribution / packaging
 .Python
 build/

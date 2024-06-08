@@ -21,8 +21,8 @@ class MyListScreenController:
     def __init__(self, model: MyListScreenModel):
         self.model = model
         self.view = MyListScreenView(controller=self, model=self.model)
-        if len(self.requested_update_my_list_screen()) > 30:
-            self.requested_update_my_list_screen(2)
+        # if len(self.requested_update_my_list_screen()) > 30:
+        # self.requested_update_my_list_screen(2)
 
     def get_view(self) -> MyListScreenView:
         return self.view

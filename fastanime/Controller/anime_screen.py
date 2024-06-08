@@ -1,6 +1,4 @@
 from kivy.cache import Cache
-from kivy.clock import Clock
-from kivy.logger import Logger
 
 from ..Model import AnimeScreenModel
 from ..View import AnimeScreenView
@@ -18,25 +16,13 @@ class AnimeScreenController:
     def get_view(self) -> AnimeScreenView:
         return self.view
 
-    def update_anime_view(self, id: int, caller_screen_name: str):
-        """method called to update the anime screen when a new
+    def fetch_streams(self, anime_title, episode="1"):
+        self.view.current_anime_data = self.model.get_anime_data_from_provider(
+            anime_title
+        )
+        self.view.current_links = self.model.get_episode_streams(episode)
 
-        Args:
-            id (int): the anilst id of the anime
-            caller_screen_name (str): the screen thats calling this method; used internally to switch back to this screen
-        """
-        if self.model.anime_id != id:
-            if cached_anime_data := Cache.get("data.anime", f"{id}"):
-                data = cached_anime_data
-            else:
-                data = self.model.get_anime_data(id)
-
-            if data[0]:
-                self.model.anime_id = id
-                Clock.schedule_once(
-                    lambda _: self.view.update_layout(
-                        data[1]["data"]["Page"]["media"][0], caller_screen_name
-                    )
-                )
-                Logger.info(f"Anime Screen:Success in opening anime of id: {id}")
-                Cache.append("data.anime", f"{id}", data)
+    def update_anime_view(self, id, title, caller_screen_name):
+        self.fetch_streams(title)
+        self.view.current_title = title
+        self.view.caller_screen_name = caller_screen_name

@@ -244,9 +244,9 @@ class AniXStreamApp(MDApp):
         updated_list.append(id)
         user_data_helper.get_user_downloads()
 
-    def show_anime_screen(self, id: int, caller_screen_name: str):
+    def show_anime_screen(self, id: int, title, caller_screen_name: str):
         self.manager_screens.current = "anime screen"
-        self.anime_screen.controller.update_anime_view(id, caller_screen_name)
+        self.anime_screen.controller.update_anime_view(id, title, caller_screen_name)
 
     def download_anime_complete(
         self, successful_downloads: list, failed_downloads: list, anime_title: str

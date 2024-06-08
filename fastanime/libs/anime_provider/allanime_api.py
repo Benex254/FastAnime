@@ -1,6 +1,6 @@
 import json
-
 import re
+
 import requests
 
 # TODO: move constants to own file
@@ -66,7 +66,6 @@ query ($showId: String!) {
     }
 }
 """
-
 
 
 # TODO: creat a utility module for this
@@ -157,7 +156,7 @@ class AllAnimeAPI:
 
     def get_anime(self, allanime_show_id: str):
         variables = {"showId": allanime_show_id}
-        return api._fetch_gql(ALLANIME_SHOW_GQL, variables)
+        return anime_provider._fetch_gql(ALLANIME_SHOW_GQL, variables)
 
     def get_anime_episode(
         self, allanime_show_id: str, episode_string: str, translation_type: str = "sub"
@@ -167,7 +166,7 @@ class AllAnimeAPI:
             "translationType": translation_type,
             "episodeString": episode_string,
         }
-        return api._fetch_gql(ALLANIME_EPISODES_GQL, variables)
+        return anime_provider._fetch_gql(ALLANIME_EPISODES_GQL, variables)
 
     def get_episode_streams(self, allanime_episode_embeds_data):
         embeds = allanime_episode_embeds_data["episode"]["sourceUrls"]
@@ -210,7 +209,7 @@ class AllAnimeAPI:
                 return None
 
 
-api = AllAnimeAPI()
+anime_provider = AllAnimeAPI()
 
 
 if __name__ == "__main__":
@@ -245,7 +244,9 @@ if __name__ == "__main__":
     anime = input("Enter the anime name: ")
     translation = input("Enter the translation type: ")
 
-    search_results = api.search_for_anime(anime, translation_type=translation.strip())
+    search_results = anime_provider.search_for_anime(
+        anime, translation_type=translation.strip()
+    )
     if not search_results:
         raise Exception("No results found")
 
@@ -257,7 +258,7 @@ if __name__ == "__main__":
         sys.exit(1)
 
     anime_result = list(filter(lambda x: x["name"] == anime, search_results))[0]
-    anime_data = api.get_anime(anime_result["_id"])
+    anime_data = anime_provider.get_anime(anime_result["_id"])
 
     if anime_data is None:
         raise Exception("Anime not found")
@@ -273,11 +274,11 @@ if __name__ == "__main__":
             print("No episode was selected")
             sys.exit(1)
 
-        episode_data = api.get_anime_episode(anime_result["_id"], episode)
+        episode_data = anime_provider.get_anime_episode(anime_result["_id"], episode)
         if episode_data is None:
             raise Exception("Episode not found")
 
-        episode_streams = api.get_episode_streams(episode_data)
+        episode_streams = anime_provider.get_episode_streams(episode_data)
         if not episode_streams:
             raise Exception("No streams found")
         stream_links = [stream["link"] for stream in episode_streams[1]["links"]]
@@ -286,4 +287,7 @@ if __name__ == "__main__":
         if stream_link == "quit":
             print("Have a nice day")
             sys.exit()
+        if not stream_link:
+            raise Exception("No stream was selected")
+
         subprocess.run(["mpv", stream_link])

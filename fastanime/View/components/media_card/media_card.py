@@ -1,4 +1,5 @@
 from kivy.clock import Clock
+from kivy.factory import Factory
 from kivy.properties import (
     BooleanProperty,
     ListProperty,
@@ -6,7 +7,6 @@ from kivy.properties import (
     ObjectProperty,
     StringProperty,
 )
-from kivy.uix.behaviors import ButtonBehavior
 from kivymd.app import MDApp
 from kivymd.uix.behaviors import HoverBehavior
 from kivymd.uix.boxlayout import MDBoxLayout
@@ -14,7 +14,7 @@ from kivymd.uix.boxlayout import MDBoxLayout
 from .components.media_popup import MediaPopup
 
 
-class MediaCard(ButtonBehavior, HoverBehavior, MDBoxLayout):
+class MediaCard(HoverBehavior, MDBoxLayout):
     screen = ObjectProperty()
     anime_id = NumericProperty()
     title = StringProperty()
@@ -38,6 +38,7 @@ class MediaCard(ButtonBehavior, HoverBehavior, MDBoxLayout):
     cover_image_url = StringProperty()
     preview_image = StringProperty()
     has_trailer_color = ListProperty([0.5, 0.5, 0.5, 0.5])
+    _popup_opened = False
 
     def __init__(self, trailer_url=None, **kwargs):
         super().__init__(**kwargs)
@@ -49,6 +50,38 @@ class MediaCard(ButtonBehavior, HoverBehavior, MDBoxLayout):
             self.trailer_url = trailer_url
         self.adaptive_size = True
 
+    def on_touch_down(self, touch):
+        if touch.is_mouse_scrolling:
+            return False
+        if not self.collide_point(touch.x, touch.y):
+            return False
+        if self in touch.ud:
+            return False
+
+        if not self.app:
+            return False
+        disabled = True
+        # FIXME: double tap not working
+        #
+        if not disabled and touch.is_double_tap:
+            self.app.show_anime_screen(self.anime_id, self.screen.name)
+            touch.grab(self)
+            touch.ud[self] = True
+            self.last_touch = touch
+
+        elif self.collide_point(*touch.pos):
+            if not self._popup_opened:
+                Clock.schedule_once(self.open)
+            self._popup_opened = True
+            touch.grab(self)
+            touch.ud[self] = True
+            self.last_touch = touch
+            return True
+        else:
+            super().on_touch_down(touch)
+
+    # FIXME: Figure a good way implement this
+    # for now its debugy so scraping it till fix
     def on_enter(self):
         def _open_popup(dt):
             if self.hovering:
@@ -59,15 +92,16 @@ class MediaCard(ButtonBehavior, HoverBehavior, MDBoxLayout):
                             return
                     self.open()
 
-        Clock.schedule_once(_open_popup, 5)
+        # Clock.schedule_once(_open_popup, 5)
 
     def on_popup_open(self, popup: MediaPopup):
         popup.center = self.center
 
     def on_dismiss(self, popup: MediaPopup):
         popup.player.state = "stop"
-        if popup.player._video:
-            popup.player._video.unload()
+        self._popup_opened = False
+        #   if popup.player._video:
+        #       popup.player._video.unload()
 
     def set_preview_image(self, image):
         self.preview_image = image
@@ -84,20 +118,19 @@ class MediaCard(ButtonBehavior, HoverBehavior, MDBoxLayout):
             popup.bind(on_dismiss=self.on_dismiss, on_open=self.on_popup_open)
             popup.open(self)
 
-        # trailer stuff
-        from ....Utility.media_card_loader import media_card_loader
+        def _get_trailer(dt):
+            if trailer := self._trailer_url:
+                # trailer stuff
+                from ....Utility.media_card_loader import media_card_loader
 
-        if trailer := self._trailer_url:
-            # from ....Utility import show_notification
+                if trailer_url := media_card_loader.get_trailer_from_pytube(
+                    trailer, self.title
+                ):
+                    self.trailer_url = trailer_url
+                else:
+                    self._trailer_url = ""
 
-            # TODO: show an indefinate progress while traile is still not available
-            # show_notification("Pytube", "Please wait for trailer to load")
-            if trailer_url := media_card_loader.get_trailer_from_pytube(
-                trailer, self.title
-            ):
-                self.trailer_url = trailer_url
-            else:
-                self._trailer_url = ""
+        Clock.schedule_once(_get_trailer, 1)
 
     # ---------------respond to user actions and call appropriate model-------------------------
     def on_is_in_my_list(self, instance, in_user_anime_list):
@@ -109,6 +142,9 @@ class MediaCard(ButtonBehavior, HoverBehavior, MDBoxLayout):
 
     def on_trailer_url(self, *args):
         pass
+
+
+Factory.register("MediaCard", MediaCard)
 
 
 class MediaCardsContainer(MDBoxLayout):

@@ -27,9 +27,10 @@
             height: dp(280)
             line_color:root.caller.has_trailer_color
             line_width:1
+            # TODO: Remove the test source
             MediaPopupVideoPlayer:
                 id:player
-                source: root.caller.trailer_url
+                source: root.caller.trailer_url if root.caller.trailer_url else 'https://www088.vipanicdn.net/streamhls/abae70787c7bd2fcd4fab986c2a5aeba/ep.7.1703900604.m3u8'
                 thumbnail:app.default_anime_image
                 state:"play" if root.caller.trailer_url else "stop"
                 # fit_mode:"fill"

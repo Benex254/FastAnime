@@ -59,7 +59,7 @@ class MediaPopup(
         self.caller = caller
 
     def on_caller(self, *args):
-        Clock.schedule_once(lambda _: self.apply_class_lang_rules(), -1)
+        self.apply_class_lang_rules()
 
     def open(self, *_args, **kwargs):
         """Display the modal in the Window.

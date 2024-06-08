@@ -14,6 +14,7 @@ from kivy.resources import resource_add_path, resource_find, resource_remove_pat
 from kivy.uix.screenmanager import FadeTransition, ScreenManager
 from kivy.uix.settings import Settings, SettingsWithSidebar
 from kivymd.app import MDApp
+from dotenv import load_dotenv
 
 from .libs.animdl import AnimdlApi
 from .Utility import (
@@ -26,6 +27,7 @@ from .Utility.utils import write_crash
 from .View.components.media_card.components.media_popup import MediaPopup
 from .View.screens import screens
 
+load_dotenv()
 os.environ["KIVY_VIDEO"] = "ffpyplayer"  # noqa: E402
 
 Config.set("graphics", "width", "1000")  # noqa: E402
@@ -428,8 +430,8 @@ def run_app():
 
 
 if __name__ == "__main__":
-    in_development = True
-
+    in_development = bool(os.environ.get("IN_DEVELOPMENT", False))
+    print("In Development {}".format(in_development))
     if in_development:
         run_app()
     else:

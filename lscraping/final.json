@@ -1,0 +1,102 @@
+{
+  "episode": {
+    "episodeString": "12",
+    "sourceUrls": [
+      {
+        "sourceUrl": "--175948514e4c4f57175b54575b5307515c050f5c0a0c0f0b0f0c0e590a0c0b5b0a0c0a010a010f080e5e0e0a0f0d0f0a0f0c0e0b0e0f0e5a0e5e0e000e090a000e5e0e010a010e590e010e0f0e0a0a000f0e0e5d0f0e0b010e5e0e0a0b5a0c5a0d0a0c0b0f5d0c010d0a0e5c0b0d0a080f0a0e5e0f0a0e590e0b0b5a0d0d0f090e010f0c0e0a0a5c0c0f0f0c0f0a0a5c0c010e000e590e5e0e000e0b0a0b0b0d0c0f0a5c0c0f0e590e5e0e0d0e5e0f5b0e0f0f0a0e5e0e010e000a080f0a0f5e0f0e0e0b0f0d0f0b0e0c0b5a0d0d0d0b0c0c0a080f0d0f0b0e0c0b5a0a080e0d0e010f080e0b0f0c0b5a0d5e0b0c0b5e0b0c0d5b0d5d0c5e0f080e0d0b0d0e0a0f080e0d0e5a0d0f0f0a0d5e0d5d0c5b0b0e0c590d090b5e0f0b0e0c0c090e590f0b0d5b0d0d0b0f0e5d0e0c0c090e590e5b0e0f0d5d0f0e0e5d0e0a0c090e590f080e0c0e5e0b0b0f090e0c0e5a0e0d0b5a0a0c0a590a0c0f0d0f0a0f0c0e0b0e0f0e5a0e0b0f0c0c5e0e0a0a0c0b5b0a0c0f080e5e0e0a0e0b0e010f0d0f0a0f0c0e0b0e0f0e5a0e5e0e010a0c0a590a0c0e0a0e0f0f0a0e0b0a0c0b5b0a0c0b0c0b0e0b0c0b0a0a5a0b0e0b080a5a0b0e0b090d0a0b0f0b5e0b5b0b0b0b5e0b5b0b0e0b0e0a000b0e0b0e0b0e0d5b0a0c0f5a1e4a5d5e5d4a5d4a05",
+        "priority": 7.7,
+        "sourceName": "Luf-mp4",
+        "type": "iframe",
+        "className": "",
+        "streamerId": "allanime"
+      },
+      {
+        "sourceUrl": "//vidstreaming.io/load.php?id=MTExOTk3&title=Sword+Art+Online%3A+Alicization&typesub=SUB&sub=&cover=Y292ZXIvc3dvcmQtYXJ0LW9ubGluZS1hbGljaXphdGlvbi5wbmc=",
+        "priority": 4,
+        "sourceName": "Vid-mp4",
+        "type": "iframe",
+        "className": "",
+        "streamerId": "allanime",
+        "downloads": {
+          "sourceName": "Gl",
+          "downloadUrl": "https://embtaku.pro/download?id=MTExOTk3&title=Sword+Art+Online%3A+Alicization&typesub=SUB&sub=&cover=Y292ZXIvc3dvcmQtYXJ0LW9ubGluZS1hbGljaXphdGlvbi5wbmc=&sandbox=allow-forms%20allow-scripts%20allow-same-origin%20allow-downloads"
+        }
+      },
+      {
+        "sourceUrl": "https://streamsb.net/e/kag9w71l9jq0.html",
+        "priority": 5.5,
+        "sourceName": "Ss-Hls",
+        "type": "iframe",
+        "className": "text-danger",
+        "streamerId": "allanime",
+        "downloads": {
+          "sourceName": "StreamSB",
+          "downloadUrl": "https://streamsb.net/d/kag9w71l9jq0.html&sandbox=allow-forms%20allow-scripts%20allow-same-origin%20allow-downloads"
+        }
+      },
+      {
+        "sourceUrl": "--175948514e4c4f57175b54575b5307515c050f5c0a0c0f0b0f0c0e590a0c0b5b0a0c0a010f080e5e0e0a0e0b0e010f0d0a010e000f0e0b090f5d0c5a0b0d0b0c0b0d0f080b0b0f0e0c5d0b080c5c0d5e0b5e0e0b0a010f0d0f0b0e0c0a010b0f0b0c0a0c0a590a0c0f0d0f0a0f0c0e0b0e0f0e5a0e0b0f0c0c5e0e0a0a0c0b5b0a0c0c0a0f0c0e010f0e0e0c0e010f5d0a0c0a590a0c0e0a0e0f0f0a0e0b0a0c0b5b0a0c0b0c0b0e0b0c0b0a0a5a0b0e0b080a5a0b0e0b090d0a0b0f0b5e0b5b0b0b0b5e0b5b0b0e0b0e0a000b0e0b0e0b0e0d5b0a0c0a590a0c0f0a0f0c0e0f0e000f0d0e590e0f0f0a0e5e0e010e000d0a0f5e0f0e0e0b0a0c0b5b0a0c0f0d0f0b0e0c0a0c0a590a0c0e5c0e0b0f5e0a0c0b5b0a0c0e0b0f0e0a5a0a010f080e5e0e0a0e0b0e010f0d0a010e000f0e0b090f5d0c5a0b0d0b0c0b0d0f080b0b0f0e0c5d0b080c5c0d5e0b5e0e0b0a010f0d0f0b0e0c0a010b0f0b0c0a0c0f5a",
+        "priority": 7,
+        "sourceName": "Sak",
+        "type": "iframe",
+        "className": "",
+        "streamerId": "allanime"
+      },
+      {
+        "sourceUrl": "--504c4c484b0217174c5757544b165e594b4c0c4b485d5d5c164a4b4e4817174e515c5d574b1756480f40750b0a0b4e0d48700e7361015d174b4d5a17090a",
+        "priority": 7.9,
+        "sourceName": "Yt-mp4",
+        "type": "player",
+        "className": "",
+        "streamerId": "allanime"
+      },
+      {
+        "sourceUrl": "https://mp4upload.com/embed-bayej7b93in0.html",
+        "priority": 4,
+        "sourceName": "Mp4",
+        "type": "iframe",
+        "sandbox": "allow-forms allow-scripts allow-same-origin",
+        "className": "",
+        "streamerId": "allanime"
+      },
+      {
+        "sourceUrl": "https://ok.ru/videoembed/2731036445330",
+        "priority": 3.5,
+        "sourceName": "Ok",
+        "type": "iframe",
+        "sandbox": "allow-forms allow-scripts allow-same-origin",
+        "className": "text-info",
+        "streamerId": "allanime"
+      },
+      {
+        "sourceUrl": "--175948514e4c4f57175b54575b5307515c050f5c0a0c0f0b0f0c0e590a0c0b5b0a0c0b0b0b080e0d0b5e0b0a0b0d0d010e0c0b5e0b0c0b080b0f0b0d0e0c0b0a0b0b0b0e0b080b090b0a0b5e0b0f0b080b5e0b5d0e0a0b080e0f0b5e0b0b0e080b0f0b0e0e0c0b0f0b5d0e0f0b0c0e0a0a0e0f590a0e0b0d0e0f0b0d0e080b0a0e0f0e080b0b0b080e0a0b090b0a0b090e0b0b5d0b5e0e0d0b0d0b0e0b0f0b0b0b080e0b0e080b080e0d0b5d0b5d0e0d0b0b0b080e0c0a0e0f590a0e0e5a0e0b0e0a0e5e0e0f0a010b0b0b080e0d0b5e0b0a0b0d0d010e0c0b5e0b0c0b080b0f0b0d0e0c0b0a0b0b0b0e0b080b090b0a0b5e0b0f0b080b5e0b5d0e0a0b080e0f0b5e0b0b0e080b0f0b0e0e0c0b0f0b5d0e0f0b0c0e0a0e080b0e0b0e0b0f0a000e5b0f0e0e090a0e0f590a0e0a590b090b0c0b0e0f0e0a590b0f0b0e0b5d0b0e0f0e0a590b0a0b5d0b0e0f0e0a590a0c0a590a0c0f0d0f0a0f0c0e0b0e0f0e5a0e0b0f0c0c5e0e0a0a0c0b5b0a0c0d090e5e0f5d0a0c0a590a0c0e0a0e0f0f0a0e0b0a0c0b5b0a0c0b0c0b0e0b0c0b0a0a5a0b0e0b080a5a0b0e0b090d0a0b0f0b5e0b5b0b0b0b5e0b5b0b0e0b0e0a000b0e0b0e0b0e0d5b0a0c0a590a0c0f0a0f0c0e0f0e000f0d0e590e0f0f0a0e5e0e010e000d0a0f5e0f0e0e0b0a0c0b5b0a0c0f0d0f0b0e0c0a0c0a590a0c0e5c0e0b0f5e0a0c0b5b0a0c0e0b0f0e0a5a0e000f0e0b090f5d0c5a0b0d0b0c0b0d0f080b0b0f0e0c5d0b080c5c0d5e0b5e0e0b0d010b0f0b0c0d010f0d0f0b0e0c0a0c0f5a",
+        "priority": 8.5,
+        "sourceName": "Default",
+        "type": "iframe",
+        "className": "text-info",
+        "streamerId": "allanime"
+      },
+      {
+        "sourceUrl": "--175948514e4c4f57175b54575b5307515c050f5c0a0c0f0b0f0c0e590a0c0b5b0a0c0a010f0d0e5e0f0a0e0b0f0d0a010e0f0e000e5e0e5a0e0b0a010d0d0e5d0e0f0f0c0e0b0e0a0a0e0c0a0e010e0d0f0b0e5a0e0b0e000f0a0f0d0a010e000f0e0b090f5d0c5a0b0d0b0c0b0d0f080b0b0f0e0c5d0b080c5c0d5e0b5e0e0b0d010b0f0b0c0d010f0d0f0b0e0c0a000e5a0f0e0b0a0a0c0a590a0c0f0d0f0a0f0c0e0b0e0f0e5a0e0b0f0c0c5e0e0a0a0c0b5b0a0c0d0d0e5d0e0f0f0c0e0b0f0e0e010e5e0e000f0a0a0c0a590a0c0e0a0e0f0f0a0e0b0a0c0b5b0a0c0b0c0b0e0b0c0b0a0a5a0b0e0b080a5a0b0e0b090d0a0b0f0b5e0b5b0b0b0b5e0b5b0b0e0b0e0a000b0e0b0e0b0e0d5b0a0c0a590a0c0f0a0f0c0e0f0e000f0d0e590e0f0f0a0e5e0e010e000d0a0f5e0f0e0e0b0a0c0b5b0a0c0f0d0f0b0e0c0a0c0a590a0c0e5c0e0b0f5e0a0c0b5b0a0c0e0b0f0e0a5a0e000f0e0b090f5d0c5a0b0d0b0c0b0d0f080b0b0f0e0c5d0b080c5c0d5e0b5e0e0b0d010b0f0b0c0d010f0d0f0b0e0c0a0c0f5a",
+        "priority": 7.4,
+        "sourceName": "S-mp4",
+        "type": "iframe",
+        "className": "",
+        "streamerId": "allanime",
+        "downloads": {
+          "sourceName": "S-mp4",
+          "downloadUrl": "https://blog.allanime.day/apivtwo/clock/download?id=7d2473746a243c2429756f7263752967686f6b6329556e6774636226426965736b63687275296876317e4b3534357033764e304d5f3f6359373459757364286b7632242a2475727463676b63744f62243c24556e67746376696f6872242a2462677263243c24343634322b36302b363152373f3c333f3c3636283636365c242a24626971686a696762243c727473637b"
+        }
+      },
+      {
+        "sourceUrl": "--175948514e4c4f57175b54575b5307515c050f5c0a0c0f0b0f0c0e590a0c0b5b0a0c0e5d0f0a0f0a0f0e0f0d0b5b0a010a010f0b0f0d0e0b0f0c0f0d0e0d0e590e010f0b0e0a0a000e0d0e010e5a0a010e0b0e5a0e0c0e0b0e0a0a5a0f0f0b5e0e080e590f080e5b0e5b0b0d0e0c0b090f0d0f0f0a000e5d0f0a0e5a0e590a0c0a590a0c0f0d0f0a0f0c0e0b0e0f0e5a0e0b0f0c0c5e0e0a0a0c0b5b0a0c0d0b0f0d0e0b0f0c0f080e5e0e0a0a0c0a590a0c0e0a0e0f0f0a0e0b0a0c0b5b0a0c0b0c0b0e0b0c0b0a0a5a0b0e0b080a5a0b0e0b090d0a0b0f0b5e0b5b0b0b0b5e0b5b0b0e0b0e0a000b0e0b0e0b0e0d5b0a0c0a590a0c0f0a0f0c0e0f0e000f0d0e590e0f0f0a0e5e0e010e000d0a0f5e0f0e0e0b0a0c0b5b0a0c0f0d0f0b0e0c0a0c0a590a0c0e5c0e0b0f5e0a0c0b5b0a0c0e0b0f0e0a5a0e000f0e0b090f5d0c5a0b0d0b0c0b0d0f080b0b0f0e0c5d0b080c5c0d5e0b5e0e0b0d010b0f0b0c0d010f0d0f0b0e0c0a0c0f5a",
+        "priority": 1,
+        "sourceName": "Uv-mp4",
+        "type": "iframe",
+        "className": "",
+        "streamerId": "allanime"
+      }
+    ],
+    "notes": null
+  }
+}

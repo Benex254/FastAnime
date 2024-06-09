@@ -4,6 +4,7 @@
 *.ass
 vids
 data/
+.project/
 crashdump.txt
 # Byte-compiled / optimized / DLL files
 __pycache__/

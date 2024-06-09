@@ -1,5 +1,5 @@
-from kivymd.uix.boxlayout import MDBoxLayout
+from kivymd.uix.recycleview import MDRecycleView
 
 
-class TrendingAnimeSideBar(MDBoxLayout):
+class TrendingAnimeSideBar(MDRecycleView):
     pass

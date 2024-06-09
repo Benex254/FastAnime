@@ -28,7 +28,7 @@ class SearchScreenView(BaseScreenView):
 
         if search_term and not (self.is_searching):
             self.search_term = search_term
-            self.search_results_container.clear_widgets()
+            self.search_results_container.data = []
             if filters := self.filters.filters:
                 Clock.schedule_once(
                     lambda _: self.controller.requested_search_for_anime(
@@ -43,7 +43,7 @@ class SearchScreenView(BaseScreenView):
                 )
 
     def update_layout(self, widget):
-        self.search_results_container.add_widget(widget)
+        self.search_results_container.data.append(widget)
 
     def update_pagination(self, pagination_info):
         self.search_results_pagination.current_page = self.current_page = (
@@ -65,4 +65,4 @@ class SearchScreenView(BaseScreenView):
             self.handle_search_for_anime(page=page)
 
     def update_trending_sidebar(self, trending_anime):
-        self.trending_anime_sidebar.add_widget(trending_anime)
+        self.trending_anime_sidebar.data.append(trending_anime)

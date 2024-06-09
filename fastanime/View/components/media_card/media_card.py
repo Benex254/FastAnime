@@ -39,6 +39,7 @@ class MediaCard(HoverBehavior, MDBoxLayout):
     preview_image = StringProperty()
     has_trailer_color = ListProperty([0.5, 0.5, 0.5, 0.5])
     _popup_opened = False
+    _title = ()
 
     def __init__(self, trailer_url=None, **kwargs):
         super().__init__(**kwargs)
@@ -118,19 +119,19 @@ class MediaCard(HoverBehavior, MDBoxLayout):
             popup.bind(on_dismiss=self.on_dismiss, on_open=self.on_popup_open)
             popup.open(self)
 
-        def _get_trailer(dt):
-            if trailer := self._trailer_url:
-                # trailer stuff
-                from ....Utility.media_card_loader import media_card_loader
+    def _get_trailer(self):
+        if self.trailer_url:
+            return
+        if trailer := self._trailer_url:
+            # trailer stuff
+            from ....Utility.media_card_loader import media_card_loader
 
-                if trailer_url := media_card_loader.get_trailer_from_pytube(
-                    trailer, self.title
-                ):
-                    self.trailer_url = trailer_url
-                else:
-                    self._trailer_url = ""
-
-        Clock.schedule_once(_get_trailer, 1)
+            if trailer_url := media_card_loader.get_trailer_from_pytube(
+                trailer, self.title
+            ):
+                self.trailer_url = trailer_url
+            else:
+                self._trailer_url = ""
 
     # ---------------respond to user actions and call appropriate model-------------------------
     def on_is_in_my_list(self, instance, in_user_anime_list):

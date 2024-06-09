@@ -21,6 +21,9 @@ class AnimeScreenController:
             anime_title
         )
         self.view.current_links = self.model.get_episode_streams(episode)
+        # TODO: add auto start
+        #
+        # self.view.current_link = self.view.current_links[0]["gogoanime"][0]
 
     def update_anime_view(self, id, title, caller_screen_name):
         self.fetch_streams(title)

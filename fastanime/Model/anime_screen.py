@@ -6,7 +6,7 @@ from fuzzywuzzy import fuzz
 
 
 def anime_title_percentage_match(
-    possible_user_requested_anime_title: str, title: str
+    possible_user_requested_anime_title: str, title: tuple
 ) -> int:
     """Returns the percentage match between the possible title and user title
 
@@ -19,7 +19,10 @@ def anime_title_percentage_match(
     """
     print(locals())
 
-    percentage_ratio = fuzz.ratio(title, possible_user_requested_anime_title)
+    percentage_ratio = max(
+        fuzz.ratio(title[0].lower(), possible_user_requested_anime_title.lower()),
+        fuzz.ratio(title[1].lower(), possible_user_requested_anime_title.lower()),
+    )
     print(percentage_ratio)
     return percentage_ratio
 
@@ -36,11 +39,11 @@ class AnimeScreenModel(BaseScreenModel):
     current_anime_id = "0"
     current_title = ""
 
-    def get_anime_data_from_provider(self, anime_title: str, id=None):
+    def get_anime_data_from_provider(self, anime_title: tuple, id=None):
         if self.current_title == anime_title and self.current_anime_data:
             return self.current_anime_data
 
-        search_results = anime_provider.search_for_anime(anime_title)
+        search_results = anime_provider.search_for_anime(anime_title[0])
 
         if search_results:
             _search_results = search_results["shows"]["edges"]

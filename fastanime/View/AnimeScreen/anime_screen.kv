@@ -18,6 +18,7 @@
 <AnimeScreenView>:
     md_bg_color: self.theme_cls.backgroundColor
     episodes_container:episodes_container
+    video_player:video_player
     MDBoxLayout:
         padding:"10dp"
         orientation: 'vertical'
@@ -29,6 +30,7 @@
            
         MDBoxLayout:
             VideoPlayer:
+                id:video_player
                 source:root.current_link
         AnimeBoxLayout:
             padding: "20dp"

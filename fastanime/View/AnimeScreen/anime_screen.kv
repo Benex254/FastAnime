@@ -36,8 +36,18 @@
             spacing:"10dp"
             md_bg_color: self.theme_cls.surfaceContainerLowColor
             AnimeBoxLayout:
+                orientation:'horizontal'
+                MDIconButton:
+                    icon:"skip-previous"
+                    on_press:root.previous_episode()
+                MDIconButton:
+                    icon:"skip-next"
+                    on_press: root.next_episode()
+                MDIconButton:
+                    icon:"download"
+            AnimeBoxLayout:
                 AnimeLabel:
-                    text:"Sub servers: "
+                    text:"servers: "
                 MDSegmentedButton:
                     id:pl
                     multiselect:False

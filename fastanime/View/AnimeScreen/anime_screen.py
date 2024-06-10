@@ -3,7 +3,6 @@ from kivy.properties import ListProperty, ObjectProperty, StringProperty
 from kivy.uix.widget import Factory
 from kivymd.uix.button import MDButton
 
-from ...libs.anilist import AnilistBaseMediaDataSchema
 from ...View.base_screen import BaseScreenView
 
 
@@ -24,6 +23,8 @@ class AnimeScreenView(BaseScreenView):
     caller_screen_name = ObjectProperty()
     current_title = ()
     episodes_container = ObjectProperty()
+    total_episodes = 0
+    current_episode = 1
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -31,6 +32,7 @@ class AnimeScreenView(BaseScreenView):
 
     def update_episodes(self, episodes_list):
         self.episodes_container.data = []
+        self.total_episodes = len(episodes_list)
         for episode in episodes_list:
             self.episodes_container.data.append(
                 {
@@ -42,13 +44,25 @@ class AnimeScreenView(BaseScreenView):
                 }
             )
 
+    def next_episode(self):
+        next_episode = self.current_episode + 1
+        if next_episode <= self.total_episodes:
+            self.current_episode = next_episode
+            self.update_current_episode(str(next_episode))
+
+    def previous_episode(self):
+        previous_episode = self.current_episode - 1
+        if previous_episode > 0:
+            self.current_episode = previous_episode
+            self.update_current_episode(str(previous_episode))
+
     def on_current_anime_data(self, instance, value):
+        self.current_episode = int("1")
         data = value["show"]
         self.update_episodes(data["availableEpisodesDetail"]["sub"][::-1])
 
     def update_current_episode(self, episode):
         self.controller.fetch_streams(self.current_title, episode)
-        # self.current_link = self.current_links[0]["gogoanime"][0]
 
     def update_current_video_stream(self, server, is_dub=False):
         for link in self.current_links:

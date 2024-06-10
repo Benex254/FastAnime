@@ -47,6 +47,11 @@
                     on_press: root.next_episode()
                 MDIconButton:
                     icon:"download"
+                MDButton:
+                    on_press: 
+                        if root.current_link: app.play_on_mpv(root.current_link)
+                    MDButtonText:
+                        text:"Play on MPV"
             AnimeBoxLayout:
                 AnimeLabel:
                     text:"servers: "

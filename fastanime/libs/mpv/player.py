@@ -1,44 +1,24 @@
-import tkinter as tk
-from subprocess import Popen, PIPE
+from subprocess import Popen, PIPE, DEVNULL
 import os
 import threading
 
 
 class MPVPlayer:
-    def __init__(self, root):
-        self.root = root
-        self.root.title("MPV Player Control")
-        self.create_widgets()
-
+    def __init__(self):
         self.mpv_process = None
         self.mpv_thread = None
-
-    def create_widgets(self):
-        self.start_button = tk.Button(
-            self.root, text="Start MPV", command=self.start_mpv
-        )
-        self.start_button.pack()
-
-        self.pause_button = tk.Button(self.root, text="Pause", command=self.pause)
-        self.pause_button.pack()
-
-        self.play_button = tk.Button(self.root, text="Play", command=self.play)
-        self.play_button.pack()
-
-        self.stop_button = tk.Button(self.root, text="Stop MPV", command=self.stop_mpv)
-        self.stop_button.pack()
 
     def start_mpv(self):
         if self.mpv_process is None:
             self.mpv_thread = threading.Thread(target=self.run_mpv)
             self.mpv_thread.start()
 
-    def run_mpv(self):
+    def run_mpv(self, url):
         self.mpv_process = Popen(
-            ["mpv", "--input-ipc-server=/tmp/mpvsocket", "path/to/your/video.mp4"],
-            stdin=PIPE,
-            stdout=PIPE,
-            stderr=PIPE,
+            ["mpv", "--input-ipc-server=/tmp/mpvsocket", "--osc", url],
+            stdin=DEVNULL,
+            stdout=DEVNULL,
+            stderr=DEVNULL,
             preexec_fn=os.setsid,
         )
         self.mpv_process.wait()
@@ -66,7 +46,4 @@ class MPVPlayer:
             self.mpv_thread.join()
 
 
-if __name__ == "__main__":
-    root = tk.Tk()
-    app = MPVPlayer(root)
-    root.mainloop()
+mpv_player = MPVPlayer()

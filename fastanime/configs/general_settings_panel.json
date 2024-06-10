@@ -16,7 +16,7 @@
     "desc": "Sets the app to dark or light theme",
     "section": "Preferences",
     "key": "theme_style",
-    "options":["Light","Dark"]
+    "options": ["Light", "Dark"]
   },
   {
     "type": "path",
@@ -24,12 +24,5 @@
     "desc": "location to download your videos",
     "section": "Preferences",
     "key": "downloads_dir"
-  },
-  {
-    "type": "bool",
-    "title": "Show Startup anime",
-    "desc": "whether to show the startup anime, switch it off for faster app startup times",
-    "section": "Preferences",
-    "key": "is_startup_anime_enable"
   }
 ]

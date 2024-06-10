@@ -1,13 +1,15 @@
-from ..libs.anilist import AniList
-from .base_model import BaseScreenModel
-from ..libs.anime_provider.allanime_api import anime_provider
-from kivy.cache import Cache
 from fuzzywuzzy import fuzz
+from kivy.cache import Cache
+
+from ..libs.anilist import AniList
+from ..libs.anime_provider.allanime.api import anime_provider
+from .base_model import BaseScreenModel
+from ..Utility.data import anime_maps
 
 
 def anime_title_percentage_match(
     possible_user_requested_anime_title: str, title: tuple
-) -> int:
+) -> float:
     """Returns the percentage match between the possible title and user title
 
     Args:
@@ -17,6 +19,8 @@ def anime_title_percentage_match(
     Returns:
         int: the percentage match
     """
+    if normalized_anime_title := anime_maps.get(possible_user_requested_anime_title):
+        possible_user_requested_anime_title = normalized_anime_title
     print(locals())
     # compares both the romaji and english names and gets highest Score
     percentage_ratio = max(

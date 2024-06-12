@@ -5,3 +5,4 @@ plyer
 https://github.com/kivymd/KivyMD/archive/master.zip
 fuzzywuzzy
 python-Levenshtein
+dotenv

@@ -1,7 +1,6 @@
 import os
 import random
 
-from dotenv import load_dotenv
 from kivy.config import Config
 from kivy.loader import Loader
 from kivy.logger import Logger
@@ -23,7 +22,6 @@ from .Utility.utils import write_crash
 from .View.components.media_card.components.media_popup import MediaPopup
 from .View.screens import screens
 
-load_dotenv()
 os.environ["KIVY_VIDEO"] = "ffpyplayer"  # noqa: E402
 
 Config.set("graphics", "width", "1000")  # noqa: E402

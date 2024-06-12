@@ -29,17 +29,21 @@ class AllAnimeAPI:
     api_endpoint = ALLANIME_API_ENDPOINT
 
     def _fetch_gql(self, query: str, variables: dict) -> dict:
-        response = requests.get(
-            self.api_endpoint,
-            params={
-                "variables": json.dumps(variables),
-                "query": query,
-            },
-            headers={"Referer": ALLANIME_REFERER, "User-Agent": USER_AGENT},
-        )
-        if response.status_code != 200:
+        try:
+            response = requests.get(
+                self.api_endpoint,
+                params={
+                    "variables": json.dumps(variables),
+                    "query": query,
+                },
+                headers={"Referer": ALLANIME_REFERER, "User-Agent": USER_AGENT},
+            )
+            if response.status_code != 200:
+                return {}
+            return response.json().get("data", {})
+        except Exception as e:
+            Logger.error(f"allanime:Error: {e}")
             return {}
-        return response.json().get("data", {})
 
     def search_for_anime(
         self, user_query: str, translation_type: str = "sub"
@@ -73,6 +77,11 @@ class AllAnimeAPI:
         return anime_provider._fetch_gql(ALLANIME_EPISODES_GQL, variables)
 
     def get_episode_streams(self, allanime_episode_embeds_data):
+        if (
+            not allanime_episode_embeds_data
+            or allanime_episode_embeds_data.get("episode") is None
+        ):
+            return {}
         embeds = allanime_episode_embeds_data["episode"]["sourceUrls"]
         for embed in embeds:
             # filter the working streams

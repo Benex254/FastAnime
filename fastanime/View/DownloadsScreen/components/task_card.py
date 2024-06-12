@@ -1,13 +1,13 @@
-from kivy.properties import StringProperty
+from kivy.properties import StringProperty, ListProperty
 from kivymd.uix.boxlayout import MDBoxLayout
 
 
-# TODO: add a progress bar to show the individual progress of each task
 class TaskCard(MDBoxLayout):
-    anime_task_name = StringProperty()
-    episodes_to_download = StringProperty()
+    file = ListProperty(("", ""))
+    eta = StringProperty()
 
-    def __init__(self, anime_title: str, episodes: str, *args, **kwargs):
+    def __init__(self, file: str, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.anime_task_name = f"{anime_title}"
-        self.episodes_to_download = f"Episodes: {episodes}"
+        self.file = file
+        # self.eta = eta
+        #

@@ -15,7 +15,7 @@ if vid_path := plyer.storagepath.get_videos_dir():  # type: ignore
     if not os.path.exists(downloads_dir):
         os.mkdir(downloads_dir)
 else:
-    downloads_dir = os.path.join(".", "videos")
+    downloads_dir = os.path.join(app_dir, "videos")
     if not os.path.exists(downloads_dir):
         os.mkdir(downloads_dir)
 

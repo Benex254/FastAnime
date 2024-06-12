@@ -10,12 +10,15 @@ from kivy.uix.screenmanager import FadeTransition, ScreenManager
 from kivy.uix.settings import Settings, SettingsWithSidebar
 from kivymd.app import MDApp
 
+from fastanime.Utility.show_notification import show_notification
+
 from . import downloads_dir
 from .libs.mpv.player import mpv_player
 from .Utility import (
     themes_available,
     user_data_helper,
 )
+from .Utility.downloader.downloader import downloader
 from .Utility.utils import write_crash
 from .View.components.media_card.components.media_popup import MediaPopup
 from .View.screens import screens
@@ -140,6 +143,12 @@ class FastAnime(MDApp):
         if mpv_player.mpv_process:
             mpv_player.stop_mpv()
         mpv_player.run_mpv(anime_video_url)
+
+    def download_anime_video(self, url: str, anime_title: tuple):
+        self.download_screen.new_download_task(anime_title)
+        show_notification("New Download", f"{anime_title[0]} episode: {anime_title[1]}")
+        progress_hook = self.download_screen.on_episode_download_progress
+        downloader.download_file(url, anime_title, progress_hook)
 
 
 def run_app():

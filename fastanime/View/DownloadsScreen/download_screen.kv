@@ -7,7 +7,7 @@
     shorten:False
     markup:True
     font_style: "Label"
-    role: "large"
+    role: "small"
     bold:True
 <DownloadsScreenView>
     md_bg_color: self.theme_cls.backgroundColor
@@ -46,12 +46,12 @@
                     md_bg_color:self.theme_cls.secondaryContainerColor
                     DownloadsScreenLabel:
                         id:download_progress_label
-                        size_hint_x: .6
+                        size_hint_x: .8
                         text:"Try Downloading sth :)"
                         pos_hint: {'center_y': .5}
                     MDLinearProgressIndicator:
                         id: progress_bar
-                        size_hint_x: .4
+                        size_hint_x: .2
                         size_hint_y:None
                         height:"10dp"
                         type: "determinate"

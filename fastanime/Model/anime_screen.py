@@ -4,7 +4,7 @@ from kivy.cache import Cache
 from ..libs.anilist import AniList
 from ..libs.anime_provider.allanime.api import anime_provider
 from .base_model import BaseScreenModel
-from ..Utility.data import anime_maps
+from ..Utility.data import anime_normalizer
 
 
 def anime_title_percentage_match(
@@ -19,7 +19,9 @@ def anime_title_percentage_match(
     Returns:
         int: the percentage match
     """
-    if normalized_anime_title := anime_maps.get(possible_user_requested_anime_title):
+    if normalized_anime_title := anime_normalizer.get(
+        possible_user_requested_anime_title
+    ):
         possible_user_requested_anime_title = normalized_anime_title
     print(locals())
     # compares both the romaji and english names and gets highest Score

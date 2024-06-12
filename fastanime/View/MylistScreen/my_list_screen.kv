@@ -14,15 +14,19 @@
                 orientation: 'vertical'
                 size_hint:.95,1
                 SearchBar:
-                MDScrollView:
+                MDRecycleView:
                     pos_hint:{"center_x":.5}
                     size_hint:1,1
-                    MDGridLayout:
+                    id:user_anime_list_container
+                    key_viewclass:"viewclass"
+                    MDRecycleGridLayout:
+                        pos_hint: {'center_x': 0.5}
                         spacing: '40dp'
-                        padding: "100dp","50dp","10dp","200dp"
-                        id:user_anime_list_container
-                        cols:4 if root.width<=1100 else 5
+                        padding: "25dp","50dp","75dp","200dp"
+                        default_size_hint:None,None
+                        default_size:dp(100),dp(150)
+                        cols:3 if root.width <= 1100 else 5
                         size_hint_y:None
-                        height:self.minimum_height
+                        height:max(self.parent.parent.height,self.minimum_height)
 
     

@@ -1,5 +1,5 @@
 from kivy.clock import Clock
-from kivy.properties import DictProperty, ObjectProperty, StringProperty
+from kivy.properties import ObjectProperty
 
 from ...View.base_screen import BaseScreenView
 
@@ -18,4 +18,4 @@ class MyListScreenView(BaseScreenView):
         Clock.schedule_once(lambda _: self.controller.requested_update_my_list_screen())
 
     def update_layout(self, widget):
-        self.user_anime_list_container.add_widget(widget)
+        self.user_anime_list_container.data.append(widget)

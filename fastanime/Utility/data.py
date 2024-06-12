@@ -2,7 +2,10 @@
 Just contains some useful data used across the codebase
 """
 
-anime_maps = {"1P": "one piece"}
+anime_normalizer = {
+    "1P": "one piece",
+    "Magia Record: Mahou Shoujo Madoka☆Magica Gaiden (TV)": "Mahou Shoujo Madoka☆Magica",
+}
 
 
 themes_available = [

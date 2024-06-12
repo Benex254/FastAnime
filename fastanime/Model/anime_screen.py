@@ -1,5 +1,6 @@
 from fuzzywuzzy import fuzz
 from kivy.cache import Cache
+from kivy.logger import Logger
 
 from ..libs.anilist import AniList
 from ..libs.anime_provider.allanime.api import anime_provider
@@ -46,55 +47,64 @@ class AnimeScreenModel(BaseScreenModel):
     current_title = ""
 
     def get_anime_data_from_provider(self, anime_title: tuple, is_dub, id=None):
-        if self.current_title == anime_title and self.current_anime_data:
-            return self.current_anime_data
-        translation_type = "dub" if is_dub else "sub"
-        search_results = anime_provider.search_for_anime(
-            anime_title[0], translation_type
-        )
-
-        if search_results:
-            _search_results = search_results["shows"]["edges"]
-            result = max(
-                _search_results,
-                key=lambda x: anime_title_percentage_match(x["name"], anime_title),
+        try:
+            if self.current_title == anime_title and self.current_anime_data:
+                return self.current_anime_data
+            translation_type = "dub" if is_dub else "sub"
+            search_results = anime_provider.search_for_anime(
+                anime_title[0], translation_type
             )
-            self.current_anime_id = result["_id"]
-            self.current_anime_data = anime_provider.get_anime(result["_id"])
-            self.current_title = anime_title
-            return self.current_anime_data
-        return {}
+
+            if search_results:
+                _search_results = search_results["shows"]["edges"]
+                result = max(
+                    _search_results,
+                    key=lambda x: anime_title_percentage_match(x["name"], anime_title),
+                )
+                self.current_anime_id = result["_id"]
+                self.current_anime_data = anime_provider.get_anime(result["_id"])
+                self.current_title = anime_title
+                return self.current_anime_data
+            return {}
+        except Exception as e:
+            Logger.info("anime_screen error: %s" % e)
+            return {}
 
     def get_episode_streams(self, episode, is_dub):
         translation_type = "dub" if is_dub else "sub"
 
-        if cached_episode := Cache.get(
-            "streams.anime", f"{self.current_title}{episode}{is_dub}"
-        ):
-            return cached_episode
-        if self.current_anime_data:
-            episode_streams = anime_provider.get_anime_episode(
-                self.current_anime_id, episode, translation_type
-            )
-            streams = anime_provider.get_episode_streams(episode_streams)
+        try:
+            if cached_episode := Cache.get(
+                "streams.anime", f"{self.current_title}{episode}{is_dub}"
+            ):
+                return cached_episode
+            if self.current_anime_data:
+                episode_streams = anime_provider.get_anime_episode(
+                    self.current_anime_id, episode, translation_type
+                )
+                streams = anime_provider.get_episode_streams(episode_streams)
 
-            if streams:
-                _streams = list(streams)
-                streams = []
-                for stream in _streams:
-                    streams.append(
-                        {
-                            f"{stream[0]}": [
-                                _stream["link"] for _stream in stream[1]["links"]
-                            ]
-                        }
-                    )
-                    Cache.append(
-                        "streams.anime",
-                        f"{self.current_title}{episode}{is_dub}",
-                        streams,
-                    )
+                if streams:
+                    _streams = list(streams)
+                    streams = []
+                    for stream in _streams:
+                        streams.append(
+                            {
+                                f"{stream[0]}": [
+                                    _stream["link"] for _stream in stream[1]["links"]
+                                ]
+                            }
+                        )
+                        Cache.append(
+                            "streams.anime",
+                            f"{self.current_title}{episode}{is_dub}",
+                            streams,
+                        )
                 return streams
+            return []
+        except Exception as e:
+            Logger.info("anime_screen error: %s" % e)
+            return []
 
         # should return {type:{provider:streamlink}}
 

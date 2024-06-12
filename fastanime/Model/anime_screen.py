@@ -45,11 +45,13 @@ class AnimeScreenModel(BaseScreenModel):
     current_anime_id = "0"
     current_title = ""
 
-    def get_anime_data_from_provider(self, anime_title: tuple, id=None):
+    def get_anime_data_from_provider(self, anime_title: tuple, is_dub, id=None):
         if self.current_title == anime_title and self.current_anime_data:
             return self.current_anime_data
-
-        search_results = anime_provider.search_for_anime(anime_title[0])
+        translation_type = "dub" if is_dub else "sub"
+        search_results = anime_provider.search_for_anime(
+            anime_title[0], translation_type
+        )
 
         if search_results:
             _search_results = search_results["shows"]["edges"]
@@ -61,15 +63,18 @@ class AnimeScreenModel(BaseScreenModel):
             self.current_anime_data = anime_provider.get_anime(result["_id"])
             self.current_title = anime_title
             return self.current_anime_data
+        return {}
 
-    def get_episode_streams(self, episode):
+    def get_episode_streams(self, episode, is_dub):
+        translation_type = "dub" if is_dub else "sub"
+
         if cached_episode := Cache.get(
-            "streams.anime", f"{self.current_title}{episode}"
+            "streams.anime", f"{self.current_title}{episode}{is_dub}"
         ):
             return cached_episode
         if self.current_anime_data:
             episode_streams = anime_provider.get_anime_episode(
-                self.current_anime_id, episode
+                self.current_anime_id, episode, translation_type
             )
             streams = anime_provider.get_episode_streams(episode_streams)
 
@@ -85,7 +90,9 @@ class AnimeScreenModel(BaseScreenModel):
                         }
                     )
                     Cache.append(
-                        "streams.anime", f"{self.current_title}{episode}", streams
+                        "streams.anime",
+                        f"{self.current_title}{episode}{is_dub}",
+                        streams,
                     )
                 return streams
 

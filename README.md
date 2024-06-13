@@ -2,7 +2,9 @@
 
 Welcome to Fast Anime, your new favorite destination for streaming and downloading anime.
 
-https://github.com/Benex254/FastAnime/blob/master/.assets/screencasts/fastanime_demo.webm
+
+
+<video src="https://github.com/Benex254/FastAnime/blob/master/.assets/screencasts/fastanime_demo.webm" width="320" height="240" controls></video>
 
 ## Table of Contents
 

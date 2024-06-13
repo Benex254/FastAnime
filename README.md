@@ -69,7 +69,10 @@ We welcome your issues and feature requests. However, we currently have no plans
 
 ## Receiving Support
 
-If you have any inquiries, join our Discord server: `<Discord-server-link>`
+If you have any inquiries, join our  [Discord Server](https://discord.gg/4NUTj5Pt).
+
+[![Join our Discord server!](https://invidget.switchblade.xyz/4NUTj5Pt)](http://discord.gg/4NUTj5Pt)
+
 
 ## Supporting the Project
 

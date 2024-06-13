@@ -2,8 +2,8 @@
 
 Welcome to Fast Anime, your new favorite destination for streaming and downloading anime.
 
+[![Watch the video](https://img.youtube.com/vi/aHRlxmxo6rY/0.jpg)](https://www.youtube.com/watch?v=aHRlxmxo6rY)
 
-https://youtu.be/aHRlxmxo6rY?si=V7Ng7WRIdBPVURyu
 
 ## Table of Contents
 

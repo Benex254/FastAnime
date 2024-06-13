@@ -61,6 +61,7 @@ To build from the source, follow these steps:
 - Kivy and KivyMD for the UI
 - PyShortcuts for creating a desktop icon
 - FuzzyWuzzy for auto-selecting search results from the provider
+- yt-dlp for downloading anime and getting the stream urls for trailers
 
 ## Contributing
 

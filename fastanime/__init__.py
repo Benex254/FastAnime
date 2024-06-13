@@ -2,6 +2,7 @@ import os
 import plyer
 from kivy.resources import resource_add_path
 
+# print(plyer.storagepath.get_application_dir(), plyer.storagepath.get_home_dir())
 app_dir = os.path.abspath(os.path.dirname(__file__))
 
 

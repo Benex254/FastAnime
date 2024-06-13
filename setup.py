@@ -5,6 +5,7 @@ from setuptools import find_packages, setup
 
 assert sys.version_info >= (3, 10, 0), "FastAnime requires python 3.10+"
 
+
 path = os.path.abspath(".")
 
 kv_file_paths = []
@@ -49,12 +50,13 @@ if __name__ == "__main__":
             "kivymd @ https://github.com/kivymd/KivyMD/archive/master.zip",
             "ffpyplayer",
             "yt-dlp",
+            "pyshortcuts",
         ],
         setup_requires=[],
         python_requires=">=3.10",
         entry_points={
             "gui_scripts": [
-                "fastanime = fastanime.__main__:get_hook_dirs",
+                "fastanime = fastanime.__main__:run_app",
             ],
         },
     )

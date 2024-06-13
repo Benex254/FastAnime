@@ -1,4 +1,3 @@
-````markdown
 # Fast Anime
 
 Welcome to Fast Anime, your new favorite destination for streaming and downloading anime.
@@ -28,7 +27,6 @@ pip install <package-name>
 #then you can launch the app using the following command:
 python -m fastanime
 ```
-````
 
 > [!TIP]
 > To add a desktop entry, execute the following command:

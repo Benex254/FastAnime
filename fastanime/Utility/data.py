@@ -5,6 +5,7 @@ Just contains some useful data used across the codebase
 anime_normalizer = {
     "1P": "one piece",
     "Magia Record: Mahou Shoujo Madoka☆Magica Gaiden (TV)": "Mahou Shoujo Madoka☆Magica",
+    "Dungeon ni Deai o Motomeru no wa Machigatte Iru Darouka": "Dungeon ni Deai wo Motomeru no wa Machigatteiru Darou ka",
 }
 
 

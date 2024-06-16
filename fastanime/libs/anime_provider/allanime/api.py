@@ -168,7 +168,9 @@ if __name__ == "__main__":
             print("No episode was selected")
             sys.exit(1)
 
-        episode_data = anime_provider.get_anime_episode(anime_result["_id"], episode)
+        episode_data = anime_provider.get_anime_episode(
+            anime_result["_id"], episode, translation.strip()
+        )
         if episode_data is None:
             raise Exception("Episode not found")
 

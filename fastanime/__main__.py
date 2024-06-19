@@ -11,13 +11,13 @@ if __package__ is None and not getattr(sys, "frozen", False):
 
 if __name__ == "__main__":
     in_development = bool(os.environ.get("IN_DEVELOPMENT", False))
-    import fastanime
+    from . import FastAnime
 
     if in_development:
-        fastanime.main()
+        FastAnime()
     else:
         try:
-            fastanime.main()
+            FastAnime()
         except Exception as e:
             from .Utility.utils import write_crash
 

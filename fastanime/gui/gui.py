@@ -4,39 +4,37 @@ import random
 from kivy.config import Config
 from kivy.loader import Loader
 from kivy.logger import Logger
-from kivy.resources import resource_find
+from kivy.resources import resource_add_path, resource_find
 from kivy.uix.screenmanager import FadeTransition, ScreenManager
 from kivy.uix.settings import Settings, SettingsWithSidebar
+
 from kivymd.app import MDApp
 
-from fastanime.Utility.show_notification import show_notification
+from ..Utility.show_notification import show_notification
 
-from . import downloads_dir
-from .libs.mpv.player import mpv_player
-from .Utility import (
+from .. import downloads_dir, assets_folder, configs_folder
+from ..libs.mpv.player import mpv_player
+from ..Utility import (
     themes_available,
     user_data_helper,
 )
-from .Utility.downloader.downloader import downloader
-from .Utility.utils import write_crash
+from ..Utility.downloader.downloader import downloader
 from .View.components.media_card.components.media_popup import MediaPopup
 from .View.screens import screens
 
-os.environ["KIVY_VIDEO"] = "ffpyplayer"  # noqa: E402
 
-Config.set("graphics", "width", "1000")  # noqa: E402
-Config.set("graphics", "minimum_width", "1000")  # noqa: E402
-Config.set("kivy", "window_icon", resource_find("logo.ico"))  # noqa: E402
-Config.write()  # noqa: E402
+def setup_app():
+    os.environ["KIVY_VIDEO"] = "ffpyplayer"  # noqa: E402
+    Config.set("graphics", "width", "1000")  # noqa: E402
+    Config.set("graphics", "minimum_width", "1000")  # noqa: E402
+    Config.set("kivy", "window_icon", resource_find("logo.ico"))  # noqa: E402
+    Config.write()  # noqa: E402
 
+    Loader.num_workers = 5
+    Loader.max_upload_per_frame = 10
 
-Loader.num_workers = 5
-Loader.max_upload_per_frame = 10
-
-
-# Ensure the user data fields exist
-if not (user_data_helper.user_data.exists("user_anime_list")):
-    user_data_helper.update_user_anime_list([])
+    resource_add_path(assets_folder)
+    resource_add_path(configs_folder)
 
 
 class FastAnime(MDApp):
@@ -149,5 +147,5 @@ class FastAnime(MDApp):
         downloader.download_file(url, anime_title, progress_hook)
 
 
-def run_app():
+def run_gui():
     FastAnime().run()

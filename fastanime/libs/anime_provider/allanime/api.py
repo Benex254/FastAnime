@@ -2,7 +2,8 @@ import json
 import logging
 
 import requests
-
+from rich.progress import Progress
+from rich import print
 from .gql_queries import ALLANIME_SHOW_GQL, ALLANIME_SEARCH_GQL, ALLANIME_EPISODES_GQL
 from .constants import (
     ALLANIME_BASE,
@@ -60,11 +61,18 @@ class AllAnimeAPI:
             "translationtype": translationtype,
             "countryorigin": countryorigin,
         }
-        return self._fetch_gql(ALLANIME_SEARCH_GQL, variables)
+        with Progress() as progress:
+            progress.add_task("[cyan]searching..", start=False, total=None)
+
+            search_results = self._fetch_gql(ALLANIME_SEARCH_GQL, variables)
+            return search_results
 
     def get_anime(self, allanime_show_id: str):
         variables = {"showId": allanime_show_id}
-        return anime_provider._fetch_gql(ALLANIME_SHOW_GQL, variables)
+        with Progress() as progress:
+            progress.add_task("[cyan]fetching anime..", start=False, total=None)
+            anime = self._fetch_gql(ALLANIME_SHOW_GQL, variables)
+            return anime
 
     def get_anime_episode(
         self, allanime_show_id: str, episode_string: str, translation_type: str = "sub"
@@ -74,7 +82,10 @@ class AllAnimeAPI:
             "translationType": translation_type,
             "episodeString": episode_string,
         }
-        return anime_provider._fetch_gql(ALLANIME_EPISODES_GQL, variables)
+        with Progress() as progress:
+            progress.add_task("[cyan]fetching episode..", start=False, total=None)
+            episode = self._fetch_gql(ALLANIME_EPISODES_GQL, variables)
+            return episode
 
     def get_episode_streams(self, allanime_episode_embeds_data):
         if (
@@ -83,47 +94,59 @@ class AllAnimeAPI:
         ):
             return {}
         embeds = allanime_episode_embeds_data["episode"]["sourceUrls"]
-        for embed in embeds:
-            # filter the working streams
-            if embed.get("sourceName", "") not in ("Sak", "Kir", "S-mp4", "Luf-mp4"):
-                continue
-            url = embed.get("sourceUrl")
+        with Progress() as progress:
+            progress.add_task("[cyan]fetching streams..", start=False, total=None)
+            for embed in embeds:
+                # filter the working streams
+                if embed.get("sourceName", "") not in (
+                    "Sak",
+                    "Kir",
+                    "S-mp4",
+                    "Luf-mp4",
+                ):
+                    continue
+                url = embed.get("sourceUrl")
 
-            if not url:
-                continue
-            if url.startswith("--"):
-                url = url[2:]
+                if not url:
+                    continue
+                if url.startswith("--"):
+                    url = url[2:]
 
-            # get the stream url for an episode of the defined source names
-            parsed_url = decode_hex_string(url)
-            embed_url = (
-                f"https://{ALLANIME_BASE}{parsed_url.replace('clock','clock.json')}"
-            )
-            resp = requests.get(
-                embed_url,
-                headers={
-                    "Referer": ALLANIME_REFERER,
-                    "User-Agent": USER_AGENT,
-                },
-            )
-            if resp.status_code == 200:
-                match embed["sourceName"]:
-                    case "Luf-mp4":
-                        Logger.debug("allanime:Found streams from gogoanime")
-                        yield "gogoanime", resp.json()
-                    case "Kir":
-                        Logger.debug("allanime:Found streams from wetransfer")
-                        yield "wetransfer", resp.json()
-                    case "S-mp4":
-                        Logger.debug("allanime:Found streams from sharepoint")
-                        yield "sharepoint", resp.json()
-                    case "Sak":
-                        Logger.debug("allanime:Found streams from dropbox")
-                        yield "dropbox", resp.json()
-                    case _:
-                        yield "Unknown", resp.json()
-            else:
-                return {}
+                # get the stream url for an episode of the defined source names
+                parsed_url = decode_hex_string(url)
+                embed_url = (
+                    f"https://{ALLANIME_BASE}{parsed_url.replace('clock','clock.json')}"
+                )
+                resp = requests.get(
+                    embed_url,
+                    headers={
+                        "Referer": ALLANIME_REFERER,
+                        "User-Agent": USER_AGENT,
+                    },
+                )
+                if resp.status_code == 200:
+                    match embed["sourceName"]:
+                        case "Luf-mp4":
+                            Logger.debug("allanime:Found streams from gogoanime")
+                            print("[yellow]gogoanime")
+                            yield "gogoanime", resp.json()
+                        case "Kir":
+                            Logger.debug("allanime:Found streams from wetransfer")
+                            print("[yellow]wetransfer")
+                            yield "wetransfer", resp.json()
+                        case "S-mp4":
+                            Logger.debug("allanime:Found streams from sharepoint")
+
+                            print("[yellow]sharepoint")
+                            yield "sharepoint", resp.json()
+                        case "Sak":
+                            Logger.debug("allanime:Found streams from dropbox")
+                            print("[yellow]dropbox")
+                            yield "dropbox", resp.json()
+                        case _:
+                            yield "Unknown", resp.json()
+                else:
+                    return {}
 
 
 anime_provider = AllAnimeAPI()

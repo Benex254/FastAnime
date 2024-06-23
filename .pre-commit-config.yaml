@@ -9,6 +9,11 @@ repos:
         name: isort (python)
         args: ["--profile", "black"]  # Ensure compatibility with Black
 
+  - repo: https://github.com/PyCQA/autoflake
+    rev: v2.2.1
+    hooks:
+      - id: autoflake
+        args: ["--in-place","--remove-unused-variables", "--remove-all-unused-imports"]
   - repo: https://github.com/astral-sh/ruff-pre-commit
     # Ruff version.
     rev: v0.4.10
@@ -23,3 +28,7 @@ repos:
       - id: black
         name: black
         language_version: python3.10
+  - repo: https://github.com/PyCQA/bandit
+    rev: 1.7.9 # Update me!
+    hooks:
+      - id: bandit

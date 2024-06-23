@@ -1,12 +1,11 @@
-import rich
 from ..utils.fzf import fzf
 from . import (
+    binge_interface,
+    bye,
+    download_interface,
     info_interface,
     stream_interface,
-    binge_interface,
-    download_interface,
     watchlist_interface,
-    bye,
 )
 
 options = {

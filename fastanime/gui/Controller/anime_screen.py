@@ -1,7 +1,7 @@
 from kivy.cache import Cache
 
-from ..Model import AnimeScreenModel
-from ..View import AnimeScreenView
+from ..Model.anime_screen import AnimeScreenModel
+from ..View.AnimeScreen.anime_screen import AnimeScreenView
 
 Cache.register("data.anime", limit=20, timeout=600)
 
@@ -33,3 +33,6 @@ class AnimeScreenController:
         self.fetch_streams(title)
         self.view.current_title = title
         self.view.caller_screen_name = caller_screen_name
+
+
+__all__ = ["AnimeScreenController"]

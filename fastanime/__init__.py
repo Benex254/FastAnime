@@ -1,11 +1,10 @@
+import logging
 import os
 import sys
-import logging
-
-from rich import print
-from rich.traceback import install
 
 import plyer
+from rich import print
+from rich.traceback import install
 
 install()
 # Create a logger instance
@@ -55,7 +54,7 @@ def FastAnime(gui=False, log=False):
             handlers=[RichHandler()],  # Use RichHandler to format the logs
         )
 
-    print(f"Hello {os.environ.get("USERNAME")} from the fastanime team")
+    print(f"Hello {os.environ.get('USERNAME','User')} from the fastanime team")
     if gui:
         print(__name__)
         from .gui.gui import run_gui

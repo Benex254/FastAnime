@@ -1,13 +1,14 @@
 from inspect import isgenerator
 from math import ceil
+
 from kivy.logger import Logger
 
 # from kivy.clock import Clock
 from kivy.utils import difference
 
-from ..Model import MyListScreenModel
-from ..Utility import user_data_helper
-from ..View import MyListScreenView
+from ...Utility import user_data_helper
+from ..Model.my_list_screen import MyListScreenModel
+from ..View.MylistScreen.my_list_screen import MyListScreenView
 
 
 class MyListScreenController:
@@ -44,3 +45,6 @@ class MyListScreenController:
                         self.view.update_layout(result_card)
             self.model.already_in_user_anime_list = _user_anime_list
             return animes_to_add
+
+
+__all__ = ["MyListScreenController"]

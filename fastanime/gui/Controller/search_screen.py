@@ -3,8 +3,8 @@ from inspect import isgenerator
 from kivy.clock import Clock
 from kivy.logger import Logger
 
-from ..Model import SearchScreenModel
-from ..View import SearchScreenView
+from ..Model.search_screen import SearchScreenModel
+from ..View.SearchScreen.search_screen import SearchScreenView
 
 
 class SearchScreenController:
@@ -43,3 +43,6 @@ class SearchScreenController:
         else:
             Logger.error(f"Home Screen:Failed to search for {anime_title}")
         self.view.is_searching = False
+
+
+__all__ = ["SearchScreenController"]

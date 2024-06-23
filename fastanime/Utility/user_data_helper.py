@@ -6,7 +6,6 @@ from datetime import date, datetime
 
 from kivy.logger import Logger
 
-
 today = date.today()
 now = datetime.now()
 

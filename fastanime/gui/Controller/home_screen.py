@@ -1,14 +1,12 @@
 from inspect import isgenerator
 
-
 from kivy.clock import Clock
 from kivy.logger import Logger
 
-
-from ..Model import HomeScreenModel
-from ..Utility import show_notification
-from ..View import HomeScreenView
-from ..View.components import MediaCardsContainer
+from ...Utility.show_notification import show_notification
+from ..Model.home_screen import HomeScreenModel
+from ..View.components.media_card.media_card import MediaCardsContainer
+from ..View.HomeScreen.home_screen import HomeScreenView
 
 
 # TODO:Move the update home screen to homescreen.py
@@ -141,3 +139,6 @@ class HomeScreenController:
                 f"Theres probably a problem with your internet connection or anilist servers are down.\nFailed include:{', '.join(self.populate_errors)}",
             )
         self.populate_errors = []
+
+
+__all__ = ["HomeScreenController"]

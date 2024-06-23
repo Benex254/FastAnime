@@ -39,3 +39,7 @@ class DownloadsScreenView(BaseScreenView):
         #     d["speed"],
         #     d.get("percent"),
         # )
+        #
+
+
+__all__ = ["DownloadsScreenView"]

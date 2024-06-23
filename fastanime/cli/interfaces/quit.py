@@ -1,4 +1,5 @@
 import sys
+
 from rich import print
 
 

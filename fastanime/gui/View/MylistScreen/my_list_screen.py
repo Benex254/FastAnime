@@ -19,3 +19,6 @@ class MyListScreenView(BaseScreenView):
 
     def update_layout(self, widget):
         self.user_anime_list_container.data.append(widget)
+
+
+__all__ = ["MyListScreenView"]

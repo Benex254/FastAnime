@@ -1,5 +1,4 @@
 from kivy.properties import ListProperty, ObjectProperty, StringProperty
-
 from kivy.uix.widget import Factory
 from kivymd.uix.button import MDButton
 
@@ -79,3 +78,6 @@ class AnimeScreenView(BaseScreenView):
 
     def add_to_user_anime_list(self, *args):
         self.app.add_anime_to_user_anime_list(self.model.anime_id)
+
+
+__all__ = ["AnimeScreenView"]

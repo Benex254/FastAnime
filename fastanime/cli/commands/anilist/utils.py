@@ -1,8 +1,8 @@
-from ...utils.fzf import fzf
 from ....libs.anilist.anilist_data_schema import (
-    AnilistDataSchema,
     AnilistBaseMediaDataSchema,
+    AnilistDataSchema,
 )
+from ...utils.fzf import fzf
 
 
 def get_search_result(

@@ -1,6 +1,6 @@
-import subprocess
 import logging
 import shutil
+import subprocess
 
 logger = logging.getLogger(__name__)
 
@@ -19,15 +19,17 @@ def fzf(options, prompt="Select Anime: ", *custom_commands):
         return None
 
     result = subprocess.run(
-        [
-            FZF,
-            "--reverse",
-            "--cycle",
-            "--prompt",
-            prompt,
-        ]
-        if not custom_commands
-        else [FZF, *custom_commands],
+        (
+            [
+                FZF,
+                "--reverse",
+                "--cycle",
+                "--prompt",
+                prompt,
+            ]
+            if not custom_commands
+            else [FZF, *custom_commands]
+        ),
         input=options_str,
         text=True,
         stdout=subprocess.PIPE,

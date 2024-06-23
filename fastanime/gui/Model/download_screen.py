@@ -19,3 +19,6 @@ class DownloadsScreenModel(BaseScreenModel):
         )
         if d["status"] == "finished":
             print("Done downloading, now converting ...")
+
+
+__all__ = ["DownloadsScreenModel"]

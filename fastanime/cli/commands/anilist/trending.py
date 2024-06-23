@@ -1,7 +1,8 @@
 import click
+
 from ....libs.anilist.anilist import AniList
-from .utils import get_search_result
 from ...interfaces.anime_interface import anime_interface
+from .utils import get_search_result
 
 
 @click.command()

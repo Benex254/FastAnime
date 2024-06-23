@@ -1,11 +1,25 @@
+default_language_version:
+  python: python3.10
+
 repos:
--   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v2.3.0
+  - repo: https://github.com/pre-commit/mirrors-isort
+    rev: v5.10.1  # You can replace this with the latest version
     hooks:
-    -   id: check-yaml
-    -   id: end-of-file-fixer
-    -   id: trailing-whitespace
--   repo: https://github.com/psf/black
-    rev: 22.10.0
+      - id: isort
+        name: isort
+        args: ["--profile", "black"]  # Ensure compatibility with Black
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    # Ruff version.
+    rev: v0.4.10
     hooks:
-    -   id: black
+      # Run the linter.
+      - id: ruff
+        args: [ --fix ]
+
+  - repo: https://github.com/psf/black
+    rev: 23.3.0  # You can replace this with the latest version
+    hooks:
+      - id: black
+        name: black
+        language_version: python3.10  # Specify your Python version

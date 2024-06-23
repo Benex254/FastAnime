@@ -2,20 +2,18 @@ import json
 import logging
 
 import requests
-from rich.progress import Progress
 from rich import print
-from .gql_queries import ALLANIME_SHOW_GQL, ALLANIME_SEARCH_GQL, ALLANIME_EPISODES_GQL
+from rich.progress import Progress
+
 from .constants import (
+    ALLANIME_API_ENDPOINT,
     ALLANIME_BASE,
     ALLANIME_REFERER,
-    ALLANIME_API_ENDPOINT,
     USER_AGENT,
 )
+from .data_types import AllAnimeEpisode, AllAnimeSearchResults
+from .gql_queries import ALLANIME_EPISODES_GQL, ALLANIME_SEARCH_GQL, ALLANIME_SHOW_GQL
 from .utils import decode_hex_string
-from .data_types import (
-    AllAnimeEpisode,
-    AllAnimeSearchResults,
-)
 
 Logger = logging.getLogger(__name__)
 
@@ -156,6 +154,7 @@ if __name__ == "__main__":
     # lets see if it works :)
     import subprocess
     import sys
+
     from .utils import run_fzf
 
     anime = input("Enter the anime name: ")

@@ -1,7 +1,8 @@
 import os
+import re
 import shutil
 from datetime import datetime
-import re
+
 # TODO: make it use color_text instead of fixed vals
 # from .kivy_markup_helper import color_text
 

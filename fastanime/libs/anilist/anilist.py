@@ -4,21 +4,22 @@ This is the core module availing all the abstractions of the anilist api
 
 import requests
 
+from .anilist_data_schema import AnilistDataSchema
 from .queries_graphql import (
+    airing_schedule_query,
+    anime_characters_query,
+    anime_query,
+    anime_relations_query,
     most_favourite_query,
-    most_recently_updated_query,
     most_popular_query,
-    trending_query,
+    most_recently_updated_query,
     most_scored_query,
     recommended_query,
     search_query,
-    anime_characters_query,
-    anime_relations_query,
-    airing_schedule_query,
+    trending_query,
     upcoming_anime_query,
-    anime_query,
 )
-from .anilist_data_schema import AnilistDataSchema
+
 # from kivy.network.urlrequest import UrlRequestRequests
 
 

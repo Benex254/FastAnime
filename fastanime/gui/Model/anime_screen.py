@@ -2,10 +2,10 @@ from fuzzywuzzy import fuzz
 from kivy.cache import Cache
 from kivy.logger import Logger
 
-from ..libs.anilist import AniList
-from ..libs.anime_provider.allanime.api import anime_provider
+from ...libs.anilist.anilist import AniList
+from ...libs.anime_provider.allanime.api import anime_provider
+from ...Utility.data import anime_normalizer
 from .base_model import BaseScreenModel
-from ..Utility.data import anime_normalizer
 
 
 def anime_title_percentage_match(
@@ -110,3 +110,6 @@ class AnimeScreenModel(BaseScreenModel):
 
     def get_anime_data(self, id: int):
         return AniList.get_anime(id)
+
+
+__all__ = ["AnimeScreenModel"]

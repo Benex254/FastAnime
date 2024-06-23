@@ -2,11 +2,11 @@ default_language_version:
   python: python3.10
 
 repos:
-  - repo: https://github.com/pre-commit/mirrors-isort
-    rev: v5.10.1  # You can replace this with the latest version
+  - repo: https://github.com/pycqa/isort
+    rev: 5.12.0  # You can replace this with the latest version
     hooks:
       - id: isort
-        name: isort
+        name: isort (python)
         args: ["--profile", "black"]  # Ensure compatibility with Black
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
@@ -17,9 +17,9 @@ repos:
       - id: ruff
         args: [ --fix ]
 
-  - repo: https://github.com/psf/black
-    rev: 23.3.0  # You can replace this with the latest version
+  - repo: https://github.com/psf/black-pre-commit-mirror
+    rev: 24.4.2
     hooks:
       - id: black
         name: black
-        language_version: python3.10  # Specify your Python version
+        language_version: python3.10

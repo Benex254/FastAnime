@@ -16,17 +16,19 @@ fuzzywuzzy = "^0.18.0"
 rich = "^13.7.1"
 click = "^8.1.7"
 python-levenshtein = "^0.25.1"
-kivymd = {url = "https://github.com/kivymd/KivyMD/archive/master.zip"}
+kivymd = [{url = "https://github.com/kivymd/KivyMD/archive/master.zip"}]
 
+pyshortcuts = "^1.9.0"
+inquirerpy = "^0.3.4"
 [tool.poetry.group.dev.dependencies]
 black = "^24.4.2"
 isort = "^5.13.2"
 pytest = "^8.2.2"
 ruff = "^0.4.10"
-
 pre-commit = "^3.7.1"
 autoflake = "^2.3.1"
 bandit = "^1.7.9"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"

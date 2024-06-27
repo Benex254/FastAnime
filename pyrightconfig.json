@@ -1,3 +1,4 @@
 {
-  "typeCheckingMode": "standard"
+  "typeCheckingMode": "standard",
+  "reportPrivateImportUsage": false
 }

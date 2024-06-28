@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from InquirerPy import inquirer
+from rich import print
 
 from ..libs.anilist.anilist import AniList
 from ..libs.anilist.anilist_data_schema import AnilistDataSchema
@@ -22,7 +23,6 @@ def fetch_episode(config: Config, anime, translation_type, selected_anime):
             selected_anime[0]["name"],
         )
         return
-    print(config.translation_type)
     episode = anime_provider.get_anime_episode(
         selected_anime[0]["_id"], episode_number, config.translation_type
     )
@@ -41,31 +41,65 @@ def fetch_streams(config: Config, episode, *args):
     quality = config.quality
     links = selected_server[1]["links"]
     if quality > len(links) - 1:
-        quality = len(links) - 1
+        quality = config.quality = len(links) - 1
     elif quality < 0:
-        quality = 0
+        quality = config.quality = 0
     stream_link = links[quality]["link"]
-    print("Now playing:", args[-1][0]["name"])
+    print(
+        "[bold magenta]Now playing:[/]",
+        args[-1][0]["name"],
+        "[bold magenta] Episode: [/]",
+        episode["episode"]["episodeString"],
+    )
     mpv(stream_link)
     clear()
     player_controls(config, episode, links, *args)
 
 
 def player_controls(config: Config, episode, links: list, *args):
+    anime = args[0]
+    selected_anime = args[-1]
+    episodes = [*anime["show"]["availableEpisodesDetail"][config.translation_type]]
+    episodes = sorted(episodes, key=int)
+    current_episode = episode["episode"]["episodeString"]
+
     def _back():
         fetch_streams(config, episode, *args)
 
     def _replay():
-        pass
+        stream_link = links[config.quality]["link"]
+        print(
+            "[bold magenta]Now playing:[/]",
+            args[-1][0]["name"],
+            "[bold magenta] Episode: [/]",
+            episode["episode"]["episodeString"],
+        )
+        mpv(stream_link)
+        clear()
+        player_controls(config, episode, links, *args)
 
     def _next_episode():
-        pass
+        next_episode = episodes.index(current_episode) + 1
+        if next_episode >= len(episodes):
+            next_episode = len(episodes) - 1
+        episode = anime_provider.get_anime_episode(
+            selected_anime[0]["_id"], episodes[next_episode], config.translation_type
+        )
+
+        fetch_streams(config, episode, *args)
 
     def _episodes():
         fetch_episode(config, *args)
 
     def _previous_episode():
-        pass
+        prev_episode = episodes.index(current_episode) - 1
+        if prev_episode <= 0:
+            prev_episode = 0
+        episode = anime_provider.get_anime_episode(
+            selected_anime[0]["_id"], episodes[prev_episode], config.translation_type
+        )
+
+        fetch_streams(config, episode, *args)
 
     def _change_quality():
         options = [link["link"] for link in links]

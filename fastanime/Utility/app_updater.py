@@ -43,6 +43,7 @@ def is_git_repo(author, repository):
     config_path = pathlib.Path("./.git/config")
     if not config_path.exists():
         return False
+    print("here")
 
     with open(config_path, "r") as git_config:
         git_config_content = git_config.read()
@@ -50,6 +51,7 @@ def is_git_repo(author, repository):
     # Use regex to find the repository URL in the config file
     repo_name_pattern = r"\[remote \"origin\"\]\s+url = .*\/([^/]+\/[^/]+)\.git"
     match = re.search(repo_name_pattern, git_config_content)
+    print(match)
 
     if match is None:
         return False

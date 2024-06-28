@@ -9,6 +9,8 @@ anime_normalizer = {
 }
 
 
+anilist_sort_normalizer = {"search match": "SEARCH_MATCH"}
+
 themes_available = [
     "Aliceblue",
     "Antiquewhite",

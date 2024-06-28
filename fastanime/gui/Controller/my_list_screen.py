@@ -6,8 +6,8 @@ from kivy.logger import Logger
 # from kivy.clock import Clock
 from kivy.utils import difference
 
-from ...Utility import user_data_helper
 from ..Model.my_list_screen import MyListScreenModel
+from ..Utility import user_data_helper
 from ..View.MylistScreen.my_list_screen import MyListScreenView
 
 

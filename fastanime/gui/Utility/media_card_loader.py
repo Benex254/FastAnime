@@ -3,7 +3,8 @@ from kivy.cache import Cache
 from kivy.logger import Logger
 
 from ...libs.anilist.anilist_data_schema import AnilistBaseMediaDataSchema
-from ...Utility import anilist_data_helper, user_data_helper
+from ...Utility import anilist_data_helper
+from . import user_data_helper
 
 Cache.register("trailer_urls.anime", timeout=360)
 
@@ -48,9 +49,9 @@ class MediaCardDataLoader(object):
 
         # TODO: switch to season and year
         #
-        media_card_data[
-            "first_aired_on"
-        ] = f'{anilist_data_helper.format_anilist_date_object(anime_item["startDate"])}'
+        media_card_data["first_aired_on"] = (
+            f'{anilist_data_helper.format_anilist_date_object(anime_item["startDate"])}'
+        )
 
         media_card_data["studios"] = anilist_data_helper.format_list_data_with_comma(
             [

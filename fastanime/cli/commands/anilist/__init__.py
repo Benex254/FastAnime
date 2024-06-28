@@ -1,5 +1,6 @@
 import click
 
+from ...interfaces import anilist as anilist_interface
 from .favourites import favourites
 from .popular import popular
 from .recent import recent
@@ -17,6 +18,7 @@ commands = {
 }
 
 
-@click.group(commands=commands)
-def anilist():
-    pass
+@click.group(commands=commands, invoke_without_command=True)
+@click.pass_obj
+def anilist(config):
+    anilist_interface(config=config)

@@ -1,49 +1,58 @@
 import logging
 import os
 import sys
+from platform import platform
 
 import plyer
-from rich import print
 from rich.traceback import install
 
-install()
+install(show_locals=True)
 # Create a logger instance
 logger = logging.getLogger(__name__)
 
-# TODO:confirm data integrity
+# initiate constants
+__version__ = "0.3.0"
 
-# ----- some useful paths -----
-app_dir = os.path.abspath(os.path.dirname(__file__))
-data_folder = os.path.join(app_dir, "data")
-configs_folder = os.path.join(app_dir, "configs")
-if not os.path.exists(data_folder):
-    os.mkdir(data_folder)
+PLATFORM = platform()
+APP_NAME = "FastAnime"
 
-if vid_path := plyer.storagepath.get_videos_dir():  # type: ignore
-    downloads_dir = os.path.join(vid_path, "FastAnime")
-    if not os.path.exists(downloads_dir):
-        os.mkdir(downloads_dir)
+# ---- app deps ----
+APP_DIR = os.path.abspath(os.path.dirname(__file__))
+CONFIGS_DIR = os.path.join(APP_DIR, "configs")
+ASSETS_DIR = os.path.join(APP_DIR, "assets")
+
+# ----- user configs and data -----
+if PLATFORM == "windows":
+    APP_DATA_DIR_ = os.environ.get("LOCALAPPDATA", APP_DIR)
 else:
-    # fallback
-    downloads_dir = os.path.join(app_dir, "videos")
-    if not os.path.exists(downloads_dir):
-        os.mkdir(downloads_dir)
+    APP_DATA_DIR_ = os.environ.get("XDG_DATA_HOME", APP_DIR)
 
-user_data_path = os.path.join(data_folder, "user_data.json")
-assets_folder = os.path.join(app_dir, "assets")
+if not APP_DATA_DIR_:
+    APP_DATA_DIR = os.path.join(APP_DIR, "data")
+else:
+    APP_DATA_DIR = os.path.join(APP_DATA_DIR_, APP_NAME)
+
+if not os.path.exists(APP_DATA_DIR):
+    os.mkdir(APP_DATA_DIR)
+
+USER_DATA_PATH = os.path.join(APP_DATA_DIR, "user_data.json")
+USER_CONFIG_PATH = os.path.join(APP_DATA_DIR, "config.ini")
 
 
-def FastAnime(gui=False, log=False):
+# video dir
+if vid_path := plyer.storagepath.get_videos_dir():  # type: ignore
+    USER_DOWNLOADS_DIR = os.path.join(vid_path, "FastAnime")
+else:
+    USER_DOWNLOADS_DIR = os.path.join(APP_DIR, "videos")
+
+if not os.path.exists(USER_DOWNLOADS_DIR):
+    os.mkdir(USER_DOWNLOADS_DIR)
+
+
+def FastAnime(gui=False):
     if "--gui" in sys.argv:
         gui = True
         sys.argv.remove("--gui")
-    if "--log" in sys.argv:
-        log = True
-        sys.argv.remove("--log")
-    if not log:
-        logger.propagate = False
-
-    else:
         # Configure logging
         from rich.logging import RichHandler
 
@@ -53,13 +62,9 @@ def FastAnime(gui=False, log=False):
             datefmt="[%X]",  # Use a custom date format
             handlers=[RichHandler()],  # Use RichHandler to format the logs
         )
-
-    print(f"Hello {os.environ.get('USERNAME','User')} from the fastanime team")
     if gui:
-        print(__name__)
-        from .gui.gui import run_gui
+        from .gui import run_gui
 
-        print("Run GUI")
         run_gui()
     else:
         from .cli import run_cli

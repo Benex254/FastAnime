@@ -11,13 +11,15 @@ install(show_locals=True)
 logger = logging.getLogger(__name__)
 
 # initiate constants
-__version__ = "0.3.0"
+__version__ = "v0.30.0"
 
 PLATFORM = platform()
 APP_NAME = "FastAnime"
 AUTHOR = "Benex254"
 GIT_REPO = "github.com"
 REPO = f"{GIT_REPO}/{AUTHOR}/{APP_NAME}"
+USER_NAME = os.environ.get("USERNAME", f"{APP_NAME} user")
+
 
 dirs = PlatformDirs(appname=APP_NAME, appauthor=AUTHOR, ensure_exists=True)
 
@@ -41,6 +43,11 @@ USER_DOWNLOADS_DIR = dirs.user_downloads_dir
 
 
 def FastAnime(gui=False):
+    if "--update" in sys.argv:
+        from .Utility.app_updater import update_app
+
+        update_app()
+        sys.argv.remove("--update")
     if "--gui" in sys.argv:
         gui = True
         sys.argv.remove("--gui")

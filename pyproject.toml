@@ -15,7 +15,7 @@ fuzzywuzzy = "^0.18.0"
 rich = "^13.7.1"
 click = "^8.1.7"
 python-levenshtein = "^0.25.1"
-kivymd = [{url = "https://github.com/kivymd/KivyMD/archive/master.zip"}]
+kivymd = [{ url = "https://github.com/kivymd/KivyMD/archive/master.zip" }]
 
 pyshortcuts = "^1.9.0"
 inquirerpy = "^0.3.4"
@@ -40,4 +40,4 @@ fastanime = 'fastanime:FastAnime'
 [tool.bandit]
 #exclude = tests,path/to/file
 #tests = B201,B301
-skips = ["B311","B603","B607","B404"]
+skips = ["B311", "B603", "B607", "B404"]

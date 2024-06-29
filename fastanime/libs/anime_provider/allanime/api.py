@@ -11,7 +11,6 @@ from .constants import (
     ALLANIME_REFERER,
     USER_AGENT,
 )
-from .data_types import AllAnimeEpisode, AllAnimeSearchResults
 from .gql_queries import ALLANIME_EPISODES_GQL, ALLANIME_SEARCH_GQL, ALLANIME_SHOW_GQL
 from .utils import decode_hex_string
 
@@ -27,7 +26,7 @@ class AllAnimeAPI:
 
     api_endpoint = ALLANIME_API_ENDPOINT
 
-    def _fetch_gql(self, query: str, variables: dict) -> dict:
+    def _fetch_gql(self, query: str, variables: dict):
         try:
             response = requests.get(
                 self.api_endpoint,
@@ -38,16 +37,12 @@ class AllAnimeAPI:
                 headers={"Referer": ALLANIME_REFERER, "User-Agent": USER_AGENT},
                 timeout=10,
             )
-            if response.status_code != 200:
-                return {}
-            return response.json().get("data", {})
+            return response.json()["data"]
         except Exception as e:
             Logger.error(f"allanime:Error: {e}")
             return {}
 
-    def search_for_anime(
-        self, user_query: str, translation_type: str = "sub"
-    ) -> AllAnimeSearchResults | dict:
+    def search_for_anime(self, user_query: str, translation_type: str = "sub"):
         search = {"allowAdult": False, "allowUnknown": False, "query": user_query}
         limit = 40
         translationtype = translation_type
@@ -75,7 +70,7 @@ class AllAnimeAPI:
 
     def get_anime_episode(
         self, allanime_show_id: str, episode_string: str, translation_type: str = "sub"
-    ) -> AllAnimeEpisode | dict:
+    ):
         variables = {
             "showId": allanime_show_id,
             "translationType": translation_type,

@@ -30,6 +30,6 @@ def format_list_data_with_comma(data: list | None):
 
 def extract_next_airing_episode(airing_episode: AnilistMediaNextAiringEpisode):
     if airing_episode:
-        return f"Episode: {airing_episode['episode']} on {format_anilist_timestamp(airing_episode['airingAt'])}"
+        return f"{airing_episode['episode']} on {format_anilist_timestamp(airing_episode['airingAt'])}"
     else:
         return "Completed"

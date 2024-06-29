@@ -175,7 +175,7 @@ class AniList:
         return airing_schedule
 
     @classmethod
-    def get_upcoming_anime(cls, page: int, *_, **kwargs):
+    def get_upcoming_anime(cls, page: int = 1, *_, **kwargs):
         """
         Gets upcoming anime from anilist
         """

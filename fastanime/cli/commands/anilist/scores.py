@@ -7,8 +7,8 @@ from ...utils.tools import QueryDict
 
 @click.command()
 @click.pass_obj
-def recent(config):
-    anime_data = AniList.get_most_recently_updated()
+def scores(config):
+    anime_data = AniList.get_most_scored()
     if anime_data[0]:
         anilist_config = QueryDict()
         anilist_config.data = anime_data[1]

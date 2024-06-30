@@ -1,11 +1,15 @@
 import click
 
 from ....libs.anilist.anilist import AniList
-from .utils import get_search_result
+from ...interfaces.anilist_interfaces import select_anime
+from ...utils.tools import QueryDict
 
 
 @click.command()
-def trending():
-    success, trending = AniList.get_trending()
-    if trending and success:
-        get_search_result(trending)
+@click.pass_obj
+def trending(config):
+    success, data = AniList.get_trending()
+    if success:
+        anilist_config = QueryDict()
+        anilist_config.data = data
+        select_anime(config, anilist_config)

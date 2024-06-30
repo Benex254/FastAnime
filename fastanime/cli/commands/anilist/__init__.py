@@ -1,3 +1,5 @@
+from sys import exit
+
 import click
 
 from ...interfaces.anilist_interfaces import anilist as anilist_interface
@@ -5,6 +7,7 @@ from ...utils.tools import QueryDict
 from .favourites import favourites
 from .popular import popular
 from .recent import recent
+from .scores import scores
 from .search import search
 from .trending import trending
 from .upcoming import upcoming
@@ -15,7 +18,9 @@ commands = {
     "search": search,
     "popular": popular,
     "trending": trending,
+    "scores": scores,
     "upcoming": upcoming,
+    "exit": exit,
 }
 
 

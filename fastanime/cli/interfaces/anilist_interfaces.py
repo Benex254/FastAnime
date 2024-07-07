@@ -9,6 +9,7 @@ from ...libs.anilist.anilist import AniList
 from ...libs.anilist.anilist_data_schema import AnilistBaseMediaDataSchema
 from ...libs.anime_provider.allanime.api import anime_provider
 from ...libs.anime_provider.allanime.data_types import AllAnimeEpisode, AllAnimeShow
+from ...Utility.data import anime_normalizer
 from ..config import Config
 from ..utils.mpv import mpv
 from ..utils.tools import QueryDict
@@ -22,10 +23,11 @@ def player_controls(config: Config, anilist_config: QueryDict):
     # internal config
     _anime: AllAnimeShow = anilist_config._anime
     current_episode: str = anilist_config.episode_number
-    episodes: list = anilist_config.episodes
+    episodes: list = sorted(anilist_config.episodes, key=float)
     links: list = anilist_config.current_stream_links
     current_link: str = anilist_config.current_stream_link
     anime_title: str = anilist_config.anime_title
+    anime_id: int = anilist_config.anime_id
 
     def _back():
         fetch_streams(config, anilist_config)
@@ -37,8 +39,6 @@ def player_controls(config: Config, anilist_config: QueryDict):
             "[bold magenta] Episode: [/]",
             current_episode,
         )
-
-        config.update_watch_history(anime_title, current_episode)
 
         mpv(current_link)
         clear()
@@ -57,14 +57,14 @@ def player_controls(config: Config, anilist_config: QueryDict):
         anilist_config.episode_number = episodes[next_episode]
 
         # update user config
-        config.update_watch_history(anime_title, episodes[next_episode])
+        config.update_watch_history(anime_id, episodes[next_episode])
 
         # call interface
         fetch_streams(config, anilist_config)
 
     def _episodes():
         # reset watch_history
-        config.update_watch_history(anime_title, None)
+        config.update_watch_history(anime_id, None)
 
         # call interface
         fetch_episode(config, anilist_config)
@@ -83,7 +83,7 @@ def player_controls(config: Config, anilist_config: QueryDict):
         anilist_config.episode_number = episodes[prev_episode]
 
         # update user config
-        config.update_watch_history(anime_title, episodes[prev_episode])
+        config.update_watch_history(anime_id, episodes[prev_episode])
 
         # call interface
         fetch_streams(config, anilist_config)
@@ -122,10 +122,11 @@ def player_controls(config: Config, anilist_config: QueryDict):
         "exit": sys.exit,
     }
 
+    if config.auto_next:
+        _next_episode()
+        return
     action = fuzzy_inquirer("Select Action:", options.keys())
 
-    # update_watch_history
-    config.update_watch_history(anime_title, current_episode)
     options[action]()
 
 
@@ -137,6 +138,7 @@ def fetch_streams(config: Config, anilist_config: QueryDict):
     episode: AllAnimeEpisode = anilist_config.episode
     episode_number: str = anilist_config.episode_number
     anime_title: str = anilist_config.anime_title
+    anime_id: int = anilist_config.anime_id
 
     # get streams for episode from provider
     episode_streams = anime_provider.get_episode_streams(episode)
@@ -145,10 +147,16 @@ def fetch_streams(config: Config, anilist_config: QueryDict):
     }
 
     # prompt for preferred server
-    server = fuzzy_inquirer("Select Server:", [*episode_streams.keys(), "back"])
+    server = None
+    if config.server and config.server in episode_streams.keys():
+        server = config.server
+    if config.server == "top":
+        server = list(episode_streams.keys())[0]
+    if not server:
+        server = fuzzy_inquirer("Select Server:", [*episode_streams.keys(), "back"])
     if server == "back":
         # reset watch_history
-        config.update_watch_history(anime_title, None)
+        config.update_watch_history(anime_id, None)
 
         fetch_episode(config, anilist_config)
         return
@@ -177,8 +185,12 @@ def fetch_streams(config: Config, anilist_config: QueryDict):
 
     mpv(stream_link)
 
+    # update_watch_history
+    config.update_watch_history(anime_id, str(int(episode_number) + 1))
+
     # switch to controls
     clear()
+
     player_controls(config, anilist_config)
 
 
@@ -186,18 +198,17 @@ def fetch_episode(config: Config, anilist_config: QueryDict):
     # user config
     translation_type: str = config.translation_type
     continue_from_history: bool = config.continue_from_history
-    user_watch_history = config.watch_history
-    anime_title = anilist_config.anime_title
+    user_watch_history: dict = config.watch_history
+    anime_id: int = anilist_config.anime_id
 
     # internal config
     anime = anilist_config.anime
     _anime: AllAnimeShow = anilist_config._anime
 
     # prompt for episode number
-    # TODO: Load episode number from cache
     episodes = anime["show"]["availableEpisodesDetail"][translation_type]
-    if continue_from_history and user_watch_history.get(anime_title) in episodes:
-        episode_number = user_watch_history[anime_title]
+    if continue_from_history and user_watch_history.get(str(anime_id)) in episodes:
+        episode_number = user_watch_history[str(anime_id)]
         print(f"[bold cyan]Continuing from Episode:[/] [bold]{episode_number}[/]")
     else:
         episode_number = fuzzy_inquirer(
@@ -208,7 +219,7 @@ def fetch_episode(config: Config, anilist_config: QueryDict):
     if episode_number == "back":
         provide_anime(config, anilist_config)
         return
-    config.update_watch_history(anime_title, episode_number)
+    config.update_watch_history(anime_id, episode_number)
 
     # get the episode info from provider
     episode = anime_provider.get_anime_episode(
@@ -247,16 +258,27 @@ def provide_anime(config: Config, anilist_config: QueryDict):
     search_results = {
         anime["name"]: anime for anime in search_results["shows"]["edges"]
     }
+    _title = None
+    if _title := next(
+        (
+            original
+            for original, normalized in anime_normalizer.items()
+            if normalized.lower() == selected_anime_title.lower()
+        ),
+        None,
+    ):
+        _title = _title
+
     anime_title = fuzzy_inquirer(
         "Select Search Result:",
         [*search_results.keys(), "back"],
-        default=selected_anime_title,
+        default=_title or selected_anime_title,
     )
 
     if anime_title == "back":
         anilist_options(config, anilist_config)
         return
-    anilist_config.anime_title = anime_title
+    anilist_config.anime_title = anime_normalizer.get(anime_title) or anime_title
     anilist_config._anime = search_results[anime_title]
     fetch_anime_epiosode(config, anilist_config)
 
@@ -373,9 +395,12 @@ def select_anime(config: Config, anilist_config: QueryDict):
         anilist(config, anilist_config)
         return
 
-    selected_anime = anime_data[selected_anime_title]
+    selected_anime: AnilistBaseMediaDataSchema = anime_data[selected_anime_title]
     anilist_config.selected_anime_anilist = selected_anime
-    anilist_config.selected_anime_title = selected_anime_title
+    anilist_config.selected_anime_title = (
+        selected_anime["title"]["romaji"] or selected_anime["title"]["english"]
+    )
+    anilist_config.anime_id = selected_anime["id"]
 
     anilist_options(config, anilist_config)
 
@@ -388,14 +413,25 @@ def anilist(config: Config, anilist_config: QueryDict):
 
         return AniList.search(query=search_term)
 
+    def _watch_history():
+        watch_history = list(map(int, config.watch_history.keys()))
+        print(watch_history)
+        return AniList.search(id_in=watch_history)
+
+    def _anime_list():
+        anime_list = config.anime_list
+        return AniList.search(id_in=anime_list)
+
     options = {
         "trending": AniList.get_trending,
+        "recently updated anime": AniList.get_most_recently_updated,
         "search": _anilist_search,
+        "Watch History": _watch_history,
+        "AnimeList": _anime_list,
         "most popular anime": AniList.get_most_popular,
         "most favourite anime": AniList.get_most_favourite,
         "most scored anime": AniList.get_most_scored,
         "upcoming anime": AniList.get_upcoming_anime,
-        "recently updated anime": AniList.get_most_recently_updated,
         "exit": sys.exit,
     }
     action = fuzzy_inquirer("Select Action:", options.keys())

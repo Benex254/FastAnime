@@ -1,8 +1,8 @@
-import json
 import os
 from configparser import ConfigParser
 
-from .. import USER_CONFIG_PATH, USER_DOWNLOADS_DIR, USER_WATCH_HISTORY
+from .. import USER_CONFIG_PATH, USER_DOWNLOADS_DIR
+from ..Utility import user_data_helper
 
 
 class Config(object):
@@ -37,17 +37,17 @@ class Config(object):
         self.server = self.get_server()
         self.preferred_language = self.get_preferred_language()
 
-        # ---- setup history ------
-        if not os.path.exists(USER_WATCH_HISTORY):
-            self.watch_history = {}
-        else:
-            with open(USER_WATCH_HISTORY, "r") as history:
-                self.watch_history = json.load(history)
+        # ---- setup user data ------
+        self.watch_history = user_data_helper.user_data.get("watch_history", {})
+        self.anime_list = user_data_helper.user_data.get("animelist", [])
 
-    def update_watch_history(self, title, episode):
-        with open(USER_WATCH_HISTORY, "w") as history:
-            self.watch_history[title] = episode
-            json.dump(self.watch_history, history)
+    def update_watch_history(self, anime_id: int, episode: str | None):
+        self.watch_history.update({str(anime_id): episode})
+        user_data_helper.update_watch_history(self.watch_history)
+
+    def update_anime_list(self, anime_id: int):
+        self.anime_list.append(anime_id)
+        user_data_helper.update_animelist(self.anime_list)
 
     def get_downloads_dir(self):
         return self.configparser.get("general", "downloads_dir")

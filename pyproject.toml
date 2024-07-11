@@ -20,6 +20,8 @@ kivymd = [{ url = "https://github.com/kivymd/KivyMD/archive/master.zip" }]
 pyshortcuts = "^1.9.0"
 inquirerpy = "^0.3.4"
 platformdirs = "^4.2.2"
+fastapi = "^0.111.0"
+art = "^6.2"
 [tool.poetry.group.dev.dependencies]
 black = "^24.4.2"
 isort = "^5.13.2"

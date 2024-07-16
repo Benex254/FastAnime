@@ -63,6 +63,7 @@ query($query:String,%s){
       }
       coverImage{
         medium
+        large
       }
       trailer {
         site
@@ -119,6 +120,7 @@ query{
       }
       coverImage{
         medium
+        large
       }
       trailer {
         site
@@ -172,6 +174,7 @@ query{
       }
       coverImage{
         medium
+        large
       }
       trailer {
         site
@@ -219,12 +222,14 @@ query{
   Page(perPage:15){
     media(sort:SCORE_DESC,type:ANIME,genre_not_in:["hentai"]){
       id
+      large
       title{
         romaji
         english
       }
       coverImage{
         medium
+        large
       }
       trailer {
         site
@@ -278,6 +283,7 @@ query{
       }
       coverImage{
         medium
+        large
       }
       trailer {
         site
@@ -323,7 +329,7 @@ query{
 most_recently_updated_query = """
 query{
   Page(perPage:15){
-    media(sort:UPDATED_AT_DESC,type:ANIME,averageScore_greater:60,genre_not_in:["hentai"]){
+    media(sort:UPDATED_AT_DESC,type:ANIME,averageScore_greater:50,genre_not_in:["hentai"],status:RELEASING){
       id
       title{
         romaji
@@ -331,6 +337,7 @@ query{
       }
       coverImage{
         medium
+        large
       }
       trailer {
         site
@@ -387,6 +394,7 @@ query  {
             }
             coverImage{
               medium
+              large
             }
             description
             episodes
@@ -441,6 +449,7 @@ query($id:Int){
           }
           image {
             medium
+            large
           }
           description
           gender
@@ -474,6 +483,7 @@ query ($id: Int) {
           }
           coverImage {
             medium
+            large
           }
           description
           episodes
@@ -545,6 +555,7 @@ query ($page: Int) {
       }
       coverImage {
         medium
+        large
       }
       trailer {
         site
@@ -619,6 +630,7 @@ query($id:Int){
             age
             image {
               medium
+              large
             }
             description
           }
@@ -628,6 +640,7 @@ query($id:Int){
             }
             image {
               medium
+              large
             }
           }
         }
@@ -674,6 +687,7 @@ query($id:Int){
             name
             avatar {
               medium
+              large
             }
           }
         }

@@ -1,9 +1,20 @@
 import json
 import logging
+from typing import Generator
 
 import requests
 from rich import print
 from rich.progress import Progress
+from requests.exceptions import Timeout
+
+from ....libs.anime_provider.allanime.types import (
+    AllAnimeEpisode,
+    AllAnimeSearchResults,
+    AllAnimeShow,
+    AllAnimeSources,
+    AllAnimeStreams,
+    Server,
+)
 
 from .constants import (
     ALLANIME_API_ENDPOINT,
@@ -38,12 +49,21 @@ class AllAnimeAPI:
                 timeout=10,
             )
             return response.json()["data"]
+        except Timeout as e:
+            print(
+                "Timeout has been exceeded :cry:. This could mean allanime is down or your internet is down"
+            )
+            Logger.error(f"allanime(Error): {e}")
+            return {}
         except Exception as e:
+            print("sth went wrong :confused:")
             Logger.error(f"allanime:Error: {e}")
             return {}
 
-    def search_for_anime(self, user_query: str, translation_type: str = "sub"):
-        search = {"allowAdult": False, "allowUnknown": False, "query": user_query}
+    def search_for_anime(
+        self, user_query: str, translation_type: str = "sub", nsfw=True, unknown=True
+    ) -> AllAnimeSearchResults:
+        search = {"allowAdult": nsfw, "allowUnknown": unknown, "query": user_query}
         limit = 40
         translationtype = translation_type
         countryorigin = "all"
@@ -59,18 +79,18 @@ class AllAnimeAPI:
             progress.add_task("[cyan]searching..", start=False, total=None)
 
             search_results = self._fetch_gql(ALLANIME_SEARCH_GQL, variables)
-            return search_results
+            return search_results  # pyright:ignore
 
-    def get_anime(self, allanime_show_id: str):
+    def get_anime(self, allanime_show_id: str) -> AllAnimeShow:
         variables = {"showId": allanime_show_id}
         with Progress() as progress:
             progress.add_task("[cyan]fetching anime..", start=False, total=None)
             anime = self._fetch_gql(ALLANIME_SHOW_GQL, variables)
-            return anime
+            return anime["show"]  # pyright:ignore
 
     def get_anime_episode(
         self, allanime_show_id: str, episode_string: str, translation_type: str = "sub"
-    ):
+    ) -> AllAnimeEpisode:
         variables = {
             "showId": allanime_show_id,
             "translationType": translation_type,
@@ -79,9 +99,18 @@ class AllAnimeAPI:
         with Progress() as progress:
             progress.add_task("[cyan]fetching episode..", start=False, total=None)
             episode = self._fetch_gql(ALLANIME_EPISODES_GQL, variables)
-            return episode
+            return episode  # pyright: ignore
 
-    def get_episode_streams(self, allanime_episode_embeds_data):
+    def get_episode_streams(
+        self, allanime_episode_embeds_data
+    ) -> (
+        Generator[
+            tuple[Server, AllAnimeStreams],
+            tuple[Server, AllAnimeStreams],
+            tuple[Server, AllAnimeStreams],
+        ]
+        | dict
+    ):
         if (
             not allanime_episode_embeds_data
             or allanime_episode_embeds_data.get("episode") is None
@@ -138,8 +167,6 @@ class AllAnimeAPI:
                             Logger.debug("allanime:Found streams from dropbox")
                             print("[yellow]Dropbox Fetched")
                             yield "dropbox", resp.json()
-                        case _:
-                            yield "Unknown", resp.json()
                 else:
                     return {}
 
@@ -175,7 +202,7 @@ if __name__ == "__main__":
     anime_data = anime_provider.get_anime(anime_result["_id"])
     if anime_data is None:
         raise Exception("Anime not found")
-    availableEpisodesDetail = anime_data["show"]["availableEpisodesDetail"]
+    availableEpisodesDetail = anime_data["availableEpisodesDetail"]
     if not availableEpisodesDetail.get(translation.strip()):
         raise Exception("No episodes found")
 
@@ -200,6 +227,7 @@ if __name__ == "__main__":
         episode_streams = list(episode_streams)
         stream_links = []
         for server in episode_streams:
+            # FIXME:
             stream_links = [
                 *stream_links,
                 *[stream["link"] for stream in server[1]["links"]],

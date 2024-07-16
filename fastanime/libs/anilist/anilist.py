@@ -47,7 +47,7 @@ class AniList:
         try:
             # TODO: check if data is as expected
             response = requests.post(
-                url, json={"query": query, "variables": variables}, timeout=5
+                url, json={"query": query, "variables": variables}, timeout=10
             )
             anilist_data: AnilistDataSchema = response.json()
             return (True, anilist_data)

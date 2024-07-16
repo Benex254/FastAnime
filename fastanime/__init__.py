@@ -41,10 +41,7 @@ USER_CONFIG_PATH = os.path.join(APP_DATA_DIR, "config.ini")
 APP_CACHE_DIR = dirs.user_cache_dir
 
 # video dir
-USER_DOWNLOADS_DIR = dirs.user_videos_dir
-
-print(f"USER_DOWNLOADS_DIR: {USER_DOWNLOADS_DIR}")
-
+USER_VIDEOS_DIR = dirs.user_videos_dir
 
 # web dirs
 
@@ -82,9 +79,9 @@ def FastAnime(gui=False, web=False):
 
         run_gui()
     elif web:
-        from .web import run_web
+        from .api import run_api
 
-        run_web()
+        run_api()
     else:
         from .cli import run_cli
 

@@ -1,12 +1,19 @@
 import os
 from configparser import ConfigParser
+from rich import print
 
-from .. import USER_CONFIG_PATH, USER_DOWNLOADS_DIR
+from .. import USER_CONFIG_PATH, USER_VIDEOS_DIR
 from ..Utility.user_data_helper import user_data_helper
 
 
 class Config(object):
+    anime_list: list
+    watch_history: dict
+
     def __init__(self) -> None:
+        self.load_config()
+
+    def load_config(self):
         self.configparser = ConfigParser(
             {
                 "server": "",
@@ -14,7 +21,7 @@ class Config(object):
                 "quality": "0",
                 "auto_next": "True",
                 "sort_by": "search match",
-                "downloads_dir": USER_DOWNLOADS_DIR,
+                "downloads_dir": USER_VIDEOS_DIR,
                 "translation_type": "sub",
                 "preferred_language": "romaji",
             }
@@ -38,16 +45,25 @@ class Config(object):
         self.preferred_language = self.get_preferred_language()
 
         # ---- setup user data ------
-        self.watch_history = user_data_helper.user_data.get("watch_history", {})
-        self.anime_list = user_data_helper.user_data.get("animelist", [])
+        self.watch_history: dict = user_data_helper.user_data.get("watch_history", {})
+        self.anime_list: list = user_data_helper.user_data.get("animelist", [])
 
     def update_watch_history(self, anime_id: int, episode: str | None):
         self.watch_history.update({str(anime_id): episode})
         user_data_helper.update_watch_history(self.watch_history)
 
-    def update_anime_list(self, anime_id: int):
-        self.anime_list.append(anime_id)
-        user_data_helper.update_animelist(self.anime_list)
+    def update_anime_list(self, anime_id: int, remove=False):
+        if remove:
+            try:
+                self.anime_list.remove(anime_id)
+                print("Succesfully removed :cry:")
+            except Exception:
+                print(anime_id, "Nothing to remove :confused:")
+        else:
+            self.anime_list.append(anime_id)
+            user_data_helper.update_animelist(self.anime_list)
+            print("Succesfully added :smile:")
+        input("Enter to continue...")
 
     def get_downloads_dir(self):
         return self.configparser.get("general", "downloads_dir")

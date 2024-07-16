@@ -50,10 +50,9 @@ class FZF:
         "--no-margin",
         "+m",
         "-i",
-        "--expect=shift-left,shift-right",
         "--exact",
         "--tabstop=1",
-        "--preview-window=left,35%,wrap",
+        "--preview-window=left,35%",
         "--wrap",
     ]
 
@@ -116,6 +115,8 @@ class FZF:
         prompt: str,
         header: str,
         preview: str | None = None,
+        expect: str | None = None,
+        validator: Callable | None = None,
     ) -> str:
         _commands = [
             *self.default_options,
@@ -128,7 +129,21 @@ class FZF:
 
         if preview:
             _commands.append(f"--preview={preview}")
-        return self._run_fzf(_commands, fzf_input)  # pyright:ignore
+        if expect:
+            _commands.append(f"--expect={expect}")
+
+        result = self._run_fzf(_commands, fzf_input)  # pyright:ignore
+        if not result:
+            print("Please enter a value")
+            input("Enter to do it right")
+            return self.run(fzf_input, prompt, header, preview, expect, validator)
+        elif validator:
+            success, info = validator(result)
+            if not success:
+                print(info)
+                input("Enter to try again")
+                return self.run(fzf_input, prompt, header, preview, expect, validator)
+        return result
 
 
 fzf = FZF()

@@ -11,13 +11,13 @@ from .trending import trending
 from .upcoming import upcoming
 
 commands = {
-    "favourites": favourites,
+    "trending": trending,
     "recent": recent,
     "search": search,
-    "popular": popular,
-    "trending": trending,
-    "scores": scores,
     "upcoming": upcoming,
+    "scores": scores,
+    "popular": popular,
+    "favourites": favourites,
 }
 
 

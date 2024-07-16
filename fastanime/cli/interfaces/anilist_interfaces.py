@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import os
 import shutil
-import sys
 
 from rich import print
 from rich.prompt import Prompt
@@ -208,7 +207,7 @@ def player_controls(config: Config, anilist_config: QueryDict):
         "Main Menu": lambda: anilist(config, anilist_config),
         "Anime Options Menu": lambda: anilist_options(config, anilist_config),
         "Search Results": lambda: select_anime(config, anilist_config),
-        "Exit": sys.exit,
+        "Exit": exit_app,
     }
 
     if config.auto_next:
@@ -545,7 +544,7 @@ def anilist(config: Config, anilist_config: QueryDict):
         "Most Scored Anime": AniList.get_most_scored,
         "Upcoming Anime": AniList.get_upcoming_anime,
         "Edit Config": edit_config,
-        "Exit": sys.exit,
+        "Exit": exit_app,
     }
     action = fzf.run(
         list(options.keys()),

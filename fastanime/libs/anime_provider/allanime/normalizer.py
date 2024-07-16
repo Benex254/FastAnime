@@ -1,5 +1,5 @@
+from ..types import Anime, EpisodesDetail, SearchResults
 from .types import AllAnimeSearchResults, AllAnimeShow
-from ..types import SearchResults, Anime, EpisodesDetail
 
 
 def normalize_search_results(search_results: AllAnimeSearchResults) -> SearchResults:

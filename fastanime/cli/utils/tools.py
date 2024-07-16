@@ -24,4 +24,4 @@ def get_formatted_str(text: str, style):
     ansi_output = text.__rich_console__(None, None)
 
     # Join the ANSI strings to form the final output
-    ansi_string = "".join(segment.text for segment in ansi_output)
+    "".join(segment.text for segment in ansi_output)

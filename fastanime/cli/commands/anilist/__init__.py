@@ -1,5 +1,3 @@
-from sys import exit
-
 import click
 
 from ...interfaces.anilist_interfaces import anilist as anilist_interface
@@ -20,7 +18,6 @@ commands = {
     "trending": trending,
     "scores": scores,
     "upcoming": upcoming,
-    "exit": exit,
 }
 
 

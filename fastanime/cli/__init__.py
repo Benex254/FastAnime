@@ -1,5 +1,3 @@
-from sys import exit
-
 import click
 
 from .. import __version__
@@ -16,11 +14,10 @@ commands = {
     "download": download,
     "anilist": anilist,
     "config": configure,
-    "exit": exit,
 }
 
 
-@click.group(commands=commands, invoke_without_command=True)
+@click.group(commands=commands)
 @click.version_option(__version__, "--version")
 @click.option(
     "-s",

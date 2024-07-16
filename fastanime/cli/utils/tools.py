@@ -1,6 +1,3 @@
-from rich.text import Text
-
-
 class QueryDict(dict):
     """dot.notation access to dictionary attributes"""
 
@@ -16,12 +13,25 @@ class QueryDict(dict):
         self.__setitem__(attr, value)
 
 
-def get_formatted_str(text: str, style):
+def exit_app(*args):
+    import sys
+
+    from rich import print
+
+    from ... import USER_NAME
+
+    print("Have a good day :smile:", USER_NAME)
+    sys.exit(0)
+
+
+def get_formatted_str(string: str, style):
+    from rich.text import Text
+
     # Create a Text object with desired style
-    text = Text("Hello, World!", style="bold red")
+    text = Text(string, style="bold red")
 
     # Convert the Text object to an ANSI string
-    ansi_output = text.__rich_console__(None, None)
+    ansi_output = text.__rich_console__(None, None)  # pyright:ignore
 
     # Join the ANSI strings to form the final output
     "".join(segment.text for segment in ansi_output)

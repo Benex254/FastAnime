@@ -5,7 +5,10 @@ from ...interfaces.anilist_interfaces import select_anime
 from ...utils.tools import QueryDict
 
 
-@click.command()
+@click.command(
+    help="Fetch the top 15 most favourited anime from anilist",
+    short_help="View most favourited anime",
+)
 @click.pass_obj
 def favourites(config):
     anime_data = AniList.get_most_favourite()

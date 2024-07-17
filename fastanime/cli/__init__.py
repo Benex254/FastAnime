@@ -45,12 +45,12 @@ signal.signal(signal.SIGINT, handle_exit)
     "--server",
     type=click.Choice(SERVERS_AVAILABLE, case_sensitive=False),
 )
-@click.option("-c-h/-no-h", "--continue_h/--no-continue_h", type=bool)
+@click.option("-c/-no-c", "--continue/--no-continue", "continue_", type=bool)
 @click.option("-q", "--quality", type=int)
-@click.option("-t-t", "--translation_type")
-@click.option("-a-n", "--auto-next", type=bool)
+@click.option("-t", "--translation_type")
+@click.option("-a", "--auto-next", type=bool)
 @click.option(
-    "-s-b",
+    "-S",
     "--sort-by",
     type=click.Choice(anilist_sort_normalizer.keys()),  # pyright: ignore
 )
@@ -59,7 +59,7 @@ signal.signal(signal.SIGINT, handle_exit)
 def run_cli(
     ctx: click.Context,
     server,
-    continue_h,
+    continue_,
     translation_type,
     quality,
     auto_next,
@@ -69,8 +69,8 @@ def run_cli(
     ctx.obj = Config()
     if server:
         ctx.obj.server = server
-    if continue_h:
-        ctx.obj.continue_from_history = continue_h
+    if continue_:
+        ctx.obj.continue_from_history = continue_
     if quality:
         ctx.obj.quality = quality
     if auto_next:

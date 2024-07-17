@@ -45,7 +45,7 @@ USER_CONFIG_PATH = os.path.join(APP_DATA_DIR, "config.ini")
 APP_CACHE_DIR = dirs.user_cache_dir
 
 # video dir
-USER_VIDEOS_DIR = dirs.user_videos_dir
+USER_VIDEOS_DIR = os.path.join(dirs.user_videos_dir, APP_NAME)
 
 # web dirs
 

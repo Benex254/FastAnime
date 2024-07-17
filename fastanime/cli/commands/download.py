@@ -1,68 +1,78 @@
 import click
 
 from ...libs.anime_provider.allanime.api import anime_provider
+from ...libs.anime_provider.types import Anime
+from ...libs.fzf import fzf
 from ...Utility.downloader.downloader import downloader
 from ..config import Config
-from ..utils.utils import clear, fuzzy_inquirer
+from ..utils.tools import exit_app
+from ..utils.utils import clear
 
 
-@click.command()
-@click.option("--anime-title", prompt="Enter the anime title", required=True)
-@click.option("--episode-start", prompt="Enter the episode start", required=True)
-@click.option("--episode-end", prompt="Enter the episode end", required=True)
+@click.command(
+    help="Download anime using the anime provider for a specified range",
+    short_help="Download anime",
+)
+@click.argument(
+    "anime-title",
+    required=True,
+)
+@click.option(
+    "--episode-range",
+    "-r",
+    help="A range of episodes to download",
+)
 @click.pass_obj
-def download(config: Config, anime_title, episode_start, episode_end):
+def download(config: Config, anime_title, episode_range):
     translation_type = config.translation_type
     download_dir = config.downloads_dir
-    quality = config.quality
+    config.quality
     search_results = anime_provider.search_for_anime(
         anime_title, translation_type=translation_type
     )
+    search_results = search_results["results"]
+    search_results_ = {
+        search_result["title"]: search_result for search_result in search_results
+    }
 
-    episodes_to_download = range(int(episode_start), int(episode_end) + 1)
-    options = {show["name"]: show for show in search_results["shows"]["edges"]}
-    anime = fuzzy_inquirer("Please select the anime:", options.keys())
+    search_result = fzf.run(
+        list(search_results_.keys()), "Please Select title: ", "FastAnime"
+    )
 
-    anime_data = options[anime]
-    availableEpisodesDetail = anime_data["availableEpisodes"]
+    anime: Anime = anime_provider.get_anime(search_results_[search_result]["id"])
 
-    episodes = availableEpisodesDetail[translation_type]
+    episodes = anime["availableEpisodesDetail"][config.translation_type]
+    if episode_range:
+        episodes_start, episodes_end = episode_range.split("-")
 
-    server = config.server
-    for episode_number in episodes_to_download:
-        if episode_number not in range(episodes):
-            print(f"Episode {episode_number} not available")
-            continue
-        print(f"Downloading episode {episode_number} of {anime_data['name']}")
-        episode = anime_provider.get_anime_episode(
-            anime_data["_id"], str(episode_number), translation_type
-        )
+    else:
+        episodes_start, episodes_end = 0, len(episodes)
+    for episode in range(round(float(episodes_start)), round(float(episodes_end))):
+        try:
+            episode = str(episode)
+            if episode not in episodes:
+                print("Episode not found skipping")
+                continue
+            streams = anime_provider.get_episode_streams(
+                anime, episode, config.translation_type
+            )
+            if not streams:
+                print("No streams skipping")
+                continue
 
-        # get streams for episode from provider
-        episode_streams = anime_provider.get_episode_streams(episode)
-        episode_streams = {
-            episode_stream[0]: episode_stream[1] for episode_stream in episode_streams
-        }
-
-        # prompt for preferred server
-        if not server or server not in episode_streams.keys():
-            server = fuzzy_inquirer("Please select server:", episode_streams.keys())
-        print(episode)
-        print(episode_streams)
-        selected_server = episode_streams[server]
-
-        links = selected_server["links"]
-        if quality > len(links) - 1:
-            quality = config.quality = len(links) - 1
-        elif quality < 0:
-            quality = config.quality = 0
-        stream_link = links[quality]["link"]
-
-        downloader._download_file(
-            stream_link,
-            download_dir,
-            (anime_data["name"], str(episode_number)),
-            lambda *_: "",
-            silent=True,
-        )
-        clear()
+            streams = list(streams)
+            links = [
+                (link.get("priority", 0), link["link"])
+                for server in streams
+                for link in server["links"]
+            ]
+            link = max(links, key=lambda x: x[0])[1]
+            downloader._download_file(
+                link, download_dir, (anime["title"], streams[0]["episode_title"]), True
+            )
+        except Exception as e:
+            print(e)
+            print("Continuing")
+            clear()
+    print("Done")
+    exit_app()

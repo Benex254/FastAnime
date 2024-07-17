@@ -49,15 +49,13 @@ class YtDLPDownloader:
         self._thread.start()
 
     # Function to download the file
-    def _download_file(
-        self, url: str, download_dir, title, custom_progress_hook, silent
-    ):
+    def _download_file(self, url: str, download_dir, title, silent):
         anime_title = sanitize_filename(title[0])
+        episode_title = sanitize_filename(title[1])
         ydl_opts = {
-            "outtmpl": f"{download_dir}/{anime_title}/{anime_title}-episode {title[1]}.%(ext)s",  # Specify the output path and template
+            "outtmpl": f"{download_dir}/{anime_title}/{episode_title}.%(ext)s",  # Specify the output path and template
             "progress_hooks": [
                 main_progress_hook,
-                custom_progress_hook,
             ],  # Progress hook
             "silent": silent,
             "verbose": False,
@@ -66,10 +64,8 @@ class YtDLPDownloader:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             ydl.download([url])
 
-    def download_file(self, url: str, title, custom_progress_hook, silent=True):
-        self.downloads_queue.put(
-            (self._download_file, (url, title, custom_progress_hook, silent))
-        )
+    def download_file(self, url: str, title, silent=True):
+        self.downloads_queue.put((self._download_file, (url, title, silent)))
 
 
 downloader = YtDLPDownloader()

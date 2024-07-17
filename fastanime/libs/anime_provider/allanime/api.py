@@ -7,13 +7,8 @@ from requests.exceptions import Timeout
 from rich import print
 from rich.progress import Progress
 
-from ....libs.anime_provider.allanime.types import (
-    AllAnimeEpisode,
-    AllAnimeSearchResults,
-    AllAnimeShow,
-    AllAnimeStreams,
-    Server,
-)
+from ....libs.anime_provider.allanime.types import AllAnimeEpisode
+from ....libs.anime_provider.types import Anime, Server
 from .constants import (
     ALLANIME_API_ENDPOINT,
     ALLANIME_BASE,
@@ -21,6 +16,7 @@ from .constants import (
     USER_AGENT,
 )
 from .gql_queries import ALLANIME_EPISODES_GQL, ALLANIME_SEARCH_GQL, ALLANIME_SHOW_GQL
+from .normalizer import normalize_anime, normalize_search_results
 from .utils import decode_hex_string
 
 Logger = logging.getLogger(__name__)
@@ -60,7 +56,7 @@ class AllAnimeAPI:
 
     def search_for_anime(
         self, user_query: str, translation_type: str = "sub", nsfw=True, unknown=True
-    ) -> AllAnimeSearchResults:
+    ):
         search = {"allowAdult": nsfw, "allowUnknown": unknown, "query": user_query}
         limit = 40
         translationtype = translation_type
@@ -77,14 +73,14 @@ class AllAnimeAPI:
             progress.add_task("[cyan]searching..", start=False, total=None)
 
             search_results = self._fetch_gql(ALLANIME_SEARCH_GQL, variables)
-            return search_results  # pyright:ignore
+            return normalize_search_results(search_results)  # pyright:ignore
 
-    def get_anime(self, allanime_show_id: str) -> AllAnimeShow:
+    def get_anime(self, allanime_show_id: str):
         variables = {"showId": allanime_show_id}
         with Progress() as progress:
             progress.add_task("[cyan]fetching anime..", start=False, total=None)
             anime = self._fetch_gql(ALLANIME_SHOW_GQL, variables)
-            return anime["show"]  # pyright:ignore
+            return normalize_anime(anime["show"])
 
     def get_anime_episode(
         self, allanime_show_id: str, episode_string: str, translation_type: str = "sub"
@@ -97,74 +93,100 @@ class AllAnimeAPI:
         with Progress() as progress:
             progress.add_task("[cyan]fetching episode..", start=False, total=None)
             episode = self._fetch_gql(ALLANIME_EPISODES_GQL, variables)
-            return episode  # pyright: ignore
+            return episode["episode"]  # pyright: ignore
 
-    def get_episode_streams(self, allanime_episode_embeds_data) -> (
+    def get_episode_streams(
+        self, anime: Anime, episode_number: str, translation_type="sub"
+    ) -> (
         Generator[
-            tuple[Server, AllAnimeStreams],
-            tuple[Server, AllAnimeStreams],
-            tuple[Server, AllAnimeStreams],
+            Server,
+            Server,
+            Server,
         ]
-        | dict
+        | None
     ):
-        if (
-            not allanime_episode_embeds_data
-            or allanime_episode_embeds_data.get("episode") is None
-        ):
+        anime_id = anime["id"]
+        allanime_episode = self.get_anime_episode(
+            anime_id, episode_number, translation_type
+        )
+        if not allanime_episode:
             return {}
-        embeds = allanime_episode_embeds_data["episode"]["sourceUrls"]
+
+        embeds = allanime_episode["sourceUrls"]
         with Progress() as progress:
             progress.add_task("[cyan]fetching streams..", start=False, total=None)
             for embed in embeds:
-                # filter the working streams
-                if embed.get("sourceName", "") not in (
-                    "Sak",
-                    "Kir",
-                    "S-mp4",
-                    "Luf-mp4",
-                ):
-                    continue
-                url = embed.get("sourceUrl")
+                try:
+                    # filter the working streams
+                    if embed.get("sourceName", "") not in (
+                        "Sak",
+                        "Kir",
+                        "S-mp4",
+                        "Luf-mp4",
+                    ):
+                        continue
+                    url = embed.get("sourceUrl")
 
-                if not url:
-                    continue
-                if url.startswith("--"):
-                    url = url[2:]
+                    if not url:
+                        continue
+                    if url.startswith("--"):
+                        url = url[2:]
 
-                # get the stream url for an episode of the defined source names
-                parsed_url = decode_hex_string(url)
-                embed_url = (
-                    f"https://{ALLANIME_BASE}{parsed_url.replace('clock','clock.json')}"
-                )
-                resp = requests.get(
-                    embed_url,
-                    headers={
-                        "Referer": ALLANIME_REFERER,
-                        "User-Agent": USER_AGENT,
-                    },
-                    timeout=10,
-                )
-                if resp.status_code == 200:
-                    match embed["sourceName"]:
-                        case "Luf-mp4":
-                            Logger.debug("allanime:Found streams from gogoanime")
-                            print("[yellow]GogoAnime Fetched")
-                            yield "gogoanime", resp.json()
-                        case "Kir":
-                            Logger.debug("allanime:Found streams from wetransfer")
-                            print("[yellow]WeTransfer Fetched")
-                            yield "wetransfer", resp.json()
-                        case "S-mp4":
-                            Logger.debug("allanime:Found streams from sharepoint")
-
-                            print("[yellow]Sharepoint Fetched")
-                            yield "sharepoint", resp.json()
-                        case "Sak":
-                            Logger.debug("allanime:Found streams from dropbox")
-                            print("[yellow]Dropbox Fetched")
-                            yield "dropbox", resp.json()
-                else:
-                    return {}
+                    # get the stream url for an episode of the defined source names
+                    parsed_url = decode_hex_string(url)
+                    embed_url = f"https://{ALLANIME_BASE}{parsed_url.replace('clock','clock.json')}"
+                    resp = requests.get(
+                        embed_url,
+                        headers={
+                            "Referer": ALLANIME_REFERER,
+                            "User-Agent": USER_AGENT,
+                        },
+                        timeout=10,
+                    )
+                    if resp.status_code == 200:
+                        match embed["sourceName"]:
+                            case "Luf-mp4":
+                                Logger.debug("allanime:Found streams from gogoanime")
+                                print("[yellow]GogoAnime Fetched")
+                                yield {
+                                    "server": "gogoanime",
+                                    "episode_title": allanime_episode["notes"]
+                                    or f"{anime["title"]} Episode:{episode_number}",
+                                    "links": resp.json()["links"],
+                                }  # pyright:ignore
+                            case "Kir":
+                                Logger.debug("allanime:Found streams from wetransfer")
+                                print("[yellow]WeTransfer Fetched")
+                                yield {
+                                    "server": "wetransfer",
+                                    "episode_title": allanime_episode["notes"]
+                                    or f"{anime["title"]} Episode:{episode_number}",
+                                    "links": resp.json()["links"],
+                                }  # pyright:ignore
+                            case "S-mp4":
+                                Logger.debug("allanime:Found streams from sharepoint")
+                                print("[yellow]Sharepoint Fetched")
+                                yield {
+                                    "server": "sharepoint",
+                                    "episode_title": allanime_episode["notes"]
+                                    or f"{anime["title"]} Episode:{episode_number}",
+                                    "links": resp.json()["links"],
+                                }  # pyright:ignore
+                            case "Sak":
+                                Logger.debug("allanime:Found streams from dropbox")
+                                print("[yellow]Dropbox Fetched")
+                                yield {
+                                    "server": "dropbox",
+                                    "episode_title": allanime_episode["notes"]
+                                    or f"{anime["title"]} Episode:{episode_number}",
+                                    "links": resp.json()["links"],
+                                }  # pyright:ignore
+                except Timeout:
+                    print(
+                        "Timeout has been exceeded :cry: this could mean allanime is down or your internet connection is poor"
+                    )
+                except Exception as e:
+                    print("Sth went wrong :confused:", e)
 
 
 anime_provider = AllAnimeAPI()
@@ -187,53 +209,48 @@ if __name__ == "__main__":
     if not search_results:
         raise Exception("No results found")
 
-    search_results = search_results["shows"]["edges"]
-    options = [show["name"] for show in search_results]
-    anime = run_fzf(options)
+    search_results = search_results["results"]
+    options = {show["title"]: show for show in search_results}
+    anime = run_fzf(options.keys())
     if anime is None:
         print("No anime was selected")
         sys.exit(1)
 
-    anime_result = list(filter(lambda x: x["name"] == anime, search_results))[0]
-    anime_data = anime_provider.get_anime(anime_result["_id"])
+    anime_result = options[anime]
+    anime_data = anime_provider.get_anime(anime_result["id"])
     if anime_data is None:
         raise Exception("Anime not found")
     availableEpisodesDetail = anime_data["availableEpisodesDetail"]
     if not availableEpisodesDetail.get(translation.strip()):
         raise Exception("No episodes found")
 
-    print("select episode")
     stream_link = True
     while stream_link != "quit":
+        print("select episode")
         episode = run_fzf(availableEpisodesDetail[translation.strip()])
         if episode is None:
             print("No episode was selected")
             sys.exit(1)
 
-        episode_data = anime_provider.get_anime_episode(
-            anime_result["_id"], episode, translation.strip()
+        episode_streams_ = anime_provider.get_episode_streams(
+            anime_data, episode, translation.strip()
         )
-        if episode_data is None:
+        if episode_streams_ is None:
             raise Exception("Episode not found")
 
-        episode_streams = anime_provider.get_episode_streams(episode_data)
-
-        if not episode_streams:
-            raise Exception("No streams found")
-        episode_streams = list(episode_streams)
+        episode_streams = list(episode_streams_)
         stream_links = []
         for server in episode_streams:
-            # FIXME:
-            stream_links = [
-                *stream_links,
-                *[stream["link"] for stream in server[1]["links"]],
-            ]
-        stream_links = stream_link = run_fzf([*stream_links, "quit"])
-
+            stream_links.extend([link["link"] for link in server["links"]])
+        stream_links.append("back")
+        stream_link = run_fzf(stream_links)
         if stream_link == "quit":
             print("Have a nice day")
             sys.exit()
         if not stream_link:
             raise Exception("No stream was selected")
 
-        subprocess.run(["mpv", stream_link])
+        title = episode_streams[0].get(
+            "episode_title", "%s: Episode %s" % (anime_data["title"], episode)
+        )
+        subprocess.run(["mpv", f"--title={title}", stream_link])

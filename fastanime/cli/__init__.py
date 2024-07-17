@@ -1,3 +1,5 @@
+import signal
+
 import click
 
 from .. import __version__
@@ -15,6 +17,19 @@ commands = {
     "anilist": anilist,
     "config": configure,
 }
+
+
+# handle keyboard interupt
+def handle_exit(signum, frame):
+    from .utils.tools import exit_app
+    from .utils.utils import clear
+
+    clear()
+
+    exit_app()
+
+
+signal.signal(signal.SIGINT, handle_exit)
 
 
 @click.group(

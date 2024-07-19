@@ -28,7 +28,6 @@ from ..utils.utils import clear
 def download(config: Config, anime_title, episode_range):
     translation_type = config.translation_type
     download_dir = config.downloads_dir
-    config.quality
     search_results = anime_provider.search_for_anime(
         anime_title, translation_type=translation_type
     )

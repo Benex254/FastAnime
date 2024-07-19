@@ -9,7 +9,9 @@ from ...utils.tools import QueryDict
     help="Search for anime using anilists api and get top ~50 results",
     short_help="Search for anime",
 )
-@click.option("--title", prompt="Enter anime title")
+@click.argument(
+    "title",
+)
 @click.pass_obj
 def search(config, title):
     success, search_results = AniList.search(title)

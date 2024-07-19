@@ -1,4 +1,6 @@
 import click
+from fuzzywuzzy import fuzz
+from rich import print
 
 from ...cli.config import Config
 from ...libs.anime_provider.allanime.api import anime_provider
@@ -24,16 +26,23 @@ def search(
     search_results_ = {
         search_result["title"]: search_result for search_result in search_results
     }
+    if config.auto_select:
+        search_result = max(
+            search_results_.keys(), key=lambda title: fuzz.ratio(title, anime_title)
+        )
+        print("[cyan]Auto Selecting:[/] ", search_result)
 
-    search_result = fzf.run(
-        list(search_results_.keys()), "Please Select title: ", "FastAnime"
-    )
+    else:
+        search_result = fzf.run(
+            list(search_results_.keys()), "Please Select title: ", "FastAnime"
+        )
 
     anime: Anime = anime_provider.get_anime(search_results_[search_result]["id"])
 
     def stream_anime():
         episodes = anime["availableEpisodesDetail"][config.translation_type]
-        episode = fzf.run(episodes, "Select an episode: ", header="Episodes")
+
+        episode = fzf.run(episodes, "Select an episode: ", header=search_result)
         streams = anime_provider.get_episode_streams(
             anime, episode, config.translation_type
         )

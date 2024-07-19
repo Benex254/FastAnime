@@ -14,7 +14,11 @@ from ...libs.anime_provider.types import Anime, SearchResult, Server
 from ...libs.fzf import fzf
 from ...Utility import anilist_data_helper
 from ...Utility.data import anime_normalizer
-from ...Utility.utils import remove_html_tags, sanitize_filename
+from ...Utility.utils import (
+    anime_title_percentage_match,
+    remove_html_tags,
+    sanitize_filename,
+)
 from ..config import Config
 from ..utils.mpv import mpv
 from ..utils.tools import QueryDict, exit_app
@@ -303,6 +307,7 @@ def fetch_episode(config: Config, anilist_config: QueryDict):
     continue_from_history: bool = config.continue_from_history
     user_watch_history: dict = config.watch_history
     anime_id: int = anilist_config.anime_id
+    anime_title: str = anilist_config.anime_title
 
     # internal config
     anime: Anime = anilist_config.anime
@@ -317,7 +322,7 @@ def fetch_episode(config: Config, anilist_config: QueryDict):
         episode_number = fzf.run(
             [*episodes, "Back"],
             prompt="Select Episode:",
-            header="Episodes",
+            header=anime_title,
         )
 
     if episode_number == "Back":
@@ -354,6 +359,8 @@ def provide_anime(config: Config, anilist_config: QueryDict):
     # internal config
     selected_anime_title = anilist_config.selected_anime_title
 
+    anime_data: AnilistBaseMediaDataSchema = anilist_config.selected_anime_anilist
+
     # search and get the requested title from provider
     search_results = anime_provider.search_for_anime(
         selected_anime_title, translation_type
@@ -371,15 +378,22 @@ def provide_anime(config: Config, anilist_config: QueryDict):
     ):
         _title = _title
 
-    anime_title = fzf.run(
-        [*search_results.keys(), "Back"],
-        prompt="Select Search Result:",
-        header="Anime Search Results",
-    )
+    if config.auto_select:
+        anime_title = max(
+            search_results.keys(),
+            key=lambda title: anime_title_percentage_match(title, anime_data),
+        )
+        print(f"[cyan]Auto selecting[/]: {anime_title}")
+    else:
+        anime_title = fzf.run(
+            [*search_results.keys(), "Back"],
+            prompt="Select Search Result:",
+            header="Anime Search Results",
+        )
 
-    if anime_title == "Back":
-        anilist_options(config, anilist_config)
-        return
+        if anime_title == "Back":
+            anilist_options(config, anilist_config)
+            return
     anilist_config.anime_title = anime_normalizer.get(anime_title) or anime_title
     anilist_config._anime = search_results[anime_title]
     fetch_anime_episode(config, anilist_config)

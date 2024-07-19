@@ -48,7 +48,8 @@ signal.signal(signal.SIGINT, handle_exit)
 @click.option("-c/-no-c", "--continue/--no-continue", "continue_", type=bool)
 @click.option("-q", "--quality", type=int)
 @click.option("-t", "--translation_type")
-@click.option("-a", "--auto-next", type=bool)
+@click.option("-A/-no-A", "--auto-next/--no-auto-next", type=bool)
+@click.option("-a/-no-a", "--auto-select/--no-auto-select", type=bool)
 @click.option(
     "-S",
     "--sort-by",
@@ -63,6 +64,7 @@ def run_cli(
     translation_type,
     quality,
     auto_next,
+    auto_select,
     sort_by,
     downloads_dir,
 ):
@@ -75,6 +77,8 @@ def run_cli(
         ctx.obj.quality = quality
     if auto_next:
         ctx.obj.auto_next = auto_next
+    if auto_select:
+        ctx.obj.auto_select = auto_select
     if sort_by:
         ctx.obj.sort_by = sort_by
     if downloads_dir:

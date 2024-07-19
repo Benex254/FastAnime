@@ -4,12 +4,6 @@ import shutil
 from datetime import datetime
 from functools import lru_cache
 
-from fuzzywuzzy import fuzz
-
-from fastanime.libs.anilist.anilist_data_schema import AnilistBaseMediaDataSchema
-
-from .data import anime_normalizer
-
 # TODO: make it use color_text instead of fixed vals
 # from .kivy_markup_helper import color_text
 
@@ -102,32 +96,6 @@ def sanitize_filename(filename: str):
         sanitized = "default_filename"
 
     return sanitized
-
-
-def anime_title_percentage_match(
-    possible_user_requested_anime_title: str, anime: AnilistBaseMediaDataSchema
-) -> float:
-    """Returns the percentage match between the possible title and user title
-
-    Args:
-        possible_user_requested_anime_title (str): an Animdl search result title
-        title (str): the anime title the user wants
-
-    Returns:
-        int: the percentage match
-    """
-    if normalized_anime_title := anime_normalizer.get(
-        possible_user_requested_anime_title
-    ):
-        possible_user_requested_anime_title = normalized_anime_title
-    # compares both the romaji and english names and gets highest Score
-    title_a = str(anime["title"]["romaji"])
-    title_b = str(anime["title"]["english"])
-    percentage_ratio = max(
-        fuzz.ratio(title_a.lower(), possible_user_requested_anime_title.lower()),
-        fuzz.ratio(title_b.lower(), possible_user_requested_anime_title.lower()),
-    )
-    return percentage_ratio
 
 
 if __name__ == "__main__":

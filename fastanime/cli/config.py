@@ -17,15 +17,16 @@ class Config(object):
     def load_config(self):
         self.configparser = ConfigParser(
             {
-                "server": "",
-                "continue_from_history": "False",
+                "server": "top",
+                "continue_from_history": "True",
                 "quality": "0",
-                "auto_next": "True",
+                "auto_next": "False",
                 "auto_select": "True",
                 "sort_by": "search match",
                 "downloads_dir": USER_VIDEOS_DIR,
                 "translation_type": "sub",
-                "preferred_language": "romaji",
+                "preferred_language": "english",
+                "use_fzf": "False",
             }
         )
         self.configparser.add_section("stream")
@@ -38,6 +39,7 @@ class Config(object):
 
         # --- set defaults ---
         self.downloads_dir = self.get_downloads_dir()
+        self.use_fzf = self.get_use_fzf()
         self.translation_type = self.get_translation_type()
         self.sort_by = self.get_sort_by()
         self.continue_from_history = self.get_continue_from_history()
@@ -70,6 +72,9 @@ class Config(object):
 
     def get_downloads_dir(self):
         return self.configparser.get("general", "downloads_dir")
+
+    def get_use_fzf(self):
+        return self.configparser.getboolean("general", "use_fzf")
 
     def get_preferred_language(self):
         return self.configparser.get("general", "preferred_language")

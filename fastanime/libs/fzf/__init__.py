@@ -52,7 +52,7 @@ class FZF:
         "-i",
         "--exact",
         "--tabstop=1",
-        "--preview-window=left,35%",
+        "--preview-window=left,35%,wrap",
         "--wrap",
     ]
 

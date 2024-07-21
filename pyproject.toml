@@ -8,21 +8,16 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.10"
-kivy = "^2.3.0"
 yt-dlp = "^2024.5.27"
-ffpyplayer = "^4.5.1"
-fuzzywuzzy = "^0.18.0"
 rich = "^13.7.1"
 click = "^8.1.7"
-python-levenshtein = "^0.25.1"
-kivymd = [{ url = "https://github.com/kivymd/KivyMD/archive/master.zip" }]
-
-pyshortcuts = "^1.9.0"
 inquirerpy = "^0.3.4"
 platformdirs = "^4.2.2"
-fastapi = "^0.111.0"
 art = "^6.2"
 python-dotenv = "^1.0.1"
+thefuzz = "^0.22.1"
+[tool.poetry.group.dev]
+optional = true
 [tool.poetry.group.dev.dependencies]
 black = "^24.4.2"
 isort = "^5.13.2"
@@ -32,6 +27,12 @@ pre-commit = "^3.7.1"
 autoflake = "^2.3.1"
 bandit = "^1.7.9"
 
+[tool.poetry.group.gui_deps]
+optional = true
+[tool.poetry.group.gui_deps.dependencies]
+kivy = "^2.3.0"
+
+kivymd = { url = "https://github.com/kivymd/KivyMD/archive/master.zip" }
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"

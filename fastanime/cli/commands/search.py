@@ -1,6 +1,6 @@
 import click
-from fuzzywuzzy import fuzz
 from rich import print
+from thefuzz import fuzz
 
 from ...cli.config import Config
 from ...libs.anime_provider.allanime.api import anime_provider
@@ -45,8 +45,12 @@ def search(config: Config, anime_title: str, episode_range: str):
             list(search_results_.keys()), "Please Select title: ", "FastAnime"
         )
 
-    anime: Anime = anime_provider.get_anime(search_results_[search_result]["id"])
-
+    anime: Anime | None = anime_provider.get_anime(search_results_[search_result]["id"])
+    if not anime:
+        print("Sth went wring anime no found")
+        input("Enter to continue...")
+        search(config, anime_title, episode_range)
+        return
     episode_range_ = None
     episodes = anime["availableEpisodesDetail"][config.translation_type]
     if episode_range:

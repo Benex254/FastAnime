@@ -4,7 +4,7 @@ import shutil
 from datetime import datetime
 from functools import lru_cache
 
-from fuzzywuzzy import fuzz
+from thefuzz import fuzz
 
 from fastanime.libs.anilist.anilist_data_schema import AnilistBaseMediaDataSchema
 

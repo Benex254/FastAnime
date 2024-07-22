@@ -4,7 +4,7 @@ Welcome to **FastAnime**, an anime scrapper that brings a browser experience to 
 
 [intro.webm](https://github.com/user-attachments/assets/036af7fc-83ff-4f9b-bda6-0c913f7d0f38)
 
-Heavily inspired by [animdl](), [magic-tape]() and [ani-cli]().
+Heavily inspired by [animdl](https://github.com/justfoolingaround/animdl), [magic-tape](https://gitlab.com/christosangel/magic-tape/-/tree/main?ref_type=heads) and [ani-cli](https://github.com/pystardust/ani-cli).
 
 > [!IMPORTANT]
 >
@@ -52,9 +52,9 @@ We will soon release pre-built binaries for Linux and Windows.
 
 Requirements:
 
-- [git]()
-- [python 3.10 and above]()
-- [poetry]()
+- [git](https://git-scm.com/)
+- [python 3.10 and above](https://www.python.org/)
+- [poetry](https://python-poetry.org/docs/#installation)
 
 To build from the source, follow these steps:
 
@@ -90,7 +90,7 @@ fastanime --version
 
 ### External Dependencies
 
-The only required external dependency, unless you won't be streaming, is [MPV](), which i recommend installing with [uocs]() and [thumbfast]() for the best experience since they add a better interface to it.
+The only required external dependency, unless you won't be streaming, is [MPV](https://mpv.io/installation/), which i recommend installing with [uosc](https://github.com/tomasklaen/uosc) and [thumbfast](https://github.com/po5/thumbfast) for the best experience since they add a better interface to it.
 
 > [!NOTE]
 >
@@ -101,10 +101,11 @@ The only required external dependency, unless you won't be streaming, is [MPV]()
 
 **Other dependecies that will just make your experience better:**
 
-- [fzf]() :fire: which is used as a better alternative to the ui.
-- [fzf-preview]() a script that is used to preview images and is maintained by the devs of fzf.
-- [chafa]() currently the best cross platform and cross terminal image viewer for the terminal.
-- [icat]() an image viewer that only works in [kitty terminal](), which is currently the best terminal in my opinion, and by far the best image renderer for the terminal thanks to kittys terminal graphics protocol. Its terminal graphics is so op that you can [run a browser on it]()!!
+- [fzf](https://github.com/junegunn/fzf) :fire: which is used as a better alternative to the ui.
+- [fzf-preview](https://github.com/junegunn/fzf/blob/master/bin/fzf-preview.sh) a script that is used to preview images and is maintained by the devs of fzf.
+- [chafa](https://github.com/hpjansson/chafa) currently the best cross platform and cross terminal image viewer for the terminal.
+- [icat](https://sw.kovidgoyal.net/kitty/kittens/icat/) an image viewer that only works in [kitty terminal](https://sw.kovidgoyal.net/kitty/), which is currently the best terminal in my opinion, and by far the best image renderer for the terminal thanks to kitty's terminal graphics protocol. Its terminal graphics is so op that you can [run a browser on it](https://github.com/chase/awrit?tab=readme-ov-file)!!
+- [bash](https://www.gnu.org/software/bash/) is used as the preview script language.
 
 ## Usage
 
@@ -113,7 +114,7 @@ The app offers both a graphical interface (under development) and a robust comma
 > [!NOTE]
 >
 > The GUI is in development; use the CLI for now.
-> However, you can try it out before i decided to change my objective by checking out this [release]().
+> However, you can try it out before i decided to change my objective by checking out this [release](https://github.com/Benex254/FastAnime/tree/v0.20.0).
 > But be reassured for those who aren't terminal chads, i will still complete the GUI for the fun of it
 
 ### The Commandline interface :fire:
@@ -132,7 +133,7 @@ Configuration is directly passed into this command at run time to overide your c
 
 #### The anilist command
 
-Stream, browse, and discover anime efficiently from the terminal using the [AniList API]().
+Stream, browse, and discover anime efficiently from the terminal using the [AniList API](https://github.com/AniList/ApiV2-GraphQL-Docs).
 
 ##### Running without any subcommand
 
@@ -157,7 +158,7 @@ So every step of the way has been and can be automated.
 
 > [!NOTE]
 >
-> The download feature is powered by [yt-dlp]() so all the bells and whistles that it provides are readily available in the project.
+> The download feature is powered by [yt-dlp](https://github.com/yt-dlp/yt-dlp) so all the bells and whistles that it provides are readily available in the project.
 > Like continuing from where you left of while downloading, after lets say you lost your internet connection.
 
 **Syntax:**
@@ -211,7 +212,7 @@ fastanime config
 
 > [!Note]
 >
-> If it opens [vim]() you can exit by typing `:q`
+> If it opens [vim](https://www.vim.org/download.php) you can exit by typing `:q` in case you don't know.
 
 ## Configuration
 
@@ -246,7 +247,11 @@ If you wish to contribute directly, please first open an issue describing your p
 
 For inquiries, join our [Discord Server](https://discord.gg/4NUTj5Pt).
 
-[![Join our Discord server!](https://invidget.switchblade.xyz/4NUTj5Pt)](http://discord.gg/4NUTj5Pt)
+<p align="center">
+<a href="http://discord.gg/4NUTj5Pt">
+<img src="https://invidget.switchblade.xyz/gaX2Snst2j">
+</a>
+</p>
 
 ## Supporting the Project
 

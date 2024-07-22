@@ -162,8 +162,11 @@ class AllAnimeAPI:
                                     print("[yellow]GogoAnime Fetched")
                                     yield {
                                         "server": "gogoanime",
-                                        "episode_title": allanime_episode["notes"]
-                                        or f'{anime["title"]}: Episode {episode_number}',
+                                        "episode_title": (
+                                            allanime_episode["notes"]
+                                            or f'{anime["title"]}'
+                                        )
+                                        + f"; Episode {episode_number}",
                                         "links": resp.json()["links"],
                                     }  # pyright:ignore
                                 case "Kir":
@@ -173,8 +176,11 @@ class AllAnimeAPI:
                                     print("[yellow]WeTransfer Fetched")
                                     yield {
                                         "server": "wetransfer",
-                                        "episode_title": allanime_episode["notes"]
-                                        or f'{anime["title"]}: Episode {episode_number}',
+                                        "episode_title": (
+                                            allanime_episode["notes"]
+                                            or f'{anime["title"]}'
+                                        )
+                                        + f"; Episode {episode_number}",
                                         "links": resp.json()["links"],
                                     }  # pyright:ignore
                                 case "S-mp4":
@@ -184,8 +190,11 @@ class AllAnimeAPI:
                                     print("[yellow]Sharepoint Fetched")
                                     yield {
                                         "server": "sharepoint",
-                                        "episode_title": allanime_episode["notes"]
-                                        or f'{anime["title"]}: Episode {episode_number}',
+                                        "episode_title": (
+                                            allanime_episode["notes"]
+                                            or f'{anime["title"]}'
+                                        )
+                                        + f"; Episode {episode_number}",
                                         "links": resp.json()["links"],
                                     }  # pyright:ignore
                                 case "Sak":
@@ -193,8 +202,11 @@ class AllAnimeAPI:
                                     print("[yellow]Dropbox Fetched")
                                     yield {
                                         "server": "dropbox",
-                                        "episode_title": allanime_episode["notes"]
-                                        or f'{anime["title"]}: Episode {episode_number}',
+                                        "episode_title": (
+                                            allanime_episode["notes"]
+                                            or f'{anime["title"]}'
+                                        )
+                                        + f"; Episode {episode_number}",
                                         "links": resp.json()["links"],
                                     }  # pyright:ignore
                     except Timeout:

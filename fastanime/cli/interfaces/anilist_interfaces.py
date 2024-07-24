@@ -1,110 +1,22 @@
 from __future__ import annotations
 
 import os
-import shutil
 
 from rich import print
 from rich.prompt import Prompt
 
-from ... import APP_CACHE_DIR, USER_CONFIG_PATH
+from ... import USER_CONFIG_PATH
 from ...libs.anilist.anilist import AniList
 from ...libs.anilist.anilist_data_schema import AnilistBaseMediaDataSchema
 from ...libs.anime_provider.allanime.api import anime_provider
 from ...libs.anime_provider.types import Anime, SearchResult, Server
 from ...libs.fzf import fzf
-from ...Utility import anilist_data_helper
 from ...Utility.data import anime_normalizer
-from ...Utility.utils import (
-    anime_title_percentage_match,
-    remove_html_tags,
-    sanitize_filename,
-)
+from ...Utility.utils import anime_title_percentage_match, sanitize_filename
 from ..config import Config
 from ..utils.mpv import mpv
 from ..utils.tools import QueryDict, exit_app
 from ..utils.utils import clear, fuzzy_inquirer
-
-SEARCH_RESULTS_CACHE = os.path.join(APP_CACHE_DIR, "search_results")
-
-
-def write_search_results(
-    search_results: list[AnilistBaseMediaDataSchema], config: Config
-):
-    import textwrap
-
-    import requests
-
-    for anime in search_results:
-        if not os.path.exists(SEARCH_RESULTS_CACHE):
-            os.mkdir(SEARCH_RESULTS_CACHE)
-        anime_title = (
-            anime["title"][config.preferred_language] or anime["title"]["romaji"]
-        )
-        anime_title = sanitize_filename(anime_title)
-        ANIME_CACHE = os.path.join(SEARCH_RESULTS_CACHE, anime_title)
-        if not os.path.exists(ANIME_CACHE):
-            os.mkdir(ANIME_CACHE)
-        with open(
-            f"{ANIME_CACHE}/image",
-            "wb",
-        ) as f:
-            try:
-                image = requests.get(anime["coverImage"]["large"], timeout=5)
-                f.write(image.content)
-            except Exception:
-                pass
-
-        with open(f"{ANIME_CACHE}/data", "w") as f:
-            # data = json.dumps(anime, sort_keys=True, indent=2, separators=(',', ': '))
-            template = f"""
-            {"-"*40}
-            Anime Title(jp): {anime['title']['romaji']}
-            Anime Title(eng): {anime['title']['english']}
-            {"-"*40}
-            Popularity: {anime['popularity']}
-            Favourites: {anime['favourites']}
-            Status: {anime['status']}
-            Episodes: {anime['episodes']}
-            Genres: {anilist_data_helper.format_list_data_with_comma(anime['genres'])}
-            Next Episode: {anilist_data_helper.extract_next_airing_episode(anime['nextAiringEpisode'])}
-            Start Date: {anilist_data_helper.format_anilist_date_object(anime['startDate'])}
-            End Date: {anilist_data_helper.format_anilist_date_object(anime['endDate'])}
-            {"-"*40}
-            Description:
-            """
-            template = textwrap.dedent(template)
-            template = f"""
-            {template}
-            {textwrap.fill(remove_html_tags(str(anime['description'])),width=45)}
-            """
-            f.write(template)
-
-
-def get_preview(search_results: list[AnilistBaseMediaDataSchema], config: Config):
-    from threading import Thread
-
-    background_worker = Thread(
-        target=write_search_results, args=(search_results, config)
-    )
-    background_worker.daemon = True
-    background_worker.start()
-
-    os.environ["SHELL"] = shutil.which("bash") or "bash"
-    preview = """
-        if [ -s %s/{}/image ]; then fzf-preview %s/{}/image
-        else echo Loading...
-        fi
-        if [ -s %s/{}/data ]; then cat %s/{}/data
-        else echo Loading...
-        fi
-    """ % (
-        SEARCH_RESULTS_CACHE,
-        SEARCH_RESULTS_CACHE,
-        SEARCH_RESULTS_CACHE,
-        SEARCH_RESULTS_CACHE,
-    )
-    # preview.replace("\n", ";")
-    return preview
 
 
 def player_controls(config: Config, anilist_config: QueryDict):
@@ -581,6 +493,8 @@ def select_anime(config: Config, anilist_config: QueryDict):
     choices = [*anime_data.keys(), "Back"]
     if config.use_fzf:
         if config.preview:
+            from .utils import get_preview
+
             preview = get_preview(search_results, config)
             selected_anime_title = fzf.run(
                 choices,

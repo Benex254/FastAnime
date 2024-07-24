@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import random
 
 from rich import print
 from rich.prompt import Prompt
@@ -531,6 +532,12 @@ def anilist(config: Config, anilist_config: QueryDict):
 
         return AniList.search(query=search_term)
 
+    def _anilist_random():
+        random_anime = range(1, 15000)
+        random_anime = random.sample(random_anime, k=50)
+
+        return AniList.search(id_in=list(random_anime))
+
     def _watch_history():
         watch_history = list(map(int, config.watch_history.keys()))
         return AniList.search(id_in=watch_history, sort="TRENDING_DESC")
@@ -553,6 +560,7 @@ def anilist(config: Config, anilist_config: QueryDict):
         "Search": _anilist_search,
         "Watch History": _watch_history,
         "AnimeList": _anime_list,
+        "Random Anime": _anilist_random,
         "Most Popular Anime": AniList.get_most_popular,
         "Most Favourite Anime": AniList.get_most_favourite,
         "Most Scored Anime": AniList.get_most_scored,

@@ -28,7 +28,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: distribution
-          path: dist
-          retention-days: 5
+          path: |
+            dist
+            !dist/*.whl
+          retention-days: 14
       # - name: Run the automated tests (for example)
       # run: poetry run pytest -v

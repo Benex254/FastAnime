@@ -222,7 +222,6 @@ query{
   Page(perPage:15){
     media(sort:SCORE_DESC,type:ANIME,genre_not_in:["hentai"]){
       id
-      large
       title{
         romaji
         english

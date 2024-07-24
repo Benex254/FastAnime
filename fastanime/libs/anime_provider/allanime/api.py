@@ -2,7 +2,7 @@ import json
 import logging
 from typing import Generator
 
-from curl_cffi import requests
+import requests
 from requests.exceptions import Timeout
 from rich import print
 from rich.progress import Progress
@@ -41,7 +41,6 @@ class AllAnimeAPI:
                 },
                 headers={"Referer": ALLANIME_REFERER, "User-Agent": USER_AGENT},
                 timeout=10,
-                impersonate="chrome",
             )
             return response.json()["data"]
         except Timeout as e:
@@ -153,7 +152,6 @@ class AllAnimeAPI:
                                 "User-Agent": USER_AGENT,
                             },
                             timeout=10,
-                            impersonate="chrome",
                         )
                         if resp.status_code == 200:
                             match embed["sourceName"]:

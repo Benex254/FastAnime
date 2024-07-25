@@ -1,6 +1,6 @@
 import json
 import logging
-from typing import Generator
+from typing import Iterator
 
 import requests
 from requests.exceptions import Timeout
@@ -55,7 +55,12 @@ class AllAnimeAPI:
             return {}
 
     def search_for_anime(
-        self, user_query: str, translation_type: str = "sub", nsfw=True, unknown=True
+        self,
+        user_query: str,
+        translation_type: str = "sub",
+        nsfw=True,
+        unknown=True,
+        **kwargs,
     ):
         search = {"allowAdult": nsfw, "allowUnknown": unknown, "query": user_query}
         limit = 40
@@ -106,14 +111,7 @@ class AllAnimeAPI:
 
     def get_episode_streams(
         self, anime: Anime, episode_number: str, translation_type="sub"
-    ) -> (
-        Generator[
-            Server,
-            Server,
-            Server,
-        ]
-        | None
-    ):
+    ) -> Iterator[Server] | None:
         anime_id = anime["id"]
         allanime_episode = self.get_anime_episode(
             anime_id, episode_number, translation_type

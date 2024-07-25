@@ -4,6 +4,7 @@ from configparser import ConfigParser
 from rich import print
 
 from .. import USER_CONFIG_PATH, USER_VIDEOS_DIR
+from ..AnimeProvider import AnimeProvider
 from ..Utility.user_data_helper import user_data_helper
 
 
@@ -29,6 +30,7 @@ class Config(object):
                 "use_fzf": "False",
                 "preview": "False",
                 "format": "best[height<=1080]/bestvideo[height<=1080]+bestaudio/best",
+                "provider": "allanime",
             }
         )
         self.configparser.add_section("stream")
@@ -41,6 +43,7 @@ class Config(object):
 
         # --- set defaults ---
         self.downloads_dir = self.get_downloads_dir()
+        self.provider = self.get_provider()
         self.use_fzf = self.get_use_fzf()
         self.preview = self.get_preview()
         self.translation_type = self.get_translation_type()
@@ -56,6 +59,8 @@ class Config(object):
         # ---- setup user data ------
         self.watch_history: dict = user_data_helper.user_data.get("watch_history", {})
         self.anime_list: list = user_data_helper.user_data.get("animelist", [])
+
+        self.anime_provider = AnimeProvider(self.provider)
 
     def update_watch_history(self, anime_id: int, episode: str | None):
         self.watch_history.update({str(anime_id): episode})
@@ -73,6 +78,9 @@ class Config(object):
             user_data_helper.update_animelist(self.anime_list)
             print("Succesfully added :smile:")
         input("Enter to continue...")
+
+    def get_provider(self):
+        return self.configparser.get("general", "provider")
 
     def get_downloads_dir(self):
         return self.configparser.get("general", "downloads_dir")

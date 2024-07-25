@@ -3,6 +3,7 @@ import signal
 import click
 
 from .. import __version__
+from ..libs.anime_provider import anime_sources
 from ..libs.anime_provider.allanime.constants import SERVERS_AVAILABLE
 from ..Utility.data import anilist_sort_normalizer
 from .commands.anilist import anilist
@@ -40,6 +41,12 @@ signal.signal(signal.SIGINT, handle_exit)
     short_help="Stream Anime",
 )
 @click.version_option(__version__, "--version")
+@click.option(
+    "-p",
+    "--provider",
+    type=click.Choice(list(anime_sources.keys()), case_sensitive=False),
+    help="Provider of your choice",
+)
 @click.option(
     "-s",
     "--server",
@@ -96,6 +103,7 @@ signal.signal(signal.SIGINT, handle_exit)
 @click.pass_context
 def run_cli(
     ctx: click.Context,
+    provider,
     server,
     format,
     continue_,
@@ -111,6 +119,9 @@ def run_cli(
     no_preview,
 ):
     ctx.obj = Config()
+    if provider:
+        ctx.obj.provider = provider
+        ctx.obj.load_config()
     if server:
         ctx.obj.server = server
     if format:

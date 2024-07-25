@@ -3,7 +3,6 @@ from rich import print
 from thefuzz import fuzz
 
 from ...cli.config import Config
-from ...libs.anime_provider.allanime.api import anime_provider
 from ...libs.anime_provider.types import Anime
 from ...libs.fzf import fzf
 from ..utils.mpv import mpv
@@ -23,9 +22,15 @@ from ..utils.utils import clear
 @click.argument("anime_title", required=True, type=str)
 @click.pass_obj
 def search(config: Config, anime_title: str, episode_range: str):
+    anime_provider = config.anime_provider
     search_results = anime_provider.search_for_anime(
         anime_title, config.translation_type
     )
+    if not search_results:
+        print("Search results not found")
+        input("Enter to retry")
+        search(config, anime_title, episode_range)
+        return
     search_results = search_results["results"]
     if not search_results:
         print("Anime not found :cry:")

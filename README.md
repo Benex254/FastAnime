@@ -12,7 +12,7 @@ Heavily inspired by [animdl](https://github.com/justfoolingaround/animdl), [magi
 
 > [!NOTE]
 >
-> Also the docs are still being worked on and are far from completion.
+> The docs are still being worked on and are far from completion.
 
 ## Table of Contents
 
@@ -174,6 +174,7 @@ Available options include:
 - `--default` use the default ui
 - `--preview` show a preview when using fzf
 - `--no-preview` dont show a preview when using fzf
+- `--format <yt-dlp format string>` set the format of anime downloaded and streamed based on yt-dlp format. works when `--server gogoanime`
 
 #### The anilist command
 
@@ -279,6 +280,14 @@ auto_next = False  # Auto-select next episode
 # Auto select the anime provider results with fuzzyfind.
 # Note this wont always be correct.But 99% of the time will be.
 auto_select=True
+
+# the format of downloaded anime and trailer
+# based on yt-dlp format and passed directly to it
+# learn more by looking it up on their site
+# only works for downloaded anime if server=gogoanime
+# since its the only one that offers different formats
+# the others tend not to
+format=best[height<=1080]/bestvideo[height<=1080]+bestaudio/best # default
 
 [general]
 preferred_language = romaji  # Display language (options: english, romaji)

@@ -384,7 +384,7 @@ def anilist_options(config, anilist_config: QueryDict):
         if trailer := selected_anime.get("trailer"):
             trailer_url = "https://youtube.com/watch?v=" + trailer["id"]
             print("[bold magenta]Watching Trailer of:[/]", selected_anime_title)
-            mpv(trailer_url, selected_anime_title)
+            mpv(trailer_url, selected_anime_title, f"--ytdl-format={config.format}")
             anilist_options(config, anilist_config)
         else:
             print("no trailer available :confused:")

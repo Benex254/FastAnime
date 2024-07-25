@@ -47,6 +47,12 @@ signal.signal(signal.SIGINT, handle_exit)
     help="Server of choice",
 )
 @click.option(
+    "-f",
+    "--format",
+    type=str,
+    help="yt-dlp format to use",
+)
+@click.option(
     "-c/-no-c",
     "--continue/--no-continue",
     "continue_",
@@ -91,6 +97,7 @@ signal.signal(signal.SIGINT, handle_exit)
 def run_cli(
     ctx: click.Context,
     server,
+    format,
     continue_,
     translation_type,
     quality,
@@ -106,6 +113,8 @@ def run_cli(
     ctx.obj = Config()
     if server:
         ctx.obj.server = server
+    if format:
+        ctx.obj.format = format
     if ctx.get_parameter_source("continue_") == click.core.ParameterSource.COMMANDLINE:
         ctx.obj.continue_from_history = continue_
     if quality:

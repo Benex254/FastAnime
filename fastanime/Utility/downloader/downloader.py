@@ -49,7 +49,7 @@ class YtDLPDownloader:
         self._thread.start()
 
     # Function to download the file
-    def _download_file(self, url: str, download_dir, title, silent):
+    def _download_file(self, url: str, download_dir, title, silent, vid_format="best"):
         anime_title = sanitize_filename(title[0])
         episode_title = sanitize_filename(title[1])
         ydl_opts = {
@@ -59,6 +59,7 @@ class YtDLPDownloader:
             ],  # Progress hook
             "silent": silent,
             "verbose": False,
+            "format": vid_format,
         }
 
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:

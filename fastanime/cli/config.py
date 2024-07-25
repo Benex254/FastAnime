@@ -28,7 +28,7 @@ class Config(object):
                 "preferred_language": "english",
                 "use_fzf": "False",
                 "preview": "False",
-                "format": "bestvideo[height<=1080]+bestaudio/best",
+                "format": "best[height<=1080]/bestvideo[height<=1080]+bestaudio/best",
             }
         )
         self.configparser.add_section("stream")

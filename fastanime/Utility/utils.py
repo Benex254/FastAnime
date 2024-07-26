@@ -1,3 +1,4 @@
+import logging
 import os
 import re
 import shutil
@@ -10,6 +11,7 @@ from fastanime.libs.anilist.anilist_data_schema import AnilistBaseMediaDataSchem
 
 from .data import anime_normalizer
 
+logger = logging.getLogger(__name__)
 # TODO: make it use color_text instead of fixed vals
 # from .kivy_markup_helper import color_text
 
@@ -127,6 +129,7 @@ def anime_title_percentage_match(
         fuzz.ratio(title_a.lower(), possible_user_requested_anime_title.lower()),
         fuzz.ratio(title_b.lower(), possible_user_requested_anime_title.lower()),
     )
+    logger.info(f"{locals()}")
     return percentage_ratio
 
 

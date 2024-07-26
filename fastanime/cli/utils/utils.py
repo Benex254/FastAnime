@@ -54,20 +54,3 @@ def anime_title_percentage_match(
         fuzz.ratio(title[1].lower(), possible_user_requested_anime_title.lower()),
     )
     return percentage_ratio
-
-
-def get_selected_anime(anime_title, results):
-    def _get_result(result, compare):
-        return result["name"] == compare
-
-    return list(
-        filter(lambda x: _get_result(x, anime_title), results["shows"]["edges"])
-    )
-
-
-def get_selected_server(_server, servers):
-    def _get_server(server, server_name):
-        return server[0] == server_name
-
-    server = list(filter(lambda x: _get_server(x, _server), servers)).pop()
-    return server

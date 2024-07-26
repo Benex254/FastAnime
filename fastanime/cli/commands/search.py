@@ -1,5 +1,6 @@
 import click
 from rich import print
+from rich.progress import Progress
 from thefuzz import fuzz
 
 from ...cli.config import Config
@@ -23,9 +24,11 @@ from ..utils.utils import clear
 @click.pass_obj
 def search(config: Config, anime_title: str, episode_range: str):
     anime_provider = config.anime_provider
-    search_results = anime_provider.search_for_anime(
-        anime_title, config.translation_type
-    )
+    with Progress() as progress:
+        progress.add_task("Fetching Search Results...", total=None)
+        search_results = anime_provider.search_for_anime(
+            anime_title, config.translation_type
+        )
     if not search_results:
         print("Search results not found")
         input("Enter to retry")
@@ -50,7 +53,12 @@ def search(config: Config, anime_title: str, episode_range: str):
             list(search_results_.keys()), "Please Select title: ", "FastAnime"
         )
 
-    anime: Anime | None = anime_provider.get_anime(search_results_[search_result]["id"])
+    with Progress() as progress:
+        progress.add_task("Fetching Anime...", total=None)
+        anime: Anime | None = anime_provider.get_anime(
+            search_results_[search_result]["id"]
+        )
+
     if not anime:
         print("Sth went wring anime no found")
         input("Enter to continue...")
@@ -82,17 +90,20 @@ def search(config: Config, anime_title: str, episode_range: str):
 
         if not episode or episode not in episodes:
             episode = fzf.run(episodes, "Select an episode: ", header=search_result)
-        streams = anime_provider.get_episode_streams(
-            anime, episode, config.translation_type
-        )
-        if not streams:
-            print("Failed to get streams")
-            return
-        links = [link["link"] for server in streams for link in server["links"]]
+        with Progress() as progress:
+            progress.add_task("Fetching Episode Streams...", total=None)
+            streams = anime_provider.get_episode_streams(
+                anime, episode, config.translation_type
+            )
+            if not streams:
+                print("Failed to get streams")
+                return
+            links = [link["link"] for server in streams for link in server["links"]]
 
-        # TODO: Come up with way to know quality and better server interface
-        link = links[config.quality]
+            # TODO: Come up with way to know quality and better server interface
+            link = links[config.quality]
         # link = fzf.run(links, "Select stream", "Streams")
+        print(f"[purple]Now Playing:[/] {search_result} Episode {episode}")
 
         mpv(link, search_result)
         stream_anime()

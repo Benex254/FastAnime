@@ -4,8 +4,6 @@ from typing import Iterator
 
 import requests
 from requests.exceptions import Timeout
-from rich import print
-from rich.progress import Progress
 
 from ....libs.anime_provider.allanime.types import AllAnimeEpisode
 from ....libs.anime_provider.types import Anime, Server
@@ -43,14 +41,12 @@ class AllAnimeAPI:
                 timeout=10,
             )
             return response.json()["data"]
-        except Timeout as e:
-            print(
-                "Timeout has been exceeded :cry:. This could mean allanime is down or your internet is down"
+        except Timeout:
+            Logger.error(
+                "allanime(Error):Timeout exceeded this could mean allanime is down or you have lost internet connection"
             )
-            Logger.error(f"allanime(Error): {e}")
             return {}
         except Exception as e:
-            print("sth went wrong :confused:")
             Logger.error(f"allanime:Error: {e}")
             return {}
 
@@ -75,22 +71,20 @@ class AllAnimeAPI:
             "countryorigin": countryorigin,
         }
         try:
-            with Progress() as progress:
-                progress.add_task("[cyan]searching..", start=False, total=None)
 
-                search_results = self._fetch_gql(ALLANIME_SEARCH_GQL, variables)
-                return normalize_search_results(search_results)  # pyright:ignore
-        except Exception:
+            search_results = self._fetch_gql(ALLANIME_SEARCH_GQL, variables)
+            return normalize_search_results(search_results)  # pyright:ignore
+        except Exception as e:
+            Logger.error(f"FA(AllAnime): {e}")
             return {}
 
     def get_anime(self, allanime_show_id: str):
         variables = {"showId": allanime_show_id}
         try:
-            with Progress() as progress:
-                progress.add_task("[cyan]fetching anime..", start=False, total=None)
-                anime = self._fetch_gql(ALLANIME_SHOW_GQL, variables)
-                return normalize_anime(anime["show"])
-        except Exception:
+            anime = self._fetch_gql(ALLANIME_SHOW_GQL, variables)
+            return normalize_anime(anime["show"])
+        except Exception as e:
+            Logger.error(f"FA(AllAnime): {e}")
             return None
 
     def get_anime_episode(
@@ -102,11 +96,10 @@ class AllAnimeAPI:
             "episodeString": episode_string,
         }
         try:
-            with Progress() as progress:
-                progress.add_task("[cyan]fetching episode..", start=False, total=None)
-                episode = self._fetch_gql(ALLANIME_EPISODES_GQL, variables)
-                return episode["episode"]  # pyright: ignore
-        except Exception:
+            episode = self._fetch_gql(ALLANIME_EPISODES_GQL, variables)
+            return episode["episode"]  # pyright: ignore
+        except Exception as e:
+            Logger.error(f"FA(AllAnime): {e}")
             return {}
 
     def get_episode_streams(
@@ -121,99 +114,86 @@ class AllAnimeAPI:
 
         embeds = allanime_episode["sourceUrls"]
         try:
-            with Progress() as progress:
-                progress.add_task("[cyan]fetching streams..", start=False, total=None)
-                for embed in embeds:
-                    try:
-                        # filter the working streams
-                        if embed.get("sourceName", "") not in (
-                            "Sak",
-                            "Kir",
-                            "S-mp4",
-                            "Luf-mp4",
-                        ):
-                            continue
-                        url = embed.get("sourceUrl")
+            for embed in embeds:
+                try:
+                    # filter the working streams
+                    if embed.get("sourceName", "") not in (
+                        "Sak",
+                        "Kir",
+                        "S-mp4",
+                        "Luf-mp4",
+                    ):
+                        continue
+                    url = embed.get("sourceUrl")
 
-                        if not url:
-                            continue
-                        if url.startswith("--"):
-                            url = url[2:]
+                    if not url:
+                        continue
+                    if url.startswith("--"):
+                        url = url[2:]
 
-                        # get the stream url for an episode of the defined source names
-                        parsed_url = decode_hex_string(url)
-                        embed_url = f"https://{ALLANIME_BASE}{parsed_url.replace('clock','clock.json')}"
-                        resp = requests.get(
-                            embed_url,
-                            headers={
-                                "Referer": ALLANIME_REFERER,
-                                "User-Agent": USER_AGENT,
-                            },
-                            timeout=10,
-                        )
-                        if resp.status_code == 200:
-                            match embed["sourceName"]:
-                                case "Luf-mp4":
-                                    Logger.debug(
-                                        "allanime:Found streams from gogoanime"
+                    # get the stream url for an episode of the defined source names
+                    parsed_url = decode_hex_string(url)
+                    embed_url = f"https://{ALLANIME_BASE}{parsed_url.replace('clock','clock.json')}"
+                    resp = requests.get(
+                        embed_url,
+                        headers={
+                            "Referer": ALLANIME_REFERER,
+                            "User-Agent": USER_AGENT,
+                        },
+                        timeout=10,
+                    )
+                    if resp.status_code == 200:
+                        match embed["sourceName"]:
+                            case "Luf-mp4":
+                                Logger.debug("allanime:Found streams from gogoanime")
+                                yield {
+                                    "server": "gogoanime",
+                                    "episode_title": (
+                                        allanime_episode["notes"] or f'{anime["title"]}'
                                     )
-                                    print("[yellow]GogoAnime Fetched")
-                                    yield {
-                                        "server": "gogoanime",
-                                        "episode_title": (
-                                            allanime_episode["notes"]
-                                            or f'{anime["title"]}'
-                                        )
-                                        + f"; Episode {episode_number}",
-                                        "links": resp.json()["links"],
-                                    }  # pyright:ignore
-                                case "Kir":
-                                    Logger.debug(
-                                        "allanime:Found streams from wetransfer"
+                                    + f"; Episode {episode_number}",
+                                    "links": resp.json()["links"],
+                                }  # pyright:ignore
+                            case "Kir":
+                                Logger.debug("allanime:Found streams from wetransfer")
+                                yield {
+                                    "server": "wetransfer",
+                                    "episode_title": (
+                                        allanime_episode["notes"] or f'{anime["title"]}'
                                     )
-                                    print("[yellow]WeTransfer Fetched")
-                                    yield {
-                                        "server": "wetransfer",
-                                        "episode_title": (
-                                            allanime_episode["notes"]
-                                            or f'{anime["title"]}'
-                                        )
-                                        + f"; Episode {episode_number}",
-                                        "links": resp.json()["links"],
-                                    }  # pyright:ignore
-                                case "S-mp4":
-                                    Logger.debug(
-                                        "allanime:Found streams from sharepoint"
+                                    + f"; Episode {episode_number}",
+                                    "links": resp.json()["links"],
+                                }  # pyright:ignore
+                            case "S-mp4":
+                                Logger.debug("allanime:Found streams from sharepoint")
+                                yield {
+                                    "server": "sharepoint",
+                                    "episode_title": (
+                                        allanime_episode["notes"] or f'{anime["title"]}'
                                     )
-                                    print("[yellow]Sharepoint Fetched")
-                                    yield {
-                                        "server": "sharepoint",
-                                        "episode_title": (
-                                            allanime_episode["notes"]
-                                            or f'{anime["title"]}'
-                                        )
-                                        + f"; Episode {episode_number}",
-                                        "links": resp.json()["links"],
-                                    }  # pyright:ignore
-                                case "Sak":
-                                    Logger.debug("allanime:Found streams from dropbox")
-                                    print("[yellow]Dropbox Fetched")
-                                    yield {
-                                        "server": "dropbox",
-                                        "episode_title": (
-                                            allanime_episode["notes"]
-                                            or f'{anime["title"]}'
-                                        )
-                                        + f"; Episode {episode_number}",
-                                        "links": resp.json()["links"],
-                                    }  # pyright:ignore
-                    except Timeout:
-                        print(
-                            "Timeout has been exceeded :cry: this could mean allanime is down or your internet connection is poor"
-                        )
-                    except Exception as e:
-                        print("Sth went wrong :confused:", e)
-        except Exception:
+                                    + f"; Episode {episode_number}",
+                                    "links": resp.json()["links"],
+                                }  # pyright:ignore
+                            case "Sak":
+                                Logger.debug("allanime:Found streams from dropbox")
+                                yield {
+                                    "server": "dropbox",
+                                    "episode_title": (
+                                        allanime_episode["notes"] or f'{anime["title"]}'
+                                    )
+                                    + f"; Episode {episode_number}",
+                                    "links": resp.json()["links"],
+                                }  # pyright:ignore
+                except Timeout:
+                    Logger.error(
+                        "Timeout has been exceeded this could mean allanime is down or you have lost internet connection"
+                    )
+                    return []
+                except Exception as e:
+                    Logger.error(f"FA(Allanime): {e}")
+                    return []
+        except Exception as e:
+            Logger.error(f"FA(Allanime): {e}")
             return []
 
 

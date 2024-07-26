@@ -4,10 +4,11 @@ import os
 import random
 
 from rich import print
+from rich.progress import Progress
 from rich.prompt import Prompt
 
-from ... import USER_CONFIG_PATH
 from ...anilist import AniList
+from ...constants import USER_CONFIG_PATH
 from ...libs.anilist.anilist_data_schema import AnilistBaseMediaDataSchema
 from ...libs.anime_provider.types import Anime, SearchResult, Server
 from ...libs.fzf import fzf
@@ -154,17 +155,20 @@ def fetch_streams(config: Config, anilist_config: QueryDict):
     anime_provider = config.anime_provider
 
     # get streams for episode from provider
-    episode_streams = anime_provider.get_episode_streams(
-        anime, episode_number, translation_type
-    )
-    if not episode_streams:
-        print("Failed to fetch :cry:")
-        input("Enter to retry...")
-        return fetch_streams(config, anilist_config)
+    with Progress() as progress:
+        progress.add_task("Fetching Episode Streams...", total=None)
+        episode_streams = anime_provider.get_episode_streams(
+            anime, episode_number, translation_type
+        )
+        if not episode_streams:
+            print("Failed to fetch :cry:")
+            input("Enter to retry...")
+            return fetch_streams(config, anilist_config)
 
-    episode_streams = {
-        episode_stream["server"]: episode_stream for episode_stream in episode_streams
-    }
+        episode_streams = {
+            episode_stream["server"]: episode_stream
+            for episode_stream in episode_streams
+        }
 
     # prompt for preferred server
     server = None
@@ -267,7 +271,9 @@ def fetch_episode(config: Config, anilist_config: QueryDict):
 def fetch_anime_episode(config, anilist_config: QueryDict):
     selected_anime: SearchResult = anilist_config._anime
     anime_provider = config.anime_provider
-    anilist_config.anime = anime_provider.get_anime(selected_anime["id"])
+    with Progress() as progress:
+        progress.add_task("Fetching Anime Info...", total=None)
+        anilist_config.anime = anime_provider.get_anime(selected_anime["id"])
     if not anilist_config.anime:
 
         print(
@@ -291,9 +297,11 @@ def provide_anime(config: Config, anilist_config: QueryDict):
     anime_provider = config.anime_provider
 
     # search and get the requested title from provider
-    search_results = anime_provider.search_for_anime(
-        selected_anime_title, translation_type
-    )
+    with Progress() as progress:
+        progress.add_task("Fetching Search Results...", total=None)
+        search_results = anime_provider.search_for_anime(
+            selected_anime_title, translation_type
+        )
     if not search_results:
         print(
             "Sth went wrong :cry: while fetching this could mean you have poor internet connection or the provider is down"

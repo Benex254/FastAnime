@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "fastanime"
-version = "0.31.2"
-description = "A fast and efficient GUI and CLI anime scrapper"
+version = "0.31.3"
+description = "A fast and efficient anime scrapper and exploration tool"
 authors = ["Benex254 <benedictx855@gmail.com>"]
 license = "UNLICENSE"
 readme = "README.md"
@@ -32,4 +32,3 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
 fastanime = 'fastanime:FastAnime'
-

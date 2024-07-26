@@ -7,7 +7,7 @@ from rich import print
 from rich.prompt import Prompt
 
 from ... import USER_CONFIG_PATH
-from ...libs.anilist.anilist import AniList
+from ...anilist import AniList
 from ...libs.anilist.anilist_data_schema import AnilistBaseMediaDataSchema
 from ...libs.anime_provider.types import Anime, SearchResult, Server
 from ...libs.fzf import fzf

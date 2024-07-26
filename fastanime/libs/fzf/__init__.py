@@ -8,7 +8,7 @@ from typing import Callable, List
 from art import text2art
 from rich import print
 
-from ... import PLATFORM
+from ...constants import PLATFORM
 from .config import FZF_DEFAULT_OPTS, FzfOptions
 
 logger = logging.getLogger(__name__)

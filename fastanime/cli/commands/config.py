@@ -4,7 +4,9 @@ import subprocess
 import click
 from rich import print
 
-from ... import USER_CONFIG_PATH
+from fastanime.cli.config import Config
+
+from ...constants import USER_CONFIG_PATH
 from ..utils.tools import exit_app
 
 
@@ -13,7 +15,8 @@ from ..utils.tools import exit_app
     short_help="Edit your config",
 )
 @click.option("--path", "-p", help="Print the config location and exit", is_flag=True)
-def configure(path):
+@click.pass_obj
+def configure(config: Config, path):
     if path:
         print(USER_CONFIG_PATH)
     else:

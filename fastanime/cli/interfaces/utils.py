@@ -1,5 +1,9 @@
 import os
 import shutil
+import textwrap
+from threading import Thread
+
+import requests
 
 from ... import APP_CACHE_DIR
 from ...libs.anilist.anilist_data_schema import AnilistBaseMediaDataSchema
@@ -91,10 +95,6 @@ SEARCH_RESULTS_CACHE = os.path.join(APP_CACHE_DIR, "search_results")
 def write_search_results(
     search_results: list[AnilistBaseMediaDataSchema], config: Config
 ):
-    import textwrap
-
-    import requests
-
     for anime in search_results:
         if not os.path.exists(SEARCH_RESULTS_CACHE):
             os.mkdir(SEARCH_RESULTS_CACHE)
@@ -142,7 +142,6 @@ def write_search_results(
 
 
 def get_preview(search_results: list[AnilistBaseMediaDataSchema], config: Config):
-    from threading import Thread
 
     background_worker = Thread(
         target=write_search_results, args=(search_results, config)

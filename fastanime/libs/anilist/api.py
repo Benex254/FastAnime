@@ -2,14 +2,18 @@
 This is the core module availing all the abstractions of the anilist api
 """
 
+from typing import Literal
+
 import requests
 
-from .anilist_data_schema import AnilistDataSchema
+from .anilist_data_schema import AnilistDataSchema, AnilistUser
 from .queries_graphql import (
     airing_schedule_query,
     anime_characters_query,
     anime_query,
     anime_relations_query,
+    get_logged_in_user_query,
+    media_list_query,
     most_favourite_query,
     most_popular_query,
     most_recently_updated_query,
@@ -21,12 +25,83 @@ from .queries_graphql import (
 )
 
 # from kivy.network.urlrequest import UrlRequestRequests
+ANILIST_ENDPOINT = "https://graphql.anilist.co"
 
 
 class AniListApi:
     """
     This class provides an abstraction for the anilist api
     """
+
+    def login_user(self, token: str):
+        self.token = token
+        self.headers = {"Authorization": f"Bearer {self.token}"}
+        user = self.get_logged_in_user()
+        if not user:
+            return
+        if not user[0]:
+            return
+        user_info: AnilistUser = user[1]["data"]["Viewer"]  # pyright:ignore
+        self.user_id = user_info["id"]  # pyright:ignore
+        return user_info
+
+    def update_login_info(self, user: AnilistUser, token: str):
+        self.token = token
+        self.headers = {"Authorization": f"Bearer {self.token}"}
+        self.user_id = user["id"]
+
+    def get_logged_in_user(self):
+        if not self.headers:
+            return
+        return self._make_authenticated_request(get_logged_in_user_query)
+
+    def get_anime_list(
+        self,
+        status: Literal[
+            "CURRENT", "PLANNING", "COMPLETED", "DROPPED", "PAUSED", "REPEATING"
+        ],
+    ):
+        variables = {"status": status, "id": self.user_id}
+        return self._make_authenticated_request(media_list_query, variables)
+
+    def _make_authenticated_request(self, query: str, variables: dict = {}):
+        """
+        The core abstraction for getting authenticated data from the anilist api
+
+        Parameters:
+        ----------
+        query:str
+            a valid anilist graphql query
+        variables:dict
+            variables to pass to the anilist api
+        """
+        # req=UrlRequestRequests(url, self.got_data,)
+        try:
+            # TODO: check if data is as expected
+            response = requests.post(
+                ANILIST_ENDPOINT,
+                json={"query": query, "variables": variables},
+                timeout=10,
+                headers=self.headers,
+            )
+            anilist_data = response.json()
+            return (True, anilist_data)
+        except requests.exceptions.Timeout:
+            return (
+                False,
+                {
+                    "Error": "Timeout Exceeded for connection there might be a problem with your internet or anilist is down."
+                },
+            )  # type: ignore
+        except requests.exceptions.ConnectionError:
+            return (
+                False,
+                {
+                    "Error": "There might be a problem with your internet or anilist is down."
+                },
+            )  # type: ignore
+        except Exception as e:
+            return (False, {"Error": f"{e}"})  # type: ignore
 
     def get_data(
         self, query: str, variables: dict = {}
@@ -41,12 +116,13 @@ class AniListApi:
         variables:dict
             variables to pass to the anilist api
         """
-        url = "https://graphql.anilist.co"
         # req=UrlRequestRequests(url, self.got_data,)
         try:
             # TODO: check if data is as expected
             response = requests.post(
-                url, json={"query": query, "variables": variables}, timeout=10
+                ANILIST_ENDPOINT,
+                json={"query": query, "variables": variables},
+                timeout=10,
             )
             anilist_data: AnilistDataSchema = response.json()
             return (True, anilist_data)

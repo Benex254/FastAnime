@@ -3,6 +3,124 @@ This module contains all the preset queries for the sake of neatness and convini
 Mostly for internal usage
 """
 
+get_logged_in_user_query = """
+query{
+  Viewer{
+    id
+    name
+    bannerImage
+    avatar {
+      large
+      medium
+    }
+    
+  }
+}
+"""
+
+media_list_mutation = """
+mutation($mediaId:Int,$id:Int,$scoreRaw:Int,$repeat:Int,$progress:Int){
+  SaveMediaListEntry(mediaId:$mediaId,id:$id,scoreRaw:$scoreRaw,progress:$progress,repeat:$repeat){
+    id
+    status
+    mediaId
+    score
+    progress
+    repeat
+    startedAt {
+      year
+      month
+      day
+    }
+    completedAt {
+      year
+      month
+      day
+    }
+
+  }
+}
+"""
+
+media_list_query = """
+query ($userId: Int, $status: MediaListStatus) {
+  Page {
+    pageInfo {
+      currentPage
+      total
+    }
+    mediaList(userId: $userId, status: $status) {
+      mediaId
+      
+      media {
+        id
+        title {
+          romaji
+          english
+        }
+        coverImage {
+          medium
+          large
+        }
+        trailer {
+          site
+          id
+        }
+        popularity
+        favourites
+        averageScore
+        episodes
+        genres
+        studios {
+          nodes {
+            name
+            isAnimationStudio
+          }
+        }
+        tags {
+          name
+        }
+        startDate {
+          year
+          month
+          day
+        }
+        endDate {
+          year
+          month
+          day
+        }
+        status
+        description
+        nextAiringEpisode {
+          timeUntilAiring
+          airingAt
+          episode
+        }
+      }
+      status
+      progress
+      score
+      repeat
+      notes
+      startedAt {
+        year
+        month
+        day
+      }
+      completedAt {
+        year
+        month
+        day
+      }
+      createdAt
+      
+    }
+  }
+}
+"""
+
+
 optional_variables = "\
 $page:Int,\
 $sort:[MediaSort],\

@@ -17,6 +17,13 @@ class AnilistImage(TypedDict):
     large: str
 
 
+class AnilistUser(TypedDict):
+    id: int
+    name: str
+    bannerImage: str | None
+    avatar: AnilistImage
+
+
 class AnilistMediaTrailer(TypedDict):
     id: str
     site: str
@@ -47,11 +54,6 @@ class AnilistMediaNextAiringEpisode(TypedDict):
     timeUntilAiring: int
     airingAt: int
     episode: int
-
-
-class AnilistUser(TypedDict):
-    name: str
-    avatar: AnilistImage
 
 
 class AnilistReview(TypedDict):

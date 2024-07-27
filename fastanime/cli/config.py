@@ -11,6 +11,9 @@ from ..Utility.user_data_helper import user_data_helper
 class Config(object):
     anime_list: list
     watch_history: dict
+    fastanime_anilist_app_login_url = (
+        "https://anilist.co/api/v2/oauth/authorize?client_id=20148&response_type=token"
+    )
 
     def __init__(self) -> None:
         self.load_config()
@@ -59,8 +62,13 @@ class Config(object):
         # ---- setup user data ------
         self.watch_history: dict = user_data_helper.user_data.get("watch_history", {})
         self.anime_list: list = user_data_helper.user_data.get("animelist", [])
+        self.user: dict = user_data_helper.user_data.get("user", {})
 
         self.anime_provider = AnimeProvider(self.provider)
+
+    def update_user(self, user):
+        self.user = user
+        user_data_helper.update_user_info(user)
 
     def update_watch_history(self, anime_id: int, episode: str | None):
         self.watch_history.update({str(anime_id): episode})

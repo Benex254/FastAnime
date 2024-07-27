@@ -13,6 +13,7 @@ from .queries_graphql import (
     anime_query,
     anime_relations_query,
     get_logged_in_user_query,
+    media_list_mutation,
     media_list_query,
     most_favourite_query,
     most_popular_query,
@@ -54,6 +55,10 @@ class AniListApi:
         if not self.headers:
             return
         return self._make_authenticated_request(get_logged_in_user_query)
+
+    def update_anime_list(self, values_to_update: dict):
+        variables = {"userId": self.user_id, **values_to_update}
+        return self._make_authenticated_request(media_list_mutation, variables)
 
     def get_anime_list(
         self,

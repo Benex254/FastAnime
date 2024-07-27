@@ -214,6 +214,15 @@ def fetch_streams(config: Config, anilist_config: QueryDict):
         "[bold magenta] Episode: [/]",
         episode_number,
     )
+    # -- update anilist info if user --
+    if config.user:
+        AniList.update_anime_list(
+            {
+                "mediaId": anime_id,
+                "status": "CURRENT",
+                "progress": episode_number if episode_number else 1,
+            }
+        )
 
     mpv(stream_link, selected_server["episode_title"])
 

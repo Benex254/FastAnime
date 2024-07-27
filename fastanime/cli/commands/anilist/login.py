@@ -19,6 +19,7 @@ def loggin(config: Config, status):
             "You are logged in :happy:" if is_logged_in else "You arent logged in :sad:"
         )
         print(message)
+        print(config.user)
         exit_app()
     if config.user:
         print("Already logged in :confused:")
@@ -29,6 +30,11 @@ def loggin(config: Config, status):
     print("Please paste the token provided here")
     token = Prompt.ask("Enter token")
     user = AniList.login_user(token)
+    if not user:
+        print("Sth went wrong", user)
+        exit_app()
+        return
+    user["token"] = token
     config.update_user(user)
     print("Successfully saved credentials")
     print(user)

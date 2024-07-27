@@ -61,7 +61,7 @@ class AniListApi:
             "CURRENT", "PLANNING", "COMPLETED", "DROPPED", "PAUSED", "REPEATING"
         ],
     ):
-        variables = {"status": status, "id": self.user_id}
+        variables = {"status": status, "userId": self.user_id}
         return self._make_authenticated_request(media_list_query, variables)
 
     def _make_authenticated_request(self, query: str, variables: dict = {}):
@@ -102,6 +102,10 @@ class AniListApi:
             )  # type: ignore
         except Exception as e:
             return (False, {"Error": f"{e}"})  # type: ignore
+
+    def get_watchlist(self):
+        variables = {"status": "CURRENT", "userId": self.user_id}
+        return self._make_authenticated_request(media_list_query, variables)
 
     def get_data(
         self, query: str, variables: dict = {}

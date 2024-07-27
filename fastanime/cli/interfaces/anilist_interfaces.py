@@ -55,7 +55,7 @@ def player_controls(config: Config, anilist_config: QueryDict):
         if next_episode >= len(episodes):
             next_episode = len(episodes) - 1
 
-        # update internal config
+        # updateinternal config
         anilist_config.episode_number = episodes[next_episode]
 
         # update user config
@@ -501,6 +501,35 @@ def select_anime(config: Config, anilist_config: QueryDict):
     anilist_options(config, anilist_config)
 
 
+def handle_animelist(list_type: str):
+    match list_type:
+        case "Watching":
+            status = "CURRENT"
+        case "Planned":
+            status = "PLANNING"
+        case "Completed":
+            status = "COMPLETED"
+        case "Dropped":
+            status = "DROPPED"
+        case "Paused":
+            status = "PAUSED"
+        case "Repeating":
+            status = "REPEATING"
+        case _:
+            return
+    anime_list = AniList.get_anime_list(status)
+    if not anime_list:
+        return
+    if not anime_list[0]:
+        return
+    media = [
+        mediaListItem["media"]
+        for mediaListItem in anime_list[1]["data"]["Page"]["mediaList"]
+    ]  # pyright:ignore
+    anime_list[1]["data"]["Page"]["media"] = media  # pyright:ignore
+    return anime_list
+
+
 def anilist(config: Config, anilist_config: QueryDict):
     def _anilist_search():
         search_term = Prompt.ask("[cyan]Search for[/]")
@@ -531,6 +560,12 @@ def anilist(config: Config, anilist_config: QueryDict):
 
     options = {
         "Trending": AniList.get_trending,
+        "Watching": lambda x="Watching": handle_animelist(x),
+        "Paused": lambda x="Paused": handle_animelist(x),
+        "Dropped": lambda x="Dropped": handle_animelist(x),
+        "Planned": lambda x="Planned": handle_animelist(x),
+        "Completed": lambda x="Completed": handle_animelist(x),
+        "Repeating": lambda x="Repeating": handle_animelist(x),
         "Recently Updated Anime": AniList.get_most_recently_updated,
         "Search": _anilist_search,
         "Watch History": _watch_history,

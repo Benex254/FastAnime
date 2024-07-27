@@ -70,8 +70,18 @@ class Config(object):
         self.user = user
         user_data_helper.update_user_info(user)
 
-    def update_watch_history(self, anime_id: int, episode: str | None):
-        self.watch_history.update({str(anime_id): episode})
+    def update_watch_history(
+        self, anime_id: int, episode: str | None, start_time="0", total_time="0"
+    ):
+        self.watch_history.update(
+            {
+                str(anime_id): {
+                    "episode": episode,
+                    "start_time": start_time,
+                    "total_time": total_time,
+                }
+            }
+        )
         user_data_helper.update_watch_history(self.watch_history)
 
     def update_anime_list(self, anime_id: int, remove=False):

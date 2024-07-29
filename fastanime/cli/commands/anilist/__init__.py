@@ -7,6 +7,7 @@ from .completed import completed
 from .dropped import dropped
 from .favourites import favourites
 from .login import loggin
+from .notifier import notifier
 from .paused import paused
 from .planning import planning
 from .popular import popular
@@ -35,6 +36,7 @@ commands = {
     "dropped": dropped,
     "completed": completed,
     "planning": planning,
+    "notifier": notifier,
 }
 
 

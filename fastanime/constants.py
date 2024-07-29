@@ -21,6 +21,7 @@ if not APP_DATA_DIR:
 
 USER_DATA_PATH = os.path.join(APP_DATA_DIR, "user_data.json")
 USER_CONFIG_PATH = os.path.join(APP_DATA_DIR, "config.ini")
+NOTIFIER_LOG_FILE_PATH = os.path.join(APP_DATA_DIR, "notifier.log")
 
 # cache dir
 APP_CACHE_DIR = dirs.user_cache_dir

@@ -146,19 +146,19 @@ def player_controls(config: Config, anilist_config: QueryDict):
 
         # reload to controls
         player_controls(config, anilist_config)
-
+    icons=config.icons
     options = {
-        "🔂 Replay": _replay,
-        "⏭  Next Episode": _next_episode,
-        "⏮  Previous Episode": _previous_episode,
-        "🗃️ Episodes": _episodes,
-        "📀 Change Quality": _change_quality,
-        "🎧 Change Translation Type": _change_translation_type,
-        "💽 Servers": _servers,
-        "📱 Main Menu": lambda: anilist(config, anilist_config),
-        "📜 Anime Options Menu": lambda: anilist_options(config, anilist_config),
-        "🔎 Search Results": lambda: select_anime(config, anilist_config),
-        "❌ Exit": exit_app,
+        f"{'🔂 ' if icons else ''}Replay": _replay,
+        f"{'⏭  ' if icons else ''}Next Episode": _next_episode,
+        f"{'⏮  ' if icons else ''}Previous Episode": _previous_episode,
+        f"{'🗃️ ' if icons else ''}Episodes": _episodes,
+        f"{'📀 ' if icons else ''}Change Quality": _change_quality,
+        f"{'🎧 ' if icons else ''}Change Translation Type": _change_translation_type,
+        f"{'💽 ' if icons else ''}Servers": _servers,
+        f"{'📱 ' if icons else ''}Main Menu": lambda: anilist(config, anilist_config),
+        f"{'📜 ' if icons else ''}Anime Options Menu": lambda: anilist_options(config, anilist_config),
+        f"{'🔎 ' if icons else ''}Search Results": lambda: select_anime(config, anilist_config),
+        f"{'❌ ' if icons else ''}Exit": exit_app,
     }
 
     if config.auto_next:
@@ -528,15 +528,16 @@ def anilist_options(config, anilist_config: QueryDict):
             anilist_options(config, anilist_config)
         return
 
+    icons=config.icons
     options = {
-        "📽️ Stream": provide_anime,
-        "📼 Watch Trailer": _watch_trailer,
-        "📥 Add to List": _add_to_list,
-        "📤 Remove from List": _remove_from_list,
-        "📖 View Info": _view_info,
-        "🎧 Change Translation Type": _change_translation_type,
-        "🔙 Back": select_anime,
-        "❌ Exit": exit_app,
+        f"{'📽️ ' if icons else ''}Stream": provide_anime,
+        f"{'📼 ' if icons else ''}Watch Trailer": _watch_trailer,
+        f"{'📥 ' if icons else ''}Add to List": _add_to_list,
+        f"{'📤 ' if icons else ''}Remove from List": _remove_from_list,
+        f"{'📖 ' if icons else ''}View Info": _view_info,
+        f"{'🎧 ' if icons else ''}Change Translation Type": _change_translation_type,
+        f"{'🔙 ' if icons else ''}Back": select_anime,
+        f"{'❌ ' if icons else ''}Exit": exit_app,
     }
     if config.use_fzf:
         action = fzf.run(
@@ -648,25 +649,26 @@ def anilist(config: Config, anilist_config: QueryDict):
 
         anilist(config, anilist_config)
 
+    icons = config.icons
     options = {
-        "🔥 Trending": AniList.get_trending,
-        "📺 Watching": lambda x="Watching": handle_animelist(x),
-        "⏸  Paused": lambda x="Paused": handle_animelist(x),
-        "🚮 Dropped": lambda x="Dropped": handle_animelist(x),
-        "📑 Planned": lambda x="Planned": handle_animelist(x),
-        "✅ Completed": lambda x="Completed": handle_animelist(x),
-        "🔁 Repeating": lambda x="Repeating": handle_animelist(x),
-        "🔔 Recently Updated Anime": AniList.get_most_recently_updated,
-        "🔎 Search": _anilist_search,
-        "🎞️ Watch History": _watch_history,
+        f"{'🔥 ' if icons else ''}Trending": AniList.get_trending,
+        f"{'📺 ' if icons else ''}Watching": lambda x="Watching": handle_animelist(x),
+        f"{'⏸  ' if icons else ''}Paused": lambda x="Paused": handle_animelist(x),
+        f"{'🚮 ' if icons else ''}Dropped": lambda x="Dropped": handle_animelist(x),
+        f"{'📑 ' if icons else ''}Planned": lambda x="Planned": handle_animelist(x),
+        f"{'✅ ' if icons else ''}Completed": lambda x="Completed": handle_animelist(x),
+        f"{'🔁 ' if icons else ''}Repeating": lambda x="Repeating": handle_animelist(x),
+        f"{'🔔 ' if icons else ''}Recently Updated Anime": AniList.get_most_recently_updated,
+        f"{'🔎 ' if icons else ''}Search": _anilist_search,
+        f"{'🎞️ ' if icons else ''}Watch History": _watch_history,
         # "AnimeList": _anime_list💯,
-        "🎲 Random Anime": _anilist_random,
-        "🌟 Most Popular Anime": AniList.get_most_popular,
-        "💖 Most Favourite Anime": AniList.get_most_favourite,
-        "✨ Most Scored Anime": AniList.get_most_scored,
-        "🎬 Upcoming Anime": AniList.get_upcoming_anime,
-        "📝 Edit Config": edit_config,
-        "❌ Exit": exit_app,
+        f"{'🎲 ' if icons else ''}Random Anime": _anilist_random,
+        f"{'🌟 ' if icons else ''}Most Popular Anime": AniList.get_most_popular,
+        f"{'💖 ' if icons else ''}Most Favourite Anime": AniList.get_most_favourite,
+        f"{'✨ ' if icons else ''}Most Scored Anime": AniList.get_most_scored,
+        f"{'🎬 ' if icons else ''}Upcoming Anime": AniList.get_upcoming_anime,
+        f"{'📝 ' if icons else ''}Edit Config": edit_config,
+        f"{'❌ ' if icons else ''}Exit": exit_app,
     }
     if config.use_fzf:
 

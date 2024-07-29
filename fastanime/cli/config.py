@@ -35,6 +35,7 @@ class Config(object):
                 "format": "best[height<=1080]/bestvideo[height<=1080]+bestaudio/best",
                 "provider": "allanime",
                 "error": "3",
+                "icons":"false"
             }
         )
         self.configparser.add_section("stream")
@@ -49,6 +50,7 @@ class Config(object):
         self.downloads_dir = self.get_downloads_dir()
         self.provider = self.get_provider()
         self.use_fzf = self.get_use_fzf()
+        self.icons = self.get_icons()
         self.preview = self.get_preview()
         self.translation_type = self.get_translation_type()
         self.sort_by = self.get_sort_by()
@@ -108,6 +110,8 @@ class Config(object):
     def get_use_fzf(self):
         return self.configparser.getboolean("general", "use_fzf")
 
+    def get_icons(self):
+        return self.configparser.getboolean("general", "icons")
     def get_preview(self):
         return self.configparser.getboolean("general", "preview")
 

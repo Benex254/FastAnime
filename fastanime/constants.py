@@ -1,11 +1,11 @@
 import os
-from platform import platform
+from platform import system
 
 from platformdirs import PlatformDirs
 
 from . import APP_NAME, AUTHOR
 
-PLATFORM = platform()
+PLATFORM = system()
 dirs = PlatformDirs(appname=APP_NAME, appauthor=AUTHOR, ensure_exists=True)
 
 

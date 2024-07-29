@@ -7,7 +7,7 @@ import click
 from plyer import notification
 
 from ....anilist import AniList
-from ....constants import APP_DATA_DIR, APP_NAME
+from ....constants import APP_DATA_DIR, APP_NAME, ICON_PATH
 from ..config import Config
 
 logger = logging.getLogger(__name__)
@@ -26,7 +26,6 @@ def notifier(config: Config):
     timeout = 2
     if os.path.exists(notified):
         with open(notified, "r") as f:
-
             past_notifications = json.load(f)
     else:
         past_notifications = {}
@@ -62,7 +61,10 @@ def notifier(config: Config):
                         json.dump(past_notifications, f)
                     logger.info(message)
                     notification.notify(  # pyright:ignore
-                        title=title, message=message, app_name=APP_NAME
+                        title=title,
+                        message=message,
+                        app_name=APP_NAME,
+                        app_icon=ICON_PATH,
                     )
         except Exception as e:
             logger.error(e)

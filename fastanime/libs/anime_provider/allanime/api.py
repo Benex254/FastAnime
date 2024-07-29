@@ -22,6 +22,7 @@ Logger = logging.getLogger(__name__)
 
 # TODO: create tests for the api
 #
+# ** Based on ani-cli **
 class AllAnimeAPI:
     """
     Provides a fast and effective interface to AllAnime site.
@@ -122,6 +123,7 @@ class AllAnimeAPI:
                         "Kir",
                         "S-mp4",
                         "Luf-mp4",
+                        "Default",
                     ):
                         continue
                     url = embed.get("sourceUrl")
@@ -178,6 +180,16 @@ class AllAnimeAPI:
                                 Logger.debug("allanime:Found streams from dropbox")
                                 yield {
                                     "server": "dropbox",
+                                    "episode_title": (
+                                        allanime_episode["notes"] or f'{anime["title"]}'
+                                    )
+                                    + f"; Episode {episode_number}",
+                                    "links": resp.json()["links"],
+                                }  # pyright:ignore
+                            case "Default":
+                                Logger.debug("allanime:Found streams from wixmp")
+                                yield {
+                                    "server": "wixmp",
                                     "episode_title": (
                                         allanime_episode["notes"] or f'{anime["title"]}'
                                     )

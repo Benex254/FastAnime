@@ -2,6 +2,7 @@
 This is the core module availing all the abstractions of the anilist api
 """
 
+import logging
 from typing import Literal
 
 import requests
@@ -27,6 +28,7 @@ from .queries_graphql import (
     upcoming_anime_query,
 )
 
+logger = logging.getLogger(__name__)
 # from kivy.network.urlrequest import UrlRequestRequests
 ANILIST_ENDPOINT = "https://graphql.anilist.co"
 
@@ -98,11 +100,31 @@ class AniListApi:
                 headers=self.headers,
             )
             anilist_data = response.json()
+
+            # ensuring you dont get blocked
+            if (
+                int(response.headers.get("X-RateLimit-Remaining", 0)) < 5
+                and not response.status_code == 500
+            ):
+                print(
+                    "Warning you are exceeding the allowed number of calls per minute"
+                )
+                logger.warning(
+                    "You are exceeding the allowed number of calls per minute for the AniList api enforcing timeout"
+                )
+                print("Forced timeout will now be initiated")
+                import time
+
+                print("sleeping...")
+                time.sleep(1 * 60)
             if response.status_code == 200:
                 return (True, anilist_data)
             else:
                 return (False, anilist_data)
         except requests.exceptions.Timeout:
+            logger.warning(
+                "Timeout has been exceeded this could mean anilist is down or you have lost internet connection"
+            )
             return (
                 False,
                 {
@@ -110,6 +132,10 @@ class AniListApi:
                 },
             )  # type: ignore
         except requests.exceptions.ConnectionError:
+            logger.warning(
+                "ConnectionError this could mean anilist is down or you have lost internet connection"
+            )
+
             return (
                 False,
                 {
@@ -117,6 +143,7 @@ class AniListApi:
                 },
             )  # type: ignore
         except Exception as e:
+            logger.error(f"Something unexpected occured {e}")
             return (False, {"Error": f"{e}"})  # type: ignore
 
     def get_watchlist(self):
@@ -146,11 +173,30 @@ class AniListApi:
             )
             anilist_data: AnilistDataSchema = response.json()
 
+            # ensuring you dont get blocked
+            if (
+                int(response.headers.get("X-RateLimit-Remaining", 0)) < 5
+                and not response.status_code == 500
+            ):
+                print(
+                    "Warning you are exceeding the allowed number of calls per minute"
+                )
+                logger.warning(
+                    "You are exceeding the allowed number of calls per minute for the AniList api enforcing timeout"
+                )
+                print("Forced timeout will now be initiated")
+                import time
+
+                print("sleeping...")
+                time.sleep(1 * 60)
             if response.status_code == 200:
                 return (True, anilist_data)
             else:
                 return (False, anilist_data)
         except requests.exceptions.Timeout:
+            logger.warning(
+                "Timeout has been exceeded this could mean anilist is down or you have lost internet connection"
+            )
             return (
                 False,
                 {
@@ -158,6 +204,9 @@ class AniListApi:
                 },
             )  # type: ignore
         except requests.exceptions.ConnectionError:
+            logger.warning(
+                "ConnectionError this could mean anilist is down or you have lost internet connection"
+            )
             return (
                 False,
                 {
@@ -165,6 +214,7 @@ class AniListApi:
                 },
             )  # type: ignore
         except Exception as e:
+            logger.error(f"Something unexpected occured {e}")
             return (False, {"Error": f"{e}"})  # type: ignore
 
     def search(

@@ -7,14 +7,14 @@ from fastanime.cli.utils.tools import QueryDict, exit_app
 from ....anilist import AniList
 
 
-@click.command(help="View anime you are rewatching")
+@click.command(help="View anime you are watching")
 @click.pass_obj
-def repeating(config: Config):
+def watching(config: Config):
     if not config.user:
         print("Not authenticated")
         print("Please run: fastanime anilist loggin")
         exit_app()
-    anime_list = AniList.get_anime_list("REPEATING")
+    anime_list = AniList.get_anime_list("CURRENT")
     if not anime_list:
         return
     if not anime_list[0]:
@@ -24,7 +24,6 @@ def repeating(config: Config):
         for mediaListItem in anime_list[1]["data"]["Page"]["mediaList"]
     ]  # pyright:ignore
     anime_list[1]["data"]["Page"]["media"] = media  # pyright:ignore
-    print(config.user)
     anilist_config = QueryDict()
     anilist_config.data = anime_list[1]
     anilist_interfaces.select_anime(config, anilist_config)

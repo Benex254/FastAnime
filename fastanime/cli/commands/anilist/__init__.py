@@ -13,12 +13,12 @@ from .planning import planning
 from .popular import popular
 from .random_anime import random_anime
 from .recent import recent
-from .repeating import repeating
+from .rewatching import rewatching
 from .scores import scores
 from .search import search
 from .trending import trending
 from .upcoming import upcoming
-from .watchlist import watch_list
+from .watching import watching
 
 commands = {
     "trending": trending,
@@ -30,9 +30,9 @@ commands = {
     "favourites": favourites,
     "random": random_anime,
     "login": login,
-    "watching": watch_list,
+    "watching": watching,
     "paused": paused,
-    "repeating": repeating,
+    "rewatching": rewatching,
     "dropped": dropped,
     "completed": completed,
     "planning": planning,

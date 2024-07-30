@@ -12,7 +12,7 @@ from ...Utility import anilist_data_helper
 from ...Utility.utils import remove_html_tags, sanitize_filename
 from ..config import Config
 
-fzf_preview = """
+fzf_preview = r"""
 #
 # The purpose of this script is to demonstrate how to preview a file or an
 # image in the preview window of fzf.

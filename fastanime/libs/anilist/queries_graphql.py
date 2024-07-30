@@ -48,6 +48,7 @@ query{
                 createdAt
                 media {
                     id
+                    idMal
                     title {
                         romaji
                         english
@@ -63,6 +64,22 @@ query{
 
 """
 
+get_medialist_item_query = """
+query($mediaId:Int){
+    MediaList(mediaId:$mediaId){
+        id
+    }
+}
+"""
+
+delete_list_entry_query = """
+mutation($id:Int){
+    DeleteMediaListEntry(id:$id){
+        deleted
+
+    }
+}
+"""
 
 get_logged_in_user_query = """
 query{
@@ -115,6 +132,7 @@ query ($userId: Int, $status: MediaListStatus) {
       
       media {
         id
+        idMal
         title {
           romaji
           english
@@ -236,6 +254,7 @@ query($query:String,%s){
       )
     {
       id
+        idMal
       title{
         romaji
         english
@@ -293,6 +312,7 @@ query{
     
     media(sort:TRENDING_DESC,type:ANIME,genre_not_in:["hentai"]){
       id
+        idMal
       title{
         romaji
         english
@@ -347,6 +367,7 @@ query{
   Page(perPage:15){    
     media(sort:FAVOURITES_DESC,type:ANIME,genre_not_in:["hentai"]){
       id
+        idMal
       title{
         romaji
         english
@@ -401,6 +422,7 @@ query{
   Page(perPage:15){
     media(sort:SCORE_DESC,type:ANIME,genre_not_in:["hentai"]){
       id
+        idMal
       title{
         romaji
         english
@@ -455,6 +477,7 @@ query{
   Page(perPage:15){
     media(sort:POPULARITY_DESC,type:ANIME,genre_not_in:["hentai"]){
       id
+        idMal
       title{
         romaji
         english
@@ -509,6 +532,7 @@ query{
   Page(perPage:15){
     media(sort:UPDATED_AT_DESC,type:ANIME,averageScore_greater:50,genre_not_in:["hentai"],status:RELEASING){
       id
+        idMal
       title{
         romaji
         english
@@ -565,6 +589,7 @@ query  {
         nodes{
           media{
             id
+        idMal
             title{
               english
               romaji
@@ -654,6 +679,7 @@ query ($id: Int) {
       relations {
         nodes {
           id
+        idMal
           title {
             english
             romaji
@@ -727,6 +753,7 @@ query ($page: Int) {
     }
     media(type: ANIME, status: NOT_YET_RELEASED,sort:POPULARITY_DESC,genre_not_in:["hentai"]) {
       id
+        idMal
       title {
         romaji
         english
@@ -780,6 +807,7 @@ query($id:Int){
   Page{
     media(id:$id) {
       id
+        idMal
       title {
         romaji
         english

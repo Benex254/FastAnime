@@ -53,7 +53,8 @@ class YtDLPDownloader:
         anime_title = sanitize_filename(title[0])
         episode_title = sanitize_filename(title[1])
         ydl_opts = {
-            "outtmpl": f"{download_dir}/{anime_title}/{episode_title}.%(ext)s",  # Specify the output path and template
+            # Specify the output path and template
+            "outtmpl": f"{download_dir}/{anime_title}/{episode_title}.%(ext)s",
             "progress_hooks": [
                 main_progress_hook,
             ],  # Progress hook

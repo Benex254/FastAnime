@@ -32,7 +32,8 @@ class AnimePaheApi:
 
     def get_anime(self, session_id: str, *args):
         url = "https://animepahe.ru/api?m=release&id=&sort=episode_asc&page=1"
-        url = f"{ANIMEPAHE_ENDPOINT}m=release&id={session_id}&sort=episode_asc&page=1"
+        url = f"{ANIMEPAHE_ENDPOINT}m=release&id={
+            session_id}&sort=episode_asc&page=1"
         response = requests.get(url, headers=REQUEST_HEADERS)
         if not response.status_code == 200:
             return

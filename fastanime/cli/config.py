@@ -37,6 +37,7 @@ class Config(object):
                 "error": "3",
                 "icons": "false",
                 "notification_duration": "2",
+                "skip": "false",
             }
         )
         self.configparser.add_section("stream")
@@ -51,6 +52,7 @@ class Config(object):
         self.downloads_dir = self.get_downloads_dir()
         self.provider = self.get_provider()
         self.use_fzf = self.get_use_fzf()
+        self.skip = self.get_skip()
         self.icons = self.get_icons()
         self.preview = self.get_preview()
         self.translation_type = self.get_translation_type()
@@ -111,6 +113,9 @@ class Config(object):
 
     def get_use_fzf(self):
         return self.configparser.getboolean("general", "use_fzf")
+
+    def get_skip(self):
+        return self.configparser.getboolean("stream", "skip")
 
     def get_icons(self):
         return self.configparser.getboolean("general", "icons")

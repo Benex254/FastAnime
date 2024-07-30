@@ -1,5 +1,6 @@
 import os
 import shutil
+import subprocess
 import textwrap
 from threading import Thread
 
@@ -92,6 +93,19 @@ fzf-preview(){
 SEARCH_RESULTS_CACHE = os.path.join(APP_CACHE_DIR, "search_results")
 
 
+def aniskip(mal_id, episode):
+    ANISKIP = shutil.which("ani-skip")
+    if not ANISKIP:
+        print("Aniskip not found, please install and try again")
+        return
+    args = [ANISKIP, "-q", str(mal_id), "-e", str(episode)]
+    aniskip_result = subprocess.run(args, text=True, stdout=subprocess.PIPE)
+    if aniskip_result.returncode != 0:
+        return
+    mpv_skip_args = aniskip_result.stdout.strip()
+    return mpv_skip_args.split(" ")
+
+
 def write_search_results(
     search_results: list[AnilistBaseMediaDataSchema], config: Config
 ):
@@ -126,7 +140,8 @@ def write_search_results(
             Favourites: {anime['favourites']}
             Status: {anime['status']}
             Episodes: {anime['episodes']}
-            Genres: {anilist_data_helper.format_list_data_with_comma(anime['genres'])}
+            Genres: {anilist_data_helper.format_list_data_with_comma(
+                anime['genres'])}
             Next Episode: {anilist_data_helper.extract_next_airing_episode(anime['nextAiringEpisode'])}
             Start Date: {anilist_data_helper.format_anilist_date_object(anime['startDate'])}
             End Date: {anilist_data_helper.format_anilist_date_object(anime['endDate'])}
@@ -136,7 +151,8 @@ def write_search_results(
             template = textwrap.dedent(template)
             template = f"""
             {template}
-            {textwrap.fill(remove_html_tags(str(anime['description'])),width=45)}
+            {textwrap.fill(remove_html_tags(
+                str(anime['description'])), width=45)}
             """
             f.write(template)
 

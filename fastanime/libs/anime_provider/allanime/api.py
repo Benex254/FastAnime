@@ -139,7 +139,7 @@ class AllAnimeAPI:
 
                     # get the stream url for an episode of the defined source names
                     parsed_url = decode_hex_string(url)
-                    embed_url = f"https://{ALLANIME_BASE}{parsed_url.replace('clock','clock.json')}"
+                    embed_url = f"https://{ALLANIME_BASE}{parsed_url.replace('clock', 'clock.json')}"
                     resp = requests.get(
                         embed_url,
                         headers={
@@ -155,7 +155,9 @@ class AllAnimeAPI:
                                 yield {
                                     "server": "gogoanime",
                                     "episode_title": (
-                                        allanime_episode["notes"] or f'{anime["title"]}'
+                                        allanime_episode["notes"]
+                                        or f'{
+                                            anime["title"]}'
                                     )
                                     + f"; Episode {episode_number}",
                                     "links": resp.json()["links"],
@@ -165,7 +167,9 @@ class AllAnimeAPI:
                                 yield {
                                     "server": "wetransfer",
                                     "episode_title": (
-                                        allanime_episode["notes"] or f'{anime["title"]}'
+                                        allanime_episode["notes"]
+                                        or f'{
+                                            anime["title"]}'
                                     )
                                     + f"; Episode {episode_number}",
                                     "links": resp.json()["links"],
@@ -175,7 +179,9 @@ class AllAnimeAPI:
                                 yield {
                                     "server": "sharepoint",
                                     "episode_title": (
-                                        allanime_episode["notes"] or f'{anime["title"]}'
+                                        allanime_episode["notes"]
+                                        or f'{
+                                            anime["title"]}'
                                     )
                                     + f"; Episode {episode_number}",
                                     "links": resp.json()["links"],
@@ -185,7 +191,9 @@ class AllAnimeAPI:
                                 yield {
                                     "server": "dropbox",
                                     "episode_title": (
-                                        allanime_episode["notes"] or f'{anime["title"]}'
+                                        allanime_episode["notes"]
+                                        or f'{
+                                            anime["title"]}'
                                     )
                                     + f"; Episode {episode_number}",
                                     "links": resp.json()["links"],
@@ -195,7 +203,9 @@ class AllAnimeAPI:
                                 yield {
                                     "server": "wixmp",
                                     "episode_title": (
-                                        allanime_episode["notes"] or f'{anime["title"]}'
+                                        allanime_episode["notes"]
+                                        or f'{
+                                            anime["title"]}'
                                     )
                                     + f"; Episode {episode_number}",
                                     "links": resp.json()["links"],

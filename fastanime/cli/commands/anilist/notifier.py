@@ -67,8 +67,7 @@ def notifier(config: Config):
                     id = notification_["media"]["id"]
                     if past_notifications.get(str(id)) == notification_["episode"]:
                         logger.info(
-                            f"skipping id={id} title={anime_title} episode={
-                                anime_episode} already notified"
+                            f"skipping id={id} title={anime_title} episode={anime_episode} already notified"
                         )
 
                     else:

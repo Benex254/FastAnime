@@ -155,9 +155,7 @@ class AllAnimeAPI:
                                 yield {
                                     "server": "gogoanime",
                                     "episode_title": (
-                                        allanime_episode["notes"]
-                                        or f'{
-                                            anime["title"]}'
+                                        allanime_episode["notes"] or f'{anime["title"]}'
                                     )
                                     + f"; Episode {episode_number}",
                                     "links": resp.json()["links"],
@@ -167,9 +165,7 @@ class AllAnimeAPI:
                                 yield {
                                     "server": "wetransfer",
                                     "episode_title": (
-                                        allanime_episode["notes"]
-                                        or f'{
-                                            anime["title"]}'
+                                        allanime_episode["notes"] or f'{anime["title"]}'
                                     )
                                     + f"; Episode {episode_number}",
                                     "links": resp.json()["links"],
@@ -179,9 +175,7 @@ class AllAnimeAPI:
                                 yield {
                                     "server": "sharepoint",
                                     "episode_title": (
-                                        allanime_episode["notes"]
-                                        or f'{
-                                            anime["title"]}'
+                                        allanime_episode["notes"] or f'{anime["title"]}'
                                     )
                                     + f"; Episode {episode_number}",
                                     "links": resp.json()["links"],
@@ -191,9 +185,7 @@ class AllAnimeAPI:
                                 yield {
                                     "server": "dropbox",
                                     "episode_title": (
-                                        allanime_episode["notes"]
-                                        or f'{
-                                            anime["title"]}'
+                                        allanime_episode["notes"] or f'{anime["title"]}'
                                     )
                                     + f"; Episode {episode_number}",
                                     "links": resp.json()["links"],
@@ -203,9 +195,7 @@ class AllAnimeAPI:
                                 yield {
                                     "server": "wixmp",
                                     "episode_title": (
-                                        allanime_episode["notes"]
-                                        or f'{
-                                            anime["title"]}'
+                                        allanime_episode["notes"] or f'{anime["title"]}'
                                     )
                                     + f"; Episode {episode_number}",
                                     "links": resp.json()["links"],

@@ -138,8 +138,9 @@ The only required external dependency, unless you won't be streaming, is [MPV](h
 
 - [fzf](https://github.com/junegunn/fzf) :fire: which is used as a better alternative to the ui.
 - [chafa](https://github.com/hpjansson/chafa) currently the best cross platform and cross terminal image viewer for the terminal.
-- [icat](https://sw.kovidgoyal.net/kitty/kittens/icat/) an image viewer that only works in [kitty terminal](https://sw.kovidgoyal.net/kitty/), which is currently the best terminal in my opinion, and by far the best image renderer for the terminal thanks to kitty's terminal graphics protocol. Its terminal graphics is so op that you can [run a browser on it]()!!
+- [icat](https://sw.kovidgoyal.net/kitty/kittens/icat/) an image viewer that only works in [kitty terminal](https://sw.kovidgoyal.net/kitty/), which is currently the best terminal in my opinion, and by far the best image renderer for the terminal thanks to kitty's terminal graphics protocol. Its terminal graphics is so op that you can [run a browser on it](https://github.com/chase/awrit?tab=readme-ov-file)!!
 - [bash](https://www.gnu.org/software/bash/) is used as the preview script language.
+- [ani-skip](https://github.com/synacktraa/ani-skip) :fire: used for skipping the opening and ending theme songs
 
 ## Usage
 
@@ -147,7 +148,7 @@ The app offers both a graphical interface (under development) and a robust comma
 
 > [!NOTE]
 >
-> The GUI is in development; use the CLI for now.
+> The GUI is mostly in hiatus; use the CLI for now.
 > However, you can try it out before i decided to change my objective by checking out this [release](https://github.com/Benex254/FastAnime/tree/v0.20.0).
 > But be reassured for those who aren't terminal chads, i will still complete the GUI for the fun of it
 
@@ -180,6 +181,7 @@ Available options include:
 - `--no-preview` dont show a preview when using fzf
 - `--format <yt-dlp format string>` set the format of anime downloaded and streamed based on yt-dlp format. Works when `--server gogoanime`
 - `--icons/--no-icons` toggle the visibility of the icons
+- `--skip/--no-skip` whether to skip the opening and ending theme songs.
 
 #### The anilist command :fire: :fire: :fire:
 
@@ -326,7 +328,9 @@ auto_next = False  # Auto-select next episode
 # Auto select the anime provider results with fuzzy find.
 # Note this wont always be correct.But 99% of the time will be.
 auto_select=True
-
+# whether to skip the opening and ending theme songs
+# note requires ani-skip to be in path
+skip=false
 # the maximum delta time in minutes after which the episode should be considered as completed
 # used in the continue from time stamp
 error=3

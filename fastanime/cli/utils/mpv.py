@@ -99,7 +99,7 @@ def mpv(
                 "-n",
                 "com.google.android.youtube/.UrlActivity",
             ]
-            return "0"
+            return "0", "0"
         else:
             # Android specific commands to launch mpv with a regular URL
             args = [
@@ -117,7 +117,7 @@ def mpv(
             ]
 
         subprocess.run(args)
-        return "0"
+        return "0", "0"
     else:
         # General mpv command with custom arguments
         mpv_args = []

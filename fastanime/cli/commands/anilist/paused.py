@@ -24,7 +24,6 @@ def paused(config: Config):
         for mediaListItem in anime_list[1]["data"]["Page"]["mediaList"]
     ]  # pyright:ignore
     anime_list[1]["data"]["Page"]["media"] = media  # pyright:ignore
-    print(config.user)
     anilist_config = QueryDict()
     anilist_config.data = anime_list[1]
     anilist_interfaces.select_anime(config, anilist_config)

@@ -10,29 +10,55 @@ mutation{
   }
 }
 """
+reviews_query = """
+query($id:Int){
+  Page{
+    pageInfo{
+      total
+    }
+    
+    reviews(mediaId:$id){
+      summary
+      user{
+        name
+        avatar {
+          large
+          medium
+        }
+      }
+      body
+      
+    }
+  }
+}
+
+"""
 notification_query = """
 query{
     Page {
         pageInfo {
-        total
+            total
         }
         notifications(resetNotificationCount:true,type:AIRING) {
-        ... on AiringNotification {
-            id
-            type
-            episode
-            contexts
-            createdAt
-            media {
-            id
-            title {
-                romaji
-                english
-            }
+            ... on AiringNotification {
+                id
+                type
+                episode
+                contexts
+                createdAt
+                media {
+                    id
+                    title {
+                        romaji
+                        english
+                    }
+                    coverImage{
+                        medium
+                    }
+                }
             }
         }
-        }
-  }
+    }
 }
 
 """

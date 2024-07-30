@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fastanime"
-version = "0.4.0"
+version = "0.40.0"
 description = "A fast and efficient anime scrapper and exploration tool"
 authors = ["Benextempest <benextempest@gmail.com>"]
 license = "UNLICENSE"

@@ -146,7 +146,8 @@ def player_controls(config: Config, anilist_config: QueryDict):
 
         # reload to controls
         player_controls(config, anilist_config)
-    icons=config.icons
+
+    icons = config.icons
     options = {
         f"{'🔂 ' if icons else ''}Replay": _replay,
         f"{'⏭  ' if icons else ''}Next Episode": _next_episode,
@@ -156,8 +157,12 @@ def player_controls(config: Config, anilist_config: QueryDict):
         f"{'🎧 ' if icons else ''}Change Translation Type": _change_translation_type,
         f"{'💽 ' if icons else ''}Servers": _servers,
         f"{'📱 ' if icons else ''}Main Menu": lambda: anilist(config, anilist_config),
-        f"{'📜 ' if icons else ''}Anime Options Menu": lambda: anilist_options(config, anilist_config),
-        f"{'🔎 ' if icons else ''}Search Results": lambda: select_anime(config, anilist_config),
+        f"{'📜 ' if icons else ''}Anime Options Menu": lambda: anilist_options(
+            config, anilist_config
+        ),
+        f"{'🔎 ' if icons else ''}Search Results": lambda: select_anime(
+            config, anilist_config
+        ),
         f"{'❌ ' if icons else ''}Exit": exit_app,
     }
 
@@ -528,7 +533,7 @@ def anilist_options(config, anilist_config: QueryDict):
             anilist_options(config, anilist_config)
         return
 
-    icons=config.icons
+    icons = config.icons
     options = {
         f"{'📽️ ' if icons else ''}Stream": provide_anime,
         f"{'📼 ' if icons else ''}Watch Trailer": _watch_trailer,
@@ -592,7 +597,12 @@ def select_anime(config: Config, anilist_config: QueryDict):
     anilist_options(config, anilist_config)
 
 
-def handle_animelist(list_type: str):
+def handle_animelist(anilist_config, config: Config, list_type: str):
+    if not config.user:
+        print("You haven't logged in please run: fastanime anilist login")
+        input("Enter to continue...")
+        anilist(config, anilist_config)
+        return
     match list_type:
         case "Watching":
             status = "CURRENT"
@@ -610,8 +620,14 @@ def handle_animelist(list_type: str):
             return
     anime_list = AniList.get_anime_list(status)
     if not anime_list:
+        print("Sth went wrong", anime_list)
+        input("Enter to continue")
+        anilist(config, anilist_config)
         return
     if not anime_list[0]:
+        print("Sth went wrong", anime_list)
+        input("Enter to continue")
+        anilist(config, anilist_config)
         return
     media = [
         mediaListItem["media"]
@@ -652,12 +668,24 @@ def anilist(config: Config, anilist_config: QueryDict):
     icons = config.icons
     options = {
         f"{'🔥 ' if icons else ''}Trending": AniList.get_trending,
-        f"{'📺 ' if icons else ''}Watching": lambda x="Watching": handle_animelist(x),
-        f"{'⏸  ' if icons else ''}Paused": lambda x="Paused": handle_animelist(x),
-        f"{'🚮 ' if icons else ''}Dropped": lambda x="Dropped": handle_animelist(x),
-        f"{'📑 ' if icons else ''}Planned": lambda x="Planned": handle_animelist(x),
-        f"{'✅ ' if icons else ''}Completed": lambda x="Completed": handle_animelist(x),
-        f"{'🔁 ' if icons else ''}Repeating": lambda x="Repeating": handle_animelist(x),
+        f"{'📺 ' if icons else ''}Watching": lambda x="Watching": handle_animelist(
+            anilist_config, config, x
+        ),
+        f"{'⏸  ' if icons else ''}Paused": lambda x="Paused": handle_animelist(
+            anilist_config, config, x
+        ),
+        f"{'🚮 ' if icons else ''}Dropped": lambda x="Dropped": handle_animelist(
+            anilist_config, config, x
+        ),
+        f"{'📑 ' if icons else ''}Planned": lambda x="Planned": handle_animelist(
+            anilist_config, config, x
+        ),
+        f"{'✅ ' if icons else ''}Completed": lambda x="Completed": handle_animelist(
+            anilist_config, config, x
+        ),
+        f"{'🔁 ' if icons else ''}Repeating": lambda x="Repeating": handle_animelist(
+            anilist_config, config, x
+        ),
         f"{'🔔 ' if icons else ''}Recently Updated Anime": AniList.get_most_recently_updated,
         f"{'🔎 ' if icons else ''}Search": _anilist_search,
         f"{'🎞️ ' if icons else ''}Watch History": _watch_history,

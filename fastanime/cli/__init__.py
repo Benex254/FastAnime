@@ -110,6 +110,8 @@ signal.signal(signal.SIGINT, handle_exit)
     type=bool,
     help="Use icons in the interfaces",
 )
+@click.option("--dub", help="Set the translation type to dub", is_flag=True)
+@click.option("--sub", help="Set the translation type to sub", is_flag=True)
 @click.pass_context
 def run_cli(
     ctx: click.Context,
@@ -129,6 +131,8 @@ def run_cli(
     preview,
     no_preview,
     icons,
+    dub,
+    sub,
 ):
     ctx.obj = Config()
     if provider:
@@ -168,3 +172,7 @@ def run_cli(
         ctx.obj.preview = True
     if no_preview:
         ctx.obj.preview = False
+    if dub:
+        ctx.obj.translation_type = "dub"
+    if sub:
+        ctx.obj.translation_type = "sub"

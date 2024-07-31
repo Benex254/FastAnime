@@ -179,6 +179,7 @@ def player_controls(config: Config, anilist_config: QueryDict):
     }
 
     if config.auto_next:
+        print("Auto selecting next episode")
         _next_episode()
         return
     if config.use_fzf:
@@ -267,7 +268,7 @@ def fetch_streams(config: Config, anilist_config: QueryDict):
         AniList.update_anime_list(
             {
                 "mediaId": anime_id,
-                "status": "CURRENT",
+                # "status": "CURRENT",
                 "progress": episode_number,
             }
         )

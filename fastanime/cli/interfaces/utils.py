@@ -137,8 +137,8 @@ def write_search_results(
             # data = json.dumps(anime, sort_keys=True, indent=2, separators=(',', ': '))
             template = f"""
             {get_true_fg("-"*S_WIDTH,*S_COLOR,bold=False)}
-            {get_true_fg('Anime Title(jp):',*H_COLOR)} {anime['title']['romaji']}
-            {get_true_fg('Anime Title(eng):',*H_COLOR)} {anime['title']['english']}
+            {get_true_fg('Title(jp):',*H_COLOR)} {anime['title']['romaji']}
+            {get_true_fg('Title(eng):',*H_COLOR)} {anime['title']['english']}
             {get_true_fg('Popularity:',*H_COLOR)} {anime['popularity']}
             {get_true_fg('Favourites:',*H_COLOR)} {anime['favourites']}
             {get_true_fg('Status:',*H_COLOR)} {anime['status']}
@@ -159,7 +159,9 @@ def write_search_results(
             f.write(template)
 
 
-def get_preview(search_results: list[AnilistBaseMediaDataSchema], config: Config):
+def get_preview(
+    search_results: list[AnilistBaseMediaDataSchema], config: Config, wait=False
+):
 
     background_worker = Thread(
         target=write_search_results, args=(search_results, config)
@@ -184,4 +186,6 @@ def get_preview(search_results: list[AnilistBaseMediaDataSchema], config: Config
         SEARCH_RESULTS_CACHE,
     )
     # preview.replace("\n", ";")
+    if wait:
+        background_worker.join()
     return preview

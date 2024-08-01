@@ -112,6 +112,8 @@ signal.signal(signal.SIGINT, handle_exit)
 )
 @click.option("--dub", help="Set the translation type to dub", is_flag=True)
 @click.option("--sub", help="Set the translation type to sub", is_flag=True)
+@click.option("--rofi", help="Use rofi for the ui", is_flag=True)
+@click.option("--rofi-theme", help="Rofi theme to use", type=click.Path())
 @click.pass_context
 def run_cli(
     ctx: click.Context,
@@ -133,6 +135,8 @@ def run_cli(
     icons,
     dub,
     sub,
+    rofi,
+    rofi_theme,
 ):
     ctx.obj = Config()
     if provider:
@@ -176,3 +180,11 @@ def run_cli(
         ctx.obj.translation_type = "dub"
     if sub:
         ctx.obj.translation_type = "sub"
+    if rofi:
+        ctx.obj.use_fzf = False
+        ctx.obj.use_rofi = True
+    if rofi_theme:
+        ctx.obj.rofi_theme = rofi_theme
+        from ..libs.rofi import Rofi
+
+        Rofi.rofi_theme = rofi_theme

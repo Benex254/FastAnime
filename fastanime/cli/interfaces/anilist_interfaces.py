@@ -15,6 +15,7 @@ from ...constants import USER_CONFIG_PATH
 from ...libs.anilist.anilist_data_schema import AnilistBaseMediaDataSchema
 from ...libs.anime_provider.types import Anime, SearchResult, Server
 from ...libs.fzf import fzf
+from ...libs.rofi import Rofi
 from ...Utility.data import anime_normalizer
 from ...Utility.utils import anime_title_percentage_match, sanitize_filename
 from ..config import Config
@@ -113,7 +114,7 @@ def player_controls(config: Config, anilist_config: QueryDict):
                 ):
                     anilist_options(config, anilist_config)
                     return
-            else:
+            elif not config.use_rofi:
                 if not Confirm.ask(
                     "Are you sure you wish to continue to the next episode, your progress for the current episodes will be erased?",
                     default=True,
@@ -164,6 +165,8 @@ def player_controls(config: Config, anilist_config: QueryDict):
             quality = fzf.run(
                 options, prompt="Select Quality:", header="Quality Options"
             )
+        elif config.use_rofi:
+            quality = Rofi.run(options, "Select Quality")
         else:
             quality = fuzzy_inquirer("Select Quality", options)
         config.quality = options.index(quality)  # set quality
@@ -176,6 +179,8 @@ def player_controls(config: Config, anilist_config: QueryDict):
             translation_type = fzf.run(
                 options, prompt="Select Translation Type: ", header="Lang Options"
             ).lower()
+        elif config.use_rofi:
+            translation_type = Rofi.run(options, "Select Translation Type")
         else:
             translation_type = fuzzy_inquirer(
                 "Select Translation Type", options
@@ -214,6 +219,8 @@ def player_controls(config: Config, anilist_config: QueryDict):
         action = fzf.run(
             list(options.keys()), prompt="Select Action:", header="Player Controls"
         )
+    elif config.use_rofi:
+        action = Rofi.run(list(options.keys()), "Select Action")
     else:
         action = fuzzy_inquirer("Select Action", options.keys())
     options[action]()
@@ -261,6 +268,8 @@ def fetch_streams(config: Config, anilist_config: QueryDict):
                 prompt="Select Server: ",
                 header="Servers",
             )
+        elif config.use_rofi:
+            server = Rofi.run(choices, "Select Server")
         else:
             server = fuzzy_inquirer("Select Server", choices)
     if server == "Back":
@@ -370,6 +379,8 @@ def fetch_episode(config: Config, anilist_config: QueryDict):
                 prompt="Select Episode:",
                 header=anime_title,
             )
+        elif config.use_rofi:
+            episode_number = Rofi.run(choices, "Select Episode")
         else:
             episode_number = fuzzy_inquirer("Select Episode", choices)
 
@@ -457,6 +468,8 @@ def provide_anime(config: Config, anilist_config: QueryDict):
                 header="Anime Search Results",
             )
 
+        elif config.use_rofi:
+            anime_title = Rofi.run(choices, "Select Search Result")
         else:
             anime_title = fuzzy_inquirer("Select Search Result", choices)
         if anime_title == "Back":
@@ -500,6 +513,10 @@ def anilist_options(config, anilist_config: QueryDict):
                 list(anime_lists.keys()),
                 "Choose the list you want to add to",
                 "Add your animelist",
+            )
+        elif config.use_rofi:
+            anime_list = Rofi.run(
+                list(anime_lists.keys()), "Choose list you want to add to"
             )
         else:
             anime_list = fuzzy_inquirer(
@@ -559,6 +576,8 @@ def anilist_options(config, anilist_config: QueryDict):
             translation_type = fzf.run(
                 options, prompt="Select Translation Type:", header="Language Options"
             )
+        elif config.use_rofi:
+            translation_type = Rofi.run(options, "Select Translation Type")
         else:
             translation_type = fuzzy_inquirer("Select translation type", options)
 
@@ -636,6 +655,8 @@ def anilist_options(config, anilist_config: QueryDict):
         action = fzf.run(
             list(options.keys()), prompt="Select Action:", header="Anime Menu"
         )
+    elif config.use_rofi:
+        action = Rofi.run(list(options.keys()), "Select Action")
     else:
         action = fuzzy_inquirer("Select Action", options.keys())
     options[action](config, anilist_config)
@@ -668,6 +689,27 @@ def select_anime(config: Config, anilist_config: QueryDict):
                 prompt="Select Anime: ",
                 header="Search Results",
             )
+    elif config.use_rofi:
+        # TODO: Make this faster
+        if config.preview and False:
+            from .utils import SEARCH_RESULTS_CACHE, get_preview
+
+            get_preview(search_results, config, wait=True)
+            choices = []
+            for anime in search_results:
+                title = sanitize_filename(
+                    str(
+                        anime["title"][config.preferred_language]
+                        or anime["title"]["romaji"]
+                    )
+                )
+                anime_cache = os.path.join(SEARCH_RESULTS_CACHE, title)
+                icon_path = f"{anime_cache}/image"
+                choices.append(f"{title}\0icon\x1f{icon_path}")
+            choices.append("Back")
+            selected_anime_title = Rofi.run_with_icons(choices, "Select Anime")
+        else:
+            selected_anime_title = Rofi.run(choices, "Select Anime")
     else:
         selected_anime_title = fuzzy_inquirer("Select Anime", choices)
     # "bat %s/{}" % SEARCH_RESULTS_CACHE
@@ -749,7 +791,12 @@ def anilist(config: Config, anilist_config: QueryDict):
         import subprocess
 
         subprocess.run([os.environ.get("EDITOR", "open"), USER_CONFIG_PATH])
-        config.load_config()
+        if config.use_rofi:
+            config.load_config()
+            config.use_rofi = True
+            config.use_fzf = False
+        else:
+            config.load_config()
 
         anilist(config, anilist_config)
 
@@ -793,6 +840,9 @@ def anilist(config: Config, anilist_config: QueryDict):
             prompt="Select Action: ",
             header="Anilist Menu",
         )
+    elif config.use_rofi:
+
+        action = Rofi.run(list(options.keys()), "Select Action")
     else:
         action = fuzzy_inquirer("Select Action", options.keys())
     anilist_data = options[action]()

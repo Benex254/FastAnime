@@ -26,9 +26,9 @@ from typing import Optional
 #
 
 
-def stream_video(url, mpv_args, custom_args):
+def stream_video(MPV, url, mpv_args, custom_args):
     process = subprocess.Popen(
-        ["mpv", url, *mpv_args, *custom_args],
+        [MPV, url, *mpv_args, *custom_args],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
         text=True,
@@ -127,7 +127,7 @@ def mpv(
             mpv_args.append(f"--title={title}")
         if ytdl_format:
             mpv_args.append(f"--ytdl-format={ytdl_format}")
-        stop_time, total_time = stream_video(link, mpv_args, custom_args)
+        stop_time, total_time = stream_video(MPV, link, mpv_args, custom_args)
         return stop_time, total_time
 
 

@@ -117,7 +117,7 @@ class AniListApi:
 
             # ensuring you dont get blocked
             if (
-                int(response.headers.get("X-RateLimit-Remaining", 0)) < 5
+                int(response.headers.get("X-RateLimit-Remaining", 0)) < 30
                 and not response.status_code == 500
             ):
                 print(
@@ -189,7 +189,7 @@ class AniListApi:
 
             # ensuring you dont get blocked
             if (
-                int(response.headers.get("X-RateLimit-Remaining", 0)) < 5
+                int(response.headers.get("X-RateLimit-Remaining", 0)) < 30
                 and not response.status_code == 500
             ):
                 print(

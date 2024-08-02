@@ -385,8 +385,8 @@ def fetch_episode(config: Config, anilist_config: QueryDict):
             print(f"[bold cyan]Continuing from Episode:[/] [bold]{episode_number}[/]")
         elif selected_anime_anilist["mediaListEntry"]:
             episode_number = str(
-                selected_anime_anilist.get("mediaListEntry", {}).get(
-                    "progress"
+                (selected_anime_anilist["mediaListEntry"] or {"progress": None}).get(
+                    "progress" "progress"
                 )  # type:ignore
             )
             episode_number = episode_number if episode_number in episodes else ""

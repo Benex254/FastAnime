@@ -39,4 +39,4 @@ APP_CACHE_DIR = dirs.user_cache_dir
 USER_VIDEOS_DIR = os.path.join(dirs.user_videos_dir, APP_NAME)
 
 
-USER_NAME = os.environ.get("USERNAME", f"{APP_NAME} user")
+USER_NAME = os.environ.get("USERNAME", "Anime fun")

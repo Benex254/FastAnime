@@ -108,12 +108,19 @@ def player_controls(config: Config, anilist_config: QueryDict):
             dt = delta.total_seconds()
         if dt > error:
             if config.auto_next:
-                if not Confirm.ask(
-                    "Are you sure you wish to continue to the next episode you haven't completed the current episode?",
-                    default=False,
-                ):
-                    anilist_options(config, anilist_config)
-                    return
+                if config.use_rofi:
+                    if not Rofi.confirm(
+                        "Are you sure you wish to continue to the next episode you haven't completed the current episode?"
+                    ):
+                        anilist_options(config, anilist_config)
+                        return
+                else:
+                    if not Confirm.ask(
+                        "Are you sure you wish to continue to the next episode you haven't completed the current episode?",
+                        default=False,
+                    ):
+                        anilist_options(config, anilist_config)
+                        return
             elif not config.use_rofi:
                 if not Confirm.ask(
                     "Are you sure you wish to continue to the next episode, your progress for the current episodes will be erased?",
@@ -245,8 +252,12 @@ def fetch_streams(config: Config, anilist_config: QueryDict):
             anime, episode_number, translation_type
         )
         if not episode_streams:
-            print("Failed to fetch :cry:")
-            input("Enter to retry...")
+            if not config.use_rofi:
+                print("Failed to fetch :cry:")
+                input("Enter to retry...")
+            else:
+                if not Rofi.confirm("Sth went wrong!!Enter to continue..."):
+                    exit(1)
             return fetch_streams(config, anilist_config)
 
         episode_streams = {
@@ -406,11 +417,14 @@ def fetch_anime_episode(config, anilist_config: QueryDict):
         progress.add_task("Fetching Anime Info...", total=None)
         anilist_config.anime = anime_provider.get_anime(selected_anime["id"])
     if not anilist_config.anime:
-
         print(
             "Sth went wrong :cry: this could mean the provider is down or your internet"
         )
-        input("Enter to continue...")
+        if not config.use_rofi:
+            input("Enter to continue...")
+        else:
+            if not Rofi.confirm("Sth went wrong!!Enter to continue..."):
+                exit(1)
         fetch_anime_episode(config, anilist_config)
         return
 
@@ -437,7 +451,11 @@ def provide_anime(config: Config, anilist_config: QueryDict):
         print(
             "Sth went wrong :cry: while fetching this could mean you have poor internet connection or the provider is down"
         )
-        input("Enter to continue...")
+        if not config.use_rofi:
+            input("Enter to continue...")
+        else:
+            if not Rofi.confirm("Sth went wrong!!Enter to continue..."):
+                exit(1)
         provide_anime(config, anilist_config)
         return
 
@@ -494,8 +512,12 @@ def anilist_options(config, anilist_config: QueryDict):
             )
             anilist_options(config, anilist_config)
         else:
-            print("no trailer available :confused:")
-            input("Enter to continue...")
+            if not config.use_rofi:
+                print("no trailer available :confused:")
+                input("Enter to continue...")
+            else:
+                if not Rofi.confirm("No trailler found!!Enter to continue"):
+                    exit(0)
             anilist_options(config, anilist_config)
 
     def _add_to_list(config: Config, anilist_config: QueryDict):
@@ -531,16 +553,21 @@ def anilist_options(config, anilist_config: QueryDict):
             print(
                 f"Successfully added {selected_anime_title} to your {anime_list} list :smile:"
             )
-        input("Enter to continue...")
+        if not config.use_rofi:
+            input("Enter to continue...")
         anilist_options(config, anilist_config)
 
     def _score_anime(config: Config, anilist_config: QueryDict):
-        score = inquirer.number(
-            message="Enter the score:",
-            min_allowed=0,
-            max_allowed=100,
-            validate=EmptyInputValidator(),
-        ).execute()
+        if config.use_rofi:
+            score = Rofi.ask("Enter Score", is_int=True)
+            score = max(100, min(0, score))
+        else:
+            score = inquirer.number(
+                message="Enter the score:",
+                min_allowed=0,
+                max_allowed=100,
+                validate=EmptyInputValidator(),
+            ).execute()
 
         result = AniList.update_anime_list(
             {"scoreRaw": score, "mediaId": selected_anime["id"]}
@@ -549,7 +576,8 @@ def anilist_options(config, anilist_config: QueryDict):
             print("Failed to update", result)
         else:
             print(f"Successfully scored {selected_anime_title}; score: {score}")
-        input("Enter to continue...")
+        if not config.use_rofi:
+            input("Enter to continue...")
         anilist_options(config, anilist_config)
 
     def _remove_from_list(config: Config, anilist_config: QueryDict):
@@ -566,7 +594,8 @@ def anilist_options(config, anilist_config: QueryDict):
                 print("Successfully deleted :cry:", selected_anime_title)
         else:
             print(selected_anime_title, ":relieved:")
-        input("Enter to continue...")
+        if not config.use_rofi:
+            input("Enter to continue...")
         anilist_options(config, anilist_config)
 
     def _change_translation_type(config: Config, anilist_config: QueryDict):
@@ -639,6 +668,14 @@ def anilist_options(config, anilist_config: QueryDict):
             anilist_options(config, anilist_config)
         return
 
+    def _toggle_auto_select(config, anilist_config):
+        config.auto_select = not config.auto_select
+        anilist_options(config, anilist_config)
+
+    def _toggle_auto_next(config, anilist_config):
+        config.auto_select = not config.auto_select
+        anilist_options(config, anilist_config)
+
     icons = config.icons
     options = {
         f"{'📽️ ' if icons else ''}Stream": provide_anime,
@@ -648,6 +685,8 @@ def anilist_options(config, anilist_config: QueryDict):
         f"{'📤 ' if icons else ''}Remove from List": _remove_from_list,
         f"{'📖 ' if icons else ''}View Info": _view_info,
         f"{'🎧 ' if icons else ''}Change Translation Type": _change_translation_type,
+        f"{'🔘 ' if icons else ''}Toggle auto select anime": _toggle_auto_select,  # problematic if you choose an anime that doesnt match id
+        f"{'💠 ' if icons else ''}Toggle auto next episode": _toggle_auto_next,
         f"{'🔙 ' if icons else ''}Back": select_anime,
         f"{'❌ ' if icons else ''}Exit": exit_app,
     }
@@ -691,10 +730,10 @@ def select_anime(config: Config, anilist_config: QueryDict):
             )
     elif config.use_rofi:
         # TODO: Make this faster
-        if config.preview and False:
-            from .utils import SEARCH_RESULTS_CACHE, get_preview
+        if config.preview:
+            from .utils import IMAGES_DIR, get_icons
 
-            get_preview(search_results, config, wait=True)
+            get_icons(search_results, config)
             choices = []
             for anime in search_results:
                 title = sanitize_filename(
@@ -703,8 +742,7 @@ def select_anime(config: Config, anilist_config: QueryDict):
                         or anime["title"]["romaji"]
                     )
                 )
-                anime_cache = os.path.join(SEARCH_RESULTS_CACHE, title)
-                icon_path = f"{anime_cache}/image"
+                icon_path = os.path.join(IMAGES_DIR, title)
                 choices.append(f"{title}\0icon\x1f{icon_path}")
             choices.append("Back")
             selected_anime_title = Rofi.run_with_icons(choices, "Select Anime")
@@ -729,8 +767,12 @@ def select_anime(config: Config, anilist_config: QueryDict):
 
 def handle_animelist(anilist_config, config: Config, list_type: str):
     if not config.user:
-        print("You haven't logged in please run: fastanime anilist login")
-        input("Enter to continue...")
+        if not config.use_rofi:
+            print("You haven't logged in please run: fastanime anilist login")
+            input("Enter to continue...")
+        else:
+            if not Rofi.confirm("You haven't logged in!!Enter to continue"):
+                exit(1)
         anilist(config, anilist_config)
         return
     match list_type:
@@ -751,12 +793,21 @@ def handle_animelist(anilist_config, config: Config, list_type: str):
     anime_list = AniList.get_anime_list(status)
     if not anime_list:
         print("Sth went wrong", anime_list)
-        input("Enter to continue")
+        if not config.use_rofi:
+            input("Enter to continue")
+        else:
+            if not Rofi.confirm("Sth went wrong!!Enter to continue..."):
+                exit(1)
         anilist(config, anilist_config)
         return
     if not anime_list[0]:
         print("Sth went wrong", anime_list)
-        input("Enter to continue")
+        if not config.use_rofi:
+            input("Enter to continue")
+        else:
+            if not Rofi.confirm("Sth went wrong!!Enter to continue..."):
+                exit(1)
+
         anilist(config, anilist_config)
         return
     media = [
@@ -769,7 +820,10 @@ def handle_animelist(anilist_config, config: Config, list_type: str):
 
 def anilist(config: Config, anilist_config: QueryDict):
     def _anilist_search():
-        search_term = Prompt.ask("[cyan]Search for[/]")
+        if config.use_rofi:
+            search_term = str(Rofi.ask("Search for"))
+        else:
+            search_term = Prompt.ask("[cyan]Search for[/]")
 
         return AniList.search(query=search_term)
 
@@ -834,14 +888,12 @@ def anilist(config: Config, anilist_config: QueryDict):
         f"{'❌ ' if icons else ''}Exit": exit_app,
     }
     if config.use_fzf:
-
         action = fzf.run(
             list(options.keys()),
             prompt="Select Action: ",
             header="Anilist Menu",
         )
     elif config.use_rofi:
-
         action = Rofi.run(list(options.keys()), "Select Action")
     else:
         action = fuzzy_inquirer("Select Action", options.keys())
@@ -852,5 +904,9 @@ def anilist(config: Config, anilist_config: QueryDict):
 
     else:
         print(anilist_data[1])
-        input("Enter to continue...")
+        if not config.use_rofi:
+            input("Enter to continue...")
+        else:
+            if not Rofi.confirm("Sth went wrong!!Enter to continue..."):
+                exit(1)
         anilist(config, anilist_config)

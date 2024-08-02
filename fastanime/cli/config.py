@@ -41,6 +41,8 @@ class Config(object):
                 "skip": "false",
                 "use_rofi": "false",
                 "rofi_theme": "",
+                "rofi_theme_input": "",
+                "rofi_theme_confirm": "",
             }
         )
         self.configparser.add_section("stream")
@@ -73,7 +75,10 @@ class Config(object):
         self.preferred_language = self.get_preferred_language()
         self.rofi_theme = self.get_rofi_theme()
         Rofi.rofi_theme = self.rofi_theme
-
+        self.rofi_theme_input = self.get_rofi_theme_input()
+        Rofi.rofi_theme_input = self.rofi_theme_input
+        self.rofi_theme_confirm = self.get_rofi_theme_confirm()
+        Rofi.rofi_theme_confirm = self.rofi_theme_confirm
         # ---- setup user data ------
         self.watch_history: dict = user_data_helper.user_data.get("watch_history", {})
         self.anime_list: list = user_data_helper.user_data.get("animelist", [])
@@ -117,6 +122,12 @@ class Config(object):
 
     def get_rofi_theme(self):
         return self.configparser.get("general", "rofi_theme")
+
+    def get_rofi_theme_input(self):
+        return self.configparser.get("general", "rofi_theme_input")
+
+    def get_rofi_theme_confirm(self):
+        return self.configparser.get("general", "rofi_theme_confirm")
 
     def get_downloads_dir(self):
         return self.configparser.get("general", "downloads_dir")

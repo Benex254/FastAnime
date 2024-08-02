@@ -171,6 +171,10 @@ query ($userId: Int, $status: MediaListStatus) {
         }
         status
         description
+        mediaListEntry{
+        id
+        progress
+        }
         nextAiringEpisode {
           timeUntilAiring
           airingAt
@@ -268,6 +272,10 @@ query($query:String,%s){
         id
         
       }
+        mediaListEntry{
+        id
+        progress
+        }
       popularity
       favourites
       averageScore
@@ -345,6 +353,10 @@ query{
         month
         day
       }
+        mediaListEntry{
+        id
+        progress
+        }
       endDate {
         year
         month
@@ -381,6 +393,10 @@ query{
         id
         
       }
+        mediaListEntry{
+        id
+        progress
+        }
       popularity
       favourites
       averageScore
@@ -436,6 +452,10 @@ query{
         id
         
       }
+        mediaListEntry{
+        id
+        progress
+        }
       popularity
       episodes
       favourites
@@ -497,6 +517,10 @@ query{
       description
       episodes
       genres
+        mediaListEntry{
+        id
+        progress
+        }
       studios {
         nodes {
           name
@@ -545,6 +569,10 @@ query{
         site
         id     
       }
+        mediaListEntry{
+        id
+        progress
+        }
       popularity
       favourites
       averageScore
@@ -599,6 +627,10 @@ query  {
               medium
               large
             }
+                    mediaListEntry{
+        id
+        progress
+        }
             description
             episodes
             trailer{
@@ -689,6 +721,10 @@ query ($id: Int) {
             medium
             large
           }
+        mediaListEntry{
+        id
+        progress
+        }
           description
           episodes
           trailer {
@@ -766,6 +802,10 @@ query ($page: Int) {
         site
         id
       }
+              mediaListEntry{
+        id
+        progress
+        }
       popularity
       favourites
       averageScore
@@ -812,6 +852,10 @@ query($id:Int){
         romaji
         english
       }
+              mediaListEntry{
+        id
+        progress
+        }
       nextAiringEpisode {
         timeUntilAiring
         airingAt

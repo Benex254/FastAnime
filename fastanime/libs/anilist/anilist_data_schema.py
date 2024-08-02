@@ -108,6 +108,11 @@ class AnilistCharactersEdges(TypedDict):
     edges: list[AnilistCharactersEdge]
 
 
+class AnilistMediaList_(TypedDict):
+    id: int
+    progress: int
+
+
 class AnilistBaseMediaDataSchema(TypedDict):
     """
     This a convenience class is used to type the received Anilist data to enhance dev experience
@@ -144,6 +149,7 @@ class AnilistBaseMediaDataSchema(TypedDict):
     externalLinks: list[AnilistExternalLink]
     characters: AnilistCharactersEdges
     format: str
+    mediaListEntry: AnilistMediaList_ | None
 
 
 class AnilistPageInfo(TypedDict):

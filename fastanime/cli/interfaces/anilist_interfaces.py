@@ -373,16 +373,28 @@ def fetch_episode(config: Config, anilist_config: QueryDict):
     # internal config
     anime: Anime = anilist_config.anime
     _anime: SearchResult = anilist_config._anime
-
+    selected_anime_anilist: AnilistBaseMediaDataSchema = (
+        anilist_config.selected_anime_anilist
+    )
     # prompt for episode number
     episodes = anime["availableEpisodesDetail"][translation_type]
-    if (
-        continue_from_history
-        and user_watch_history.get(str(anime_id), {}).get("episode") in episodes
-    ):
-        episode_number = user_watch_history[str(anime_id)]["episode"]
-        print(f"[bold cyan]Continuing from Episode:[/] [bold]{episode_number}[/]")
-    else:
+    episode_number = ""
+    if continue_from_history:
+        if user_watch_history.get(str(anime_id), {}).get("episode") in episodes:
+            episode_number = user_watch_history[str(anime_id)]["episode"]
+            print(f"[bold cyan]Continuing from Episode:[/] [bold]{episode_number}[/]")
+        elif selected_anime_anilist["mediaListEntry"]:
+            episode_number = str(
+                selected_anime_anilist.get("mediaListEntry", {}).get(
+                    "progress"
+                )  # type:ignore
+            )
+            episode_number = episode_number if episode_number in episodes else ""
+            print(f"[bold cyan]Continuing from Episode:[/] [bold]{episode_number}[/]")
+        else:
+            episode_number = ""
+
+    if not episode_number:
         choices = [*episodes, "Back"]
         if config.use_fzf:
             episode_number = fzf.run(
@@ -501,6 +513,8 @@ def provide_anime(config: Config, anilist_config: QueryDict):
 def anilist_options(config, anilist_config: QueryDict):
     selected_anime: AnilistBaseMediaDataSchema = anilist_config.selected_anime_anilist
     selected_anime_title: str = anilist_config.selected_anime_title
+    progress = (selected_anime["mediaListEntry"] or {"progress": 0}).get("progress", 0)
+    episodes_total = selected_anime["episodes"] or "Inf"
 
     def _watch_trailer(config: Config, anilist_config: QueryDict):
         if trailer := selected_anime.get("trailer"):
@@ -678,7 +692,7 @@ def anilist_options(config, anilist_config: QueryDict):
 
     icons = config.icons
     options = {
-        f"{'📽️ ' if icons else ''}Stream": provide_anime,
+        f"{'📽️ ' if icons else ''}Stream ({progress}/{episodes_total})": provide_anime,
         f"{'📼 ' if icons else ''}Watch Trailer": _watch_trailer,
         f"{'✨ ' if icons else ''}Score Anime": _score_anime,
         f"{'📥 ' if icons else ''}Add to List": _add_to_list,
@@ -703,19 +717,24 @@ def anilist_options(config, anilist_config: QueryDict):
 
 def select_anime(config: Config, anilist_config: QueryDict):
     search_results = anilist_config.data["data"]["Page"]["media"]
-    anime_data = {
-        sanitize_filename(
-            str(anime["title"][config.preferred_language] or anime["title"]["romaji"])
-        ): anime
-        for anime in search_results
-    }
+
+    anime_data = {}
+    for anime in search_results:
+        anime: AnilistBaseMediaDataSchema
+        progress = (anime["mediaListEntry"] or {"progress": 0}).get("progress", 0)
+        episodes_total = anime["episodes"] or "Inf"
+        title = str(
+            anime["title"][config.preferred_language] or anime["title"]["romaji"]
+        )
+        title = sanitize_filename(f"{title} ({progress} of {episodes_total})")
+        anime_data[title] = anime
 
     choices = [*anime_data.keys(), "Back"]
     if config.use_fzf:
         if config.preview:
             from .utils import get_preview
 
-            preview = get_preview(search_results, config)
+            preview = get_preview(search_results, anime_data.keys())
             selected_anime_title = fzf.run(
                 choices,
                 prompt="Select Anime: ",
@@ -733,15 +752,9 @@ def select_anime(config: Config, anilist_config: QueryDict):
         if config.preview:
             from .utils import IMAGES_DIR, get_icons
 
-            get_icons(search_results, config)
+            get_icons(search_results, anime_data.keys())
             choices = []
-            for anime in search_results:
-                title = sanitize_filename(
-                    str(
-                        anime["title"][config.preferred_language]
-                        or anime["title"]["romaji"]
-                    )
-                )
+            for title in anime_data.keys():
                 icon_path = os.path.join(IMAGES_DIR, title)
                 choices.append(f"{title}\0icon\x1f{icon_path}")
             choices.append("Back")

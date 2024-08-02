@@ -586,7 +586,7 @@ def anilist_options(config, anilist_config: QueryDict):
             default=False,
         ):
             success, data = AniList.delete_medialist_entry(selected_anime["id"])
-            if not success:
+            if not success or not data:
                 print("Failed to delete", data)
             elif not data.get("deleted"):
                 print("Failed to delete", data)
@@ -800,7 +800,7 @@ def handle_animelist(anilist_config, config: Config, list_type: str):
                 exit(1)
         anilist(config, anilist_config)
         return
-    if not anime_list[0]:
+    if not anime_list[0] or not anime_list[1]:
         print("Sth went wrong", anime_list)
         if not config.use_rofi:
             input("Enter to continue")

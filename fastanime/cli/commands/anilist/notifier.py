@@ -12,6 +12,7 @@ from ....constants import (
     APP_CACHE_DIR,
     APP_DATA_DIR,
     APP_NAME,
+    ICON_PATH,
     NOTIFICATION_BELL,
     PLATFORM,
 )
@@ -27,6 +28,7 @@ def notifier(config: Config):
     notified = os.path.join(APP_DATA_DIR, "last_notification.json")
     anime_image = os.path.join(APP_CACHE_DIR, "notification_image")
     notification_duration = config.notification_duration * 60
+    app_icon = ""
 
     if not config.user:
         print("Not Authenticated")
@@ -55,6 +57,15 @@ def notifier(config: Config):
                 time.sleep(timeout * 60)
                 continue
             data = result[1]
+            if not data:
+                print(result)
+                logger.warning(
+                    "Something went wrong this could mean anilist is down or you have lost internet connection"
+                )
+                logger.info("sleeping...")
+                time.sleep(timeout * 60)
+                continue
+
             # pyright:ignore
             notifications = data["data"]["Page"]["notifications"]
             if not notifications:
@@ -86,7 +97,9 @@ def notifier(config: Config):
                             if resp.status_code == 200:
                                 with open(anime_image, "wb") as f:
                                     f.write(resp.content)
-                                ICON_PATH = anime_image
+                                app_icon = anime_image
+                        else:
+                            app_icon = ICON_PATH
 
                         past_notifications[f"{id}"] = notification_["episode"]
                         with open(notified, "w") as f:
@@ -96,9 +109,9 @@ def notifier(config: Config):
                             title=title,
                             message=message,
                             app_name=APP_NAME,
-                            app_icon=ICON_PATH,
+                            app_icon=app_icon,
                             hints={
-                                "image-path": ICON_PATH,
+                                "image-path": app_icon,
                                 "sound-file": NOTIFICATION_BELL,
                             },
                             timeout=notification_duration,

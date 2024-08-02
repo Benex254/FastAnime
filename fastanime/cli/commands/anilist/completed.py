@@ -15,7 +15,7 @@ def completed(config: Config):
         print("Please run: fastanime anilist loggin")
         exit_app()
     anime_list = AniList.get_anime_list("COMPLETED")
-    if not anime_list:
+    if not anime_list or not anime_list[1]:
         return
     if not anime_list[0]:
         return

@@ -165,3 +165,50 @@ class AnilistPages(TypedDict):
 class AnilistDataSchema(TypedDict):
     data: AnilistPages
     Error: str
+
+
+class AnilistNotification(TypedDict):
+    id: int
+    type: str
+    episode: int
+    context: str
+    createdAt: str
+    media: AnilistBaseMediaDataSchema
+
+
+class AnilistNotificationPage(TypedDict):
+    pageInfo: AnilistPageInfo
+    notifications: list[AnilistNotification]
+
+
+class AnilistNotificationPages(TypedDict):
+    Page: AnilistNotificationPage
+
+
+class AnilistNotifications(TypedDict):
+    data: AnilistNotificationPages
+
+
+class AnilistMediaList(TypedDict):
+    media: AnilistBaseMediaDataSchema
+    status: str
+    progress: int
+    score: int
+    repeat: int
+    notes: str
+    startDate: AnilistDateObject
+    completedAt: AnilistDateObject
+    createdAt: str
+
+
+class AnilistMediaListPage(TypedDict):
+    pageInfo: AnilistPageInfo
+    mediaList: list[AnilistMediaList]
+
+
+class AnilistMediaListPages(TypedDict):
+    Page: AnilistMediaListPage
+
+
+class AnilistMediaLists(TypedDict):
+    data: AnilistMediaListPages

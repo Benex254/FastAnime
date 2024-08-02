@@ -1,3 +1,5 @@
+import concurrent.futures
+import logging
 import os
 import shutil
 import subprocess
@@ -12,6 +14,8 @@ from ...Utility import anilist_data_helper
 from ...Utility.utils import remove_html_tags, sanitize_filename
 from ..config import Config
 from ..utils.utils import get_true_fg
+
+logger = logging.getLogger(__name__)
 
 fzf_preview = r"""
 #
@@ -91,9 +95,7 @@ fzf-preview(){
 """
 
 
-SEARCH_RESULTS_CACHE = os.path.join(APP_CACHE_DIR, "search_results")
-
-
+# ---- aniskip intergration ----
 def aniskip(mal_id, episode):
     ANISKIP = shutil.which("ani-skip")
     if not ANISKIP:
@@ -107,34 +109,48 @@ def aniskip(mal_id, episode):
     return mpv_skip_args.split(" ")
 
 
+# ---- prevew stuff ----
+# import tempfile
+
+WORKING_DIR = APP_CACHE_DIR  # tempfile.gettempdir()
+IMAGES_DIR = os.path.join(WORKING_DIR, "images")
+if not os.path.exists(IMAGES_DIR):
+    os.mkdir(IMAGES_DIR)
+INFO_DIR = os.path.join(WORKING_DIR, "info")
+if not os.path.exists(INFO_DIR):
+    os.mkdir(INFO_DIR)
+
+
+def save_image_from_url(url: str, file_name: str):
+    image = requests.get(url)
+    with open(f"{IMAGES_DIR}/{file_name}", "wb") as f:
+        f.write(image.content)
+
+
+def save_info_from_str(info: str, file_name: str):
+    with open(f"{INFO_DIR}/{file_name}", "w") as f:
+        f.write(info)
+
+
 def write_search_results(
-    search_results: list[AnilistBaseMediaDataSchema], config: Config
+    search_results: list[AnilistBaseMediaDataSchema], config: Config, workers=None
 ):
     H_COLOR = 215, 0, 95
     S_COLOR = 208, 208, 208
     S_WIDTH = 45
-    for anime in search_results:
-        if not os.path.exists(SEARCH_RESULTS_CACHE):
-            os.mkdir(SEARCH_RESULTS_CACHE)
-        anime_title = (
-            anime["title"][config.preferred_language] or anime["title"]["romaji"]
-        )
-        anime_title = sanitize_filename(anime_title)
-        ANIME_CACHE = os.path.join(SEARCH_RESULTS_CACHE, anime_title)
-        if not os.path.exists(ANIME_CACHE):
-            os.mkdir(ANIME_CACHE)
-        with open(
-            f"{ANIME_CACHE}/image",
-            "wb",
-        ) as f:
-            try:
-                image = requests.get(anime["coverImage"]["large"], timeout=5)
-                f.write(image.content)
-            except Exception:
-                pass
+    with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:
+        future_to_task = {}
+        for anime in search_results:
+            anime_title = (
+                anime["title"][config.preferred_language] or anime["title"]["romaji"]
+            )
+            anime_title = sanitize_filename(anime_title)
+            image_url = anime["coverImage"]["large"]
+            future_to_task[
+                executor.submit(save_image_from_url, image_url, anime_title)
+            ] = image_url
 
-        with open(f"{ANIME_CACHE}/data", "w") as f:
-            # data = json.dumps(anime, sort_keys=True, indent=2, separators=(',', ': '))
+            # handle the text data
             template = f"""
             {get_true_fg("-"*S_WIDTH,*S_COLOR,bold=False)}
             {get_true_fg('Title(jp):',*H_COLOR)} {anime['title']['romaji']}
@@ -156,34 +172,68 @@ def write_search_results(
             {textwrap.fill(remove_html_tags(
                 str(anime['description'])), width=45)}
             """
-            f.write(template)
+            future_to_task[
+                executor.submit(save_info_from_str, template, anime_title)
+            ] = anime_title
+
+        # execute the jobs
+        for future in concurrent.futures.as_completed(future_to_task):
+            task = future_to_task[future]
+            try:
+                future.result()
+            except Exception as exc:
+                logger.error("%r generated an exception: %s" % (task, exc))
+
+
+# get rofi icons
+def get_icons(search_results: list[AnilistBaseMediaDataSchema], config, workers=None):
+    with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:
+        # load the jobs
+        future_to_url = {}
+        for anime in search_results:
+            anime_title = (
+                anime["title"][config.preferred_language] or anime["title"]["romaji"]
+            )
+            anime_title = sanitize_filename(anime_title)
+            image_url = anime["coverImage"]["large"]
+            future_to_url[
+                executor.submit(save_image_from_url, image_url, anime_title)
+            ] = image_url
+
+        # execute the jobs
+        for future in concurrent.futures.as_completed(future_to_url):
+            url = future_to_url[future]
+            try:
+                future.result()
+            except Exception as exc:
+                logger.error("%r generated an exception: %s" % (url, exc))
 
 
 def get_preview(
     search_results: list[AnilistBaseMediaDataSchema], config: Config, wait=False
 ):
-
+    # ensure images and info exists
     background_worker = Thread(
         target=write_search_results, args=(search_results, config)
     )
     background_worker.daemon = True
     background_worker.start()
 
-    os.environ["SHELL"] = shutil.which("bash") or "bash"
+    os.environ["SHELL"] = shutil.which("bash") or "sh"
     preview = """
         %s
-        if [ -s %s/{}/image ]; then fzf-preview %s/{}/image
+        if [ -s %s/{} ]; then fzf-preview %s/{}
         else echo Loading...
         fi
-        if [ -s %s/{}/data ]; then cat %s/{}/data
+        if [ -s %s/{} ]; then cat %s/{}
         else echo Loading...
         fi
     """ % (
         fzf_preview,
-        SEARCH_RESULTS_CACHE,
-        SEARCH_RESULTS_CACHE,
-        SEARCH_RESULTS_CACHE,
-        SEARCH_RESULTS_CACHE,
+        IMAGES_DIR,
+        IMAGES_DIR,
+        INFO_DIR,
+        INFO_DIR,
     )
     # preview.replace("\n", ";")
     if wait:

@@ -182,6 +182,10 @@ Available options include:
 - `--format <yt-dlp format string>` set the format of anime downloaded and streamed based on yt-dlp format. Works when `--server gogoanime`
 - `--icons/--no-icons` toggle the visibility of the icons
 - `--skip/--no-skip` whether to skip the opening and ending theme songs.
+- `--rofi` use rofi for the ui
+- `--rofi-theme <path>` theme to use with rofi
+- `--rofi-theme-input <path>` theme to use with rofi input
+- `--rofi-theme-confirm <path>` theme to use with rofi confirm
 
 #### The anilist command :fire: :fire: :fire:
 
@@ -236,7 +240,7 @@ For fish users for example you can decide to put this in your `~/.config/fish/co
 ```fish
 if ! ps aux | grep -q '[f]astanime .* notifier'
   echo initializing fastanime anilist notifier
-  fastanime --log-file anilist notifier>/dev/null &
+  nohup fastanime --log-file anilist notifier>/dev/null &
 end
 ```
 
@@ -346,8 +350,15 @@ format=best[height<=1080]/bestvideo[height<=1080]+bestaudio/best # default
 [general]
 preferred_language = romaji  # Display language (options: english, romaji)
 downloads_dir = <Default-videos-dir>/FastAnime  # Download directory
+preview=false # whether to show a preview window when using fzf or rofi
+
 use_fzf=False # whether to use fzf as the interface for the anilist command and others.
-preview=false # whether to show a preview window when using fzf
+
+use_rofi=false # whether to use rofi for the ui
+rofi_theme=<path-to-rofi-theme-file>
+rofi_theme_input=<path-to-rofi-theme-file>
+rofi_theme_confirm=<path-to-rofi-theme-file>
+
 
 # whether to show the icons
 icons=false
@@ -372,7 +383,7 @@ For inquiries, join our [Discord Server](https://discord.gg/4NUTj5Pt).
 
 <p align="center">
 <a href="https://discord.gg/HRjySFjQ">
-<img src="https://invidget.switchblade.xyz/HRjySFjQ">
+<img src="https://invidget.switchblade.xyz/HRjySFjQ"/>
 </a>
 </p>
 

@@ -250,7 +250,10 @@ def fetch_streams(config: Config, anilist_config: QueryDict):
     with Progress() as progress:
         progress.add_task("Fetching Episode Streams...", total=None)
         episode_streams = anime_provider.get_episode_streams(
-            anime, episode_number, translation_type
+            anime,
+            episode_number,
+            translation_type,
+            anilist_config.selected_anime_anilist,
         )
     if not episode_streams:
         if not config.use_rofi:
@@ -438,7 +441,9 @@ def fetch_anime_episode(config, anilist_config: QueryDict):
     anime_provider = config.anime_provider
     with Progress() as progress:
         progress.add_task("Fetching Anime Info...", total=None)
-        anilist_config.anime = anime_provider.get_anime(selected_anime["id"])
+        anilist_config.anime = anime_provider.get_anime(
+            selected_anime["id"], anilist_config.selected_anime_anilist
+        )
     if not anilist_config.anime:
         print(
             "Sth went wrong :cry: this could mean the provider is down or your internet"
@@ -468,7 +473,9 @@ def provide_anime(config: Config, anilist_config: QueryDict):
     with Progress() as progress:
         progress.add_task("Fetching Search Results...", total=None)
         search_results = anime_provider.search_for_anime(
-            selected_anime_title, translation_type
+            selected_anime_title,
+            translation_type,
+            anilist_config.selected_anime_anilist,
         )
     if not search_results:
         print(

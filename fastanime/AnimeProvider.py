@@ -1,5 +1,6 @@
 from typing import Iterator
 
+from .libs.anilist.anilist_data_schema import AnilistBaseMediaDataSchema
 from .libs.anime_provider import anime_sources
 from .libs.anime_provider.types import Anime, SearchResults, Server
 
@@ -23,7 +24,12 @@ class AnimeProvider:
         self.anime_provider = anime_provider
 
     def search_for_anime(
-        self, user_query, translation_type: str = "sub", nsfw=True, unknown=True
+        self,
+        user_query,
+        translation_type,
+        anilist_obj: AnilistBaseMediaDataSchema,
+        nsfw=True,
+        unknown=True,
     ) -> SearchResults | None:
         anime_provider = self.anime_provider
         try:
@@ -35,7 +41,9 @@ class AnimeProvider:
             results = None
         return results  # pyright:ignore
 
-    def get_anime(self, anime_id: str) -> Anime | None:
+    def get_anime(
+        self, anime_id: str, anilist_obj: AnilistBaseMediaDataSchema
+    ) -> Anime | None:
         anime_provider = self.anime_provider
         try:
             results = anime_provider.get_anime(anime_id)
@@ -45,7 +53,11 @@ class AnimeProvider:
         return results
 
     def get_episode_streams(
-        self, anime, episode: str, translation_type: str
+        self,
+        anime,
+        episode: str,
+        translation_type: str,
+        anilist_obj: AnilistBaseMediaDataSchema,
     ) -> Iterator[Server] | None:
         anime_provider = self.anime_provider
         try:

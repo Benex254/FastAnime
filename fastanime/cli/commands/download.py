@@ -80,7 +80,11 @@ def download(config: Config, anime_title, episode_range):
             ]
             link = max(links, key=lambda x: x[0])[1]
             downloader._download_file(
-                link, download_dir, (anime["title"], streams[0]["episode_title"]), True
+                link,
+                download_dir,
+                (anime["title"], streams[0]["episode_title"]),
+                True,
+                config.format,
             )
         except Exception as e:
             print(e)

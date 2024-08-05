@@ -28,6 +28,7 @@ class Config(object):
                 "preferred_language": "english",
                 "use_fzf": "False",
                 "preview": "False",
+                "format": "bestvideo[height<=1080]+bestaudio/best",
             }
         )
         self.configparser.add_section("stream")
@@ -49,6 +50,7 @@ class Config(object):
         self.auto_select = self.get_auto_select()
         self.quality = self.get_quality()
         self.server = self.get_server()
+        self.format = self.get_format()
         self.preferred_language = self.get_preferred_language()
 
         # ---- setup user data ------
@@ -104,6 +106,9 @@ class Config(object):
 
     def get_server(self):
         return self.configparser.get("stream", "server")
+
+    def get_format(self):
+        return self.configparser.get("stream", "format")
 
     def update_config(self, section: str, key: str, value: str):
         self.configparser.set(section, key, value)

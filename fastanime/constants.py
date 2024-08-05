@@ -14,6 +14,11 @@ APP_DIR = os.path.abspath(os.path.dirname(__file__))
 CONFIGS_DIR = os.path.join(APP_DIR, "configs")
 ASSETS_DIR = os.path.join(APP_DIR, "assets")
 
+if PLATFORM == "Windows":
+    ICON_PATH = os.path.join(ASSETS_DIR, "logo.ico")
+else:
+    ICON_PATH = os.path.join(ASSETS_DIR, "logo.png")
+
 # ----- user configs and data -----
 APP_DATA_DIR = dirs.user_config_dir
 if not APP_DATA_DIR:

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fastanime"
-version = "0.31.0"
+version = "0.31.2"
 description = "A fast and efficient GUI and CLI anime scrapper"
 authors = ["Benex254 <benedictx855@gmail.com>"]
 license = "UNLICENSE"
@@ -17,8 +17,7 @@ art = "^6.2"
 python-dotenv = "^1.0.1"
 thefuzz = "^0.22.1"
 requests = "^2.32.3"
-[tool.poetry.group.dev]
-optional = true
+
 [tool.poetry.group.dev.dependencies]
 black = "^24.4.2"
 isort = "^5.13.2"
@@ -26,7 +25,6 @@ pytest = "^8.2.2"
 ruff = "^0.4.10"
 pre-commit = "^3.7.1"
 autoflake = "^2.3.1"
-# bandit = "^1.7.9"
 
 [build-system]
 requires = ["poetry-core"]
@@ -35,8 +33,3 @@ build-backend = "poetry.core.masonry.api"
 [tool.poetry.scripts]
 fastanime = 'fastanime:FastAnime'
 
-# FILE: .bandit
-# [tool.bandit]
-#exclude = tests,path/to/file
-#tests = B201,B301
-# skips = ["B311", "B603", "B607", "B404"]

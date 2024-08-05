@@ -1,16 +1,17 @@
 from __future__ import annotations
 
 import os
+import shutil
 import sys
 
-from InquirerPy import inquirer
 from rich import print
+from rich.prompt import Prompt
 
-from ... import APP_CACHE_DIR
+from ... import APP_CACHE_DIR, USER_CONFIG_PATH, USER_NAME
 from ...libs.anilist.anilist import AniList
 from ...libs.anilist.anilist_data_schema import AnilistBaseMediaDataSchema
 from ...libs.anime_provider.allanime.api import anime_provider
-from ...libs.anime_provider.allanime.data_types import AllAnimeEpisode, AllAnimeShow
+from ...libs.anime_provider.allanime.types import AllAnimeEpisode, AllAnimeShow
 from ...libs.fzf import fzf
 from ...Utility import anilist_data_helper
 from ...Utility.data import anime_normalizer
@@ -44,7 +45,7 @@ def write_search_results(
             f"{ANIME_CACHE}/image",
             "wb",
         ) as f:
-            image = requests.get(anime["coverImage"]["medium"])
+            image = requests.get(anime["coverImage"]["large"])
             f.write(image.content)
 
         with open(f"{ANIME_CACHE}/data", "w") as f:
@@ -82,11 +83,12 @@ def get_preview(search_results: list[AnilistBaseMediaDataSchema], config: Config
     background_worker.daemon = True
     background_worker.start()
 
-    preview = """\
-        if [ -f %s/{}/image ]; then fzf-preview %s/{}/image
+    os.environ["SHELL"] = shutil.which("bash") or "bash"
+    preview = """
+        if [ -s %s/{}/image ]; then fzf-preview %s/{}/image
         else echo Loading...
         fi
-        if [  -f %s/{}/data ]; then cat %s/{}/data
+        if [ -s %s/{}/data ]; then cat %s/{}/data
         else echo Loading...
         fi
     """ % (
@@ -95,13 +97,18 @@ def get_preview(search_results: list[AnilistBaseMediaDataSchema], config: Config
         SEARCH_RESULTS_CACHE,
         SEARCH_RESULTS_CACHE,
     )
-    preview.replace("\n", ";")
+    # preview.replace("\n", ";")
     return preview
+
+
+def exit_app(*args):
+    print("Have a good day :smile:", USER_NAME)
+    sys.exit(0)
 
 
 def player_controls(config: Config, anilist_config: QueryDict):
     # user config
-    translation_type: str = config.translation_type
+    translation_type: str = config.translation_type.lower()
 
     # internal config
     _anime: AllAnimeShow = anilist_config._anime
@@ -112,7 +119,9 @@ def player_controls(config: Config, anilist_config: QueryDict):
     anime_title: str = anilist_config.anime_title
     anime_id: int = anilist_config.anime_id
 
-    def _back():
+    def _servers():
+        config.server = ""
+
         fetch_streams(config, anilist_config)
 
     def _replay():
@@ -157,7 +166,7 @@ def player_controls(config: Config, anilist_config: QueryDict):
         if prev_episode <= 0:
             prev_episode = 0
         episode = anime_provider.get_anime_episode(
-            _anime["_id"], episodes[prev_episode], config.translation_type
+            _anime["_id"], episodes[prev_episode], config.translation_type.lower()
         )
 
         # update internal config
@@ -184,11 +193,11 @@ def player_controls(config: Config, anilist_config: QueryDict):
         # prompt for new translation type
         options = ["sub", "dub"]
         translation_type = fzf.run(
-            options, prompt="Select Translation Type: ", header="Language Options"
-        )
+            options, prompt="Select Translation Type: ", header="Lang Options"
+        ).lower()
 
         # update internal config
-        config.translation_type = translation_type
+        config.translation_type = translation_type.lower()
 
         # reload to controls
         player_controls(config, anilist_config)
@@ -200,11 +209,11 @@ def player_controls(config: Config, anilist_config: QueryDict):
         "Episodes": _episodes,
         "Change Quality": _change_quality,
         "Change Translation Type": _change_translation_type,
-        "Back to servers": _back,
+        "Servers": _servers,
         "Main Menu": lambda: anilist(config, anilist_config),
         "Anime Options Menu": lambda: anilist_options(config, anilist_config),
         "Search Results": lambda: select_anime(config, anilist_config),
-        "exit": sys.exit,
+        "Exit": sys.exit,
     }
 
     if config.auto_next:
@@ -241,11 +250,11 @@ def fetch_streams(config: Config, anilist_config: QueryDict):
         server = list(episode_streams.keys())[0]
     if not server:
         server = fzf.run(
-            [*episode_streams.keys(), "back"],
+            [*episode_streams.keys(), "Back"],
             prompt="Select Server: ",
             header="Servers",
         )
-    if server == "back":
+    if server == "Back":
         # reset watch_history
         config.update_watch_history(anime_id, None)
 
@@ -287,7 +296,7 @@ def fetch_streams(config: Config, anilist_config: QueryDict):
 
 def fetch_episode(config: Config, anilist_config: QueryDict):
     # user config
-    translation_type: str = config.translation_type
+    translation_type: str = config.translation_type.lower()
     continue_from_history: bool = config.continue_from_history
     user_watch_history: dict = config.watch_history
     anime_id: int = anilist_config.anime_id
@@ -297,18 +306,18 @@ def fetch_episode(config: Config, anilist_config: QueryDict):
     _anime: AllAnimeShow = anilist_config._anime
 
     # prompt for episode number
-    episodes = anime["show"]["availableEpisodesDetail"][translation_type]
+    episodes = anime["availableEpisodesDetail"][translation_type]
     if continue_from_history and user_watch_history.get(str(anime_id)) in episodes:
         episode_number = user_watch_history[str(anime_id)]
         print(f"[bold cyan]Continuing from Episode:[/] [bold]{episode_number}[/]")
     else:
         episode_number = fzf.run(
-            [*episodes, "back"],
+            [*episodes, "Back"],
             prompt="Select Episode:",
             header="Episodes",
         )
 
-    if episode_number == "back":
+    if episode_number == "Back":
         provide_anime(config, anilist_config)
         return
     config.update_watch_history(anime_id, episode_number)
@@ -328,7 +337,7 @@ def fetch_episode(config: Config, anilist_config: QueryDict):
     fetch_streams(config, anilist_config)
 
 
-def fetch_anime_epiosode(config, anilist_config: QueryDict):
+def fetch_anime_episode(config, anilist_config: QueryDict):
     selected_anime: AllAnimeShow = anilist_config._anime
     anilist_config.anime = anime_provider.get_anime(selected_anime["_id"])
 
@@ -337,7 +346,7 @@ def fetch_anime_epiosode(config, anilist_config: QueryDict):
 
 def provide_anime(config: Config, anilist_config: QueryDict):
     # user config
-    translation_type = config.translation_type
+    translation_type = config.translation_type.lower()
 
     # internal config
     selected_anime_title = anilist_config.selected_anime_title
@@ -362,50 +371,52 @@ def provide_anime(config: Config, anilist_config: QueryDict):
         _title = _title
 
     anime_title = fzf.run(
-        [*search_results.keys(), "back"],
+        [*search_results.keys(), "Back"],
         prompt="Select Search Result:",
         header="Anime Search Results",
     )
 
-    if anime_title == "back":
+    if anime_title == "Back":
         anilist_options(config, anilist_config)
         return
     anilist_config.anime_title = anime_normalizer.get(anime_title) or anime_title
     anilist_config._anime = search_results[anime_title]
-    fetch_anime_epiosode(config, anilist_config)
+    fetch_anime_episode(config, anilist_config)
 
 
 def anilist_options(config, anilist_config: QueryDict):
     selected_anime: AnilistBaseMediaDataSchema = anilist_config.selected_anime_anilist
     selected_anime_title: str = anilist_config.selected_anime_title
 
-    def _watch_trailer(config, anilist_config):
+    def _watch_trailer(config: Config, anilist_config: QueryDict):
         if trailer := selected_anime.get("trailer"):
             trailer_url = "https://youtube.com/watch?v=" + trailer["id"]
             print("[bold magenta]Watching Trailer of:[/]", selected_anime_title)
             mpv(trailer_url)
             anilist_options(config, anilist_config)
 
-    def _add_to_list(config, anilist_config):
-        pass
+    def _add_to_list(config: Config, anilist_config: QueryDict):
+        config.update_anime_list(anilist_config.anime_id)
+        anilist_options(config, anilist_config)
 
-    def _remove_from_list():
-        pass
+    def _remove_from_list(config: Config, anilist_config: QueryDict):
+        config.update_anime_list(anilist_config.anime_id, True)
+        anilist_options(config, anilist_config)
 
-    def _change_translation_type(config, anilist_config):
+    def _change_translation_type(config: Config, anilist_config: QueryDict):
         # prompt for new translation type
-        options = ["sub", "dub"]
+        options = ["Sub", "Dub"]
         translation_type = fzf.run(
             options, prompt="Select Translation Type:", header="Language Options"
         )
 
         # update internal config
-        config.translation_type = translation_type
+        config.translation_type = translation_type.lower()
 
         anilist_options(config, anilist_config)
 
     def _view_info(config, anilist_config):
-        from InquirerPy import inquirer
+        from rich.prompt import Confirm
         from rich.console import Console
 
         from ...Utility import anilist_data_helper
@@ -415,7 +426,7 @@ def anilist_options(config, anilist_config: QueryDict):
         clear()
         console = Console()
 
-        print_img(selected_anime["coverImage"]["medium"])
+        print_img(selected_anime["coverImage"]["large"])
         console.print("[bold cyan]Title(jp): ", selected_anime["title"]["romaji"])
         console.print("[bold cyan]Title(eng): ", selected_anime["title"]["english"])
         console.print("[bold cyan]Popularity: ", selected_anime["popularity"])
@@ -453,19 +464,19 @@ def anilist_options(config, anilist_config: QueryDict):
             "[bold underline cyan]Description\n[/]",
             remove_html_tags(str(selected_anime["description"])),
         )
-        if inquirer.confirm("Enter to continue", default=True).execute():
+        if Confirm.ask("Enter to continue...", default=True):
             anilist_options(config, anilist_config)
         return
 
     options = {
-        "stream": provide_anime,
-        "watch trailer": _watch_trailer,
-        "add to list": _add_to_list,
-        "remove from list": _remove_from_list,
-        "view info": _view_info,
+        "Stream": provide_anime,
+        "Watch Trailer": _watch_trailer,
+        "Add to List": _add_to_list,
+        "Remove from List": _remove_from_list,
+        "View Info": _view_info,
         "Change Translation Type": _change_translation_type,
-        "back": select_anime,
-        "exit": sys.exit,
+        "Back": select_anime,
+        "Exit": exit_app,
     }
     action = fzf.run(list(options.keys()), prompt="Select Action:", header="Anime Menu")
     options[action](config, anilist_config)
@@ -485,14 +496,14 @@ def select_anime(config: Config, anilist_config: QueryDict):
     selected_anime_title = fzf.run(
         [
             *anime_data.keys(),
-            "back",
+            "Back",
         ],
         prompt="Select Anime: ",
         header="Search Results",
         preview=preview,
     )
     # "bat %s/{}" % SEARCH_RESULTS_CACHE
-    if selected_anime_title == "back":
+    if selected_anime_title == "Back":
         anilist(config, anilist_config)
         return
 
@@ -508,36 +519,50 @@ def select_anime(config: Config, anilist_config: QueryDict):
 
 def anilist(config: Config, anilist_config: QueryDict):
     def _anilist_search():
-        search_term = inquirer.text(
-            "Search:", instruction="Enter anime to search for"
-        ).execute()
+        search_term = Prompt.ask("[cyan]Search for[/]")
 
         return AniList.search(query=search_term)
 
     def _watch_history():
         watch_history = list(map(int, config.watch_history.keys()))
-        return AniList.search(id_in=watch_history)
+        return AniList.search(id_in=watch_history, sort="TRENDING_DESC")
 
     def _anime_list():
         anime_list = config.anime_list
         return AniList.search(id_in=anime_list)
 
+    def edit_config():
+        import subprocess
+
+        process = subprocess.run([os.environ.get("EDITOR", "open"), USER_CONFIG_PATH])
+        config.load_config()
+
+        anilist(config, anilist_config)
+
     options = {
-        "trending": AniList.get_trending,
-        "recently updated anime": AniList.get_most_recently_updated,
-        "search": _anilist_search,
+        "Trending": AniList.get_trending,
+        "Recently Updated Anime": AniList.get_most_recently_updated,
+        "Search": _anilist_search,
         "Watch History": _watch_history,
         "AnimeList": _anime_list,
-        "most popular anime": AniList.get_most_popular,
-        "most favourite anime": AniList.get_most_favourite,
-        "most scored anime": AniList.get_most_scored,
-        "upcoming anime": AniList.get_upcoming_anime,
-        "exit": sys.exit,
+        "Most Popular Anime": AniList.get_most_popular,
+        "Most Favourite Anime": AniList.get_most_favourite,
+        "Most Scored Anime": AniList.get_most_scored,
+        "Upcoming Anime": AniList.get_upcoming_anime,
+        "Edit Config": edit_config,
+        "Exit": sys.exit,
     }
     action = fzf.run(
-        list(options.keys()), prompt="Select Action: ", header="Anilist Menu"
+        list(options.keys()),
+        prompt="Select Action: ",
+        header="Anilist Menu",
     )
     anilist_data = options[action]()
     if anilist_data[0]:
         anilist_config.data = anilist_data[1]
         select_anime(config, anilist_config)
+
+    else:
+        print(anilist_data[1])
+        input("Enter to continue...")
+        anilist(config, anilist_config)

@@ -16,7 +16,6 @@ class UserData:
                 with open(USER_DATA_PATH, "r") as f:
                     user_data = json.load(f)
                     self.user_data.update(user_data)
-                    print(user_data, self.user_data)
         except Exception as e:
             logger.error(e)
 

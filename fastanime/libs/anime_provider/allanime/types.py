@@ -57,3 +57,17 @@ class AllAnimeEpisode(TypedDict):
     episodeString: str
     sourceUrls: list[AllAnimeSources]
     notes: str | None
+
+
+class AllAnimeStream:
+    link: str
+    mp4: bool
+    hls: bool | None
+    resolutionStr: str
+    fromCache: str
+    priority: int
+    headers: dict | None
+
+
+class AllAnimeStreams:
+    links: list[AllAnimeStream]

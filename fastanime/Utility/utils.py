@@ -2,12 +2,14 @@ import os
 import re
 import shutil
 from datetime import datetime
+from functools import lru_cache
 
 # TODO: make it use color_text instead of fixed vals
 # from .kivy_markup_helper import color_text
 
 
-def remove_html_tags(text):
+@lru_cache()
+def remove_html_tags(text: str):
     clean = re.compile("<.*?>")
     return re.sub(clean, "", text)
 
@@ -42,6 +44,7 @@ def move_file(source_path, dest_path):
         return (0, e)
 
 
+@lru_cache()
 def sanitize_filename(filename: str):
     """
     Sanitize a string to be safe for use as a file name.

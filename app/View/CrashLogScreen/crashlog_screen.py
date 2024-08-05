@@ -1,13 +1,21 @@
-from kivy.properties import ObjectProperty
+from kivy.properties import StringProperty
+
 from View.base_screen import BaseScreenView
+from Utility.utils import read_crash_file
+from Utility.kivy_markup_helper import color_text, bolden
 
 
 class CrashLogScreenView(BaseScreenView):
     """The crash log screen"""
-    main_container = ObjectProperty()
-    def model_is_changed(self) -> None:
-        """
-        Called whenever any change has occurred in the data model.
-        The view in this method tracks these changes and updates the UI
-        according to these changes.
-        """
+
+    crash_text = StringProperty()
+
+    def __init__(self, **kw):
+        super().__init__(**kw)
+        if crashes := read_crash_file():
+            self.crash_text = crashes
+        else:
+            self.crash_text = color_text(
+                f"No Crashes so far :) and if there are any in the future {bolden('please report! Okay?')}",
+                self.theme_cls.primaryColor,
+            )

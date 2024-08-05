@@ -13,6 +13,9 @@
             MDBoxLayout:
                 orientation: 'vertical'
                 SearchBar:
-                
-                MDLabel:
-                    text:"Crash Log"
+                MDScrollView:
+                    MDLabel:
+                        text:root.crash_text
+                        adaptive_height:True
+                        markup:True
+                        padding:"10dp"

@@ -2,7 +2,11 @@ import shutil
 import subprocess
 
 
-def mpv(link, title, *custom_args):
+def mpv(
+    link,
+    *custom_args,
+    title="anime",
+):
     MPV = shutil.which("mpv")
     if not MPV:
         args = [

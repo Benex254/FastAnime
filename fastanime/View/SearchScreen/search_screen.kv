@@ -56,5 +56,20 @@
                         width: dp(250)
                         HeaderLabel:
                             text:"Trending"
-                        TrendingAnimeSideBar:
+                            halign:"center"
+                        #TrendingAnimeSideBar:
+                         #   id:trending_anime_sidebar
+
+                        MDRecycleView:
                             id:trending_anime_sidebar
+                            key_viewclass:"viewclass"
+                            MDRecycleGridLayout:
+                                pos_hint: {'center_x': 0.5}
+                                spacing: '40dp'
+                                padding: "75dp","25dp","25dp","200dp"
+                                default_size_hint:None,None
+                                default_pos_hint:{"center_x":0.5,"center_y":0.5}
+                                default_size:dp(100),dp(150)
+                                cols:1
+                                size_hint_y:None
+                                height:max(self.parent.parent.height,self.minimum_height)

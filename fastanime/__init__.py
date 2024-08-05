@@ -54,18 +54,12 @@ FRONTEND_DIR = os.path.join(WEB_DIR, "frontend")
 BACKEND_DIR = os.path.join(WEB_DIR, "backend")
 
 
-def FastAnime(gui=False, web=False):
+def FastAnime():
     if "--update" in sys.argv:
         from .Utility.app_updater import update_app
 
         update_app()
         sys.argv.remove("--update")
-    if "--gui" in sys.argv:
-        gui = True
-        sys.argv.remove("--gui")
-    if "--web" in sys.argv:
-        web = True
-        sys.argv.remove("--web")
     if "--log" in sys.argv:
         # Configure logging
         from rich.logging import RichHandler
@@ -78,15 +72,7 @@ def FastAnime(gui=False, web=False):
             handlers=[RichHandler()],  # Use RichHandler to format the logs
         )
         sys.argv.remove("--log")
-    if gui:
-        from .gui import run_gui
 
-        run_gui()
-    elif web:
-        from .api import run_api
+    from .cli import run_cli
 
-        run_api()
-    else:
-        from .cli import run_cli
-
-        run_cli()
+    run_cli()

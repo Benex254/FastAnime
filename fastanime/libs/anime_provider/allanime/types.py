@@ -22,7 +22,7 @@ class AllAnimeSearchResult(TypedDict):
     _id: str
     name: str
     availableEpisodes: list[str]
-    __typename: str
+    __typename: str | None
 
 
 class AllAnimeShows(TypedDict):

@@ -10,7 +10,7 @@ from ... import APP_CACHE_DIR, USER_CONFIG_PATH
 from ...libs.anilist.anilist import AniList
 from ...libs.anilist.anilist_data_schema import AnilistBaseMediaDataSchema
 from ...libs.anime_provider.allanime.api import anime_provider
-from ...libs.anime_provider.allanime.types import AllAnimeEpisode, AllAnimeShow
+from ...libs.anime_provider.types import Anime, SearchResult, Server
 from ...libs.fzf import fzf
 from ...Utility import anilist_data_helper
 from ...Utility.data import anime_normalizer
@@ -105,7 +105,7 @@ def player_controls(config: Config, anilist_config: QueryDict):
     translation_type: str = config.translation_type.lower()
 
     # internal config
-    _anime: AllAnimeShow = anilist_config._anime
+    anime: Anime = anilist_config.anime
     current_episode: str = anilist_config.episode_number
     episodes: list = sorted(anilist_config.episodes, key=float)
     links: list = anilist_config.current_stream_links
@@ -119,6 +119,7 @@ def player_controls(config: Config, anilist_config: QueryDict):
         fetch_streams(config, anilist_config)
 
     def _replay():
+        selected_server: Server = anilist_config.selected_server
         print(
             "[bold magenta]Now Replaying:[/]",
             anime_title,
@@ -126,7 +127,7 @@ def player_controls(config: Config, anilist_config: QueryDict):
             current_episode,
         )
 
-        mpv(current_link)
+        mpv(current_link, selected_server["episode_title"])
         clear()
         player_controls(config, anilist_config)
 
@@ -135,7 +136,7 @@ def player_controls(config: Config, anilist_config: QueryDict):
         if next_episode >= len(episodes):
             next_episode = len(episodes) - 1
         episode = anime_provider.get_anime_episode(
-            _anime["_id"], episodes[next_episode], translation_type
+            anime["id"], episodes[next_episode], translation_type
         )
 
         # update internal config
@@ -160,7 +161,7 @@ def player_controls(config: Config, anilist_config: QueryDict):
         if prev_episode <= 0:
             prev_episode = 0
         episode = anime_provider.get_anime_episode(
-            _anime["_id"], episodes[prev_episode], config.translation_type.lower()
+            anime["id"], episodes[prev_episode], config.translation_type.lower()
         )
 
         # update internal config
@@ -225,15 +226,23 @@ def fetch_streams(config: Config, anilist_config: QueryDict):
     quality: int = config.quality
 
     # internal config
-    episode: AllAnimeEpisode = anilist_config.episode
     episode_number: str = anilist_config.episode_number
     anime_title: str = anilist_config.anime_title
     anime_id: int = anilist_config.anime_id
+    anime: Anime = anilist_config.anime
+    translation_type = config.translation_type
 
     # get streams for episode from provider
-    episode_streams = anime_provider.get_episode_streams(episode)
+    episode_streams = anime_provider.get_episode_streams(
+        anime, episode_number, translation_type
+    )
+    if not episode_streams:
+        print("Failed to fetch :cry:")
+        input("Enter to retry...")
+        return fetch_streams(config, anilist_config)
+
     episode_streams = {
-        episode_stream[0]: episode_stream[1] for episode_stream in episode_streams
+        episode_stream["server"]: episode_stream for episode_stream in episode_streams
     }
 
     # prompt for preferred server
@@ -277,7 +286,7 @@ def fetch_streams(config: Config, anilist_config: QueryDict):
         episode_number,
     )
 
-    mpv(stream_link)
+    mpv(stream_link, selected_server["episode_title"])
 
     # update_watch_history
     config.update_watch_history(anime_id, str(int(episode_number) + 1))
@@ -296,8 +305,8 @@ def fetch_episode(config: Config, anilist_config: QueryDict):
     anime_id: int = anilist_config.anime_id
 
     # internal config
-    anime = anilist_config.anime
-    _anime: AllAnimeShow = anilist_config._anime
+    anime: Anime = anilist_config.anime
+    _anime: SearchResult = anilist_config._anime
 
     # prompt for episode number
     episodes = anime["availableEpisodesDetail"][translation_type]
@@ -318,7 +327,7 @@ def fetch_episode(config: Config, anilist_config: QueryDict):
 
     # get the episode info from provider
     episode = anime_provider.get_anime_episode(
-        _anime["_id"], episode_number, translation_type
+        _anime["id"], episode_number, translation_type
     )
 
     # update internal config
@@ -332,8 +341,8 @@ def fetch_episode(config: Config, anilist_config: QueryDict):
 
 
 def fetch_anime_episode(config, anilist_config: QueryDict):
-    selected_anime: AllAnimeShow = anilist_config._anime
-    anilist_config.anime = anime_provider.get_anime(selected_anime["_id"])
+    selected_anime: SearchResult = anilist_config._anime
+    anilist_config.anime = anime_provider.get_anime(selected_anime["id"])
 
     fetch_episode(config, anilist_config)
 
@@ -350,9 +359,7 @@ def provide_anime(config: Config, anilist_config: QueryDict):
         selected_anime_title, translation_type
     )
 
-    search_results = {
-        anime["name"]: anime for anime in search_results["shows"]["edges"]
-    }
+    search_results = {anime["title"]: anime for anime in search_results["results"]}
     _title = None
     if _title := next(
         (
@@ -386,7 +393,7 @@ def anilist_options(config, anilist_config: QueryDict):
         if trailer := selected_anime.get("trailer"):
             trailer_url = "https://youtube.com/watch?v=" + trailer["id"]
             print("[bold magenta]Watching Trailer of:[/]", selected_anime_title)
-            mpv(trailer_url)
+            mpv(trailer_url, selected_anime_title)
             anilist_options(config, anilist_config)
 
     def _add_to_list(config: Config, anilist_config: QueryDict):

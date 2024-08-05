@@ -29,4 +29,20 @@ class Anime(TypedDict):
     id: str
     title: str
     availableEpisodesDetail: EpisodesDetail
-    type: str
+    type: str | None
+
+
+class EpisodeStream(TypedDict):
+    resolution: str
+    link: str
+    hls: bool | None
+    mp4: bool
+    priority: int
+    headers: dict
+    fromCache: str
+
+
+class Server(TypedDict):
+    server: str
+    episode_title: str | None
+    links: list

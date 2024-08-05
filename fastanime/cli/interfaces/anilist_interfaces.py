@@ -245,51 +245,61 @@ def fetch_streams(config: Config, anilist_config: QueryDict):
     translation_type = config.translation_type
     anime_provider = config.anime_provider
 
+    server = None
     # get streams for episode from provider
     with Progress() as progress:
         progress.add_task("Fetching Episode Streams...", total=None)
         episode_streams = anime_provider.get_episode_streams(
             anime, episode_number, translation_type
         )
-        if not episode_streams:
-            if not config.use_rofi:
-                print("Failed to fetch :cry:")
-                input("Enter to retry...")
-            else:
-                if not Rofi.confirm("Sth went wrong!!Enter to continue..."):
-                    exit(1)
-            return fetch_streams(config, anilist_config)
-
-        episode_streams = {
-            episode_stream["server"]: episode_stream
-            for episode_stream in episode_streams
-        }
-
-    # prompt for preferred server
-    server = None
-    if config.server and config.server in episode_streams.keys():
-        server = config.server
-    if config.server == "top":
-        server = list(episode_streams.keys())[0]
-    if not server:
-        choices = [*episode_streams.keys(), "Back"]
-        if config.use_fzf:
-            server = fzf.run(
-                choices,
-                prompt="Select Server: ",
-                header="Servers",
-            )
-        elif config.use_rofi:
-            server = Rofi.run(choices, "Select Server")
+    if not episode_streams:
+        if not config.use_rofi:
+            print("Failed to fetch :cry:")
+            input("Enter to retry...")
         else:
-            server = fuzzy_inquirer("Select Server", choices)
-    if server == "Back":
-        # reset watch_history
-        config.update_watch_history(anime_id, None)
+            if not Rofi.confirm("Sth went wrong!!Enter to continue..."):
+                exit(1)
+        return fetch_streams(config, anilist_config)
 
-        fetch_episode(config, anilist_config)
-        return
-    selected_server = episode_streams[server]
+    if config.server == "top":
+        # no need to get all servers if top just works
+        with Progress() as progress:
+            progress.add_task("Fetching top server...", total=None)
+            selected_server = next(episode_streams)
+            server = "top"
+    else:
+        with Progress() as progress:
+            progress.add_task("Fetching servers...", total=None)
+            episode_streams_dict = {
+                episode_stream["server"]: episode_stream
+                for episode_stream in episode_streams
+            }
+
+        # prompt for preferred server
+        if config.server and config.server in episode_streams_dict.keys():
+            server = config.server
+        if not server:
+            choices = [*episode_streams_dict.keys(), "top", "Back"]
+            if config.use_fzf:
+                server = fzf.run(
+                    choices,
+                    prompt="Select Server: ",
+                    header="Servers",
+                )
+            elif config.use_rofi:
+                server = Rofi.run(choices, "Select Server")
+            else:
+                server = fuzzy_inquirer("Select Server", choices)
+        if server == "Back":
+            # reset watch_history
+            config.update_watch_history(anime_id, None)
+
+            fetch_episode(config, anilist_config)
+            return
+        elif server == "top":
+            selected_server = episode_streams_dict[list(episode_streams_dict.keys())[0]]
+        else:
+            selected_server = episode_streams_dict[server]
 
     links = selected_server["links"]
     if quality > len(links) - 1:
@@ -385,11 +395,12 @@ def fetch_episode(config: Config, anilist_config: QueryDict):
             print(f"[bold cyan]Continuing from Episode:[/] [bold]{episode_number}[/]")
         elif selected_anime_anilist["mediaListEntry"]:
             episode_number = str(
-                (selected_anime_anilist["mediaListEntry"] or {"progress": None}).get(
-                    "progress" "progress"
-                )  # type:ignore
+                (selected_anime_anilist["mediaListEntry"] or {"progress": ""}).get(
+                    "progress"
+                )
             )
-            episode_number = episode_number if episode_number in episodes else ""
+            if episode_number not in episodes:
+                episode_number = ""
             print(f"[bold cyan]Continuing from Episode:[/] [bold]{episode_number}[/]")
         else:
             episode_number = ""

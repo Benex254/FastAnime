@@ -1,5 +1,5 @@
-from anixstream.libs.anilist import AniList
-from anixstream.Utility import media_card_loader, show_notification
+from ..libs.anilist import AniList
+from ..Utility import media_card_loader, show_notification
 
 from .base_model import BaseScreenModel
 

@@ -20,7 +20,7 @@ class MediaCard(ButtonBehavior, HoverBehavior, MDBoxLayout):
     title = StringProperty()
     is_play = ObjectProperty()
     trailer_url = StringProperty()
-    _trailer_url: str | None = StringProperty()
+    _trailer_url: str | None = StringProperty(allow_none=True)
     episodes = StringProperty()
     favourites = StringProperty()
     popularity = StringProperty()
@@ -97,7 +97,7 @@ class MediaCard(ButtonBehavior, HoverBehavior, MDBoxLayout):
             ):
                 self.trailer_url = trailer_url
             else:
-                self._trailer_url = None
+                self._trailer_url = ""
 
     # ---------------respond to user actions and call appropriate model-------------------------
     def on_is_in_my_list(self, instance, in_user_anime_list):

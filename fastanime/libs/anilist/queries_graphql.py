@@ -19,8 +19,8 @@ query{
 """
 
 media_list_mutation = """
-mutation($mediaId:Int,$id:Int,$scoreRaw:Int,$repeat:Int,$progress:Int){
-  SaveMediaListEntry(mediaId:$mediaId,id:$id,scoreRaw:$scoreRaw,progress:$progress,repeat:$repeat){
+mutation($mediaId:Int,$scoreRaw:Int,$repeat:Int,$progress:Int,$status:MediaListStatus){
+  SaveMediaListEntry(mediaId:$mediaId,scoreRaw:$scoreRaw,progress:$progress,repeat:$repeat,status:$status){
     id
     status
     mediaId

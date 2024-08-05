@@ -14,13 +14,36 @@ class QueryDict(dict):
 
 
 def exit_app(*args):
+    import os
+    import shutil
     import sys
 
-    from rich import print
+    from ...constants import APP_NAME, ICON_PATH, USER_NAME
 
-    from ...constants import USER_NAME
+    def is_running_in_terminal():
+        try:
+            shutil.get_terminal_size()
+            return (
+                sys.stdin.isatty()
+                and sys.stdout.isatty()
+                and os.getenv("TERM") is not None
+            )
+        except OSError:
+            return False
 
-    print("Have a good day :smile:", USER_NAME)
+    if not is_running_in_terminal():
+        from plyer import notification
+
+        notification.notify(
+            app_name=APP_NAME,
+            app_icon=ICON_PATH,
+            message=f"Have a good day {USER_NAME}",
+            title="Shutting down",
+        )  # pyright:ignore
+    else:
+        from rich import print
+
+        print("Have a good day :smile:", USER_NAME)
     sys.exit(0)
 
 

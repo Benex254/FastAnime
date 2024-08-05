@@ -114,6 +114,16 @@ signal.signal(signal.SIGINT, handle_exit)
 @click.option("--sub", help="Set the translation type to sub", is_flag=True)
 @click.option("--rofi", help="Use rofi for the ui", is_flag=True)
 @click.option("--rofi-theme", help="Rofi theme to use", type=click.Path())
+@click.option(
+    "--rofi-theme-confirm",
+    help="Rofi theme to use for the confirm prompt",
+    type=click.Path(),
+)
+@click.option(
+    "--rofi-theme-input",
+    help="Rofi theme to use for the user input prompt",
+    type=click.Path(),
+)
 @click.pass_context
 def run_cli(
     ctx: click.Context,
@@ -137,6 +147,8 @@ def run_cli(
     sub,
     rofi,
     rofi_theme,
+    rofi_theme_confirm,
+    rofi_theme_input,
 ):
     ctx.obj = Config()
     if provider:
@@ -183,8 +195,17 @@ def run_cli(
     if rofi:
         ctx.obj.use_fzf = False
         ctx.obj.use_rofi = True
-    if rofi_theme:
-        ctx.obj.rofi_theme = rofi_theme
+    if rofi:
         from ..libs.rofi import Rofi
 
-        Rofi.rofi_theme = rofi_theme
+        if rofi_theme:
+            ctx.obj.rofi_theme = rofi_theme
+            Rofi.rofi_theme = rofi_theme
+
+        if rofi_theme_input:
+            ctx.obj.rofi_theme_input = rofi_theme_input
+            Rofi.rofi_theme_input = rofi_theme_input
+
+        if rofi_theme_confirm:
+            ctx.obj.rofi_theme_confirm = rofi_theme_confirm
+            Rofi.rofi_theme_confirm = rofi_theme_confirm

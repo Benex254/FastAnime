@@ -1,4 +1,4 @@
-name: build
+name: debug_build
 on: push
 jobs:
   ci:

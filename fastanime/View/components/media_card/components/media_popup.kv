@@ -30,9 +30,11 @@
             # TODO: Remove the test source
             MediaPopupVideoPlayer:
                 id:player
-                source: root.caller.trailer_url if root.caller.trailer_url else 'https://www088.vipanicdn.net/streamhls/abae70787c7bd2fcd4fab986c2a5aeba/ep.7.1703900604.m3u8'
+                source: root.caller.trailer_url #if root.caller.trailer_url else 'https://www088.vipanicdn.net/streamhls/abae70787c7bd2fcd4fab986c2a5aeba/ep.7.1703900604.m3u8'
                 thumbnail:app.default_anime_image
-                state:"play" if root.caller.trailer_url else "stop"
+                #state:"play" if root.caller.trailer_url else "stop"
+                on_state:
+                    root.caller._get_trailer()
                 # fit_mode:"fill"
                 size_hint_y: None
                 height: dp(280)
@@ -103,11 +105,12 @@
                 PopupBoxLayout:
                     pos_hint: {'center_y': 0.5}
                     TooltipMDIconButton:
-                        tooltip_text:root.caller.title
+                        tooltip_text:"Play"
+                        
                         icon: "play-circle"
                         on_press: 
                             root.dismiss()
-                            app.show_anime_screen(root.caller.anime_id,root.caller.title,root.caller.screen.name)
+                            app.show_anime_screen(root.caller.anime_id,root.caller._title,root.caller.screen.name)
                     TooltipMDIconButton:
                         tooltip_text:"Add to your anime list"
                         icon: "plus-circle" if not(root.caller.is_in_my_list) else "check-circle"

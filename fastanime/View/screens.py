@@ -26,13 +26,13 @@ screens = {
         "model": SearchScreenModel,
         "controller": SearchScreenController,
     },
-    "my list screen": {
-        "model": MyListScreenModel,
-        "controller": MyListScreenController,
-    },
     "anime screen": {
         "model": AnimeScreenModel,
         "controller": AnimeScreenController,
+    },
+    "my list screen": {
+        "model": MyListScreenModel,
+        "controller": MyListScreenController,
     },
     "crashlog screen": {
         "model": CrashLogScreenModel,

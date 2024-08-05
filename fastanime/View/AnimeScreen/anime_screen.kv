@@ -6,49 +6,78 @@
     adaptive_height:True
     bold:True
 
+<EpisodeButton>:
+    pos_hint:{"center_y":0.5,"center_x":0.5}
+    on_press:root.change_episode_callback(root.text)
+    radius: 10
+    MDButtonText:
+        text:root.text
+
+
+
 <AnimeScreenView>:
     md_bg_color: self.theme_cls.backgroundColor
+    episodes_container:episodes_container
     MDBoxLayout:
+        padding:"10dp"
         orientation: 'vertical'
         MDBoxLayout:
             adaptive_height:True
             MDIconButton:
                 icon:"arrow-left"
                 on_press:root.manager_screens.current = root.caller_screen_name
-            MDTextField:
-                on_text_validate: 
-                    root.update_current_link(self)
-            
-        VideoPlayer:
-            source:root.current_link
+           
+        MDBoxLayout:
+            VideoPlayer:
+                source:root.current_link
         AnimeBoxLayout:
-            AnimeLabel:
-                text:"Sub"
-            MDSegmentedButton:
-                id:pl
-                multiselect:False
-                MDSegmentedButtonItem:
-                    on_active:
-                        pl.selected_segments = [self]
-                        root.update_current_video_stream("gogoanime")
-                    MDSegmentButtonLabel:
-                        text:"GoGoAnime"
-                MDSegmentedButtonItem:
-                    on_active:
-                        root.update_current_video_stream("dropbox")
-                        pl.selected_segments = [self]
-                    MDSegmentButtonLabel:
-                        text:"DropBox"
-                MDSegmentedButtonItem:
-                    on_active:
-                        root.update_current_video_stream("sharepoint")
-                        pl.selected_segments = [self]
-                    MDSegmentButtonLabel:
-                        text:"Share Point"
-                MDSegmentedButtonItem:
-                    on_active:
-                        root.update_current_video_stream("wetransfer")
-                        pl.selected_segments = [self]
-                    MDSegmentButtonLabel:
-                        text:"weTransfer"
+            padding: "20dp"
+            radius:5
+            spacing:"10dp"
+            md_bg_color: self.theme_cls.surfaceContainerLowColor
+            AnimeBoxLayout:
+                AnimeLabel:
+                    text:"Sub servers: "
+                MDSegmentedButton:
+                    id:pl
+                    multiselect:False
+                    MDSegmentedButtonItem:
+                        on_active:
+                            pl.selected_segments = [self]
+                            root.update_current_video_stream("gogoanime")
+                        MDSegmentButtonLabel:
+                            text:"GoGoAnime"
+                    MDSegmentedButtonItem:
+                        on_active:
+                            root.update_current_video_stream("dropbox")
+                            pl.selected_segments = [self]
+                        MDSegmentButtonLabel:
+                            text:"DropBox"
+                    MDSegmentedButtonItem:
+                        on_active:
+                            root.update_current_video_stream("sharepoint")
+                            pl.selected_segments = [self]
+                        MDSegmentButtonLabel:
+                            text:"Share Point"
+                    MDSegmentedButtonItem:
+                        on_active:
+                            root.update_current_video_stream("wetransfer")
+                            pl.selected_segments = [self]
+                        MDSegmentButtonLabel:
+                            text:"weTransfer"
+            MDDivider:
 
+            MDRecycleView:
+                id: episodes_container
+                size_hint_y:None
+                height:"50dp"
+                key_viewclass:"viewclass"
+                RecycleBoxLayout:
+                    size_hint: None,1
+                    key_size:"width"
+                    spacing:"10dp"
+                    width:self.minimum_width
+                    default_size_hint:0,0
+                    default_size:30,30
+                    default_pos_hint:{"center_y":0.5,"center_x":0.5}
+                     

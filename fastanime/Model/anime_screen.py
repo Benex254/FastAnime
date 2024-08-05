@@ -1,3 +1,4 @@
+from requests.models import StreamConsumedError
 from ..libs.anilist import AniList
 from .base_model import BaseScreenModel
 from ..libs.anime_provider.allanime_api import anime_provider
@@ -18,7 +19,7 @@ def anime_title_percentage_match(
         int: the percentage match
     """
     print(locals())
-
+    # compares both the romaji and english names and gets highest Score
     percentage_ratio = max(
         fuzz.ratio(title[0].lower(), possible_user_requested_anime_title.lower()),
         fuzz.ratio(title[1].lower(), possible_user_requested_anime_title.lower()),
@@ -57,6 +58,10 @@ class AnimeScreenModel(BaseScreenModel):
             return self.current_anime_data
 
     def get_episode_streams(self, episode):
+        if cached_episode := Cache.get(
+            "streams.anime", f"{self.current_title}{episode}"
+        ):
+            return cached_episode
         if self.current_anime_data:
             episode_streams = anime_provider.get_anime_episode(
                 self.current_anime_id, episode
@@ -73,6 +78,9 @@ class AnimeScreenModel(BaseScreenModel):
                                 _stream["link"] for _stream in stream[1]["links"]
                             ]
                         }
+                    )
+                    Cache.append(
+                        "streams.anime", f"{self.current_title}{episode}", streams
                     )
                 return streams
 

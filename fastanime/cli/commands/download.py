@@ -1,5 +1,6 @@
 import click
 from rich import print
+from rich.progress import Progress
 from thefuzz import fuzz
 
 from ...libs.anime_provider.types import Anime
@@ -28,9 +29,11 @@ def download(config: Config, anime_title, episode_range):
     anime_provider = config.anime_provider
     translation_type = config.translation_type
     download_dir = config.downloads_dir
-    search_results = anime_provider.search_for_anime(
-        anime_title, translation_type=translation_type
-    )
+    with Progress() as progress:
+        progress.add_task("Fetching Search Results...", total=None)
+        search_results = anime_provider.search_for_anime(
+            anime_title, translation_type=translation_type
+        )
     if not search_results:
         print("Search results failed")
         input("Enter to retry")
@@ -51,7 +54,11 @@ def download(config: Config, anime_title, episode_range):
             list(search_results_.keys()), "Please Select title: ", "FastAnime"
         )
 
-    anime: Anime | None = anime_provider.get_anime(search_results_[search_result]["id"])
+    with Progress() as progress:
+        progress.add_task("Fetching Anime...", total=None)
+        anime: Anime | None = anime_provider.get_anime(
+            search_results_[search_result]["id"]
+        )
     if not anime:
         print("Sth went wring anime no found")
         input("Enter to continue...")
@@ -70,20 +77,24 @@ def download(config: Config, anime_title, episode_range):
             if episode not in episodes:
                 print(f"[cyan]Warning[/]: Episode {episode} not found, skipping")
                 continue
-            streams = anime_provider.get_episode_streams(
-                anime, episode, config.translation_type
-            )
-            if not streams:
-                print("No streams skipping")
-                continue
+            with Progress() as progress:
+                progress.add_task("Fetching Episode Streams...", total=None)
+                streams = anime_provider.get_episode_streams(
+                    anime, episode, config.translation_type
+                )
+                if not streams:
+                    print("No streams skipping")
+                    continue
 
-            streams = list(streams)
-            links = [
-                (link.get("priority", 0), link["link"])
-                for server in streams
-                for link in server["links"]
-            ]
-            link = max(links, key=lambda x: x[0])[1]
+                streams = list(streams)
+                links = [
+                    (link.get("priority", 0), link["link"])
+                    for server in streams
+                    for link in server["links"]
+                ]
+                link = max(links, key=lambda x: x[0])[1]
+            print(f"[purple]Now Downloading:[/] {search_result} Episode {episode}")
+
             downloader._download_file(
                 link,
                 download_dir,

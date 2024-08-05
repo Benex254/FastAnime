@@ -56,10 +56,15 @@ signal.signal(signal.SIGINT, handle_exit)
 @click.option(
     "-q",
     "--quality",
-    type=int,
+    type=click.IntRange(0, 3),
     help="set the quality of the stream",
 )
-@click.option("-t", "--translation_type", help="Anime language[dub/sub]")
+@click.option(
+    "-t",
+    "--translation_type",
+    type=click.Choice(["dub", "sub"]),
+    help="Anime language[dub/sub]",
+)
 @click.option(
     "-A/-no-A",
     "--auto-next/--no-auto-next",
@@ -78,6 +83,8 @@ signal.signal(signal.SIGINT, handle_exit)
     type=click.Choice(anilist_sort_normalizer.keys()),  # pyright: ignore
 )
 @click.option("-d", "--downloads-dir", type=click.Path(), help="Downloads location")
+@click.option("--fzf", is_flag=True, help="Use fzf for the ui")
+@click.option("--default", is_flag=True, help="Use the default interface")
 @click.pass_context
 def run_cli(
     ctx: click.Context,
@@ -89,6 +96,8 @@ def run_cli(
     auto_select,
     sort_by,
     downloads_dir,
+    fzf,
+    default,
 ):
     ctx.obj = Config()
     if server:
@@ -110,3 +119,7 @@ def run_cli(
         ctx.obj.downloads_dir = downloads_dir
     if translation_type:
         ctx.obj.translation_type = translation_type
+    if fzf:
+        ctx.obj.use_fzf = True
+    if default:
+        ctx.obj.use_fzf = False

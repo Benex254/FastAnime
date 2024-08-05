@@ -22,7 +22,7 @@ from ...Utility.utils import (
 from ..config import Config
 from ..utils.mpv import mpv
 from ..utils.tools import QueryDict, exit_app
-from ..utils.utils import clear
+from ..utils.utils import clear, fuzzy_inquirer
 
 SEARCH_RESULTS_CACHE = os.path.join(APP_CACHE_DIR, "search_results")
 
@@ -48,8 +48,11 @@ def write_search_results(
             f"{ANIME_CACHE}/image",
             "wb",
         ) as f:
-            image = requests.get(anime["coverImage"]["large"])
-            f.write(image.content)
+            try:
+                image = requests.get(anime["coverImage"]["large"], timeout=5)
+                f.write(image.content)
+            except Exception:
+                pass
 
         with open(f"{ANIME_CACHE}/data", "w") as f:
             # data = json.dumps(anime, sort_keys=True, indent=2, separators=(',', ': '))
@@ -123,7 +126,7 @@ def player_controls(config: Config, anilist_config: QueryDict):
         fetch_streams(config, anilist_config)
 
     def _replay():
-        selected_server: Server = anilist_config.selected_server
+        selected_server: Server = anilist_config.current_server
         print(
             "[bold magenta]Now Replaying:[/]",
             anime_title,
@@ -142,6 +145,13 @@ def player_controls(config: Config, anilist_config: QueryDict):
         episode = anime_provider.get_anime_episode(
             anime["id"], episodes[next_episode], translation_type
         )
+        if not episode:
+            print(
+                "Sth went wrong :cry: this could mean the provider is down or your internet"
+            )
+            input("Enter to continue...")
+            _next_episode()
+            return
 
         # update internal config
         anilist_config.episode = episode
@@ -167,6 +177,13 @@ def player_controls(config: Config, anilist_config: QueryDict):
         episode = anime_provider.get_anime_episode(
             anime["id"], episodes[prev_episode], config.translation_type.lower()
         )
+        if not episode:
+            print(
+                "Sth went wrong :cry: this could mean the provider is down or your internet"
+            )
+            input("Enter to continue...")
+            _previous_episode()
+            return
 
         # update internal config
         anilist_config.episode = episode
@@ -184,16 +201,26 @@ def player_controls(config: Config, anilist_config: QueryDict):
         options = [link["link"] for link in links]
 
         # prompt for new quality
-        quality = fzf.run(options, prompt="Select Quality:", header="Quality Options")
+        if config.use_fzf:
+            quality = fzf.run(
+                options, prompt="Select Quality:", header="Quality Options"
+            )
+        else:
+            quality = fuzzy_inquirer("Select Quality", options)
         config.quality = options.index(quality)  # set quality
         player_controls(config, anilist_config)
 
     def _change_translation_type():
         # prompt for new translation type
         options = ["sub", "dub"]
-        translation_type = fzf.run(
-            options, prompt="Select Translation Type: ", header="Lang Options"
-        ).lower()
+        if config.use_fzf:
+            translation_type = fzf.run(
+                options, prompt="Select Translation Type: ", header="Lang Options"
+            ).lower()
+        else:
+            translation_type = fuzzy_inquirer(
+                "Select Translation Type", options
+            ).lower()
 
         # update internal config
         config.translation_type = translation_type.lower()
@@ -218,10 +245,12 @@ def player_controls(config: Config, anilist_config: QueryDict):
     if config.auto_next:
         _next_episode()
         return
-    action = fzf.run(
-        list(options.keys()), prompt="Select Action:", header="Player Controls"
-    )
-
+    if config.use_fzf:
+        action = fzf.run(
+            list(options.keys()), prompt="Select Action:", header="Player Controls"
+        )
+    else:
+        action = fuzzy_inquirer("Select Action", options.keys())
     options[action]()
 
 
@@ -256,11 +285,15 @@ def fetch_streams(config: Config, anilist_config: QueryDict):
     if config.server == "top":
         server = list(episode_streams.keys())[0]
     if not server:
-        server = fzf.run(
-            [*episode_streams.keys(), "Back"],
-            prompt="Select Server: ",
-            header="Servers",
-        )
+        choices = [*episode_streams.keys(), "Back"]
+        if config.use_fzf:
+            server = fzf.run(
+                choices,
+                prompt="Select Server: ",
+                header="Servers",
+            )
+        else:
+            server = fuzzy_inquirer("Select Server", choices)
     if server == "Back":
         # reset watch_history
         config.update_watch_history(anime_id, None)
@@ -319,14 +352,18 @@ def fetch_episode(config: Config, anilist_config: QueryDict):
         episode_number = user_watch_history[str(anime_id)]
         print(f"[bold cyan]Continuing from Episode:[/] [bold]{episode_number}[/]")
     else:
-        episode_number = fzf.run(
-            [*episodes, "Back"],
-            prompt="Select Episode:",
-            header=anime_title,
-        )
+        choices = [*episodes, "Back"]
+        if config.use_fzf:
+            episode_number = fzf.run(
+                choices,
+                prompt="Select Episode:",
+                header=anime_title,
+            )
+        else:
+            episode_number = fuzzy_inquirer("Select Episode", choices)
 
     if episode_number == "Back":
-        provide_anime(config, anilist_config)
+        anilist_options(config, anilist_config)
         return
     config.update_watch_history(anime_id, episode_number)
 
@@ -335,6 +372,14 @@ def fetch_episode(config: Config, anilist_config: QueryDict):
         _anime["id"], episode_number, translation_type
     )
 
+    if not episode:
+
+        print(
+            "Sth went wrong :cry: this could mean the provider is down or your internet"
+        )
+        input("Enter to continue...")
+        fetch_episode(config, anilist_config)
+        return
     # update internal config
     anilist_config.episodes = episodes
     anilist_config.episode = episode
@@ -348,6 +393,14 @@ def fetch_episode(config: Config, anilist_config: QueryDict):
 def fetch_anime_episode(config, anilist_config: QueryDict):
     selected_anime: SearchResult = anilist_config._anime
     anilist_config.anime = anime_provider.get_anime(selected_anime["id"])
+    if not anilist_config.anime:
+
+        print(
+            "Sth went wrong :cry: this could mean the provider is down or your internet"
+        )
+        input("Enter to continue...")
+        fetch_anime_episode(config, anilist_config)
+        return
 
     fetch_episode(config, anilist_config)
 
@@ -365,6 +418,13 @@ def provide_anime(config: Config, anilist_config: QueryDict):
     search_results = anime_provider.search_for_anime(
         selected_anime_title, translation_type
     )
+    if not search_results:
+        print(
+            "Sth went wrong :cry: while fetching this could mean you have poor internet connection or the provider is down"
+        )
+        input("Enter to continue...")
+        provide_anime(config, anilist_config)
+        return
 
     search_results = {anime["title"]: anime for anime in search_results["results"]}
     _title = None
@@ -385,12 +445,16 @@ def provide_anime(config: Config, anilist_config: QueryDict):
         )
         print(f"[cyan]Auto selecting[/]: {anime_title}")
     else:
-        anime_title = fzf.run(
-            [*search_results.keys(), "Back"],
-            prompt="Select Search Result:",
-            header="Anime Search Results",
-        )
+        choices = [*search_results.keys(), "Back"]
+        if config.use_fzf:
+            anime_title = fzf.run(
+                choices,
+                prompt="Select Search Result:",
+                header="Anime Search Results",
+            )
 
+        else:
+            anime_title = fuzzy_inquirer("Select Search Result", choices)
         if anime_title == "Back":
             anilist_options(config, anilist_config)
             return
@@ -421,9 +485,12 @@ def anilist_options(config, anilist_config: QueryDict):
     def _change_translation_type(config: Config, anilist_config: QueryDict):
         # prompt for new translation type
         options = ["Sub", "Dub"]
-        translation_type = fzf.run(
-            options, prompt="Select Translation Type:", header="Language Options"
-        )
+        if config.use_fzf:
+            translation_type = fzf.run(
+                options, prompt="Select Translation Type:", header="Language Options"
+            )
+        else:
+            translation_type = fuzzy_inquirer("Select translation type", options)
 
         # update internal config
         config.translation_type = translation_type.lower()
@@ -493,7 +560,12 @@ def anilist_options(config, anilist_config: QueryDict):
         "Back": select_anime,
         "Exit": exit_app,
     }
-    action = fzf.run(list(options.keys()), prompt="Select Action:", header="Anime Menu")
+    if config.use_fzf:
+        action = fzf.run(
+            list(options.keys()), prompt="Select Action:", header="Anime Menu"
+        )
+    else:
+        action = fuzzy_inquirer("Select Action", options.keys())
     options[action](config, anilist_config)
 
 
@@ -508,15 +580,16 @@ def select_anime(config: Config, anilist_config: QueryDict):
 
     preview = get_preview(search_results, config)
 
-    selected_anime_title = fzf.run(
-        [
-            *anime_data.keys(),
-            "Back",
-        ],
-        prompt="Select Anime: ",
-        header="Search Results",
-        preview=preview,
-    )
+    choices = [*anime_data.keys(), "Back"]
+    if config.use_fzf:
+        selected_anime_title = fzf.run(
+            choices,
+            prompt="Select Anime: ",
+            header="Search Results",
+            preview=preview,
+        )
+    else:
+        selected_anime_title = fuzzy_inquirer("Select Anime", choices)
     # "bat %s/{}" % SEARCH_RESULTS_CACHE
     if selected_anime_title == "Back":
         anilist(config, anilist_config)
@@ -567,11 +640,15 @@ def anilist(config: Config, anilist_config: QueryDict):
         "Edit Config": edit_config,
         "Exit": exit_app,
     }
-    action = fzf.run(
-        list(options.keys()),
-        prompt="Select Action: ",
-        header="Anilist Menu",
-    )
+    if config.use_fzf:
+
+        action = fzf.run(
+            list(options.keys()),
+            prompt="Select Action: ",
+            header="Anilist Menu",
+        )
+    else:
+        action = fuzzy_inquirer("Select Action", options.keys())
     anilist_data = options[action]()
     if anilist_data[0]:
         anilist_config.data = anilist_data[1]

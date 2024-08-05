@@ -11,18 +11,8 @@ class MyListScreenView(BaseScreenView):
         according to these changes.
         """
     
-    def handle_search_for_anime(self,search_widget):
-        search_term = search_widget.text
-        if search_term and not(self.is_searching):
-            self.search_term = search_term
-            self.search_results_container.clear_widgets()
-            if self.filters:
-                self.controller.requested_search_for_anime(search_term,**self.filters)
-            else:
-                self.controller.requested_search_for_anime(search_term)
- 
+   
     def update_layout(self,widget):
-        self.search_results_container.add_widget(widget)
-
+        pass
     def add_pagination(self,pagination_info):
         pass

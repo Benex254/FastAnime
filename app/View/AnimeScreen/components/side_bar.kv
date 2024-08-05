@@ -1,0 +1,107 @@
+#:import get_hex_from_color kivy.utils.get_hex_from_color
+
+<FitBoxLayout@MDBoxLayout>:
+    size_hint_y:None
+    height:self.minimum_height
+    padding:"10dp"
+    spacing:"10dp"
+    orientation: 'vertical'
+    pos_hint: {'center_x': 0.5}
+
+
+<SideBarLabel>:
+    adaptive_height:True
+    max_lines:0
+    shorten:False
+    markup:True
+    font_style: "Label"
+    role: "medium"
+    # pos_hint: {'center_x': 0.5}
+<SideBarHeaderLabel>:
+    adaptive_height:True
+    halign:"center"
+    max_lines:0
+    shorten:False
+    bold:True
+    markup:True
+    font_style: "Label"
+    role: "large"
+    md_bg_color:self.theme_cls.secondaryContainerColor
+    padding:"10dp"
+
+
+<AnimeSideBar>:
+    size_hint_x: None
+    width: dp(300)
+    orientation: 'vertical'
+    line_color:self.theme_cls.secondaryColor
+    statistics_container:statistics_container
+    tags_container:tags_container
+    external_links_container:external_links_container
+    FitBoxLayout:
+        FitImage:
+            source:root.image
+            size_hint:None,None
+            height:dp(250)
+            width:dp(200)
+            pos_hint: {'center_x': 0.5}
+        MDButton:
+            on_press:app.watch_on_animdl(root.alternative_titles)
+            pos_hint: {'center_x': 0.5}
+
+            MDButtonText:
+                text:"Watch on Animdl"
+
+    FitBoxLayout:
+        SideBarHeaderLabel:
+            text:"Alternative Titles"
+        SideBarLabel:
+            text: "[color={}]Synonyms:[/color] {}".format(get_hex_from_color(self.theme_cls.primaryColor),root.alternative_titles["synonyms"])
+        SideBarLabel:
+            text: "[color={}]English:[/color] {}".format(get_hex_from_color(self.theme_cls.primaryColor),root.alternative_titles["english"])
+        SideBarLabel:
+            text: "[color={}]Japanese:[/color] {}".format(get_hex_from_color(self.theme_cls.primaryColor),root.alternative_titles["japanese"])
+
+    FitBoxLayout:
+        SideBarHeaderLabel:
+            text:"Information"
+        SideBarLabel:
+            text: "[color={}]Episodes:[/color] {}".format(get_hex_from_color(self.theme_cls.primaryColor),root.information["episodes"])
+        SideBarLabel:
+            text: "[color={}]Status:[/color] {}".format(get_hex_from_color(self.theme_cls.primaryColor),root.information["status"])
+        SideBarLabel:
+            text: "[color={}]Next Airing Episode:[/color] {}".format(get_hex_from_color(self.theme_cls.primaryColor),root.information["nextAiringEpisode"])
+        SideBarLabel:
+            text: "[color={}]Aired:[/color] {}".format(get_hex_from_color(self.theme_cls.primaryColor),root.information["aired"])
+        SideBarLabel:
+            text: "[color={}]Premiered:[/color] {}".format(get_hex_from_color(self.theme_cls.primaryColor),root.information["premiered"])
+        SideBarLabel:
+            text: "[color={}]Broadcast:[/color] {}".format(get_hex_from_color(self.theme_cls.primaryColor),root.information["broadcast"])
+        SideBarLabel:
+            text: "[color={}]Country Of Origin:[/color] {}".format(get_hex_from_color(self.theme_cls.primaryColor),root.information["countryOfOrigin"])
+        SideBarLabel:
+            text: "[color={}]Hashtag:[/color] {}".format(get_hex_from_color(self.theme_cls.primaryColor),root.information["hashtag"])
+        SideBarLabel:
+            text: "[color={}]Studios:[/color] {}".format(get_hex_from_color(self.theme_cls.primaryColor),root.information["studios"])
+        SideBarLabel:
+            text: "[color={}]Producers:[/color] {}".format(get_hex_from_color(self.theme_cls.primaryColor),root.information["producers"])
+        SideBarLabel:
+            text: "[color={}]Source:[/color] {}".format(get_hex_from_color(self.theme_cls.primaryColor),root.information["source"])
+        SideBarLabel:
+            text: "[color={}]Genres:[/color] {}".format(get_hex_from_color(self.theme_cls.primaryColor),root.information["genres"])
+        SideBarLabel:
+            text: "[color={}]Duration:[/color] {}".format(get_hex_from_color(self.theme_cls.primaryColor),root.information["duration"])
+    FitBoxLayout:
+        id:statistics_container
+        SideBarHeaderLabel:
+            text:"Rankings"
+    FitBoxLayout:
+        id:tags_container
+        SideBarHeaderLabel:
+            text:"Tags"
+    FitBoxLayout:
+        id:external_links_container
+        SideBarHeaderLabel:
+            text:"External Links"
+    BoxLayout:
+        

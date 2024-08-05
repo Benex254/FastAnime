@@ -1,27 +1,28 @@
 
 from inspect import isgenerator
-from View.MainScreen.main_screen import MainScreenView
-from Model.main_screen import MainScreenModel
+from View.HomeScreen.home_screen import HomeScreenView
+from Model.home_screen import HomeScreenModel
 from View.components.media_card.media_card import MediaCardsContainer
 from Utility import show_notification
+from kivy.clock import Clock
 
-class MainScreenController:
+class HomeScreenController:
     """
     The `MainScreenController` class represents a controller implementation.
     Coordinates work of the view with the model.
     The controller implements the strategy pattern. The controller connects to
     the view to control its actions.
     """
+    populate_errors = []
 
-    def __init__(self, model:MainScreenModel):
+    def __init__(self, model:HomeScreenModel):
         self.model = model  # Model.main_screen.MainScreenModel
-        self.view = MainScreenView(controller=self, model=self.model)
-        self.populate_home_screen()
-    def get_view(self) -> MainScreenView:
+        self.view = HomeScreenView(controller=self, model=self.model)
+        Clock.schedule_once(lambda _:self.populate_home_screen())
+    def get_view(self) -> HomeScreenView:
         return self.view
 
-    def populate_home_screen(self):
-        errors = []
+    def popular_anime(self):
         most_popular_cards_container = MediaCardsContainer()
         most_popular_cards_container.list_name = "Most Popular"
         most_popular_cards_generator = self.model.get_most_popular_anime()
@@ -31,8 +32,9 @@ class MainScreenController:
                 most_popular_cards_container.container.add_widget(card)
             self.view.main_container.add_widget(most_popular_cards_container)
         else:
-            errors.append("Most Popular Anime")
+            self.populate_errors.append("Most Popular Anime")
 
+    def favourite_anime(self):
         most_favourite_cards_container = MediaCardsContainer()
         most_favourite_cards_container.list_name = "Most Favourites"
         most_favourite_cards_generator = self.model.get_most_favourite_anime()
@@ -42,8 +44,9 @@ class MainScreenController:
                 most_favourite_cards_container.container.add_widget(card)
             self.view.main_container.add_widget(most_favourite_cards_container)
         else:
-            errors.append("Most favourite Anime")
+            self.populate_errors.append("Most favourite Anime")
 
+    def trending_anime(self):
         trending_cards_container = MediaCardsContainer()
         trending_cards_container.list_name = "Trending"
         trending_cards_generator = self.model.get_trending_anime()
@@ -53,8 +56,9 @@ class MainScreenController:
                 trending_cards_container.container.add_widget(card)
             self.view.main_container.add_widget(trending_cards_container)
         else:
-            errors.append("trending Anime")
+            self.populate_errors.append("trending Anime")
 
+    def highest_scored_anime(self):        
         most_scored_cards_container = MediaCardsContainer()
         most_scored_cards_container.list_name = "Most Scored"
         most_scored_cards_generator = self.model.get_most_scored_anime()
@@ -64,8 +68,10 @@ class MainScreenController:
                 most_scored_cards_container.container.add_widget(card)
             self.view.main_container.add_widget(most_scored_cards_container)
         else:
-            errors.append("Most scored Anime")
+            self.populate_errors.append("Most scored Anime")
 
+    def recently_updated_anime(self):
+        
         most_recently_updated_cards_container = MediaCardsContainer()
         most_recently_updated_cards_container.list_name = "Most Recently Updated"
         most_recently_updated_cards_generator = self.model.get_most_recently_updated_anime()
@@ -75,8 +81,9 @@ class MainScreenController:
                 most_recently_updated_cards_container.container.add_widget(card)
             self.view.main_container.add_widget(most_recently_updated_cards_container)
         else:
-            errors.append("Most recently updated Anime")
+            self.populate_errors.append("Most recently updated Anime")
 
+    def upcoming_anime(self):        
         upcoming_cards_container = MediaCardsContainer()
         upcoming_cards_container.list_name = "Upcoming Anime"
         upcoming_cards_generator = self.model.get_upcoming_anime()
@@ -86,10 +93,21 @@ class MainScreenController:
                 upcoming_cards_container.container.add_widget(card)
             self.view.main_container.add_widget(upcoming_cards_container)
         else:
-            errors.append("upcoming Anime")
+            self.populate_errors.append("upcoming Anime")
 
-        if errors:
-            show_notification(f"Failed to get the following  {', '.join(errors)}","Theres probably a problem with your internet connection or anilist servers are down")
+    def populate_home_screen(self):
+        self.populate_errors = []
+        self.trending_anime()
+        self.highest_scored_anime()
+        self.popular_anime()
+        self.favourite_anime()
+        self.recently_updated_anime()
+        self.upcoming_anime()
+
+        if self.populate_errors:
+            show_notification(f"Failed to fetch all home screen data",f"Theres probably a problem with your internet connection or anilist servers are down.\nFailed include:{', '.join(self.populate_errors)}")
+
+
     def update_my_list(self,*args):
         self.model.update_user_anime_list(*args)
     

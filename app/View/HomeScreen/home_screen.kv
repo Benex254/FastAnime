@@ -1,0 +1,35 @@
+#:import get_color_from_hex kivy.utils.get_color_from_hex
+#:import StringProperty kivy.properties.StringProperty
+
+# custom components
+
+
+<HomeScreenView>
+    md_bg_color: self.theme_cls.backgroundColor
+    main_container:main_container
+    MDBoxLayout:
+        NavRail:
+            screen:root
+        MDAnchorLayout:
+            anchor_y: 'top'
+            padding:"10dp"
+            MDBoxLayout:
+                orientation: 'vertical'
+                id:p
+                SearchBar:
+                MDScrollView:
+                    size_hint:1,1
+                    MDBoxLayout: 
+                        id:main_container
+                        padding:"50dp","5dp","50dp","150dp"
+                        spacing:"10dp"
+                        orientation: 'vertical'
+                        size_hint_y:None          
+                        height:max(self.minimum_height,p.height,1800)
+                        
+                MDBoxLayout:
+                    size_hint_y:None
+                    height:self.minimum_height
+                    MDLabel:
+                        text: "By BeneX"
+

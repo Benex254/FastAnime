@@ -1,40 +1,13 @@
 <SearchScreenView>
     md_bg_color: self.theme_cls.backgroundColor
     search_results_container:search_results_container
+    trending_anime_sidebar:trending_anime_sidebar
+    search_results_pagination:search_results_pagination
+    filters:filters
     MDBoxLayout:
         size_hint:1,1
-        MDNavigationRail:
-            anchor:"top"
-            type: "selected"
-            md_bg_color: self.theme_cls.secondaryContainerColor
-
-            MDNavigationRailFabButton:
-                icon: "home"
-                on_release: 
-                    root.manager_screens.current = "main screen"
-
-            CommonNavigationRailItem:
-                icon: "magnify"
-                text: "Search"
-                # on_release: 
-                    # root.manager_screens.current_screen = "search screen"
-
-            CommonNavigationRailItem:
-                icon: "bookmark-outline"
-                text: "My Anime List"
-                on_release: 
-                    root.manager_screens.current = "my list screen"
-            CommonNavigationRailItem:
-                icon: "library-outline"
-                text: "Library"
-
-            CommonNavigationRailItem:
-                icon: "cog"
-                text: "settings"
-
-        # ScreenManager:
-        #     MDScreen:
-        #         name:"main"
+        NavRail:
+            screen:root
         MDAnchorLayout:
             anchor_y: 'top'
             padding:"10dp"
@@ -42,39 +15,53 @@
 
             MDBoxLayout:
                 orientation: 'vertical'
-                id:p
                 size_hint:1,1
+                SearchBar:
                 MDBoxLayout:
-                    pos_hint: {'center_x': 0.5,'top': 1}
-                    padding: "10dp"
-                    size_hint_y:None
-                    height: self.minimum_height
-                    size_hint_x:.75
-                    spacing: '20dp'
-                    MDTextField:
-                        size_hint_x:1
-                        required:True
-                        on_text_validate:
-                            root.handle_search_for_anime(args[0])
-
-                        MDTextFieldLeadingIcon:
-                            icon: "magnify"
-                        MDTextFieldHintText:
-                            text: "Search for anime"
-                        # MDTextFieldTrailingIcon:
-                        #     icon: "filter"
-                    MDIconButton:
-                        pos_hint: {'center_y': 0.5}
-                        icon: "account-circle"
-                        # size: 32,32
-                MDScrollView:
-                    size_hint:1,1
-                    MDGridLayout:
-                        id:search_results_container
-                        spacing: '10dp'
-                        padding: "75dp","75dp","10dp","200dp"
-                        cols:5
-                        size_hint_y:None
-                        height:self.minimum_height
-
+                    spacing:"20dp"
+                    padding:"75dp","10dp","100dp","0dp"
+                    MDBoxLayout:
+                        orientation: 'vertical'
+                        size_hint:1,1
+                        Filters:
+                            id:filters
+                        MDBoxLayout:
+                            spacing:"20dp"
+                            MDScrollView:
+                                size_hint:1,1
+                                MDBoxLayout:
+                                    orientation: 'vertical'
+                                    size_hint_y:None
+                                    height:self.minimum_height
+                                    MDGridLayout:
+                                        pos_hint: {'center_x': 0.5}
+                                        id:search_results_container
+                                        spacing: '40dp'
+                                        padding: "75dp","50dp","75dp","200dp"
+                                        cols:5
+                                        size_hint_y:None
+                                        height:self.minimum_height
+                                    SearchResultsPagination:
+                                        id:search_results_pagination
+                                        search_view:root
+                    MDBoxLayout:
+                        orientation:"vertical"
+                        size_hint_y:1
+                        size_hint_x:None
+                        width: dp(250)
+                        MDLabel:
+                            adaptive_height:True
+                            halign:"center"
+                            max_lines:0
+                            shorten:False
+                            bold:True
+                            markup:True
+                            font_style: "Label"
+                            role: "large"
+                            text:"Trending"
+                            md_bg_color:self.theme_cls.secondaryContainerColor
+                            padding:"10dp"
+                        MDScrollView:
+                            TrendingAnimeSideBar:
+                                id:trending_anime_sidebar
     

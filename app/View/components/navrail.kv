@@ -1,0 +1,42 @@
+<CommonNavigationRailItem@MDNavigationRailItem>
+    icon:""
+    text:""
+<CommonNavigationRailItem>
+    MDNavigationRailItemIcon:
+        icon:root.icon 
+
+    MDNavigationRailItemLabel:
+        text: root.text 
+
+<NavRail>:
+    anchor:"top"
+    type: "labeled"
+    md_bg_color: self.theme_cls.secondaryContainerColor
+
+    MDNavigationRailFabButton:
+        icon: "home" 
+        on_release: 
+            root.screen.manager_screens.current = "home screen"
+
+    CommonNavigationRailItem:
+        icon: "magnify"
+        text: "Search"
+        on_release: 
+            root.screen.manager_screens.current = "search screen"
+
+    CommonNavigationRailItem:
+        icon: "bookmark" #if root.screen.manager_screens.current=="my list screen" else "bookmark-outline"
+        text: "Bookmark"
+        on_release: 
+            root.screen.manager_screens.current = "my list screen"
+    CommonNavigationRailItem:
+        icon: "library"
+        text: "Library"
+        on_release:
+            root.screen.manager_screens.current = "anime screen"
+    CommonNavigationRailItem:
+        icon: "cog"
+        text: "settings"
+    CommonNavigationRailItem:
+        icon: "bug"
+        text: "debug"

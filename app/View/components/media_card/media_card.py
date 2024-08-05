@@ -9,7 +9,7 @@ from kivymd.theming import ThemableBehavior
 from kivy.uix.modalview import ModalView
 from kivy.properties import ObjectProperty,StringProperty,BooleanProperty,ListProperty,NumericProperty
 from kivy.uix.video import Video
-
+from kivy.animation import Animation
 class Tooltip(MDTooltip):
     pass
 
@@ -28,8 +28,44 @@ class MediaPopup(ThemableBehavior,HoverBehavior,StencilBehavior,CommonElevationB
     player = ObjectProperty()
 
     def __init__(self, caller,*args,**kwarg):
-        self.caller = caller
+        self.caller:MediaCard = caller
         super(MediaPopup,self).__init__(*args,**kwarg)
+
+    
+    def open(self, *_args, **kwargs):
+        """Display the modal in the Window.
+
+        When the view is opened, it will be faded in with an animation. If you
+        don't want the animation, use::
+
+            view.open(animation=False)
+
+        """
+        from kivy.core.window import Window
+        if self._is_open:
+            return
+        self._window = Window
+        self._is_open = True
+        self.dispatch('on_pre_open')
+        Window.add_widget(self)
+        Window.bind(
+            on_resize=self._align_center,
+            on_keyboard=self._handle_keyboard)
+        self.center = self.caller.to_window(*self.caller.center)
+        self.fbind('center', self._align_center)
+        self.fbind('size', self._align_center)
+        if kwargs.get('animation', True):
+            ani = Animation(_anim_alpha=1., d=self._anim_duration)
+            ani.bind(on_complete=lambda *_args: self.dispatch('on_open'))
+            ani.start(self)
+        else:
+            self._anim_alpha = 1.
+            self.dispatch('on_open')
+
+    def _align_center(self, *_args):
+        if self._is_open:
+            self.center = self.caller.to_window(*self.caller.center)
+
 
     def on_leave(self,*args):
         def _leave(dt):
@@ -39,6 +75,7 @@ class MediaPopup(ThemableBehavior,HoverBehavior,StencilBehavior,CommonElevationB
 
 
 class MediaCard(ButtonBehavior,HoverBehavior,MDBoxLayout):
+    anime_id = NumericProperty()
     title = StringProperty()
     is_play = ObjectProperty()
     trailer_url = StringProperty()
@@ -58,9 +95,7 @@ class MediaCard(ButtonBehavior,HoverBehavior,MDBoxLayout):
     stars = ListProperty([0,0,0,0,0,0])
     cover_image_url = StringProperty()
     preview_image = StringProperty()
-    # screen_name = StringProperty()
     screen = ObjectProperty()
-    anime_id = NumericProperty()
     has_trailer_color = ListProperty([1,1,1,0])
     def __init__(self,trailer_url=None,**kwargs):
         super().__init__(**kwargs)
@@ -74,15 +109,16 @@ class MediaCard(ButtonBehavior,HoverBehavior,MDBoxLayout):
     # def on_screen_name(self,instance,value):
     #     if self.app:
     #         self.screen = self.app.manager_screens.get_screen(value)
-
+    # def 
     def on_enter(self):
         def _open_popup(dt):
             if self.hovering:
                 window = self.get_parent_window()
-                for widget in window.children: # type: ignore
-                    if isinstance(widget,MediaPopup):
-                        return
-                self.open()
+                if window:
+                    for widget in window.children: # type: ignore
+                        if isinstance(widget,MediaPopup):
+                            return
+                    self.open()
         Clock.schedule_once(_open_popup,5)
         
     def on_popup_open(self,popup:MediaPopup):
@@ -116,70 +152,3 @@ class MediaCard(ButtonBehavior,HoverBehavior,MDBoxLayout):
 class MediaCardsContainer(MDBoxLayout):
     container = ObjectProperty()
     list_name = StringProperty()
-# if __name__ == "__main__":
-#     from kivymd.app import MDApp
-#     from kivy.lang import Builder
-#     import json
-#     import os
-#     import tracemalloc
-#     tracemalloc.start()
-#     data = {}
-#     with open(os.path.join(os.curdir,"View","components","media_card","data.json"),"r") as file:
-#         data = json.loads(file.read())
-
-#     cache = {}
-#     def fetch_data(key):
-#         yt = YouTube(key)
-#         preview_image = yt.thumbnail_url 
-#         video_stream_url = yt.streams.filter(progressive=True,file_extension="mp4")[-1].url
-#         return preview_image,video_stream_url
-
-#     def cached_fetch_data(key):
-#         if key not in cache:
-#             cache[key] = fetch_data(key)
-#         return cache[key]
-
-
-#     class MediaCardApp(MDApp):
-#         def build(self):
-#             self.theme_cls.primary_palette = "Magenta"
-#             self.theme_cls.theme_style = "Dark"
-#             ui = Builder.load_file("./media_card.kv")
-
-#             for item in data["data"]["Page"]["media"]:
-#                 media_card = MediaCard()
-#                 if item["title"]["english"]:
-#                     media_card.title =  item["title"]["english"]
-#                 else:
-#                     media_card.title =  item["title"]["romaji"]
-#                 media_card.cover_image_url =  item["coverImage"]["medium"]
-#                 media_card.popularity =  str(item["popularity"])
-#                 media_card.favourites =  str(item["favourites"])
-#                 media_card.episodes =  str(item["episodes"])
-#                 media_card.description =  item["description"]
-#                 media_card.first_aired_on =  str(item["startDate"])
-#                 media_card.studios =  str(item["studios"]["nodes"])
-#                 media_card.tags =  str(item["tags"])
-#                 media_card.media_status =  item["status"]
-#                 if item["trailer"]:
-#                     try:
-#                         url = cached_fetch_data("https://youtube.com/watch?v="+item["trailer"]["id"])[1]
-#                         media_card.trailer_url =url  
-#                     except:
-#                         pass
-                    
-#                 media_card.genres = ",".join(item["genres"])
-                
-#                 stars = int(item["averageScore"]/100*6)
-#                 if stars:
-#                     for i in range(stars):
-#                         media_card.stars[i] = 1
-                
-#                 ui.ids.cards.add_widget(media_card) # type: ignore
-#             return ui
-
-#     MediaCardApp().run()
-#     snapshot = tracemalloc.take_snapshot()
-#     print("-----------------------------------------------")
-#     for stat in snapshot.statistics("lineno")[:10]:
-#         print(stat)

@@ -1,0 +1,3 @@
+default_player: mpv
+default_provider: allanime
+quality_string: "1080/best"

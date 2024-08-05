@@ -1,0 +1,18 @@
+<SearchBar>:
+    pos_hint: {'center_x': 0.5,'top': 1}
+    padding: "10dp"
+    adaptive_height:True
+    size_hint_x:.75
+    spacing: '20dp'
+    MDTextField:
+        size_hint_x:1
+        required:True
+        on_text_validate:
+            app.search_for_anime(args[0])
+        MDTextFieldLeadingIcon:
+            icon: "magnify"
+        MDTextFieldHintText:
+            text: "Search for anime"
+    MDIconButton:
+        pos_hint: {'center_y': 0.5}
+        icon: "account-circle"

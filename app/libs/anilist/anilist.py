@@ -9,7 +9,8 @@ from .queries_graphql import (
     anime_characters_query,
     anime_relations_query,
     airing_schedule_query,
-    upcoming_anime_query
+    upcoming_anime_query,
+    anime_query
     )
 import requests
 # from kivy.network.urlrequest import UrlRequestRequests
@@ -44,6 +45,7 @@ class AniList:
                averageScore_lesser:int|None=None,
                tag_in:list[str]|None=None,
                tag_not_in:list[str]|None=None,
+               status:str|None = None,
                status_in:list[str]|None=None,
                status_not_in:list[str]|None=None,
                endDate_greater:int|None=None,
@@ -59,6 +61,13 @@ class AniList:
                 variables[key] = val
         search_results = cls.get_data(search_query,variables=variables)
         return search_results
+
+    @classmethod
+    def get_anime(cls,id:int)->tuple[bool,dict]:
+        variables = {
+            "id":id
+        }
+        return cls.get_data(anime_query,variables)
 
     @classmethod
     def get_trending(cls)->tuple[bool,dict]:
@@ -125,10 +134,16 @@ if __name__ == "__main__":
     # data = AniList.get_trending()
     # data = AniList.get_most_scored()
     # term = input("enter term: ")
-    data = AniList.search(query="Ninja")
+    # data = AniList.search(query="Ninja")+
+    # data = AniList.get_anime(1)
+    data = AniList.search(query="one",status="RELEASING")
+    print(data)
     # data = AniList.get_recommended_anime_for(21)
     # data = AniList.get_related_anime_for(21)
     # data = AniList.get_airing_schedule_for(21)
     # data = AniList.get_upcoming_anime(1)
-    print(json.dumps(data,indent=4))
-    pass
+    if data[0]:
+        with open("search.json","w") as file:
+            json.dump(data[1],file)
+    else:
+        print(data)

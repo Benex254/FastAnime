@@ -6,6 +6,7 @@ $genre_not_in:[String],\
 $tag_in:[String],\
 $tag_not_in:[String],\
 $status_in:[MediaStatus],\
+$status:MediaStatus,\
 $status_not_in:[MediaStatus],\
 $popularity_greater:Int,\
 $popularity_lesser:Int,\
@@ -20,10 +21,11 @@ $endDate_lesser:FuzzyDateInt\
 # MediaStatus = (FINISHED,RELEASING,NOT_YET_RELEASED,CANCELLED,HIATUS)
 search_query = """
 query($query:String,%s){
-  Page(perPage:15,page:$page){
+  Page(perPage:30,page:$page){
     pageInfo{
       total
       currentPage
+      hasNextPage
     }
     media(
       search:$query,
@@ -32,6 +34,7 @@ query($query:String,%s){
       tag_in:$tag_in,
       tag_not_in:$tag_not_in,
       status_in:$status_in,
+      status:$status,
       status_not_in:$status_not_in,
       popularity_greater:$popularity_greater,
       popularity_lesser:$popularity_lesser,
@@ -310,7 +313,7 @@ query{
 most_recently_updated_query = """
 query{
   Page(perPage:15){
-    media(sort:UPDATED_AT_DESC,type:ANIME){
+    media(sort:UPDATED_AT_DESC,type:ANIME,averageScore_greater:50){
       id
       title{
         romaji
@@ -321,8 +324,7 @@ query{
       }
       trailer {
         site
-        id
-        
+        id     
       }
       popularity
       favourites
@@ -573,4 +575,131 @@ query ($page: Int) {
   }
 }
 """
+
+anime_query = """
+query($id:Int){
+  Page{
+    media(id:$id) {
+      title {
+        romaji
+        english
+      }
+      nextAiringEpisode {
+        timeUntilAiring
+        airingAt
+        episode
+      }
+      coverImage {
+        extraLarge
+      }
+      characters(perPage: 5, sort: FAVOURITES_DESC) {
+        edges {
+          node {
+            name {
+              full
+              
+            }
+            gender
+            dateOfBirth {
+              year
+              month
+              day
+            }
+            age
+            image {
+              medium
+            }
+            description
+          }
+          voiceActors {
+            name {
+              full
+            }
+            image {
+              medium
+            }
+          }
+        }
+      }
+      studios {
+        nodes {
+          name
+          isAnimationStudio
+        }
+      }
+      season
+      format
+      status
+      seasonYear
+      description
+      genres
+      synonyms
+      startDate {
+        year
+        month
+        day
+      }
+      endDate {
+        year
+        month
+        day
+      }
+      duration
+      countryOfOrigin
+      averageScore
+      popularity
+      favourites
+      source
+      hashtag
+      siteUrl
+      tags {
+        name
+        rank
+      }
+      reviews(sort: SCORE_DESC, perPage: 3) {
+        nodes {
+          summary
+          user {
+            name
+            avatar {
+              medium
+            }
+          }
+        }
+      }
+      recommendations(sort: RATING_DESC, perPage: 10) {
+        nodes {
+          mediaRecommendation {
+            title {
+              romaji
+              english
+            }
+          }
+        }
+      }
+      relations {
+        nodes {
+          title {
+            romaji
+            english
+            native
+          }
+        }
+      }
+      externalLinks {
+        url
+        site
+        icon
+      }
+      rankings {
+        rank
+        context
+      }
+      bannerImage
+      episodes
+    }
+  }
+}
+"""
+
 # print(search_query)

@@ -5,7 +5,7 @@ from Utility.media_card_loader import MediaCardLoader
 from kivy.storage.jsonstore import JsonStore
 
 user_data= JsonStore("user_data.json")
-class MainScreenModel(BaseScreenModel):
+class HomeScreenModel(BaseScreenModel):
 
     def get_trending_anime(self):
         success,data = AniList.get_trending()

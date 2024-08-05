@@ -2,7 +2,7 @@ import random
 
 import click
 
-from ....libs.anilist.anilist import AniList
+from ....anilist import AniList
 from ...interfaces.anilist_interfaces import select_anime
 from ...utils.tools import QueryDict
 

@@ -128,10 +128,6 @@ class AniXStreamApp(MDApp):
 
     def on_start(self, *args):
         self.media_card_popup = MediaPopup()
-        if self.config.get("Preferences", "is_startup_anime_enable") == "1":  # type: ignore
-            Clock.schedule_once(
-                lambda _: self.home_screen.controller.populate_home_screen(), 1
-            )
 
     def generate_application_screens(self) -> None:
         for i, name_screen in enumerate(screens.keys()):

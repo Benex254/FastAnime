@@ -19,5 +19,11 @@
                         spacing:"10dp"
                         orientation: 'vertical'
                         size_hint_y:None          
-                        height:max(self.minimum_height,p.height,1800)
+                        height:self.minimum_height
+                MDButton:
+                    on_press: 
+                        if root.controller: root.controller.get_more_anime()
+                    MDButtonText:
+                        text:"Load More Anime"
+
 

@@ -1,7 +1,7 @@
 # Fast Anime
 
 Welcome to Fast Anime, your new favorite destination for streaming and downloading anime.
-![](https://github.com/Benex254/FastAnime/raw/master/.assets/screencasts/intro.webm)
+<video src="https://github.com/Benex254/FastAnime/raw/master/.assets/screencasts/intro.webm" width="180"/>
 Heavily inspired by animdl, magic-tape and ani-cli.
 
 ## Table of Contents

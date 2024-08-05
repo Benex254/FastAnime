@@ -26,6 +26,7 @@ class AnimeScreenView(BaseScreenView):
     total_episodes = 0
     current_episode = 1
     video_player = ObjectProperty()
+    current_server = "dropbox"
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -48,32 +49,30 @@ class AnimeScreenView(BaseScreenView):
     def next_episode(self):
         next_episode = self.current_episode + 1
         if next_episode <= self.total_episodes:
-            # self.current_episode = next_episode
             self.update_current_episode(str(next_episode))
 
     def previous_episode(self):
         previous_episode = self.current_episode - 1
         if previous_episode > 0:
-            # self.current_episode = previous_episode
             self.update_current_episode(str(previous_episode))
 
     def on_current_anime_data(self, instance, value):
-        self.current_episode = int("1")
-        self.update_current_video_stream("dropbox")
-        self.video_player.state = "play"
-
         data = value["show"]
         self.update_episodes(data["availableEpisodesDetail"]["sub"][::-1])
+        self.current_episode = int("1")
+        self.update_current_video_stream(self.current_server)
+        self.video_player.state = "play"
 
     def update_current_episode(self, episode):
         self.current_episode = int(episode)
         self.controller.fetch_streams(self.current_title, episode)
-        self.update_current_video_stream("dropbox")
+        self.update_current_video_stream(self.current_server)
         self.video_player.state = "play"
 
     def update_current_video_stream(self, server, is_dub=False):
         for link in self.current_links:
             if stream_link := link.get(server):
+                self.current_server = server
                 self.current_link = stream_link[0]
                 break
 

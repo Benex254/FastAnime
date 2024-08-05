@@ -1145,23 +1145,6 @@ dev = ["pre-commit", "tox"]
 testing = ["pytest", "pytest-benchmark"]
 
 [[package]]
-name = "plyer"
-version = "2.1.0"
-description = "Platform-independent wrapper for platform-dependent APIs"
-optional = false
-python-versions = "*"
-files = [
-    {file = "plyer-2.1.0-py2.py3-none-any.whl", hash = "sha256:1b1772060df8b3045ed4f08231690ec8f7de30f5a004aa1724665a9074eed113"},
-    {file = "plyer-2.1.0.tar.gz", hash = "sha256:65b7dfb7e11e07af37a8487eb2aa69524276ef70dad500b07228ce64736baa61"},
-]
-
-[package.extras]
-android = ["pyjnius"]
-dev = ["flake8", "mock"]
-ios = ["pyobjus"]
-macosx = ["pyobjus"]
-
-[[package]]
 name = "pre-commit"
 version = "3.7.1"
 description = "A framework for managing and maintaining multi-language pre-commit hooks."
@@ -1786,4 +1769,4 @@ test = ["pytest (>=8.1,<9.0)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "51811bf7a41344b911fbf883ede9fab2b0a93dc68c59ad90d2aab5ccd0339a51"
+content-hash = "2ea2a2ce566efdc50ed0d3cc5e37f746e9a49d32af2bc82a94161ced3c5cb8f6"

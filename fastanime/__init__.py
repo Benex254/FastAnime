@@ -3,7 +3,7 @@ import os
 import sys
 from platform import platform
 
-import plyer
+from platformdirs import PlatformDirs
 from rich.traceback import install
 
 install(show_locals=True)
@@ -15,6 +15,12 @@ __version__ = "0.3.0"
 
 PLATFORM = platform()
 APP_NAME = "FastAnime"
+AUTHOR = "Benex254"
+GIT_REPO = "github.com"
+REPO = f"{GIT_REPO}/{AUTHOR}/{APP_NAME}"
+
+dirs = PlatformDirs(appname=APP_NAME, appauthor=AUTHOR, ensure_exists=True)
+
 
 # ---- app deps ----
 APP_DIR = os.path.abspath(os.path.dirname(__file__))
@@ -22,31 +28,16 @@ CONFIGS_DIR = os.path.join(APP_DIR, "configs")
 ASSETS_DIR = os.path.join(APP_DIR, "assets")
 
 # ----- user configs and data -----
-if PLATFORM == "windows":
-    APP_DATA_DIR_ = os.environ.get("LOCALAPPDATA", APP_DIR)
-else:
-    APP_DATA_DIR_ = os.environ.get("XDG_DATA_HOME", APP_DIR)
-
-if not APP_DATA_DIR_:
-    APP_DATA_DIR = os.path.join(APP_DIR, "data")
-else:
-    APP_DATA_DIR = os.path.join(APP_DATA_DIR_, APP_NAME)
-
-if not os.path.exists(APP_DATA_DIR):
-    os.mkdir(APP_DATA_DIR)
+APP_DATA_DIR = dirs.user_config_dir
+if not APP_DATA_DIR:
+    APP_DATA_DIR = dirs.user_data_dir
 
 USER_DATA_PATH = os.path.join(APP_DATA_DIR, "user_data.json")
 USER_CONFIG_PATH = os.path.join(APP_DATA_DIR, "config.ini")
 
 
 # video dir
-if vid_path := plyer.storagepath.get_videos_dir():  # type: ignore
-    USER_DOWNLOADS_DIR = os.path.join(vid_path, "FastAnime")
-else:
-    USER_DOWNLOADS_DIR = os.path.join(APP_DIR, "videos")
-
-if not os.path.exists(USER_DOWNLOADS_DIR):
-    os.mkdir(USER_DOWNLOADS_DIR)
+USER_DOWNLOADS_DIR = dirs.user_downloads_dir
 
 
 def FastAnime(gui=False):

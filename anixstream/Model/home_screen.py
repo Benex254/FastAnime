@@ -1,6 +1,6 @@
+from ..libs.anilist import AniList
+from ..Utility.media_card_loader import media_card_loader
 from .base_model import BaseScreenModel
-from anixstream.libs.anilist import AniList
-from anixstream.Utility.media_card_loader import MediaCardLoader
 
 
 class HomeScreenModel(BaseScreenModel):
@@ -12,7 +12,7 @@ class HomeScreenModel(BaseScreenModel):
 
             def _data_generator():
                 for anime_item in data["data"]["Page"]["media"]:
-                    yield MediaCardLoader.media_card(anime_item)
+                    yield media_card_loader.media_card(anime_item)
 
             return _data_generator()
         else:
@@ -24,7 +24,7 @@ class HomeScreenModel(BaseScreenModel):
 
             def _data_generator():
                 for anime_item in data["data"]["Page"]["media"]:
-                    yield MediaCardLoader.media_card(anime_item)
+                    yield media_card_loader.media_card(anime_item)
 
             return _data_generator()
         else:
@@ -36,7 +36,7 @@ class HomeScreenModel(BaseScreenModel):
 
             def _data_generator():
                 for anime_item in data["data"]["Page"]["media"]:
-                    yield MediaCardLoader.media_card(anime_item)
+                    yield media_card_loader.media_card(anime_item)
 
             return _data_generator()
         else:
@@ -48,7 +48,7 @@ class HomeScreenModel(BaseScreenModel):
 
             def _data_generator():
                 for anime_item in data["data"]["Page"]["media"]:
-                    yield MediaCardLoader.media_card(anime_item)
+                    yield media_card_loader.media_card(anime_item)
 
             return _data_generator()
         else:
@@ -60,7 +60,7 @@ class HomeScreenModel(BaseScreenModel):
 
             def _data_generator():
                 for anime_item in data["data"]["Page"]["media"]:
-                    yield MediaCardLoader.media_card(anime_item)
+                    yield media_card_loader.media_card(anime_item)
 
             return _data_generator()
         else:
@@ -72,7 +72,7 @@ class HomeScreenModel(BaseScreenModel):
 
             def _data_generator():
                 for anime_item in data["data"]["Page"]["media"]:
-                    yield MediaCardLoader.media_card(anime_item)
+                    yield media_card_loader.media_card(anime_item)
 
             return _data_generator()
         else:

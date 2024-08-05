@@ -1,22 +1,21 @@
-from anixstream.Controller import (
-    SearchScreenController,
-    HomeScreenController,
-    MyListScreenController,
+from ..Controller import (
     AnimeScreenController,
+    CrashLogScreenController,
     DownloadsScreenController,
     HelpScreenController,
-    CrashLogScreenController,
+    HomeScreenController,
+    MyListScreenController,
+    SearchScreenController,
 )
-from anixstream.Model import (
-    HomeScreenModel,
-    SearchScreenModel,
-    MyListScreenModel,
+from ..Model import (
     AnimeScreenModel,
+    CrashLogScreenModel,
     DownloadsScreenModel,
     HelpScreenModel,
-    CrashLogScreenModel,
+    HomeScreenModel,
+    MyListScreenModel,
+    SearchScreenModel,
 )
-
 
 screens = {
     "home screen": {

@@ -1,8 +1,9 @@
-from kivy.properties import ObjectProperty, StringProperty
 from kivy.clock import Clock
+from kivy.properties import ObjectProperty, StringProperty
 
-from anixstream.View.base_screen import BaseScreenView
-from .components import TrendingAnimeSideBar, Filters, SearchResultsPagination
+from ...View.base_screen import BaseScreenView
+
+from .components import Filters, SearchResultsPagination, TrendingAnimeSideBar
 
 
 class SearchScreenView(BaseScreenView):

@@ -1,7 +1,8 @@
 from kivy.clock import Clock
-from kivy.properties import ObjectProperty, ListProperty
-
+from kivy.properties import ListProperty, ObjectProperty
 from kivymd.uix.boxlayout import MDBoxLayout
+
+from ....Utility.anilist_data_helper import format_anilist_date_object
 
 
 class AnimeCharacter(MDBoxLayout):
@@ -27,10 +28,6 @@ class AnimeCharacters(MDBoxLayout):
     characters = ListProperty()
 
     def update_characters_card(self, instance, characters):
-        format_date = lambda date_: (
-            f"{date_['day']}/{date_['month']}/{date_['year']}" if date_ else ""
-        )
-
         self.container.clear_widgets()
         for character_ in characters:  # character (character,actor)
             character = character_[0]
@@ -40,7 +37,7 @@ class AnimeCharacters(MDBoxLayout):
             anime_character.character = {
                 "name": character["name"]["full"],
                 "gender": character["gender"],
-                "dateOfBirth": format_date(character["dateOfBirth"]),
+                "dateOfBirth": format_anilist_date_object(character["dateOfBirth"]),
                 "image": character["image"]["medium"],
                 "age": character["age"],
                 "description": character["description"],

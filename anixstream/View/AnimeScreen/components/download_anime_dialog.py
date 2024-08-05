@@ -1,11 +1,10 @@
 from kivy.uix.modalview import ModalView
-
-from kivymd.uix.behaviors import (
-    StencilBehavior,
-    CommonElevationBehavior,
-    BackgroundColorBehavior,
-)
 from kivymd.theming import ThemableBehavior
+from kivymd.uix.behaviors import (
+    BackgroundColorBehavior,
+    CommonElevationBehavior,
+    StencilBehavior,
+)
 
 
 # from main import AniXStreamApp

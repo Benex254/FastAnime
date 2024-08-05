@@ -1,5 +1,5 @@
-from kivymd.uix.snackbar import MDSnackbar, MDSnackbarText, MDSnackbarSupportingText
 from kivy.clock import Clock
+from kivymd.uix.snackbar import MDSnackbar, MDSnackbarSupportingText, MDSnackbarText
 
 
 def show_notification(title, details):

@@ -1,83 +1,68 @@
 import os
 import random
-os.environ["KIVY_VIDEO"] = "ffpyplayer"
-
-from queue import Queue
-from threading import Thread
-from subprocess import Popen
 import webbrowser
+from queue import Queue
+from subprocess import Popen
+from threading import Thread
 
 import plyer
-
+from kivy.clock import Clock
 from kivy.config import Config
-from kivy.resources import resource_find,resource_add_path,resource_remove_path
+from kivy.loader import Loader
+from kivy.logger import Logger
+from kivy.resources import resource_add_path, resource_find, resource_remove_path
+from kivy.uix.screenmanager import FadeTransition, ScreenManager
+from kivy.uix.settings import Settings, SettingsWithSidebar
+from kivymd.app import MDApp
+
+from .libs.animdl import AnimdlApi
+from .Utility import (
+    animdl_config_manager,
+    show_notification,
+    themes_available,
+    user_data_helper,
+)
+from .Utility.utils import write_crash
+from .View.components.media_card.components.media_popup import MediaPopup
+from .View.screens import screens
+
+os.environ["KIVY_VIDEO"] = "ffpyplayer"  # noqa: E402
+
+Config.set("graphics", "width", "1000")  # noqa: E402
+Config.set("graphics", "minimum_width", "1000")  # noqa: E402
+Config.set("kivy", "window_icon", resource_find("logo.ico"))  # noqa: E402
+Config.write()  # noqa: E402
 # resource_add_path("_internal")
 
 app_dir = os.path.dirname(__file__)
 
-# test
-
-# test_end
-
-
 # make sure we aint searching dist folder
-dist_folder = os.path.join(app_dir,"dist")
+dist_folder = os.path.join(app_dir, "dist")
 resource_remove_path(dist_folder)
 
-assets_folder = os.path.join(app_dir,"assets")
+assets_folder = os.path.join(app_dir, "assets")
 resource_add_path(assets_folder)
-conigs_folder = os.path.join(app_dir,"configs")
+conigs_folder = os.path.join(app_dir, "configs")
 resource_add_path(conigs_folder)
-data_folder = os.path.join(app_dir,"data")
-resource_add_path(data_folder)
-
-Config.set("graphics","width","1000")
-Config.set("graphics","minimum_width","1000")
-
-Config.set('kivy', 'window_icon', resource_find("logo.ico"))
-Config.write()
-
 # from kivy.core.window import Window
-
-from kivy.loader import Loader
-
 Loader.num_workers = 5
 Loader.max_upload_per_frame = 10
 
-from kivy.clock import Clock
-from kivy.logger import Logger
-from kivy.uix.screenmanager import ScreenManager, FadeTransition
-from kivy.uix.settings import SettingsWithSidebar, Settings
-
-from kivymd.icon_definitions import md_icons
-from kivymd.app import MDApp
-
-from anixstream.View.screens import screens
-from anixstream.libs.animdl import AnimdlApi
-from anixstream.Utility import (
-    themes_available,
-    show_notification,
-    user_data_helper,
-    animdl_config_manager,
-)
-from anixstream.Utility.utils import write_crash
 
 # Ensure the user data fields exist
 if not (user_data_helper.user_data.exists("user_anime_list")):
     user_data_helper.update_user_anime_list([])
 
-if not (user_data_helper.yt_cache.exists("yt_stream_links")):
-    user_data_helper.update_anime_trailer_cache([])
 
 # TODO: Confirm data integrity from user_data and yt_cache
-
-
 class AniXStreamApp(MDApp):
+    # some initialize
+
     queue = Queue()
     downloads_queue = Queue()
     animdl_streaming_subprocess: Popen | None = None
-    default_anime_image = resource_find(random.choice(["default_1.jpg","default.jpg"]))
-    default_banner_image = resource_find(random.choice(["banner_1.jpg","banner.jpg"]))
+    default_anime_image = resource_find(random.choice(["default_1.jpg", "default.jpg"]))
+    default_banner_image = resource_find(random.choice(["banner_1.jpg", "banner.jpg"]))
     # default_video = resource_find("Billyhan_When you cant afford Crunchyroll to watch anime.mp4")
 
     def worker(self, queue: Queue):
@@ -140,8 +125,11 @@ class AniXStreamApp(MDApp):
         return self.manager_screens
 
     def on_start(self, *args):
-        if self.config.get("Preferences","is_startup_anime_enable")=="1": # type: ignore
-            Clock.schedule_once(lambda _:self.home_screen.controller.populate_home_screen(),1)
+        self.media_card_popup = MediaPopup()
+        if self.config.get("Preferences", "is_startup_anime_enable") == "1":  # type: ignore
+            Clock.schedule_once(
+                lambda _: self.home_screen.controller.populate_home_screen(), 1
+            )
 
     def generate_application_screens(self) -> None:
         for i, name_screen in enumerate(screens.keys()):
@@ -153,7 +141,6 @@ class AniXStreamApp(MDApp):
             self.manager_screens.add_widget(view)
 
     def build_config(self, config):
-
         # General settings setup
         if vid_path := plyer.storagepath.get_videos_dir():  # type: ignore
             downloads_dir = os.path.join(vid_path, "anixstream")
@@ -278,38 +265,44 @@ class AniXStreamApp(MDApp):
         self.add_anime_to_user_downloads_list(anime_id)
 
         # TODO:Add custom download cmds functionality
-        on_progress = lambda *args: self.download_screen.on_episode_download_progress(
-            *args
-        )
+        def on_progress(*args):
+            return self.download_screen.on_episode_download_progress(*args)
+
         output_path = self.config.get("Preferences", "downloads_dir")  # type: ignore
         self.download_screen.on_new_download_task(
             default_cmds["title"], default_cmds.get("episodes_range")
         )
         if episodes_range := default_cmds.get("episodes_range"):
-            download_task = lambda: AnimdlApi.download_anime_by_title(
-                default_cmds["title"],
-                on_progress,
-                lambda anime_title, episode: show_notification(
-                    "Finished installing an episode", f"{anime_title}-{episode}"
-                ),
-                self.download_anime_complete,
-                output_path,
-                episodes_range,
-            )  # ,default_cmds["quality"]
+
+            def download_task():
+                return AnimdlApi.download_anime_by_title(
+                    default_cmds["title"],
+                    on_progress,
+                    lambda anime_title, episode: show_notification(
+                        "Finished installing an episode", f"{anime_title}-{episode}"
+                    ),
+                    self.download_anime_complete,
+                    output_path,
+                    episodes_range,
+                )  # ,default_cmds["quality"]
+
             self.downloads_queue.put(download_task)
             Logger.info(
                 f"Downloader:Successfully Queued {default_cmds['title']} for downloading"
             )
         else:
-            download_task = lambda: AnimdlApi.download_anime_by_title(
-                default_cmds["title"],
-                on_progress,
-                lambda anime_title, episode: show_notification(
-                    "Finished installing an episode", f"{anime_title}-{episode}"
-                ),
-                self.download_anime_complete,
-                output_path,
-            )  # ,default_cmds.get("quality")
+
+            def download_task():
+                return AnimdlApi.download_anime_by_title(
+                    default_cmds["title"],
+                    on_progress,
+                    lambda anime_title, episode: show_notification(
+                        "Finished installing an episode", f"{anime_title}-{episode}"
+                    ),
+                    self.download_anime_complete,
+                    output_path,
+                )  # ,default_cmds.get("quality")
+
             self.downloads_queue.put(download_task)
             Logger.info(
                 f"Downloader:Successfully Queued {default_cmds['title']} for downloading"
@@ -333,6 +326,7 @@ class AniXStreamApp(MDApp):
                 show_notification(
                     "Failure", f"Failed to open {title_} in browser on allanime site"
                 )
+                return
             if webbrowser.open(parsed_link):
                 Logger.info(
                     f"AniXStream:Successfully opened {title} in browser allanime site"
@@ -348,8 +342,8 @@ class AniXStreamApp(MDApp):
                     "Failure", f"Failed to open {title} in browser on allanime site"
                 )
         except Exception as e:
-            show_notification("Something went wrong",f"{e}")
-            
+            show_notification("Something went wrong", f"{e}")
+
     def stream_anime_with_custom_input_cmds(self, *cmds):
         self.animdl_streaming_subprocess = (
             AnimdlApi._run_animdl_command_and_get_subprocess(["stream", *cmds])
@@ -371,8 +365,8 @@ class AniXStreamApp(MDApp):
         # TODO: End mpv child process properly
         for stream in streams:
             try:
-                if isinstance(stream,str):
-                    show_notification("Failed to stream current episode",f"{stream}")
+                if isinstance(stream, str):
+                    show_notification("Failed to stream current episode", f"{stream}")
                     continue
                 self.animdl_streaming_subprocess = stream
 
@@ -384,7 +378,7 @@ class AniXStreamApp(MDApp):
                         del stream
                         return
             except Exception as e:
-                show_notification("Something went wrong while streaming",f"{e}")
+                show_notification("Something went wrong while streaming", f"{e}")
 
     def watch_on_animdl(
         self,
@@ -407,20 +401,24 @@ class AniXStreamApp(MDApp):
             self.stop_streaming = True
 
         if stream_with_mpv_options:
-            stream_func = lambda: self.stream_anime_with_mpv(
-                stream_with_mpv_options["title"],
-                stream_with_mpv_options.get("episodes_range"),
-                stream_with_mpv_options["quality"],
-            )
+
+            def stream_func():
+                return self.stream_anime_with_mpv(
+                    stream_with_mpv_options["title"],
+                    stream_with_mpv_options.get("episodes_range"),
+                    stream_with_mpv_options["quality"],
+                )
+
             self.queue.put(stream_func)
 
             Logger.info(
                 f"Animdl:Successfully started to stream {stream_with_mpv_options['title']}"
             )
         else:
-            stream_func = lambda: self.stream_anime_with_custom_input_cmds(
-                *custom_options
-            )
+
+            def stream_func():
+                return self.stream_anime_with_custom_input_cmds(*custom_options)
+
             self.queue.put(stream_func)
         show_notification("Streamer", "Started streaming")
 
@@ -428,8 +426,14 @@ class AniXStreamApp(MDApp):
 def run_app():
     AniXStreamApp().run()
 
+
 if __name__ == "__main__":
-    try:
+    in_development = True
+
+    if in_development:
         run_app()
-    except Exception as e:
-        write_crash(e)
+    else:
+        try:
+            run_app()
+        except Exception as e:
+            write_crash(e)

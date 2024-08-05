@@ -1,6 +1,7 @@
-from datetime import datetime
-import shutil
 import os
+import shutil
+from datetime import datetime
+
 # TODO: make it use color_text instead of fixed vals
 # from .kivy_markup_helper import color_text
 
@@ -12,7 +13,7 @@ def write_crash(e: Exception):
     try:
         with open("crashdump.txt", "a") as file:
             file.write(error)
-    except:
+    except Exception:
         with open("crashdump.txt", "w") as file:
             file.write(error)
     return index
@@ -23,8 +24,9 @@ def read_crash_file():
     if not os.path.exists(crash_file_path):
         return None
     else:
-        with open(crash_file_path,"r") as file:
+        with open(crash_file_path, "r") as file:
             return file.read()
+
 
 def move_file(source_path, dest_path):
     try:

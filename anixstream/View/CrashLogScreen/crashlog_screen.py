@@ -1,8 +1,8 @@
 from kivy.properties import StringProperty
 
-from anixstream.View.base_screen import BaseScreenView
-from anixstream.Utility.utils import read_crash_file
-from anixstream.Utility.kivy_markup_helper import color_text, bolden
+from ...Utility.kivy_markup_helper import bolden, color_text
+from ...Utility.utils import read_crash_file
+from ...View.base_screen import BaseScreenView
 
 
 class CrashLogScreenView(BaseScreenView):

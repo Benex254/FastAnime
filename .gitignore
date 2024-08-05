@@ -2,7 +2,9 @@
 *.mp4
 *.mp3
 *.ass
-vids/*
+vids
+data/
+crashdump.txt
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -10,7 +12,6 @@ __pycache__/
 anixstream.ini
 # C extensions
 *.so
-data/
 # Distribution / packaging
 .Python
 build/

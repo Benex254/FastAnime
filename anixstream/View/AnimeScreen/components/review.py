@@ -1,6 +1,5 @@
-from kivy.properties import ObjectProperty, ListProperty
 from kivy.clock import Clock
-
+from kivy.properties import ListProperty, ObjectProperty
 from kivymd.uix.boxlayout import MDBoxLayout
 
 

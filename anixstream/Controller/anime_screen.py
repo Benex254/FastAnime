@@ -1,16 +1,16 @@
+from kivy.cache import Cache
 from kivy.clock import Clock
 from kivy.logger import Logger
-from kivy.cache import Cache
 
-from anixstream.Model import AnimeScreenModel
-from anixstream.View import AnimeScreenView
+from ..Model import AnimeScreenModel
+from ..View import AnimeScreenView
 
 Cache.register("data.anime", limit=20, timeout=600)
 
 
 class AnimeScreenController:
-    """The controller for the anime screen
-    """
+    """The controller for the anime screen"""
+
     def __init__(self, model: AnimeScreenModel):
         self.model = model
         self.view = AnimeScreenView(controller=self, model=self.model)
@@ -19,7 +19,7 @@ class AnimeScreenController:
         return self.view
 
     def update_anime_view(self, id: int, caller_screen_name: str):
-        """method called to update the anime screen when a new 
+        """method called to update the anime screen when a new
 
         Args:
             id (int): the anilst id of the anime
@@ -32,7 +32,6 @@ class AnimeScreenController:
                 data = self.model.get_anime_data(id)
 
             if data[0]:
-
                 self.model.anime_id = id
                 Clock.schedule_once(
                     lambda _: self.view.update_layout(

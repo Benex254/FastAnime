@@ -1,13 +1,12 @@
-
 from inspect import isgenerator
 
 from kivy.clock import Clock
 from kivy.logger import Logger
 
-from anixstream.View import HomeScreenView
-from anixstream.Model import HomeScreenModel
-from anixstream.View.components import MediaCardsContainer
-from anixstream.Utility import show_notification
+from ..Model import HomeScreenModel
+from ..Utility import show_notification
+from ..View import HomeScreenView
+from ..View.components import MediaCardsContainer
 
 
 # TODO:Move the update home screen to homescreen.py
@@ -18,9 +17,10 @@ class HomeScreenController:
     The controller implements the strategy pattern. The controller connects to
     the view to control its actions.
     """
+
     populate_errors = []
 
-    def __init__(self, model:HomeScreenModel):
+    def __init__(self, model: HomeScreenModel):
         self.model = model  # Model.main_screen.MainScreenModel
         self.view = HomeScreenView(controller=self, model=self.model)
         # if self.view.app.config.get("Preferences","is_startup_anime_enable")=="1": # type: ignore
@@ -68,7 +68,7 @@ class HomeScreenController:
             Logger.error("Home Screen:Failed to load trending anime")
             self.populate_errors.append("trending Anime")
 
-    def highest_scored_anime(self):        
+    def highest_scored_anime(self):
         most_scored_cards_container = MediaCardsContainer()
         most_scored_cards_container.list_name = "Most Scored"
         most_scored_cards_generator = self.model.get_most_scored_anime()
@@ -84,7 +84,9 @@ class HomeScreenController:
     def recently_updated_anime(self):
         most_recently_updated_cards_container = MediaCardsContainer()
         most_recently_updated_cards_container.list_name = "Most Recently Updated"
-        most_recently_updated_cards_generator = self.model.get_most_recently_updated_anime()
+        most_recently_updated_cards_generator = (
+            self.model.get_most_recently_updated_anime()
+        )
         if isgenerator(most_recently_updated_cards_generator):
             for card in most_recently_updated_cards_generator:
                 card.screen = self.view
@@ -94,7 +96,7 @@ class HomeScreenController:
             Logger.error("Home Screen:Failed to load recently updated anime")
             self.populate_errors.append("Most recently updated Anime")
 
-    def upcoming_anime(self):        
+    def upcoming_anime(self):
         upcoming_cards_container = MediaCardsContainer()
         upcoming_cards_container.list_name = "Upcoming Anime"
         upcoming_cards_generator = self.model.get_upcoming_anime()
@@ -109,13 +111,15 @@ class HomeScreenController:
 
     def populate_home_screen(self):
         self.populate_errors = []
-        Clock.schedule_once(lambda _:self.trending_anime(),1)
-        Clock.schedule_once(lambda _:self.highest_scored_anime(),2)
-        Clock.schedule_once(lambda _:self.popular_anime(),3)
-        Clock.schedule_once(lambda _: self.favourite_anime(),4)
-        Clock.schedule_once(lambda _:self.recently_updated_anime(),5)
-        Clock.schedule_once(lambda _:self.upcoming_anime(),6)
+        Clock.schedule_once(lambda _: self.trending_anime(), 1)
+        Clock.schedule_once(lambda _: self.highest_scored_anime(), 2)
+        Clock.schedule_once(lambda _: self.popular_anime(), 3)
+        Clock.schedule_once(lambda _: self.favourite_anime(), 4)
+        Clock.schedule_once(lambda _: self.recently_updated_anime(), 5)
+        Clock.schedule_once(lambda _: self.upcoming_anime(), 6)
 
         if self.populate_errors:
-            show_notification(f"Failed to fetch all home screen data",f"Theres probably a problem with your internet connection or anilist servers are down.\nFailed include:{', '.join(self.populate_errors)}")
-
+            show_notification(
+                "Failed to fetch all home screen data",
+                f"Theres probably a problem with your internet connection or anilist servers are down.\nFailed include:{', '.join(self.populate_errors)}",
+            )

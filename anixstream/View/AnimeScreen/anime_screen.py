@@ -1,17 +1,15 @@
+from kivy.properties import DictProperty, ObjectProperty, StringProperty
 
-from kivy.properties import ObjectProperty, DictProperty, StringProperty
-
-from anixstream.Utility import anilist_data_helper
-from anixstream.libs.anilist import AnilistBaseMediaDataSchema
-
-from anixstream.View.base_screen import BaseScreenView
+from ...libs.anilist import AnilistBaseMediaDataSchema
+from ...Utility import anilist_data_helper
+from ...View.base_screen import BaseScreenView
 from .components import (
-    AnimeHeader,
-    AnimeSideBar,
-    AnimeDescription,
-    AnimeReviews,
-    AnimeCharacters,
     AnimdlStreamDialog,
+    AnimeCharacters,
+    AnimeDescription,
+    AnimeHeader,
+    AnimeReviews,
+    AnimeSideBar,
     DownloadAnimeDialog,
     RankingsBar,
 )
@@ -19,6 +17,7 @@ from .components import (
 
 class AnimeScreenView(BaseScreenView):
     """The anime screen view"""
+
     caller_screen_name = StringProperty()
     header: AnimeHeader = ObjectProperty()
     side_bar: AnimeSideBar = ObjectProperty()
@@ -117,12 +116,12 @@ class AnimeScreenView(BaseScreenView):
 
         self.anime_reviews.reviews = data["reviews"]["nodes"]
 
-    def stream_anime_with_custom_cmds_dialog(self,mpv=False):
+    def stream_anime_with_custom_cmds_dialog(self, mpv=False):
         """
         Called when user wants to stream with custom commands
         """
 
-        AnimdlStreamDialog(self.data,mpv).open()
+        AnimdlStreamDialog(self.data, mpv).open()
 
     def open_download_anime_dialog(self):
         """

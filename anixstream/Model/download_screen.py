@@ -5,4 +5,3 @@ class DownloadsScreenModel(BaseScreenModel):
     """
     Handles the download screen logic
     """
-    

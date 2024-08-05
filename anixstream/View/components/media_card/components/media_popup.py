@@ -1,14 +1,14 @@
-from kivy.properties import ObjectProperty
-from kivy.clock import Clock
 from kivy.animation import Animation
+from kivy.clock import Clock
+from kivy.properties import ObjectProperty
 from kivy.uix.modalview import ModalView
-
+from kivy.utils import QueryDict
 from kivymd.theming import ThemableBehavior
 from kivymd.uix.behaviors import (
     BackgroundColorBehavior,
-    StencilBehavior,
     CommonElevationBehavior,
     HoverBehavior,
+    StencilBehavior,
 )
 
 
@@ -20,13 +20,46 @@ class MediaPopup(
     BackgroundColorBehavior,
     ModalView,
 ):
-    caller = ObjectProperty()
+    caller = ObjectProperty(
+        QueryDict(
+            {
+                "anime_id": "",
+                "title": "",
+                "is_play": "",
+                "trailer_url": "",
+                "episodes": "",
+                "favourites": "",
+                "popularity": "",
+                "media_status": "",
+                "is_in_my_list": False,
+                "is_in_my_notify": False,
+                "genres": "",
+                "first_aired_on": "",
+                "description": "",
+                "tags": "",
+                "studios": "",
+                "next_airing_episode": "",
+                "producers": "",
+                "stars": [0, 0, 0, 0, 0, 0],
+                "cover_image_url": "",
+                "preview_image": "",
+                "has_trailer_color": [0, 0, 0, 0],
+            }
+        )
+    )
+
     player = ObjectProperty()
 
-    def __init__(self, caller=None, *args, **kwarg):
-        self.caller = caller
+    def __init__(self, *args, **kwarg):
+        # self.caller = caller
         super(MediaPopup, self).__init__(*args, **kwarg)
         self.player.bind(fullscreen=self.handle_clean_fullscreen_transition)
+
+    def update_caller(self, caller):
+        self.caller = caller
+
+    def on_caller(self, *args):
+        Clock.schedule_once(lambda _: self.apply_class_lang_rules(), -1)
 
     def open(self, *_args, **kwargs):
         """Display the modal in the Window.
@@ -61,7 +94,6 @@ class MediaPopup(
             super().open(*_args, **kwargs)
 
     def _align_center(self, *_args):
-
         if self.caller:
             if self._is_open:
                 self.center = self.caller.to_window(*self.caller.center)
@@ -83,13 +115,10 @@ class MediaPopup(
         if not fullscreen:
             if not self._is_open:
                 instance.state = "stop"
-                # if vid := instance._video:
-                # vid.unload()
+                if vid := instance._video:
+                    vid.unload()
             else:
                 instance.state = "stop"
-                # if vid := instance._video:
-                # vid.unload()
+                if vid := instance._video:
+                    vid.unload()
                 self.dismiss()
-
-
-media_card_popup = MediaPopup()

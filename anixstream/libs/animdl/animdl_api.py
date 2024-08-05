@@ -1,35 +1,32 @@
 import os
-import time
 import re
 import shutil
-from subprocess import Popen, run, PIPE, CompletedProcess
+from subprocess import PIPE, CompletedProcess, Popen, run
 from typing import Callable
 
-from .extras import Logger
 from .animdl_data_helper import (
+    anime_title_percentage_match,
     filter_broken_streams,
     filter_streams_by_quality,
+    parse_stream_urls_data,
     path_parser,
     search_output_parser,
-    anime_title_percentage_match,
-    parse_stream_urls_data,
 )
 from .animdl_exceptions import (
     AnimdlAnimeUrlNotFoundException,
-    InvalidAnimdlCommandsException,
     MPVNotFoundException,
     NoValidAnimeStreamsException,
     Python310NotFoundException,
 )
 from .animdl_types import AnimdlAnimeEpisode, AnimdlAnimeUrlAndTitle, AnimdlData
-
+from .extras import Logger
 
 broken_link_pattern = r"https://tools.fast4speed.rsvp/\w*"
 
 
 def run_mpv_command(*cmds) -> Popen:
     if mpv := shutil.which("mpv"):
-        Logger.info({"Animdl Api: Started mpv command"})
+        Logger.debug({"Animdl Api: Started mpv command"})
         child_process = Popen(
             [mpv, *cmds],
             stderr=PIPE,
@@ -58,7 +55,7 @@ class AnimdlApi:
             CompletedProcess: the completed animdl process
         """
         if py_path := shutil.which("python"):
-            Logger.info("Animdl Api: Started Animdl command")
+            Logger.debug("Animdl Api: Started Animdl command")
             if capture:
                 return run(
                     [py_path, "-m", "animdl", *cmds],
@@ -91,7 +88,7 @@ class AnimdlApi:
         parsed_cmds = list(cmds)
 
         if py_path := shutil.which("python"):
-            Logger.info("Animdl Api: Started Animdl command")
+            Logger.debug("Animdl Api: Started Animdl command")
             base_cmds = [py_path, "-m", "animdl"]
             cmds_ = [*base_cmds, *parsed_cmds]
             child_process = Popen(cmds_)
@@ -190,15 +187,15 @@ class AnimdlApi:
                     subs = ";".join(subtitles)
                     cmds = [*cmds, f"--sub-files={subs}"]
 
-                Logger.info(
+                Logger.debug(
                     f"Animdl Api Mpv Streamer: Starting to stream on mpv with commands: {cmds}"
                 )
                 yield run_mpv_command(*cmds)
-                Logger.info(
+                Logger.debug(
                     f"Animdl Api Mpv Streamer: Finished to stream episode {episode['episode']} on mpv"
                 )
             else:
-                Logger.info(
+                Logger.debug(
                     f"Animdl Api Mpv Streamer: Failed to stream episode {episode['episode']} no valid streams"
                 )
                 yield f"Epiosde {episode['episode']} doesnt have any valid stream links"
@@ -299,7 +296,7 @@ class AnimdlApi:
         if not os.path.exists(download_location):
             os.mkdir(download_location)
 
-        Logger.info(f"Animdl Api Downloader: Started downloading: {anime_title}")
+        Logger.debug(f"Animdl Api Downloader: Started downloading: {anime_title}")
         for episode in anime_streams_data.episodes:
             episode_number = episode["episode"]
             episode_title = f"Episode {episode_number}"
@@ -338,7 +335,7 @@ class AnimdlApi:
 
                 # check if its adaptive or progressive and call the appropriate downloader
                 if stream_url and subtitles and audio_tracks:
-                    Logger.info(
+                    Logger.debug(
                         f"Animdl api Downloader: Downloading adaptive episode {anime_title}-{episode_title}"
                     )
                     cls.download_adaptive(
@@ -351,8 +348,8 @@ class AnimdlApi:
                     )
                 elif stream_url and subtitles:
                     # probably wont occur
-                    Logger.info(
-                        f"Animdl api Downloader: downloading ? episode {anime_title}-{episode_title}"
+                    Logger.debug(
+                        f"Animdl api Downloader: downloading !? episode {anime_title}-{episode_title}"
                     )
                     cls.download_video_and_subtitles(
                         stream_url,
@@ -362,7 +359,7 @@ class AnimdlApi:
                         episode_info,
                     )
                 else:
-                    Logger.info(
+                    Logger.debug(
                         f"Animdl api Downloader: Downloading progressive episode {anime_title}-{episode_title}"
                     )
                     cls.download_progressive(
@@ -375,16 +372,16 @@ class AnimdlApi:
                 # epiosode download complete
                 on_episode_download_complete(anime_title, episode_title)
                 successful_downloads.append(episode_number)
-                Logger.info(
+                Logger.debug(
                     f"Animdl api Downloader: Success in dowloading {anime_title}-{episode_title}"
                 )
             except Exception as e:
-                Logger.info(
+                Logger.debug(
                     f"Animdl api Downloader: Failed in dowloading {anime_title}-{episode_title}; reason {e}"
                 )
                 failed_downloads.append(episode_number)
 
-        Logger.info(
+        Logger.debug(
             f"Animdl api Downloader: Completed in dowloading {anime_title}-{episodes_range}; Successful:{len(successful_downloads)}, Failed:{len(failed_downloads)}"
         )
         on_complete(successful_downloads, failed_downloads, anime_title)
@@ -443,9 +440,10 @@ class AnimdlApi:
         )
         file_name = episode + ".mp4"
         download_location = os.path.join(output_path, file_name)
-        on_progress_ = lambda current_bytes, total_bytes: on_progress(
-            current_bytes, total_bytes, episode_info
-        )
+
+        def on_progress_(current_bytes, total_bytes):
+            return on_progress(current_bytes, total_bytes, episode_info)
+
         isfailure = cls.download_with_mpv(video_url, download_location, on_progress_)
         if isfailure:
             raise Exception
@@ -474,9 +472,9 @@ class AnimdlApi:
             Exception: incase anything goes wrong
         """
 
-        on_progress_ = lambda current_bytes, total_bytes: on_progress(
-            current_bytes, total_bytes, episode_info
-        )
+        def on_progress_(current_bytes, total_bytes):
+            return on_progress(current_bytes, total_bytes, episode_info)
+
         episode = (
             path_parser(episode_info["anime_title"])
             + " - "
@@ -484,13 +482,11 @@ class AnimdlApi:
         )
         sub_filename = episode + ".ass"
         sub_filepath = os.path.join(output_path, sub_filename)
-        is_sub_failure = cls.download_with_mpv(sub_url, sub_filepath, on_progress_)
+        cls.download_with_mpv(sub_url, sub_filepath, on_progress_)
 
         audio_filename = episode + ".mp3"
         audio_filepath = os.path.join(output_path, audio_filename)
-        is_audio_failure = cls.download_with_mpv(
-            audio_url, audio_filepath, on_progress_
-        )
+        cls.download_with_mpv(audio_url, audio_filepath, on_progress_)
 
         video_filename = episode + ".mp4"
         video_filepath = os.path.join(output_path, video_filename)
@@ -523,9 +519,9 @@ class AnimdlApi:
             Exception: when anything goes wrong
         """
 
-        on_progress_ = lambda current_bytes, total_bytes: on_progress(
-            current_bytes, total_bytes, episode_info
-        )
+        def on_progress_(current_bytes, total_bytes):
+            return on_progress(current_bytes, total_bytes, episode_info)
+
         episode = (
             path_parser(episode_info["anime_title"])
             + " - "
@@ -533,7 +529,7 @@ class AnimdlApi:
         )
         sub_filename = episode + ".ass"
         sub_filepath = os.path.join(output_path, sub_filename)
-        is_sub_failure = cls.download_with_mpv(sub_url, sub_filepath, on_progress_)
+        cls.download_with_mpv(sub_url, sub_filepath, on_progress_)
 
         video_filename = episode + ".mp4"
         video_filepath = os.path.join(output_path, video_filename)

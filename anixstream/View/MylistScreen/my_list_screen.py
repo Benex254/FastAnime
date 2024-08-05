@@ -1,7 +1,7 @@
-from kivy.properties import ObjectProperty, StringProperty, DictProperty
 from kivy.clock import Clock
+from kivy.properties import DictProperty, ObjectProperty, StringProperty
 
-from anixstream.View.base_screen import BaseScreenView
+from ...View.base_screen import BaseScreenView
 
 
 class MyListScreenView(BaseScreenView):

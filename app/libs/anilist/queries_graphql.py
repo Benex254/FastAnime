@@ -590,6 +590,7 @@ anime_query = """
 query($id:Int){
   Page{
     media(id:$id) {
+      id
       title {
         romaji
         english

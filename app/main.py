@@ -31,6 +31,7 @@ from libs.animdl.animdl_api import AnimdlApi
 from Utility import themes_available, show_notification, user_data_helper
 
 
+
 # Ensure the user data fields exist
 if not (user_data_helper.user_data.exists("user_anime_list")):
     user_data_helper.update_user_anime_list([])
@@ -129,7 +130,7 @@ class AniXStreamApp(MDApp):
                         self.theme_cls.primary_palette = value
                     else:
                         Logger.warning(
-                            "Settings:An invalid theme has been entered and will be ignored"
+                            "AniXStream Settings: An invalid theme has been entered and will be ignored"
                         )
                         config.set("Preferences", "theme_color", "Cyan")
                         config.write()

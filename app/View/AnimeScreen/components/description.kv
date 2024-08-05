@@ -1,14 +1,15 @@
-<DescriptionHeader@MDLabel>    
-    adaptive_height:True
-    # halign:"center"
-    max_lines:0
-    shorten:False
-    bold:True
-    markup:True
-    font_style: "Body"
-    role: "large"
-    md_bg_color:self.theme_cls.secondaryContainerColor
-    padding:"10dp"
+# <DescriptionHeader>   
+#     adaptive_height:True
+#     md_bg_color:self.theme_cls.secondaryContainerColor
+#     MDLabel:
+#         text:root.text
+#         adaptive_height:True
+#         max_lines:0
+#         shorten:False
+#         bold:True
+#         font_style: "Body"
+#         role: "large"
+#         padding:"10dp"
 
 <DescriptionContainer@MDBoxLayout>:
     adaptive_height:True
@@ -25,7 +26,8 @@
 <AnimeDescription>:
     orientation:"vertical"
     adaptive_height:True
-    DescriptionHeader:
+    HeaderLabel:
+        halign:"left"
         text:"Description"
     DescriptionContainer:
         DescriptionText:

@@ -1,3 +1,4 @@
+from kivy.clock import Clock
 from kivy.properties import ObjectProperty
 from kivy.utils import format_bytes_to_human
 
@@ -12,3 +13,9 @@ class DownloadsScreenView(BaseScreenView):
         percentage_completion = (current_bytes_downloaded/total_bytes)*100
         self.progress_bar.value= max(min(percentage_completion,100),0)
         self.download_progress_label.text = f"Downloading: {episode_info['anime_title']} - {episode_info['episode']} ({format_bytes_to_human(current_bytes_downloaded)}/{format_bytes_to_human(total_bytes)})"
+
+    # def on_enter(self):
+    #     Clock.schedule_once(lambda _:self.controller.requested_update_my_list_screen())
+   
+    def update_layout(self,widget):
+        self.user_anime_list_container.add_widget(widget)

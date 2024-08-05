@@ -38,6 +38,7 @@ class AniList:
                query:str|None=None,
                sort:list[str]|None=None,
                genre_in:list[str]|None=None,
+               id_in:list[int]|None=None,
                genre_not_in:list[str]|None=None,
                popularity_greater:int|None=None,
                popularity_lesser:int|None=None,

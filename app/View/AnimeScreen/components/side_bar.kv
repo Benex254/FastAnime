@@ -23,12 +23,10 @@
     max_lines:0
     shorten:False
     bold:True
-    markup:True
     font_style: "Label"
     role: "large"
     md_bg_color:self.theme_cls.secondaryContainerColor
     padding:"10dp"
-
 
 <AnimeSideBar>:
     size_hint_x: None
@@ -52,7 +50,6 @@
 
             MDButtonText:
                 text:"Watch on Animdl"
-
     FitBoxLayout:
         SideBarHeaderLabel:
             text:"Alternative Titles"
@@ -62,7 +59,6 @@
             text: "[color={}]English:[/color] {}".format(get_hex_from_color(self.theme_cls.primaryColor),root.alternative_titles["english"])
         SideBarLabel:
             text: "[color={}]Japanese:[/color] {}".format(get_hex_from_color(self.theme_cls.primaryColor),root.alternative_titles["japanese"])
-
     FitBoxLayout:
         SideBarHeaderLabel:
             text:"Information"
@@ -105,4 +101,3 @@
         SideBarHeaderLabel:
             text:"External Links"
     BoxLayout:
-        

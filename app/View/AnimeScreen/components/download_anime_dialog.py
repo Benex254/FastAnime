@@ -6,6 +6,7 @@ class DownloadAnimeDialog(ThemableBehavior,StencilBehavior,CommonElevationBehavi
     def __init__(self,data,**kwargs):
         super(DownloadAnimeDialog,self).__init__(**kwargs)
         self.data = data
+        self.anime_id = self.data["id"]
         if title:=data["title"].get("romaji"):
             self.ids.title_field.text = title
         elif title:=data["title"].get("english"):
@@ -22,4 +23,4 @@ class DownloadAnimeDialog(ThemableBehavior,StencilBehavior,CommonElevationBehavi
             default_cmds["quality"] = quality
 
         # print(title,episodes_range,latest,quality)
-        app.download_anime(default_cmds)
+        app.download_anime(self.anime_id,default_cmds)

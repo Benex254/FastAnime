@@ -11,7 +11,7 @@
     bold:True
 <DownloadsScreenView>
     md_bg_color: self.theme_cls.backgroundColor
-    # main_container:main_container
+    main_container:main_container
     download_progress_label:download_progress_label
     progress_bar:progress_bar
     MDBoxLayout:
@@ -23,13 +23,13 @@
                 orientation: 'vertical'
                 SearchBar:
                 MDScrollView:
-                    size_hint:1,1
+                    size_hint:.95,1
                     MDGridLayout:
+                        padding: "75dp","50dp","10dp","100dp"
+                        spacing:"40dp"
                         id:main_container
                         cols:5
                         adaptive_height:True
-                        MDLabel:
-                            text:"Dowloads"
                 MDBoxLayout:
                     size_hint_y:None
                     height:"40dp"

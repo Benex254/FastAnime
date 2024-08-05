@@ -104,7 +104,7 @@
                         icon: "play-circle"
                         on_press: 
                             root.dismiss()
-                            app.show_anime_screen(root.caller.anime_id)
+                            app.show_anime_screen(root.caller.anime_id,root.caller.screen.name)
                     TooltipMDIconButton:
                         tooltip_text:"Add to your anime list"
                         icon: "plus-circle" if not(root.caller.is_in_my_list) else "check-circle"

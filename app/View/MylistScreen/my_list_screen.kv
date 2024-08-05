@@ -1,6 +1,6 @@
 <MyListScreenView>
     md_bg_color: self.theme_cls.backgroundColor
-    my_list_container:my_list_container
+    user_anime_list_container:user_anime_list_container
     MDBoxLayout:
         size_hint:1,1
         NavRail:
@@ -9,18 +9,18 @@
             anchor_y: 'top'
             padding:"10dp"
             size_hint:1,1
-
             MDBoxLayout:
+                spacing:"40dp"
                 orientation: 'vertical'
-                id:p
-                size_hint:1,1
+                size_hint:.95,1
                 SearchBar:
                 MDScrollView:
+                    pos_hint:{"center_x":.5}
                     size_hint:1,1
                     MDGridLayout:
-                        spacing: '10dp'
-                        padding: "75dp","50dp","10dp","100dp"
-                        id:my_list_container
+                        spacing: '40dp'
+                        padding: "100dp","50dp","10dp","200dp"
+                        id:user_anime_list_container
                         cols:5
                         size_hint_y:None
                         height:self.minimum_height

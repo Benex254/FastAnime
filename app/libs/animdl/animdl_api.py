@@ -9,6 +9,9 @@ from fuzzywuzzy import fuzz
 
 broken_link_pattern = r"https://tools.fast4speed.rsvp/\w*"
 
+def path_parser(path:str)->str:
+    return path.replace(":","").replace("/", "").replace("\\","").replace("\"","").replace("'","").replace("<","").replace(">","").replace("|","").replace("?","").replace(".","").replace("*","")
+
 # TODO: WRITE Docs for each method
 class AnimdlApi:
     @classmethod
@@ -52,13 +55,15 @@ class AnimdlApi:
         failed_downloads = []
         successful_downloads = []
         anime_title,episodes_to_download = data
-        anime_title = anime_title.capitalize()
+        anime_title:str = anime_title.capitalize()
         
         if not episodes_to_download:
             return False,None
         
         # determine download location
-        parsed_anime_title = anime_title.replace(":","").replace("/", "").replace("\\","")
+
+        parsed_anime_title = path_parser(anime_title)
+
         download_location = os.path.join(output_path,parsed_anime_title)
         if not os.path.exists(download_location):
             os.mkdir(download_location)
@@ -99,7 +104,8 @@ class AnimdlApi:
                         
                 # determine episode_title
                 if title:=stream.get("title"):
-                    episode_title = f"{episode_title} - {title}"
+                    episode_title = f"{episode_title} - {path_parser(title)}"
+                    
                 parsed_episode_title = episode_title.replace(":","").replace("/", "").replace("\\","")
                 episode_download_location = os.path.join(download_location,parsed_episode_title)
                 if not os.path.exists(episode_download_location):

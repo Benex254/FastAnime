@@ -1,10 +1,14 @@
 
 from inspect import isgenerator
-from View.HomeScreen.home_screen import HomeScreenView
-from Model.home_screen import HomeScreenModel
-from View.components.media_card.media_card import MediaCardsContainer
-from Utility import show_notification
+
 from kivy.clock import Clock
+from kivy.logger import Logger
+
+from View import HomeScreenView
+from Model import HomeScreenModel
+from View.components import MediaCardsContainer
+from Utility import show_notification
+
 
 # TODO:Move the update home screen to homescreen.py
 class HomeScreenController:
@@ -34,6 +38,7 @@ class HomeScreenController:
                 most_popular_cards_container.container.add_widget(card)
             self.view.main_container.add_widget(most_popular_cards_container)
         else:
+            Logger.error("Home Screen:Failed to load most popular anime")
             self.populate_errors.append("Most Popular Anime")
 
     def favourite_anime(self):
@@ -46,6 +51,7 @@ class HomeScreenController:
                 most_favourite_cards_container.container.add_widget(card)
             self.view.main_container.add_widget(most_favourite_cards_container)
         else:
+            Logger.error("Home Screen:Failed to load most favourite anime")
             self.populate_errors.append("Most favourite Anime")
 
     def trending_anime(self):
@@ -58,6 +64,7 @@ class HomeScreenController:
                 trending_cards_container.container.add_widget(card)
             self.view.main_container.add_widget(trending_cards_container)
         else:
+            Logger.error("Home Screen:Failed to load trending anime")
             self.populate_errors.append("trending Anime")
 
     def highest_scored_anime(self):        
@@ -70,10 +77,10 @@ class HomeScreenController:
                 most_scored_cards_container.container.add_widget(card)
             self.view.main_container.add_widget(most_scored_cards_container)
         else:
+            Logger.error("Home Screen:Failed to load highest scored anime")
             self.populate_errors.append("Most scored Anime")
 
     def recently_updated_anime(self):
-        
         most_recently_updated_cards_container = MediaCardsContainer()
         most_recently_updated_cards_container.list_name = "Most Recently Updated"
         most_recently_updated_cards_generator = self.model.get_most_recently_updated_anime()
@@ -83,6 +90,7 @@ class HomeScreenController:
                 most_recently_updated_cards_container.container.add_widget(card)
             self.view.main_container.add_widget(most_recently_updated_cards_container)
         else:
+            Logger.error("Home Screen:Failed to load recently updated anime")
             self.populate_errors.append("Most recently updated Anime")
 
     def upcoming_anime(self):        
@@ -95,6 +103,7 @@ class HomeScreenController:
                 upcoming_cards_container.container.add_widget(card)
             self.view.main_container.add_widget(upcoming_cards_container)
         else:
+            Logger.error("Home Screen:Failed to load upcoming anime")
             self.populate_errors.append("upcoming Anime")
 
     def populate_home_screen(self):
@@ -108,7 +117,6 @@ class HomeScreenController:
 
         if self.populate_errors:
             show_notification(f"Failed to fetch all home screen data",f"Theres probably a problem with your internet connection or anilist servers are down.\nFailed include:{', '.join(self.populate_errors)}")
-
 
     def update_my_list(self,*args):
         self.model.update_user_anime_list(*args)

@@ -8,6 +8,7 @@ from kivymd.uix.behaviors import HoverBehavior
 from .components import MediaPopup
 
 class MediaCard(ButtonBehavior,HoverBehavior,MDBoxLayout):
+    screen = ObjectProperty()
     anime_id = NumericProperty()
     title = StringProperty()
     is_play = ObjectProperty()
@@ -28,7 +29,6 @@ class MediaCard(ButtonBehavior,HoverBehavior,MDBoxLayout):
     stars = ListProperty([0,0,0,0,0,0])
     cover_image_url = StringProperty()
     preview_image = StringProperty()
-    screen = ObjectProperty()
     has_trailer_color = ListProperty([1,1,1,0])
     
 
@@ -75,10 +75,12 @@ class MediaCard(ButtonBehavior,HoverBehavior,MDBoxLayout):
         popup.open(self)
 
     # ---------------respond to user actions and call appropriate model-------------------------
-    def on_is_in_my_list(self,instance,value):
-        
+    def on_is_in_my_list(self,instance,in_user_anime_list):
         if self.screen:
-            self.screen.controller.update_my_list(self.anime_id,value)
+            if in_user_anime_list:
+                self.screen.app.add_anime_to_user_anime_list(self.anime_id)
+            else:
+                self.screen.app.remove_anime_from_user_anime_list(self.anime_id)
 
     def on_trailer_url(self,*args):
         pass

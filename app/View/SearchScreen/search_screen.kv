@@ -50,6 +50,7 @@
                         size_hint_x:None
                         width: dp(250)
                         MDLabel:
+                            md_bg_color:self.theme_cls.secondaryContainerColor
                             adaptive_height:True
                             halign:"center"
                             max_lines:0
@@ -59,7 +60,6 @@
                             font_style: "Label"
                             role: "large"
                             text:"Trending"
-                            md_bg_color:self.theme_cls.secondaryContainerColor
                             padding:"10dp"
                         MDScrollView:
                             TrendingAnimeSideBar:

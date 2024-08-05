@@ -1,18 +1,19 @@
-import os
+from typing import Generator
+
 from Model.base_model import BaseScreenModel
-from Utility import show_notification
 from libs.anilist import AniList
 from Utility.media_card_loader import MediaCardLoader
-from kivy.storage.jsonstore import JsonStore
+from View.components import MediaCard
+from Utility import show_notification
 
-user_data= JsonStore("user_data.json")
+
 class SearchScreenModel(BaseScreenModel):
     data = {}
     
-    def get_trending_anime(self):
+    def get_trending_anime(self)->MediaCard|dict:
         success,data = AniList.get_trending()
         if success:
-            def _data_generator():
+            def _data_generator()->Generator[MediaCard,MediaCard,MediaCard]:
                 for anime_item in data["data"]["Page"]["media"]:
                     yield MediaCardLoader.media_card(anime_item)
             return _data_generator()

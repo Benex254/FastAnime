@@ -6,6 +6,7 @@ from View.components.media_card.media_card import MediaCardsContainer
 from Utility import show_notification
 from kivy.clock import Clock
 
+# TODO:Move the update home screen to homescreen.py
 class HomeScreenController:
     """
     The `MainScreenController` class represents a controller implementation.

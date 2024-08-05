@@ -1,9 +1,11 @@
-from kivy.properties import ObjectProperty
-from kivymd.uix.navigationrail import MDNavigationRail
-from kivymd.uix.boxlayout import MDBoxLayout
+from kivy.properties import ObjectProperty,StringProperty
 
 from kivymd.app import MDApp
 from kivymd.uix.screen import MDScreen
+from kivymd.uix.navigationrail import MDNavigationRail
+from kivymd.uix.boxlayout import MDBoxLayout
+from kivymd.uix.button import MDIconButton
+from kivymd.uix.tooltip import MDTooltip 
 
 from Utility.observer import Observer
 
@@ -12,8 +14,17 @@ from Utility.observer import Observer
 class NavRail(MDNavigationRail):
     screen=ObjectProperty()
 
+
 class SearchBar(MDBoxLayout):
+    screen=ObjectProperty()
+
+
+class Tooltip(MDTooltip):
     pass
+
+
+class TooltipMDIconButton(Tooltip,MDIconButton):
+    tooltip_text = StringProperty()
 
 
 class BaseScreenView(MDScreen, Observer):

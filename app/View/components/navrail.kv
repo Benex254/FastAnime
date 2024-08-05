@@ -1,23 +1,23 @@
 <CommonNavigationRailItem@MDNavigationRailItem>
     icon:""
     text:""
+
+
 <CommonNavigationRailItem>
     MDNavigationRailItemIcon:
         icon:root.icon 
-
     MDNavigationRailItemLabel:
         text: root.text 
+
 
 <NavRail>:
     anchor:"top"
     type: "labeled"
     md_bg_color: self.theme_cls.secondaryContainerColor
-
     MDNavigationRailFabButton:
         icon: "home" 
         on_press: 
             root.screen.manager_screens.current = "home screen"
-
     CommonNavigationRailItem:
         icon: "magnify"
         text: "Search"
@@ -25,8 +25,8 @@
             root.screen.manager_screens.current = "search screen"
 
     CommonNavigationRailItem:
-        icon: "bookmark" #if root.screen.manager_screens.current=="my list screen" else "bookmark-outline"
-        text: "Bookmark"
+        icon: "bookmark" 
+        text: "MyList"
         on_press: 
             root.screen.manager_screens.current = "my list screen"
     CommonNavigationRailItem:

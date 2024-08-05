@@ -1,9 +1,8 @@
 from kivy.properties import ObjectProperty
-from View.base_screen import BaseScreenView
-from kivy.uix.modalview import ModalView
 from kivy.utils import format_bytes_to_human
-class DownloadAnimePopup(ModalView):
-    pass
+
+from View.base_screen import BaseScreenView
+
 
 class DownloadsScreenView(BaseScreenView):
     main_container = ObjectProperty()
@@ -11,5 +10,5 @@ class DownloadsScreenView(BaseScreenView):
     download_progress_label = ObjectProperty()
     def on_episode_download_progress(self,current_bytes_downloaded,total_bytes,episode_info):
         percentage_completion = (current_bytes_downloaded/total_bytes)*100
-        self.progress_bar.value= percentage_completion
+        self.progress_bar.value= max(min(percentage_completion,100),0)
         self.download_progress_label.text = f"Downloading: {episode_info['anime_title']} - {episode_info['episode']} ({format_bytes_to_human(current_bytes_downloaded)}/{format_bytes_to_human(total_bytes)})"

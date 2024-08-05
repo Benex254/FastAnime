@@ -1,62 +1,52 @@
 
-from kivy.config import Config,ConfigParser
-# Config.set('kivy', 'window_icon', "logo.ico")
-# Config.write()
 import os
-from kivy.loader import Loader
-Loader.num_workers = 5
-Loader.max_upload_per_frame = 5
-from libs.animdl.animdl_api import AnimdlApi
 os.environ["KIVY_VIDEO"] = "ffpyplayer"
-from kivymd.icon_definitions import md_icons
-import json
+
 from queue import Queue
 from threading import Thread
+from subprocess import Popen
+import webbrowser
+
 import plyer
-# plyer.facades.StoragePath.get_application_dir
-# plyer.facades.StoragePath.get_downloads_dir
-# plyer.facades.StoragePath.get_videos_dir()
-# plyer.facades.StoragePath.
-# plyer.facades.StoragePath.get_application_dir
+
+from kivy.config import Config
+# Config.set('kivy', 'window_icon', "logo.ico")
+# Config.write()
+
+from kivy.clock import Clock
+from kivy.uix.screenmanager import ScreenManager,FadeTransition
+from kivy.uix.settings import SettingsWithSidebar,Settings
+
+from kivymd.icon_definitions import md_icons
 from kivymd.app import MDApp
 
-from kivy.uix.settings import SettingsWithSidebar,Settings
-from kivy.uix.screenmanager import ScreenManager,FadeTransition
-from kivy.clock import Clock
-from kivy.storage.jsonstore import JsonStore
-from datetime import date,datetime
-from subprocess import Popen
 from View.screens import screens
-from View import DownloadAnimePopup,AnimdlDialogPopup
-import time
+from libs.animdl.animdl_api import AnimdlApi
+from Utility import themes_available,show_notification,user_data_helper
 
-import webbrowser
-from Utility import themes_available,show_notification
+# TODO: ADD logging across the codebase
 
-user_data = JsonStore("user_data.json")
-today = date.today()
-now = datetime.now()
-if not(user_data.exists("my_list")):
-    user_data.put("my_list",list=[])
-
-yt_cache = JsonStore("yt_cache.json")
-links_cache_name= f"{today}{0 if now.hour>=12 else 1}"
-if not(yt_cache.exists("yt_stream_links")):
-    yt_cache.put("yt_stream_links",**{f"{links_cache_name}":[]})
-elif not( yt_cache.get("yt_stream_links").get(f"{links_cache_name}")):
-    yt_cache.put("yt_stream_links",**{f"{links_cache_name}":[]})
+# Ensure the user data fields exist
+if not(user_data_helper.user_data.exists("my_list")):
+    user_data_helper.update_user_anime_list([])
     
+if not(user_data_helper.yt_cache.exists("yt_stream_links")):
+    user_data_helper.update_anime_trailer_cache([])
 
 
+# TODO: Arrange the app methods
 class AniXStreamApp(MDApp):
     queue = Queue()
     downloads_queue = Queue()
     animdl_streaming_subprocess:Popen|None = None
+
+
     def worker(self,queue:Queue):
         while True:
             task = queue.get() # task should be a function
             task()
             self.queue.task_done()
+
     def downloads_worker(self,queue:Queue):
         while True:
             download_task = queue.get() # task should be a function
@@ -118,7 +108,6 @@ class AniXStreamApp(MDApp):
     def build_settings(self,settings:Settings):
         settings.add_json_panel("Settings",self.config,"settings.json")
     
-
     def on_config_change(self, config, section, key, value):
         if section=="Preferences":
             match key:
@@ -135,9 +124,8 @@ class AniXStreamApp(MDApp):
         if self.animdl_streaming_subprocess:
             self.animdl_streaming_subprocess.terminate()
         
-
     # custom methods 
-    # TODO: move theme to a personalized class
+    # TODO: may move theme to a personalized class
     def search_for_anime(self,search_field,**kwargs):
         if self.manager_screens.current != "search screen":
             self.manager_screens.current = "search screen"
@@ -164,11 +152,12 @@ class AniXStreamApp(MDApp):
         else:
             show_notification("Failure",f"Failed to open {title} in browser on allanime site")
 
-
     def download_anime_complete(self,successful_downloads:list,failed_downloads:list,anime_title:str):
         show_notification(f"Finished Dowloading {anime_title}",f"There were {len(successful_downloads)} successful downloads and {len(failed_downloads)} failed downloads")
 
     def download_anime(self,default_cmds):
+        show_notification("New Download Task Queued",f"{default_cmds.get('title')} has been queued for downloading")
+        
         # TODO:Add custom download cmds functionality
         on_progress = lambda *args:self.download_screen.on_episode_download_progress(*args)
         output_path = self.config.get("Preferences","downloads_dir")
@@ -211,8 +200,7 @@ class AniXStreamApp(MDApp):
             stream_func = lambda:self.stream_anime_with_custom_input_cmds(*custom_options)
             self.queue.put(stream_func)
 
+
+
 if __name__ == "__main__":
-    # try:
     AniXStreamApp().run()
-    # except:
-    # print(plyer.storagepath.get_videos_dir())

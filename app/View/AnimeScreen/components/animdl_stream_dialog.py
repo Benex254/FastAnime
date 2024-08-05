@@ -1,7 +1,8 @@
 from kivy.uix.modalview import ModalView
+
 from kivymd.uix.behaviors import StencilBehavior,CommonElevationBehavior,BackgroundColorBehavior
 from kivymd.theming import ThemableBehavior
-# from main import AniXStreamApp
+
 class AnimdlStreamDialog(ThemableBehavior,StencilBehavior,CommonElevationBehavior,BackgroundColorBehavior,ModalView):
     def __init__(self,data,**kwargs):
         super(AnimdlStreamDialog,self).__init__(**kwargs)
@@ -29,6 +30,4 @@ class AnimdlStreamDialog(ThemableBehavior,StencilBehavior,CommonElevationBehavio
         if quality:
             cmds = [*cmds,"-q",quality]
 
-        # print(title,episodes_range,latest,quality)
-        print(cmds)
         app.watch_on_animdl(custom_options = cmds)

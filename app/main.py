@@ -10,9 +10,13 @@ import webbrowser
 import plyer
 
 from kivy.config import Config
+Config.set("graphics","width","1000")
+Config.set("graphics","minimum_width","1000")
 
 # Config.set('kivy', 'window_icon', "logo.ico")
-# Config.write()
+Config.write()
+
+# from kivy.core.window import Window
 
 from kivy.loader import Loader
 
@@ -72,6 +76,7 @@ class AniXStreamApp(MDApp):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+
         self.load_all_kv_files(self.directory)
         self.theme_cls.theme_style = "Dark"
         self.theme_cls.primary_palette = "Lightcoral"

@@ -44,12 +44,11 @@
             width:dp(200)
             pos_hint: {'center_x': 0.5}
         MDButton:
-            on_press: 
-                root.screen.stream_anime_with_custom_cmds_dialog()
             pos_hint: {'center_x': 0.5}
-
+            on_press: 
+                if root.screen:root.screen.stream_anime_with_custom_cmds_dialog(mpv=True)
             MDButtonText:
-                text:"Watch on Animdl"
+                text:"Watch with mpv"
     FitBoxLayout:
         HeaderLabel:
             text:"Alternative Titles"

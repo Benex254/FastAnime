@@ -3,6 +3,7 @@ import click
 from ...interfaces.anilist_interfaces import anilist as anilist_interface
 from ...utils.tools import QueryDict
 from .favourites import favourites
+from .login import loggin
 from .popular import popular
 from .random_anime import random_anime
 from .recent import recent
@@ -20,6 +21,7 @@ commands = {
     "popular": popular,
     "favourites": favourites,
     "random": random_anime,
+    "loggin": loggin,
 }
 
 

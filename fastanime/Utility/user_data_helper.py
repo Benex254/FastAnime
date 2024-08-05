@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 
 class UserData:
-    user_data = {"watch_history": {}, "animelist": []}
+    user_data = {"watch_history": {}, "animelist": [], "user": {}}
 
     def __init__(self):
         try:
@@ -21,6 +21,10 @@ class UserData:
 
     def update_watch_history(self, watch_history: dict):
         self.user_data["watch_history"] = watch_history
+        self._update_user_data()
+
+    def update_user_info(self, user: dict):
+        self.user_data["user"] = user
         self._update_user_data()
 
     def update_animelist(self, anime_list: list):

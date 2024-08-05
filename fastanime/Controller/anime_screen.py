@@ -19,10 +19,12 @@ class AnimeScreenController:
     def fetch_streams(self, anime_title, is_dub=False, episode="1"):
         if self.view.is_dub:
             is_dub = self.view.is_dub.active
-        self.view.current_anime_data = self.model.get_anime_data_from_provider(
-            anime_title, is_dub
-        )
-        self.view.current_links = self.model.get_episode_streams(episode, is_dub)
+            if anime_data := self.model.get_anime_data_from_provider(
+                anime_title, is_dub
+            ):
+                self.view.current_anime_data = anime_data
+        if current_links := self.model.get_episode_streams(episode, is_dub):
+            self.view.current_links = current_links
         # TODO: add auto start
         #
         # self.view.current_link = self.view.current_links[0]["gogoanime"][0]

@@ -1,10 +1,11 @@
 import subprocess
 import logging
+import shutil
 
 logger = logging.getLogger(__name__)
 
 
-def run_fzf(options: tuple[str], *custom_commands):
+def fzf(options, prompt="Select Anime: ", *custom_commands):
     """
     Run fzf with a list of options and return the selected option.
     """
@@ -12,8 +13,21 @@ def run_fzf(options: tuple[str], *custom_commands):
     options_str = "\n".join(options)
 
     # Run fzf as a subprocess
+    FZF = shutil.which("fzf")
+    if not FZF:
+        logger.error("fzf not found")
+        return None
+
     result = subprocess.run(
-        ["fzf", *custom_commands],
+        [
+            FZF,
+            "--reverse",
+            "--cycle",
+            "--prompt",
+            prompt,
+        ]
+        if not custom_commands
+        else [FZF, *custom_commands],
         input=options_str,
         text=True,
         stdout=subprocess.PIPE,

@@ -1,5 +1,6 @@
 import os
 import sys
+import logging
 
 from rich import print
 from rich.traceback import install
@@ -7,6 +8,8 @@ from rich.traceback import install
 import plyer
 
 install()
+# Create a logger instance
+logger = logging.getLogger(__name__)
 
 # TODO:confirm data integrity
 
@@ -31,10 +34,27 @@ user_data_path = os.path.join(data_folder, "user_data.json")
 assets_folder = os.path.join(app_dir, "assets")
 
 
-def FastAnime(gui=False):
+def FastAnime(gui=False, log=False):
     if "--gui" in sys.argv:
         gui = True
         sys.argv.remove("--gui")
+    if "--log" in sys.argv:
+        log = True
+        sys.argv.remove("--log")
+    if not log:
+        logger.propagate = False
+
+    else:
+        # Configure logging
+        from rich.logging import RichHandler
+
+        logging.basicConfig(
+            level=logging.DEBUG,  # Set the logging level to DEBUG
+            format="%(message)s",  # Use a simple message format
+            datefmt="[%X]",  # Use a custom date format
+            handlers=[RichHandler()],  # Use RichHandler to format the logs
+        )
+
     print(f"Hello {os.environ.get("USERNAME")} from the fastanime team")
     if gui:
         print(__name__)

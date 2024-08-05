@@ -1,0 +1,5 @@
+#! /usr/bin/bash
+poetry install
+clear
+poetry run fastanime $*
+

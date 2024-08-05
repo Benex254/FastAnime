@@ -10,7 +10,7 @@ if __package__ is None and not getattr(sys, "frozen", False):
 
 
 if __name__ == "__main__":
-    in_development = bool(os.environ.get("IN_DEVELOPMENT", False))
+    in_development = bool(os.environ.get("IN_DEVELOPMENT", True))
     from . import FastAnime
 
     if in_development:

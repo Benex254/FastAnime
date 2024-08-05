@@ -9,21 +9,29 @@ Welcome to Fast Anime, your new favorite destination for streaming and downloadi
   - [Using pipx](#using-pipx)
   - [Pre-built binaries](#pre-built-binaries)
   - [Building from the source](#building-from-the-source)
+- [Usage](#usage)
+  - [The Commandline interface](#the-commandline-interface-fire)
+    - [The anilist command](#the-anilist-command)
+    - [download subcommand](#download-subcommand)
+    - [search subcommand](#search-subcommand)
+    - [downloads subcommand](#downloads-subcommand)
+    - [config subcommand](#config-subcommand)
+- [Configuration](#configuration)
 - [Major Dependencies](#major-dependencies)
 - [Contributing](#contributing)
 - [Receiving Support](#receiving-support)
 - [Supporting the Project](#supporting-the-project)
-- [demo video](#demo-video)
+- [Demo Video](#demo-video)
 
 ## Installation
 
 ### Using pip
 
-Working on it...
+Work in progress...
 
 ### Using pipx
 
-working on it...
+Work in progress...
 
 ### Pre-built binaries
 
@@ -45,94 +53,81 @@ To build from the source, follow these steps:
 4. Install the app
 
 ```bash
-# normal Installation
+# Normal Installation
 poetry build
 cd dist
 pip install fastanime<version>.whl
 
-# editable installation
-# which is currently the easiest way to update since all you have to do is git pull
+# Editable installation (easiest for updates)
 pip install -e .
-
-# FastAnime should now be installed and available as fastanime
-# test if everything was success by running
-fastanime --version
-
 ```
 
-5. Enjoy
+5. Enjoy! Verify installation with:
 
-> [**Tip**]!
-> To add completions:
-> Fish Users: `cp $FASTANIME_PATH/completions/fastanime.fish ~/.config/fish/completions/`
-> Bash Users: `source $FASTANIME_PATH/completions/fastanime.bash` in your `.bashrc file`
-> Zsh Users: `source $FASTANIME_PATH/completions/fastanime.zsh` in your `.zshrc file`
+```bash
+fastanime --version
+```
+
+> **Tip**: To add completions:
+>
+> - Fish Users: `cp $FASTANIME_PATH/completions/fastanime.fish ~/.config/fish/completions/`
+> - Bash Users: Add `source $FASTANIME_PATH/completions/fastanime.bash` to your `.bashrc`
+> - Zsh Users: Add `source $FASTANIME_PATH/completions/fastanime.zsh` to your `.zshrc`
 
 ## Usage
 
-The app is meant to be flexible with its usage offering both a graphical interface and commandline interface.
+The app offers both a graphical interface (under development) and a robust command-line interface.
 
-> **_NOTE:_**
-> The GUI is currently in dev mode and is actively being worked on so enjoy the cli for now
+> **_NOTE:_** The GUI is in development; use the CLI for now.
 
 ### The Commandline interface :fire:
 
-Made for power users who love the terminal and hate the annoying ads and inefficiency of interacting with browsers.
+Designed for power users who prefer efficiency over browser-based streaming.
 
 Overview of main commands:
 
-- `fastanime anilist # :fire: most powerful and useful command for streaming`
-- `fastanime download # download anime`
-- `fastanime search # basic streaming functionality`
-- `fastanime downloads # view your downloads`
-- `fastanime config # edit your config`
-
-The following options are available to edit your config during run time:
-
-- `--continue # default` / `--no-continue` to set to continue from your watch history
-- `downloads-dir <dir_path>` to set the downloads diretory
-- `--quality <int: 0-4>` to set the quality of the streams
-- `--auto-next # flag` to automatically go to the next episode
-- `--server <server>` your preferred server
+- `fastanime anilist`: Powerful command for streaming from Anilist.
+- `fastanime download`: Download anime episodes.
+- `fastanime search`: Basic streaming functionality.
+- `fastanime downloads`: View downloaded episodes.
+- `fastanime config`: Edit configuration settings.
 
 #### The anilist command
 
-The most useful command if you prefer to stream anime and prefer doing everything from the terminal. Cause its just way more effecient. If you haven't tried, try it, your productivity would skyrocket.
-The command uses the **Anilist api** to provide a rich experience similar if not better than your traditional ad filled site.
+Stream anime efficiently from the terminal using Anilist API.
 
 ##### Running without any subcommand
 
-If you run the command `fastanime anilist` by itself you will reach the main interface.
+Run `fastanime anilist` to access the main interface.
 
-##### Sub commands
+##### Subcommands
 
-The following subcommands are available for convinience and quick navigation:
-
-- `fastanime anilist trending` to get the top 15 trending anime.
-- `fastanime anilist recent` to get the top 15 recently updated anime.
-- `fastanime anilist search` to search for anime and get the top 50 results.
-- `fastanime anilist upcoming` to get the top 15 most scored anime.
-- `fastanime anilist popular` to get the top 15 most popular anime.
-- `fastanime anilist favourites` to get the top 15 most favourite anime.
+- `fastanime anilist trending`: Top 15 trending anime.
+- `fastanime anilist recent`: Top 15 recently updated anime.
+- `fastanime anilist search`: Search for anime (top 50 results).
+- `fastanime anilist upcoming`: Top 15 upcoming anime.
+- `fastanime anilist popular`: Top 15 popular anime.
+- `fastanime anilist favourites`: Top 15 favorite anime.
 
 #### download subcommand
 
-Useful for downloading anime.
-**syntax:**
+Download anime episodes.
+
+**Syntax:**
 
 ```bash
-# basic command, will download all available episodes
+# Download all available episodes
 fastanime download <anime-title>
 
-# specifying episode range to download
+# Download specific episode range
 fastanime download <anime-title> -r <episodes-start>-<episodes-end>
 ```
 
 #### search subcommand
 
-Directly interacts with the provider offering a more minimal ui and ux.
+Minimal UI for searching anime.
 
-**syntax:**
+**Syntax:**
 
 ```bash
 fastanime search <anime-title>
@@ -140,8 +135,9 @@ fastanime search <anime-title>
 
 #### downloads subcommand
 
-Convinience command to view your downloads and stream them with mpv.
-**syntax:**
+View and stream downloaded episodes using MPV.
+
+**Syntax:**
 
 ```bash
 fastanime downloads
@@ -149,8 +145,9 @@ fastanime downloads
 
 #### config subcommand
 
-Convinience command to edit your fastanime config with your preferred editor. Looks for `$EDITOR` environment variable
-**syntax:**
+Edit FastAnime configuration settings using your preferred editor (based on `$EDITOR` environment variable).
+
+**Syntax:**
 
 ```bash
 fastanime config
@@ -158,36 +155,39 @@ fastanime config
 
 ## Configuration
 
-The app comes with sensible defaults but if you wish to extend it to fit more to your use case it is super easy.
-The config is in the `.ini` format and located `~/.config/FastAnime/config.ini`
+The app includes sensible defaults but can be customized extensively. Configuration is stored in `.ini` format at `~/.config/FastAnime/config.ini`.
 
 ```ini
 [stream]
-continue_from_history = True # whether to auto continue from where you left of based on your watch history
-translation_type = sub # preffered language for anime. options: [dub,sub]
-server=top # the default server [dropbox,sharepoint,wetransfer.gogoanime]. "top" auto selects the best
-auto_next = False # whether to automatically select the next episode. Useful for binging
+continue_from_history = True  # Auto continue from watch history
+translation_type = sub  # Preferred language for anime (options: dub, sub)
+server = top  # Default server (options: dropbox, sharepoint, wetransfer.gogoanime, top)
+auto_next = False  # Auto-select next episode
 
 [general]
-preferred_language = romaji # the language used for the display name. acceptable [english,romaji]
-downloads_dir=<Default-videos-dir>/FastAnime # set where downlad videos are to be stored
+preferred_language = romaji  # Display language (options: english, romaji)
+downloads_dir = <Default-videos-dir>/FastAnime  # Download directory
 
 [anilist]
-# not implemented
+# Not implemented yet
 ```
 
 ## Contributing
 
-We welcome your issues and feature requests. However, we currently have no plans to add another provider, so issues related to this may not be addressed due to time constraints. If you wish to contribute directly, please open an issue detailing the changes you wish to add and request a PR.
+We welcome your issues and feature requests. However, due to time constraints, we currently do not plan to add another provider.
+
+If you wish to contribute directly, please open an issue describing your proposed changes and request a pull request.
 
 ## Receiving Support
 
-If you have any inquiries, join our [Discord Server](https://discord.gg/4NUTj5Pt).
+For inquiries, join our [Discord Server](https://discord.gg/4NUTj5Pt).
 
 [![Join our Discord server!](https://invidget.switchblade.xyz/4NUTj5Pt)](http://discord.gg/4NUTj5Pt)
 
 ## Supporting the Project
 
-If you want to support the project, please consider leaving a star on our GitHub repository or [buying us a coffee](https://ko-fi.com/benex254). We appreciate both!
+Show your support by starring our GitHub repository or [buying us a coffee](https://ko-fi.com/benex254). We appreciate both!
 
-## demo-video
+## Demo Video
+
+Check out our demo video for a quick overview and installation guide.

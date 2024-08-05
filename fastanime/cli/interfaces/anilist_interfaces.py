@@ -578,16 +578,22 @@ def select_anime(config: Config, anilist_config: QueryDict):
         for anime in search_results
     }
 
-    preview = get_preview(search_results, config)
-
     choices = [*anime_data.keys(), "Back"]
     if config.use_fzf:
-        selected_anime_title = fzf.run(
-            choices,
-            prompt="Select Anime: ",
-            header="Search Results",
-            preview=preview,
-        )
+        if config.preview:
+            preview = get_preview(search_results, config)
+            selected_anime_title = fzf.run(
+                choices,
+                prompt="Select Anime: ",
+                header="Search Results",
+                preview=preview,
+            )
+        else:
+            selected_anime_title = fzf.run(
+                choices,
+                prompt="Select Anime: ",
+                header="Search Results",
+            )
     else:
         selected_anime_title = fuzzy_inquirer("Select Anime", choices)
     # "bat %s/{}" % SEARCH_RESULTS_CACHE

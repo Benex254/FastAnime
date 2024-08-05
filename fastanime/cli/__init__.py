@@ -85,6 +85,8 @@ signal.signal(signal.SIGINT, handle_exit)
 @click.option("-d", "--downloads-dir", type=click.Path(), help="Downloads location")
 @click.option("--fzf", is_flag=True, help="Use fzf for the ui")
 @click.option("--default", is_flag=True, help="Use the default interface")
+@click.option("--preview", is_flag=True, help="Show preview when using fzf")
+@click.option("--no-preview", is_flag=True, help="Dont show preview when using fzf")
 @click.pass_context
 def run_cli(
     ctx: click.Context,
@@ -98,6 +100,8 @@ def run_cli(
     downloads_dir,
     fzf,
     default,
+    preview,
+    no_preview,
 ):
     ctx.obj = Config()
     if server:
@@ -123,3 +127,7 @@ def run_cli(
         ctx.obj.use_fzf = True
     if default:
         ctx.obj.use_fzf = False
+    if preview:
+        ctx.obj.preview = True
+    if no_preview:
+        ctx.obj.preview = False

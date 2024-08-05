@@ -27,6 +27,7 @@ class Config(object):
                 "translation_type": "sub",
                 "preferred_language": "english",
                 "use_fzf": "False",
+                "preview": "False",
             }
         )
         self.configparser.add_section("stream")
@@ -40,6 +41,7 @@ class Config(object):
         # --- set defaults ---
         self.downloads_dir = self.get_downloads_dir()
         self.use_fzf = self.get_use_fzf()
+        self.preview = self.get_preview()
         self.translation_type = self.get_translation_type()
         self.sort_by = self.get_sort_by()
         self.continue_from_history = self.get_continue_from_history()
@@ -75,6 +77,9 @@ class Config(object):
 
     def get_use_fzf(self):
         return self.configparser.getboolean("general", "use_fzf")
+
+    def get_preview(self):
+        return self.configparser.getboolean("general", "preview")
 
     def get_preferred_language(self):
         return self.configparser.get("general", "preferred_language")

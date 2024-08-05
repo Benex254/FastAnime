@@ -16,6 +16,11 @@
         MDButtonText:
             text:"Watch on Animdl"
     MDButton:
+        on_press: 
+            if root.screen:root.screen.stream_anime_with_custom_cmds_dialog(mpv=True)
+        MDButtonText:
+            text:"Watch on mpv"
+    MDButton:
         on_press: app.watch_on_allanime(root.screen.data["title"]["romaji"])
         MDButtonText:
             text:"Watch on AllAnime"

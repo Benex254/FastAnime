@@ -149,8 +149,8 @@ def player_controls(config: Config, anilist_config: QueryDict):
 
     options = {
         "🔂 Replay": _replay,
-        "⏭ Next Episode": _next_episode,
-        "⏮ Previous Episode": _previous_episode,
+        "⏭  Next Episode": _next_episode,
+        "⏮  Previous Episode": _previous_episode,
         "🗃️ Episodes": _episodes,
         "📀 Change Quality": _change_quality,
         "🎧 Change Translation Type": _change_translation_type,
@@ -419,7 +419,10 @@ def anilist_options(config, anilist_config: QueryDict):
         if trailer := selected_anime.get("trailer"):
             trailer_url = "https://youtube.com/watch?v=" + trailer["id"]
             print("[bold magenta]Watching Trailer of:[/]", selected_anime_title)
-            mpv(trailer_url, selected_anime_title, f"--ytdl-format={config.format}")
+            mpv(
+                trailer_url,
+                ytdl_format=config.format,
+            )
             anilist_options(config, anilist_config)
         else:
             print("no trailer available :confused:")
@@ -648,7 +651,7 @@ def anilist(config: Config, anilist_config: QueryDict):
     options = {
         "🔥 Trending": AniList.get_trending,
         "📺 Watching": lambda x="Watching": handle_animelist(x),
-        "⏸ Paused": lambda x="Paused": handle_animelist(x),
+        "⏸  Paused": lambda x="Paused": handle_animelist(x),
         "🚮 Dropped": lambda x="Dropped": handle_animelist(x),
         "📑 Planned": lambda x="Planned": handle_animelist(x),
         "✅ Completed": lambda x="Completed": handle_animelist(x),

@@ -67,13 +67,11 @@ def stream_video(url, mpv_args):
     return last_time, total_time
 
 
-def mpv(link: str, title: Optional[str] = "anime", start_time: str = "0", *custom_args):
+def mpv(link: str, title: Optional[str] = "", start_time: str = "0", ytdl_format=""):
     # Determine if mpv is available
     MPV = shutil.which("mpv")
 
     # If title is None, set a default value
-    if title is None:
-        title = "anime"
 
     # Regex to check if the link is a YouTube URL
     youtube_regex = r"(https?://)?(www\.)?(youtube|youtu|youtube-nocookie)\.(com|be)/.+"
@@ -116,7 +114,13 @@ def mpv(link: str, title: Optional[str] = "anime", start_time: str = "0", *custo
         return "0"
     else:
         # General mpv command with custom arguments
-        mpv_args = [*custom_args, f"--title={title}", f"--start={start_time}"]
+        mpv_args = []
+        if start_time != "0":
+            mpv_args.append(f"--start={start_time}")
+        if title:
+            mpv_args.append(f"--title={title}")
+        if ytdl_format:
+            mpv_args.append(f"--ytdl-format={ytdl_format}")
         stop_time, total_time = stream_video(link, mpv_args)
         return stop_time, total_time
 

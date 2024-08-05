@@ -35,8 +35,9 @@ class HomeScreenController:
         most_popular_cards_generator = self.model.get_most_popular_anime()
         if isgenerator(most_popular_cards_generator):
             for card in most_popular_cards_generator:
-                card.screen = self.view
-                most_popular_cards_container.container.add_widget(card)
+                card["screen"] = self.view
+                card["viewclass"] = "MediaCard"
+                most_popular_cards_container.container.data.append(card)
             self.view.main_container.add_widget(most_popular_cards_container)
         else:
             Logger.error("Home Screen:Failed to load most popular anime")
@@ -48,8 +49,9 @@ class HomeScreenController:
         most_favourite_cards_generator = self.model.get_most_favourite_anime()
         if isgenerator(most_favourite_cards_generator):
             for card in most_favourite_cards_generator:
-                card.screen = self.view
-                most_favourite_cards_container.container.add_widget(card)
+                card["screen"] = self.view
+                card["viewclass"] = "MediaCard"
+                most_favourite_cards_container.container.data.append(card)
             self.view.main_container.add_widget(most_favourite_cards_container)
         else:
             Logger.error("Home Screen:Failed to load most favourite anime")
@@ -61,8 +63,9 @@ class HomeScreenController:
         trending_cards_generator = self.model.get_trending_anime()
         if isgenerator(trending_cards_generator):
             for card in trending_cards_generator:
-                card.screen = self.view
-                trending_cards_container.container.add_widget(card)
+                card["screen"] = self.view
+                card["viewclass"] = "MediaCard"
+                trending_cards_container.container.data.append(card)
             self.view.main_container.add_widget(trending_cards_container)
         else:
             Logger.error("Home Screen:Failed to load trending anime")
@@ -74,8 +77,9 @@ class HomeScreenController:
         most_scored_cards_generator = self.model.get_most_scored_anime()
         if isgenerator(most_scored_cards_generator):
             for card in most_scored_cards_generator:
-                card.screen = self.view
-                most_scored_cards_container.container.add_widget(card)
+                card["screen"] = self.view
+                card["viewclass"] = "MediaCard"
+                most_scored_cards_container.container.data.append(card)
             self.view.main_container.add_widget(most_scored_cards_container)
         else:
             Logger.error("Home Screen:Failed to load highest scored anime")
@@ -89,8 +93,9 @@ class HomeScreenController:
         )
         if isgenerator(most_recently_updated_cards_generator):
             for card in most_recently_updated_cards_generator:
-                card.screen = self.view
-                most_recently_updated_cards_container.container.add_widget(card)
+                card["screen"] = self.view
+                card["viewclass"] = "MediaCard"
+                most_recently_updated_cards_container.container.data.append(card)
             self.view.main_container.add_widget(most_recently_updated_cards_container)
         else:
             Logger.error("Home Screen:Failed to load recently updated anime")
@@ -102,8 +107,9 @@ class HomeScreenController:
         upcoming_cards_generator = self.model.get_upcoming_anime()
         if isgenerator(upcoming_cards_generator):
             for card in upcoming_cards_generator:
-                card.screen = self.view
-                upcoming_cards_container.container.add_widget(card)
+                card["screen"] = self.view
+                card["viewclass"] = "MediaCard"
+                upcoming_cards_container.container.data.append(card)
             self.view.main_container.add_widget(upcoming_cards_container)
         else:
             Logger.error("Home Screen:Failed to load upcoming anime")

@@ -1,11 +1,8 @@
 <MediaCard>
     adaptive_height:True
     spacing:"5dp"
-    image:"https://s4.anilist.co/file/anilistcdn/media/anime/cover/small/bx163270-oxwgbe43Cpog.jpg"
     size_hint_x: None
     width:dp(100)
-    on_release:
-        self.open()
     FitImage:
         source:root.cover_image_url
         fit_mode:"fill"
@@ -14,6 +11,8 @@
         height: dp(150)
     MDDivider:
         color:root.theme_cls.primaryColor if root._trailer_url else [0.5, 0.5, 0.5, 0.5] 
+        size_hint: None, 1
+        width: dp(100)
     SingleLineLabel:
         font_style:"Label"
         role:"medium"
@@ -21,4 +20,7 @@
         max_lines:2        
         halign:"center"
         color:self.theme_cls.secondaryColor
+        size_hint_x: None
+        shorten:True
+        width: dp(100)
 

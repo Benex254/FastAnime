@@ -23,7 +23,7 @@ class AnimdlApi:
                 return run([py_path,"-m", "animdl", *cmds])
 
     @classmethod
-    def run_custom_command(cls,*cmds:tuple[str])->Popen:
+    def run_custom_command(cls,cmds:list[str])->Popen|None:
         """
         Runs an AnimDl custom command with the full power of animdl and returns a subprocess(popen) for full control
         """
@@ -33,14 +33,17 @@ class AnimdlApi:
 
         if py_path:=shutil.which("python"): 
             base_cmds = [py_path,"-m","animdl"]
-            child_process = Popen([*base_cmds,*parsed_cmds])
+            cmds_ = [*base_cmds,*parsed_cmds]
+            child_process = Popen(cmds_)
             return child_process
+        else:
+            return None
         
     @classmethod
-    def stream_anime_by_title(cls,title,episodes_range=None):
+    def stream_anime_by_title(cls,title,episodes_range=None)->Popen|None:
         anime = cls.get_anime_url_by_title(title)
         if not anime:
-            return False
+            return None
         if py_path:=shutil.which("python"): 
             base_cmds = [py_path,"-m", "animdl","stream",anime[1]]   
             cmd = [*base_cmds,"-r",episodes_range] if episodes_range else base_cmds
@@ -140,7 +143,7 @@ class AnimdlApi:
             process = Popen([mpv,url,f"--stream-dump={output_path}"],stderr=PIPE,text=True,stdout=PIPE)
             progress_regex = re.compile(r"\d+/\d+") # eg Dumping 2044776/125359745
 
-            for stream in process.stderr:
+            for stream in process.stderr: # type: ignore
                 if matches:=progress_regex.findall(stream):
                     current_bytes,total_bytes = [float(val) for val in matches[0].split("/")]
                     on_progress(current_bytes,total_bytes)
@@ -212,7 +215,7 @@ class AnimdlApi:
         try:
             cmd = ["grab",anime_url,"-r",episodes_range] if episodes_range else ["grab",anime_url] 
             result = cls.run_animdl_command(cmd)
-            return [json.loads(episode.strip()) for episode in result.stdout.strip().split("\n")]
+            return [json.loads(episode.strip()) for episode in result.stdout.strip().split("\n")] # type: ignore
         except:
             return None
     
@@ -228,8 +231,8 @@ class AnimdlApi:
         return all(char.isspace() for char in input_string)
 
     @classmethod
-    def output_parser(cls,result_of_cmd:str):
-        data = result_of_cmd.stderr.split("\n")[3:]
+    def output_parser(cls,result_of_cmd):
+        data = result_of_cmd.stderr.split("\n")[3:] # type: ignore
         parsed_data = {}
         pass_next = False
         for i,data_item in enumerate(data[:]):

@@ -13,7 +13,6 @@ class AnimeScreenModel(BaseScreenModel):
     def media_card_generator(self):
         for anime_item in self.data["data"]["Page"]["media"]:
             yield MediaCardLoader.media_card(anime_item)
-        self.pagination_info = self.extract_pagination_info()
 
     def get_anime_data(self,id:int):
         return AniList.get_anime(id)

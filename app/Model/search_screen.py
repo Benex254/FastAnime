@@ -10,10 +10,10 @@ from Utility import show_notification
 class SearchScreenModel(BaseScreenModel):
     data = {}
     
-    def get_trending_anime(self)->MediaCard|dict:
+    def get_trending_anime(self):
         success,data = AniList.get_trending()
         if success:
-            def _data_generator()->Generator[MediaCard,MediaCard,MediaCard]:
+            def _data_generator():
                 for anime_item in data["data"]["Page"]["media"]:
                     yield MediaCardLoader.media_card(anime_item)
             return _data_generator()
@@ -25,7 +25,7 @@ class SearchScreenModel(BaseScreenModel):
         if success:    
             return self.media_card_generator()
         else:
-            show_notification(f"Failed to search for {anime_title}",self.data["Error"])
+            show_notification(f"Failed to search for {anime_title}",self.data.get("Error"))
         
     def media_card_generator(self):
         for anime_item in self.data["data"]["Page"]["media"]:

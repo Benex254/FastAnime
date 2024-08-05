@@ -61,7 +61,7 @@ signal.signal(signal.SIGINT, handle_exit)
 )
 @click.option(
     "-t",
-    "--translation_type",
+    "--translation-type",
     type=click.Choice(["dub", "sub"]),
     help="Anime language[dub/sub]",
 )

@@ -36,6 +36,7 @@ if not APP_DATA_DIR:
 
 USER_DATA_PATH = os.path.join(APP_DATA_DIR, "user_data.json")
 USER_CONFIG_PATH = os.path.join(APP_DATA_DIR, "config.ini")
+USER_WATCH_HISTORY = os.path.join(APP_DATA_DIR, "watch_history.json")
 
 
 # video dir

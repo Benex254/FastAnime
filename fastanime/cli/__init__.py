@@ -24,7 +24,7 @@ commands = {
     "--server",
     type=click.Choice(SERVERS_AVAILABLE, case_sensitive=False),
 )
-@click.option("-h", "--hist", type=bool)
+@click.option("-c-h/-no-h", "--continue_h/--no-continue_h", type=bool)
 @click.option("-q", "--quality", type=int)
 @click.option("-t-t", "--translation_type")
 @click.option("-a-n", "--auto-next", type=bool)
@@ -38,7 +38,7 @@ commands = {
 def run_cli(
     ctx: click.Context,
     server,
-    hist,
+    continue_h,
     translation_type,
     quality,
     auto_next,
@@ -48,8 +48,8 @@ def run_cli(
     ctx.obj = Config()
     if server:
         ctx.obj.server = server
-    if hist:
-        ctx.obj.continue_from_history = hist
+    if continue_h:
+        ctx.obj.continue_from_history = continue_h
     if quality:
         ctx.obj.quality = quality
     if auto_next:

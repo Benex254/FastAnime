@@ -1,6 +1,7 @@
 import click
 
-from ...interfaces import anilist as anilist_interface
+from ...interfaces.anilist_interfaces import anilist as anilist_interface
+from ...utils.tools import QueryDict
 from .favourites import favourites
 from .popular import popular
 from .recent import recent
@@ -19,6 +20,8 @@ commands = {
 
 
 @click.group(commands=commands, invoke_without_command=True)
-@click.pass_obj
-def anilist(config):
-    anilist_interface(config=config)
+@click.pass_context
+def anilist(ctx: click.Context):
+    if ctx.invoked_subcommand is None:
+        anilist_config = QueryDict()
+        anilist_interface(ctx.obj, anilist_config)

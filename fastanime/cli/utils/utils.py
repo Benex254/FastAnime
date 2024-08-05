@@ -20,7 +20,12 @@ def clear():
 def fuzzy_inquirer(prompt: str, choices, **kwargs):
     clear()
     action = inquirer.fuzzy(
-        prompt, choices, height="100%", border=True, **kwargs
+        prompt,
+        choices,
+        height="100%",
+        border=True,
+        validate=lambda result: result in choices,
+        **kwargs,
     ).execute()
     return action
 

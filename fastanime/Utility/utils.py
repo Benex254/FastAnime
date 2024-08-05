@@ -7,6 +7,11 @@ from datetime import datetime
 # from .kivy_markup_helper import color_text
 
 
+def remove_html_tags(text):
+    clean = re.compile("<.*?>")
+    return re.sub(clean, "", text)
+
+
 # utility functions
 def write_crash(e: Exception):
     index = datetime.today()

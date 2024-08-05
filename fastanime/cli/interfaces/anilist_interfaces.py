@@ -745,6 +745,11 @@ def select_anime(config: Config, anilist_config: QueryDict):
             anime["title"][config.preferred_language] or anime["title"]["romaji"]
         )
         title = sanitize_filename(f"{title} ({progress} of {episodes_total})")
+        # Check if the anime is currently airing and has new/unwatched episodes
+        if anime["status"] == "RELEASING" and anime["nextAiringEpisode"] and progress > 0:
+            last_aired_episode = anime["nextAiringEpisode"]["episode"] - 1
+            if last_aired_episode - progress > 0:
+                title += f" 🔹{last_aired_episode - progress} new episode(s)🔹"
         anime_data[title] = anime
 
     choices = [*anime_data.keys(), "Back"]

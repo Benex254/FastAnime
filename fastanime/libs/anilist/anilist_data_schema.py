@@ -22,6 +22,7 @@ class AnilistUser(TypedDict):
     name: str
     bannerImage: str | None
     avatar: AnilistImage
+    token: str
 
 
 class AnilistMediaTrailer(TypedDict):

@@ -35,7 +35,8 @@ class Config(object):
                 "format": "best[height<=1080]/bestvideo[height<=1080]+bestaudio/best",
                 "provider": "allanime",
                 "error": "3",
-                "icons":"false"
+                "icons": "false",
+                "notification_duration": "2",
             }
         )
         self.configparser.add_section("stream")
@@ -58,6 +59,7 @@ class Config(object):
         self.auto_next = self.get_auto_next()
         self.auto_select = self.get_auto_select()
         self.quality = self.get_quality()
+        self.notification_duration = self.get_notification_duration()
         self.error = self.get_error()
         self.server = self.get_server()
         self.format = self.get_format()
@@ -112,6 +114,7 @@ class Config(object):
 
     def get_icons(self):
         return self.configparser.getboolean("general", "icons")
+
     def get_preview(self):
         return self.configparser.getboolean("general", "preview")
 
@@ -135,6 +138,9 @@ class Config(object):
 
     def get_quality(self):
         return self.configparser.getint("stream", "quality")
+
+    def get_notification_duration(self):
+        return self.configparser.getint("general", "notification_duration")
 
     def get_error(self):
         return self.configparser.getint("stream", "error")

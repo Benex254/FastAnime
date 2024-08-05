@@ -6,7 +6,7 @@ from ...utils.tools import QueryDict
 from .completed import completed
 from .dropped import dropped
 from .favourites import favourites
-from .login import loggin
+from .login import login
 from .notifier import notifier
 from .paused import paused
 from .planning import planning
@@ -29,7 +29,7 @@ commands = {
     "popular": popular,
     "favourites": favourites,
     "random": random_anime,
-    "loggin": loggin,
+    "login": login,
     "watching": watch_list,
     "paused": paused,
     "repeating": repeating,

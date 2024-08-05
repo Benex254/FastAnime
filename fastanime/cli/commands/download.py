@@ -2,7 +2,6 @@ import click
 from rich import print
 from thefuzz import fuzz
 
-from ...libs.anime_provider.allanime.api import anime_provider
 from ...libs.anime_provider.types import Anime
 from ...libs.fzf import fzf
 from ...Utility.downloader.downloader import downloader
@@ -26,11 +25,17 @@ from ..utils.utils import clear
 )
 @click.pass_obj
 def download(config: Config, anime_title, episode_range):
+    anime_provider = config.anime_provider
     translation_type = config.translation_type
     download_dir = config.downloads_dir
     search_results = anime_provider.search_for_anime(
         anime_title, translation_type=translation_type
     )
+    if not search_results:
+        print("Search results failed")
+        input("Enter to retry")
+        download(config, anime_title, episode_range)
+        return
     search_results = search_results["results"]
     search_results_ = {
         search_result["title"]: search_result for search_result in search_results

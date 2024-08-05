@@ -9,7 +9,6 @@ from rich.prompt import Prompt
 from ... import USER_CONFIG_PATH
 from ...libs.anilist.anilist import AniList
 from ...libs.anilist.anilist_data_schema import AnilistBaseMediaDataSchema
-from ...libs.anime_provider.allanime.api import anime_provider
 from ...libs.anime_provider.types import Anime, SearchResult, Server
 from ...libs.fzf import fzf
 from ...Utility.data import anime_normalizer
@@ -152,6 +151,7 @@ def fetch_streams(config: Config, anilist_config: QueryDict):
     anime_id: int = anilist_config.anime_id
     anime: Anime = anilist_config.anime
     translation_type = config.translation_type
+    anime_provider = config.anime_provider
 
     # get streams for episode from provider
     episode_streams = anime_provider.get_episode_streams(
@@ -266,6 +266,7 @@ def fetch_episode(config: Config, anilist_config: QueryDict):
 
 def fetch_anime_episode(config, anilist_config: QueryDict):
     selected_anime: SearchResult = anilist_config._anime
+    anime_provider = config.anime_provider
     anilist_config.anime = anime_provider.get_anime(selected_anime["id"])
     if not anilist_config.anime:
 
@@ -287,6 +288,7 @@ def provide_anime(config: Config, anilist_config: QueryDict):
     selected_anime_title = anilist_config.selected_anime_title
 
     anime_data: AnilistBaseMediaDataSchema = anilist_config.selected_anime_anilist
+    anime_provider = config.anime_provider
 
     # search and get the requested title from provider
     search_results = anime_provider.search_for_anime(

@@ -217,10 +217,8 @@ class AllAnimeAPI:
             return []
 
 
-anime_provider = AllAnimeAPI()
-
-
 if __name__ == "__main__":
+    anime_provider = AllAnimeAPI()
     # lets see if it works :)
     import subprocess
     import sys

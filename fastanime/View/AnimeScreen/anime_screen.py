@@ -27,6 +27,7 @@ class AnimeScreenView(BaseScreenView):
     current_episode = 1
     video_player = ObjectProperty()
     current_server = "dropbox"
+    is_dub = ObjectProperty()
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -65,7 +66,7 @@ class AnimeScreenView(BaseScreenView):
 
     def update_current_episode(self, episode):
         self.current_episode = int(episode)
-        self.controller.fetch_streams(self.current_title, episode)
+        self.controller.fetch_streams(self.current_title, self.is_dub.active, episode)
         self.update_current_video_stream(self.current_server)
         self.video_player.state = "play"
 

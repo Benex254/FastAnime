@@ -19,6 +19,7 @@
     md_bg_color: self.theme_cls.backgroundColor
     episodes_container:episodes_container
     video_player:video_player
+    is_dub:is_dub
     MDBoxLayout:
         padding:"10dp"
         orientation: 'vertical'
@@ -54,6 +55,12 @@
                         if root.current_link: app.play_on_mpv(root.current_link)
                     MDButtonText:
                         text:"Play on MPV"
+                AnimeLabel:
+                    text:"Dub: "
+                    padding: "10dp"
+                    adaptive_width:True
+                MDSwitch:
+                    id:is_dub
             AnimeBoxLayout:
                 AnimeLabel:
                     text:"servers: "

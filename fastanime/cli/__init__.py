@@ -8,6 +8,7 @@ from ..Utility.data import anilist_sort_normalizer
 from .commands.anilist import anilist
 from .commands.config import configure
 from .commands.download import download
+from .commands.downloads import downloads
 from .commands.search import search
 from .config import Config
 
@@ -16,6 +17,7 @@ commands = {
     "download": download,
     "anilist": anilist,
     "config": configure,
+    "downloads": downloads,
 }
 
 

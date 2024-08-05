@@ -52,44 +52,47 @@ def notifier(config: Config):
             notifications = data["data"]["Page"]["notifications"]  # pyright:ignore
             if not notifications:
                 logger.info("Nothing to notify")
-            for notification_ in notifications:
-                anime_episode = notification_["episode"]
-                title = f"Episode {anime_episode} just aired"
-                anime_title = notification_["media"]["title"][config.preferred_language]
-                message = f"{anime_title}\nBe sure to watch so you are not left out of the loop."  # pyright:ignore
-                # message = str(textwrap.wrap(message, width=50))
+            else:
+                for notification_ in notifications:
+                    anime_episode = notification_["episode"]
+                    title = f"Episode {anime_episode} just aired"
+                    anime_title = notification_["media"]["title"][
+                        config.preferred_language
+                    ]
+                    message = f"{anime_title}\nBe sure to watch so you are not left out of the loop."  # pyright:ignore
+                    # message = str(textwrap.wrap(message, width=50))
 
-                id = notification_["media"]["id"]
-                if past_notifications.get(str(id)) == notification_["episode"]:
-                    logger.info(
-                        f"skipping id={id} title={anime_title} episode={anime_episode} already notified"
-                    )
+                    id = notification_["media"]["id"]
+                    if past_notifications.get(str(id)) == notification_["episode"]:
+                        logger.info(
+                            f"skipping id={id} title={anime_title} episode={anime_episode} already notified"
+                        )
 
-                else:
-                    if PLATFORM != "Windows":
-                        image_link = notification_["media"]["coverImage"]["medium"]
-                        print(image_link)
-                        logger.info("Downloading image")
+                    else:
+                        if PLATFORM != "Windows":
+                            image_link = notification_["media"]["coverImage"]["medium"]
+                            print(image_link)
+                            logger.info("Downloading image")
 
-                        resp = requests.get(image_link)
-                        if resp.status_code == 200:
-                            with open(anime_image, "wb") as f:
-                                f.write(resp.content)
-                            ICON_PATH = anime_image
+                            resp = requests.get(image_link)
+                            if resp.status_code == 200:
+                                with open(anime_image, "wb") as f:
+                                    f.write(resp.content)
+                                ICON_PATH = anime_image
 
-                    past_notifications[f"{id}"] = notification_["episode"]
-                    with open(notified, "w") as f:
-                        json.dump(past_notifications, f)
-                    logger.info(message)
-                    notification.notify(  # pyright:ignore
-                        title=title,
-                        message=message,
-                        app_name=APP_NAME,
-                        app_icon=ICON_PATH,
-                        hints={"image-path": ICON_PATH},
-                        timeout=notification_duration,
-                    )
-                    time.sleep(30)
+                        past_notifications[f"{id}"] = notification_["episode"]
+                        with open(notified, "w") as f:
+                            json.dump(past_notifications, f)
+                        logger.info(message)
+                        notification.notify(  # pyright:ignore
+                            title=title,
+                            message=message,
+                            app_name=APP_NAME,
+                            app_icon=ICON_PATH,
+                            hints={"image-path": ICON_PATH},
+                            timeout=notification_duration,
+                        )
+                        time.sleep(30)
         except Exception as e:
             logger.error(e)
         logger.info("sleeping...")

@@ -290,31 +290,34 @@ class AniXStreamApp(MDApp):
         ----------
         title_: The anime title requested to be opened
         """
-        if anime := AnimdlApi.get_anime_url_by_title(title_):
-            title, link = anime
-            parsed_link = f"https://allmanga.to/bangumi/{link.split('/')[-1]}"
-        else:
-            Logger.error(
-                f"AniXStream:Failed to open {title_} in browser on allanime site"
-            )
-            show_notification(
-                "Failure", f"Failed to open {title_} in browser on allanime site"
-            )
-        if webbrowser.open(parsed_link):
-            Logger.info(
-                f"AniXStream:Successfully opened {title} in browser allanime site"
-            )
-            show_notification(
-                "Success", f"Successfully opened {title} in browser allanime site"
-            )
-        else:
-            Logger.error(
-                f"AniXStream:Failed to open {title} in browser on allanime site"
-            )
-            show_notification(
-                "Failure", f"Failed to open {title} in browser on allanime site"
-            )
-
+        try:
+            if anime := AnimdlApi.get_anime_url_by_title(title_):
+                title, link = anime
+                parsed_link = f"https://allmanga.to/bangumi/{link.split('/')[-1]}"
+            else:
+                Logger.error(
+                    f"AniXStream:Failed to open {title_} in browser on allanime site"
+                )
+                show_notification(
+                    "Failure", f"Failed to open {title_} in browser on allanime site"
+                )
+            if webbrowser.open(parsed_link):
+                Logger.info(
+                    f"AniXStream:Successfully opened {title} in browser allanime site"
+                )
+                show_notification(
+                    "Success", f"Successfully opened {title} in browser allanime site"
+                )
+            else:
+                Logger.error(
+                    f"AniXStream:Failed to open {title} in browser on allanime site"
+                )
+                show_notification(
+                    "Failure", f"Failed to open {title} in browser on allanime site"
+                )
+        except Exception as e:
+            show_notification("Something went wrong",f"{e}")
+            
     def stream_anime_with_custom_input_cmds(self, *cmds):
         self.animdl_streaming_subprocess = (
             AnimdlApi._run_animdl_command_and_get_subprocess(["stream", *cmds])
@@ -335,14 +338,21 @@ class AniXStreamApp(MDApp):
         streams = AnimdlApi.stream_anime_with_mpv(title, episodes_range, quality)
         # TODO: End mpv child process properly
         for stream in streams:
-            self.animdl_streaming_subprocess = stream
-            for line in self.animdl_streaming_subprocess.stderr:  # type: ignore
-                if self.stop_streaming:
-                    if stream:
-                        stream.terminate()
-                        stream.kill()
-                    del stream
-                    return
+            try:
+                if isinstance(stream,str):
+                    show_notification("Failed to stream current episode",f"{stream}")
+                    continue
+                self.animdl_streaming_subprocess = stream
+
+                for line in self.animdl_streaming_subprocess.stderr:  # type: ignore
+                    if self.stop_streaming:
+                        if stream:
+                            stream.terminate()
+                            stream.kill()
+                        del stream
+                        return
+            except Exception as e:
+                show_notification("Something went wrong while streaming",f"{e}")
 
     def watch_on_animdl(
         self,

@@ -22,7 +22,7 @@
         MDButtonText:
             text:"Watch on mpv"
     MDButton:
-        on_press: app.watch_on_allanime(root.screen.data["title"]["romaji"])
+        on_press: app.watch_on_allanime(root.screen.data["title"]["romaji"]) if root.screen.data["title"]["romaji"] else app.watch_on_allanime(root.screen.data["title"]["english"])
         MDButtonText:
             text:"Watch on AllAnime"
     MDButton:

@@ -127,7 +127,7 @@ query ($userId: Int, $status: MediaListStatus) {
         currentPage
         total
     }
-    mediaList(userId: $userId, status: $status) {
+    mediaList(userId: $userId, status: $status, type: ANIME) {
       mediaId
       
       media {

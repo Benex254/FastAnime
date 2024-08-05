@@ -1,0 +1,90 @@
+from typing import Literal
+
+FZF_DEFAULT_OPTS = """ 
+    
+    --color=fg:#d0d0d0,fg+:#d0d0d0,bg:#121212,bg+:#262626
+    --color=hl:#5f87af,hl+:#5fd7ff,info:#afaf87,marker:#87ff00
+    --color=prompt:#d7005f,spinner:#af5fff,pointer:#af5fff,header:#87afaf
+    --color=border:#262626,label:#aeaeae,query:#d9d9d9
+    --border="rounded" --border-label="" --preview-window="border-rounded" --prompt="> "
+    --marker=">" --pointer="◆" --separator="─" --scrollbar="│"
+"""
+
+fzf_options = {
+    "--height": "Specifies the height of fzf's interface as a percentage.",
+    "--layout": 'Specifies the layout of fzf (default: "default").',
+    "--reverse": "Search result list appears in reverse order.",
+    "--border": "Draws border around the finder.",
+    "--inline-info": "Displays finder info inline instead of at the bottom.",
+    "--header": "Prints a header at the top of the finder.",
+    "--header-lines": "Keeps the first N lines of the input at the top.",
+    "--prompt": 'Changes the prompt string (default: "> ").',
+    "--multi": "Enables multi-select with tab/shift-tab.",
+    "--preview": "Displays the output of the command as preview.",
+    "--preview-window": "Specifies the layout of the preview window.",
+    "--bind": "Binds key to action.",
+    "--color": "Specifies the color scheme.",
+    "--no-sort": "Disables the sorting of the result list.",
+    "--nth": 'Specifies the fields to be matched (default: "1").',
+    "--delimiter": "Specifies the delimiter to use when tokenizing.",
+    "--tiebreak": "Specifies the criteria to break ties.",
+    "--toggle-sort": "Toggles the sorting feature.",
+    "--with-nth": "Specifies the fields to be transformed.",
+    "--expect": "Specifies keys to expect for instant results.",
+    "--no-mouse": "Disables mouse interaction.",
+    "--margin": "Specifies the margin around the finder.",
+    "--no-hscroll": "Disables horizontal scrolling.",
+    "--no-bold": "Disables bold text.",
+    "--tabstop": "Specifies the number of spaces for a tab.",
+    "--cycle": "Cycles through the result list.",
+    "--phony": "Disables searching and forces all items to be shown.",
+    "--filepath-word": "Matches by the filename only.",
+    "--info": "Specifies where to display finder info.",
+    "--jump-labels": "Specifies the labels for jump and select mode.",
+    "--history": "Specifies the history file for the finder.",
+    "--history-size": "Specifies the size of the history.",
+    "--disabled": "Starts the finder in disabled mode.",
+    "--no-unicode": "Disables Unicode characters in fzf.",
+    "--separator": "Specifies the separator for multi-select.",
+    "--select-1": "Automatically selects if only one match.",
+    "--exit-0": "Exits with status 0 if there's no match.",
+}
+
+FzfOptions = Literal[
+    "--height",
+    "--layout",
+    "--reverse",
+    "--border",
+    "--inline-info",
+    "--header",
+    "--header-lines",
+    "--prompt",
+    "--multi",
+    "--preview",
+    "--preview-window",
+    "--color",
+    "--no-sort",
+    "--nth",
+    "--delimiter",
+    "--tiebreak",
+    "--toggle-sort",
+    "--with-nth",
+    "--expect",
+    "--no-mouse",
+    "--margin",
+    "--no-hscroll",
+    "--no-bold",
+    "--tabstop",
+    "--cycle",
+    "--phony",
+    "--info",
+    "--jump-labels",
+    "--history",
+    "--history-size",
+    "--bind",
+    "--disabled",
+    "--no-unicode",
+    "--separator",
+    "--select-1",
+    "--exit-0",
+]

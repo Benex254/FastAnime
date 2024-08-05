@@ -1,5 +1,5 @@
 kivy
-pytube
+yt-dlp
 ffpyplayer
 plyer
 https://github.com/kivymd/KivyMD/archive/master.zip

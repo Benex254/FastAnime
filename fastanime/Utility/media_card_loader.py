@@ -1,6 +1,6 @@
 from kivy.cache import Cache
 from kivy.logger import Logger
-from pytube import YouTube
+import yt_dlp
 
 from ..libs.anilist.anilist_data_schema import AnilistBaseMediaDataSchema
 from ..Utility import anilist_data_helper, user_data_helper
@@ -96,23 +96,35 @@ class MediaCardDataLoader(object):
                     media_card_data["stars"][i] = 1
 
         if trailer := anime_item.get("trailer"):
-            trailer_url = "https://youtube.com/watch/v=" + trailer["id"]
+            trailer_url = "https://youtube.com/watch?v=" + trailer["id"]
             media_card_data["_trailer_url"] = trailer_url
         else:
             media_card_data["_trailer_url"] = ""
         return media_card_data
 
+    def _get_stream_link(self, video_url):
+        ydl_opts = {
+            "format": "best",  # You can specify the format you want here
+            "quiet": False,  # Suppress yt-dlp output
+        }
+
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            info_dict = ydl.extract_info(video_url, download=False)
+            if info_dict:
+                video_url = info_dict.get("url", "")
+            else:
+                return ""
+
+        return video_url
+
     def get_trailer_from_pytube(self, trailer_url, anime):
         if trailer := Cache.get("trailer_urls.anime", trailer_url):
             return trailer
         try:
-            yt = YouTube(trailer_url)
-            trailer = yt.streams.filter(
-                progressive=True,
-                file_extension="mp4",
-            )[-1].url
+            trailer = self._get_stream_link(trailer_url)
             Logger.info(f"Pytube Success:For {anime}")
-            Cache.append("trailer_urls.anime", trailer_url, trailer)
+            if trailer:
+                Cache.append("trailer_urls.anime", trailer_url, trailer)
             return trailer
         except Exception as e:
             Logger.error(f"Pytube Failure:For {anime} reason: {e}")

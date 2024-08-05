@@ -17,9 +17,10 @@ Heavily inspired by [animdl](https://github.com/justfoolingaround/animdl), [magi
 ## Table of Contents
 
 - [Installation](#installation)
-  - [Using pip](#using-pip)
-  - [Using pipx](#using-pipx)
-  - [Pre-built binaries](#pre-built-binaries)
+  - [Installation using your favourite package manager](#installation-using-your-favourite-package-manager)
+    - [Using pipx](#using-pipx)
+    - [Using pip](#using-pip)
+  - [Installing the building edge version](#installing-the-bleeding-edge-version)
   - [Building from the source](#building-from-the-source)
   - [External Dependencies](#external-dependencies)
 - [Usage](#usage)
@@ -36,22 +37,46 @@ Heavily inspired by [animdl](https://github.com/justfoolingaround/animdl), [magi
 
 ## Installation
 
-### Using pip
+The app can run wherever python can run. So all you need to have is python installed on your device.
+On android you can use [termux](https://github.com/termux/termux-app).
+If you have any difficulty consult for help on the [discord channel](https://discord.gg/HRjySFjQ)
+
+### Installation using your favourite package manager
+
+Currently the app is only published on [pypi](https://pypi.org/project/fastanime/).
+The app is published approximately after every 14 days, which will include accumulative changes during that period.
+
+#### Using pipx
+
+Preferred method of installation since [Pipx](https://github.com/pypa/pipx) creates an isolated environment for each app it installs.
 
 ```bash
-pip install https://github.com/Benex254/FastAnime/releases/download/v0.30.0/fastanime-0.3.0.tar.gz
+
+pipx install fastanime
 ```
 
-### Using pipx
+#### Using pip
 
 ```bash
-
-pipx install https://github.com/Benex254/FastAnime/releases/download/v0.30.0/fastanime-0.3.0.tar.gz
+pip install fastanime
 ```
 
-### Pre-built binaries
+### Installing the bleeding edge version
 
-We will soon release pre-built binaries for Linux and Windows.
+To install the latest build which are created on every push by Github actions, download the [fastanime_debug_build](https://github.com/Benex254/FastAnime/actions) of your choosing from the Github actions page.
+Then:
+
+```bash
+unzip fastanime_debug_build
+
+# outputs fastanime<version>.tar.gz
+
+pipx install fastanime<version>.tar.gz
+
+# --- or ---
+
+pip install fastanime<version>.tar.gz
+```
 
 ### Building from the source
 
@@ -87,6 +112,7 @@ fastanime --version
 
 > [!Tip]
 >
+> Download the completions from [here](https://github.com/Benex254/FastAnime/tree/master/completions) for your shell.
 > To add completions:
 >
 > - Fish Users: `cp $FASTANIME_PATH/completions/fastanime.fish ~/.config/fish/completions/`
@@ -107,7 +133,6 @@ The only required external dependency, unless you won't be streaming, is [MPV](h
 **Other dependecies that will just make your experience better:**
 
 - [fzf](https://github.com/junegunn/fzf) :fire: which is used as a better alternative to the ui.
-- [fzf-preview](https://github.com/junegunn/fzf/blob/master/bin/fzf-preview.sh) a script that is used to preview images and is maintained by the devs of fzf.
 - [chafa](https://github.com/hpjansson/chafa) currently the best cross platform and cross terminal image viewer for the terminal.
 - [icat](https://sw.kovidgoyal.net/kitty/kittens/icat/) an image viewer that only works in [kitty terminal](https://sw.kovidgoyal.net/kitty/), which is currently the best terminal in my opinion, and by far the best image renderer for the terminal thanks to kitty's terminal graphics protocol. Its terminal graphics is so op that you can [run a browser on it]()!!
 - [bash](https://www.gnu.org/software/bash/) is used as the preview script language.
@@ -136,6 +161,20 @@ Overview of main commands:
 
 Configuration is directly passed into this command at run time to overide your config.
 
+Available options include:
+
+- `--server;-s <server>` set the default server to auto select
+- `--continue;-c/--no-continue;-no-c` whether to continue from the last episode you were watching
+- `--quality;-q <0|1|2|3>` the link to choose from server
+- `--translation-type;- <dub|sub` what language for anime
+- `--auto-select;-a/--no-auto-select;-no-a` auto select title from provider results
+- `--auto-next;-A;/--no-auto-next;-no-A` auto select next episode
+- `-downloads-dir;-d <path>` set the folder to download anime into
+- `--fzf` use fzf for the ui
+- `--default` use the default ui
+- `--preview` show a preview when using fzf
+- `--no-preview` dont show a preview when using fzf
+
 #### The anilist command
 
 Stream, browse, and discover anime efficiently from the terminal using the [AniList API](https://github.com/AniList/ApiV2-GraphQL-Docs).
@@ -154,6 +193,7 @@ The subcommands are mainly their as convenience. Since all the features already 
 - `fastanime anilist upcoming`: Top 15 upcoming anime.
 - `fastanime anilist popular`: Top 15 popular anime.
 - `fastanime anilist favourites`: Top 15 favorite anime.
+- `fastanime anilist random`: get random anime
 
 #### download subcommand
 
@@ -203,6 +243,10 @@ View and stream the anime you downloaded using MPV.
 
 ```bash
 fastanime downloads
+
+# to get the path to the downloads folder set
+fastanime downloads --path
+# useful when you want to use the value for other programs
 ```
 
 #### config subcommand
@@ -213,6 +257,9 @@ Edit FastAnime configuration settings using your preferred editor (based on `$ED
 
 ```bash
 fastanime config
+
+# to get config path which is useful if you want to use it for another program.
+fastanime config --path
 ```
 
 > [!Note]
@@ -237,6 +284,7 @@ auto_select=True
 preferred_language = romaji  # Display language (options: english, romaji)
 downloads_dir = <Default-videos-dir>/FastAnime  # Download directory
 use_fzf=False # whether to use fzf as the interface for the anilist command and others.
+preview=false # whether to show a preview window when using fzf
 
 [anilist]
 # Not implemented yet

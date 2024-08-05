@@ -1,0 +1,71 @@
+query($query:String){
+  Page(perPage:15,page:$page){
+    pageInfo{
+      total
+      currentPage
+    }
+    media(
+      search:$query,
+      genre_in:$genre_in,
+      genre_not_in:$genre_not_in,
+      tag_in:$tag_in,
+      tag_not_in:$tag_not_in,
+      status_in:$status_in,
+      status_not_in:$status_not_in,
+      popularity_greater:$popularity_greater,
+      popularity_lesser:$popularity_lesser,
+      averageScore_greater:$averageScore_greater,
+      averageScore_lesser:$averageScore_lesser,
+      startDate_greater:$startDate_greater,
+      startDate_lesser:$startDate_lesser,
+      endDate_greater:$endDate_greater,
+      endDate_lesser:$endDate_lesser,
+      sort:$sort,
+      type:ANIME
+      )
+  {
+    id
+    title{
+      romaji
+      english
+    }
+    coverImage{
+      medium
+    }
+    trailer {
+      site
+      id
+      
+    }
+    popularity
+    favourites
+    averageScore
+    episodes
+    genres
+    studios{
+      nodes{
+        name
+        favourites
+      }
+    }
+    tags {
+      name
+    }
+    startDate {
+      year
+      month
+      day
+    }
+    endDate {
+      year
+      month
+      day
+    }
+    status
+    nextAiringEpisode {
+      timeUntilAiring
+      airingAt
+      episode
+    }
+  }
+}

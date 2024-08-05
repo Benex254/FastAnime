@@ -1,0 +1,76 @@
+<MyListScreenView>
+    md_bg_color: self.theme_cls.backgroundColor
+    my_list_container:my_list_container
+    MDBoxLayout:
+        size_hint:1,1
+        MDNavigationRail:
+            anchor:"top"
+            type: "selected"
+            md_bg_color: self.theme_cls.secondaryContainerColor
+            MDNavigationRailFabButton:
+                icon: "home"
+                on_release: 
+                    root.manager_screens.current = "main screen"
+            CommonNavigationRailItem:
+                icon: "magnify"
+                text: "Search"
+                # on_release: 
+                    # root.manager_screens.current_screen = "search screen"
+            CommonNavigationRailItem:
+                icon: "bookmark-outline"
+                text: "Bookmark"
+
+            CommonNavigationRailItem:
+                icon: "library-outline"
+                text: "Library"
+
+            CommonNavigationRailItem:
+                icon: "cog"
+                text: "settings"
+
+        # ScreenManager:
+        #     MDScreen:
+        #         name:"main"
+        MDAnchorLayout:
+            anchor_y: 'top'
+            padding:"10dp"
+            size_hint:1,1
+
+            MDBoxLayout:
+                orientation: 'vertical'
+                id:p
+                size_hint:1,1
+                MDBoxLayout:
+                    pos_hint: {'center_x': 0.5,'top': 1}
+                    padding: "10dp"
+                    size_hint_y:None
+                    height: self.minimum_height
+                    size_hint_x:.75
+                    spacing: '20dp'
+                    MDTextField:
+                        size_hint_x:1
+                        required:True
+                        on_text_validate:
+                            root.handle_search_for_anime(args[0])
+
+                        MDTextFieldLeadingIcon:
+                            icon: "magnify"
+                        MDTextFieldHintText:
+                            text: "Search for anime"
+                        # MDTextFieldTrailingIcon:
+                        #     icon: "filter"
+                    MDIconButton:
+                        pos_hint: {'center_y': 0.5}
+                        icon: "account-circle"
+                        # size: 32,32
+                MDScrollView:
+                    size_hint:1,1
+                    MDGridLayout:
+                        spacing: '10dp'
+                        padding: "75dp","50dp","10dp","100dp"
+                        id:my_list_container
+                        cols:5
+                        size_hint_y:None
+                        height:self.minimum_height
+
+    

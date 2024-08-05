@@ -1,7 +1,6 @@
 import re
 import subprocess
 
-
 # Dictionary to map hex values to characters
 hex_to_char = {
     "01": "9",

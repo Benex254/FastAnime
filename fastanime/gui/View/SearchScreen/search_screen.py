@@ -2,8 +2,9 @@ from kivy.clock import Clock
 from kivy.properties import ObjectProperty, StringProperty
 
 from ...View.base_screen import BaseScreenView
-
-from .components import Filters, SearchResultsPagination, TrendingAnimeSideBar
+from .components.filters import Filters
+from .components.pagination import SearchResultsPagination
+from .components.trending_sidebar import TrendingAnimeSideBar
 
 
 class SearchScreenView(BaseScreenView):
@@ -46,9 +47,9 @@ class SearchScreenView(BaseScreenView):
         self.search_results_container.data.append(widget)
 
     def update_pagination(self, pagination_info):
-        self.search_results_pagination.current_page = self.current_page = (
-            pagination_info["currentPage"]
-        )
+        self.search_results_pagination.current_page = (
+            self.current_page
+        ) = pagination_info["currentPage"]
         self.search_results_pagination.total_pages = self.total_pages = max(
             int(pagination_info["total"] / 30), 1
         )
@@ -66,3 +67,6 @@ class SearchScreenView(BaseScreenView):
 
     def update_trending_sidebar(self, trending_anime):
         self.trending_anime_sidebar.data.append(trending_anime)
+
+
+__all__ = ["SearchScreenView"]

@@ -1,10 +1,11 @@
-from threading import Thread
 from queue import Queue
+from threading import Thread
 
 import yt_dlp
+
 from ... import downloads_dir
-from ..utils import sanitize_filename
 from ..show_notification import show_notification
+from ..utils import sanitize_filename
 
 
 class MyLogger:

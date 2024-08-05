@@ -1,6 +1,7 @@
 import click
 from rich import print
-from .commands import search, download, anilist
+
+from .commands import anilist, download, search
 
 commands = {"search": search, "download": download, "anilist": anilist}
 

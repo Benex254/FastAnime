@@ -6,7 +6,7 @@ from kivymd.uix.navigationrail import MDNavigationRail, MDNavigationRailItem
 from kivymd.uix.screen import MDScreen
 from kivymd.uix.tooltip import MDTooltip
 
-from ..Utility.observer import Observer
+from ...Utility.observer import Observer
 
 
 class NavRail(MDNavigationRail):
@@ -69,7 +69,7 @@ class BaseScreenView(MDScreen, Observer):
         super().__init__(**kw)
         # Often you need to get access to the application object from the view
         # class. You can do this using this attribute.
-        from .. import FastAnime
+        from ...gui import FastAnime
 
         self.app: FastAnime = MDApp.get_running_app()  # type: ignore
         # Adding a view class as observer.

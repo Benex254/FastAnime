@@ -1,17 +1,13 @@
-from ..Controller import (
-    AnimeScreenController,
-    DownloadsScreenController,
-    HomeScreenController,
-    MyListScreenController,
-    SearchScreenController,
-)
-from ..Model import (
-    AnimeScreenModel,
-    DownloadsScreenModel,
-    HomeScreenModel,
-    MyListScreenModel,
-    SearchScreenModel,
-)
+from ..Controller.anime_screen import AnimeScreenController
+from ..Controller.downloads_screen import DownloadsScreenController
+from ..Controller.home_screen import HomeScreenController
+from ..Controller.my_list_screen import MyListScreenController
+from ..Controller.search_screen import SearchScreenController
+from ..Model.anime_screen import AnimeScreenModel
+from ..Model.download_screen import DownloadsScreenModel
+from ..Model.home_screen import HomeScreenModel
+from ..Model.my_list_screen import MyListScreenModel
+from ..Model.search_screen import SearchScreenModel
 
 screens = {
     "home screen": {

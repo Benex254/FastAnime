@@ -1,5 +1,6 @@
-from ..libs.anilist import AniList
-from ..Utility import media_card_loader, show_notification
+from ...libs.anilist.anilist import AniList
+from ...Utility.show_notification import show_notification
+from ..Utility.media_card_loader import media_card_loader
 from .base_model import BaseScreenModel
 
 
@@ -31,3 +32,6 @@ class SearchScreenModel(BaseScreenModel):
         for anime_item in self.data["data"]["Page"]["media"]:
             yield media_card_loader.media_card(anime_item)
         self.pagination_info = self.data["data"]["Page"]["pageInfo"]
+
+
+__all__ = ["SearchScreenModel"]

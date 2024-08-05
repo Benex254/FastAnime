@@ -1,5 +1,5 @@
-from ..Model import DownloadsScreenModel
-from ..View import DownloadsScreenView
+from ..Model.download_screen import DownloadsScreenModel
+from ..View.DownloadsScreen.download_screen import DownloadsScreenView
 
 
 class DownloadsScreenController:
@@ -11,3 +11,6 @@ class DownloadsScreenController:
 
     def get_view(self) -> DownloadsScreenView:
         return self.view
+
+
+__all__ = ["DownloadsScreenController"]

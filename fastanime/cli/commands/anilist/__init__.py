@@ -1,12 +1,11 @@
 import click
 
 from .favourites import favourites
+from .popular import popular
 from .recent import recent
 from .search import search
-from .popular import popular
 from .trending import trending
 from .upcoming import upcoming
-
 
 commands = {
     "favourites": favourites,

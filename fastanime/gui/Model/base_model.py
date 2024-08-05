@@ -31,3 +31,6 @@ class BaseScreenModel:
             if observer.name == name_screen:
                 observer.model_is_changed()
                 break
+
+
+__all__ = ["BaseScreenModel"]

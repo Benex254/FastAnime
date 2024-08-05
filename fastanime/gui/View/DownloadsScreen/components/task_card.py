@@ -1,4 +1,4 @@
-from kivy.properties import StringProperty, ListProperty
+from kivy.properties import ListProperty, StringProperty
 from kivymd.uix.boxlayout import MDBoxLayout
 
 

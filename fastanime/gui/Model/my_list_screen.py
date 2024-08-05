@@ -1,6 +1,6 @@
-from ..libs.anilist import AniList
-from ..Utility import media_card_loader, show_notification
-
+from ...libs.anilist.anilist import AniList
+from ...Utility.show_notification import show_notification
+from ..Utility.media_card_loader import media_card_loader
 from .base_model import BaseScreenModel
 
 

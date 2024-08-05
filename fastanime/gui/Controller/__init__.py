@@ -1,5 +1,1 @@
-from .anime_screen import AnimeScreenController
-from .downloads_screen import DownloadsScreenController
-from .home_screen import HomeScreenController
-from .my_list_screen import MyListScreenController
-from .search_screen import SearchScreenController
+

@@ -1,9 +1,11 @@
-from ..utils.fzf import fzf
+import logging
+
+from fuzzywuzzy import fuzz
+
 from ...libs.anime_provider.allanime.api import anime_provider
 from ...Utility.data import anime_normalizer
+from ..utils.fzf import fzf
 from ..utils.mpv import mpv
-from fuzzywuzzy import fuzz
-import logging
 
 logger = logging.getLogger(__name__)
 

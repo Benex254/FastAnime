@@ -1,7 +1,7 @@
-from subprocess import Popen, PIPE, DEVNULL
 import os
-import threading
 import shutil
+import threading
+from subprocess import DEVNULL, PIPE, Popen
 
 
 class MPVPlayer:

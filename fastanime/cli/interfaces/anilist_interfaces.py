@@ -427,7 +427,30 @@ def anilist_options(config, anilist_config: QueryDict):
             anilist_options(config, anilist_config)
 
     def _add_to_list(config: Config, anilist_config: QueryDict):
-        config.update_anime_list(anilist_config.anime_id)
+        # config.update_anime_list(anilist_config.anime_id)
+        anime_lists = {
+            "Watching": "CURRENT",
+            "Paused": "PAUSED",
+            "Planning": "PLANNING",
+            "Dropped": "DROPPED",
+            "Repeating": "REPEATING",
+            "Completed": "COMPLETED",
+        }
+        if config.use_fzf:
+            anime_list = fzf.run(
+                list(anime_lists.keys()),
+                "Choose the list you want to add to",
+                "Add your animelist",
+            )
+        else:
+            anime_list = fuzzy_inquirer(
+                "Choose the list you want to add to", list(anime_lists.keys())
+            )
+        AniList.update_anime_list(
+            {"status": anime_lists[anime_list], "mediaId": selected_anime["id"]}
+        )
+        print("Successfully updated your list")
+        input("Enter to continue...")
         anilist_options(config, anilist_config)
 
     def _remove_from_list(config: Config, anilist_config: QueryDict):

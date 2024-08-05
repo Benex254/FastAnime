@@ -26,14 +26,8 @@ pytest = "^8.2.2"
 ruff = "^0.4.10"
 pre-commit = "^3.7.1"
 autoflake = "^2.3.1"
-bandit = "^1.7.9"
+# bandit = "^1.7.9"
 
-[tool.poetry.group.gui_deps]
-optional = true
-[tool.poetry.group.gui_deps.dependencies]
-kivy = "^2.3.0"
-
-kivymd = { url = "https://github.com/kivymd/KivyMD/archive/master.zip" }
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
@@ -42,7 +36,7 @@ build-backend = "poetry.core.masonry.api"
 fastanime = 'fastanime:FastAnime'
 
 # FILE: .bandit
-[tool.bandit]
+# [tool.bandit]
 #exclude = tests,path/to/file
 #tests = B201,B301
-skips = ["B311", "B603", "B607", "B404"]
+# skips = ["B311", "B603", "B607", "B404"]

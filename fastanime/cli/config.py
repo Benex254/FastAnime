@@ -5,6 +5,7 @@ from rich import print
 
 from ..AnimeProvider import AnimeProvider
 from ..constants import USER_CONFIG_PATH, USER_VIDEOS_DIR
+from ..libs.rofi import Rofi
 from ..Utility.user_data_helper import user_data_helper
 
 
@@ -38,6 +39,8 @@ class Config(object):
                 "icons": "false",
                 "notification_duration": "2",
                 "skip": "false",
+                "use_rofi": "false",
+                "rofi_theme": "",
             }
         )
         self.configparser.add_section("stream")
@@ -46,12 +49,14 @@ class Config(object):
         if not os.path.exists(USER_CONFIG_PATH):
             with open(USER_CONFIG_PATH, "w") as config:
                 self.configparser.write(config)
+
         self.configparser.read(USER_CONFIG_PATH)
 
         # --- set defaults ---
         self.downloads_dir = self.get_downloads_dir()
         self.provider = self.get_provider()
         self.use_fzf = self.get_use_fzf()
+        self.use_rofi = self.get_use_rofi()
         self.skip = self.get_skip()
         self.icons = self.get_icons()
         self.preview = self.get_preview()
@@ -66,6 +71,8 @@ class Config(object):
         self.server = self.get_server()
         self.format = self.get_format()
         self.preferred_language = self.get_preferred_language()
+        self.rofi_theme = self.get_rofi_theme()
+        Rofi.rofi_theme = self.rofi_theme
 
         # ---- setup user data ------
         self.watch_history: dict = user_data_helper.user_data.get("watch_history", {})
@@ -108,11 +115,17 @@ class Config(object):
     def get_provider(self):
         return self.configparser.get("general", "provider")
 
+    def get_rofi_theme(self):
+        return self.configparser.get("general", "rofi_theme")
+
     def get_downloads_dir(self):
         return self.configparser.get("general", "downloads_dir")
 
     def get_use_fzf(self):
         return self.configparser.getboolean("general", "use_fzf")
+
+    def get_use_rofi(self):
+        return self.configparser.getboolean("general", "use_rofi")
 
     def get_skip(self):
         return self.configparser.getboolean("stream", "skip")

@@ -98,7 +98,10 @@ class AniListApi:
                 headers=self.headers,
             )
             anilist_data = response.json()
-            return (True, anilist_data)
+            if response.status_code == 200:
+                return (True, anilist_data)
+            else:
+                return (False, anilist_data)
         except requests.exceptions.Timeout:
             return (
                 False,
@@ -142,7 +145,11 @@ class AniListApi:
                 timeout=10,
             )
             anilist_data: AnilistDataSchema = response.json()
-            return (True, anilist_data)
+
+            if response.status_code == 200:
+                return (True, anilist_data)
+            else:
+                return (False, anilist_data)
         except requests.exceptions.Timeout:
             return (
                 False,

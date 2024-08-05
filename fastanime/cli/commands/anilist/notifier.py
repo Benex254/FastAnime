@@ -56,12 +56,12 @@ def notifier(config: Config):
             else:
                 for notification_ in notifications:
                     anime_episode = notification_["episode"]
-                    title = f"Episode {anime_episode} just aired"
                     anime_title = notification_["media"]["title"][
                         config.preferred_language
                     ]
+                    title = f"{anime_title} Episode {anime_episode} just aired"
                     # pyright:ignore
-                    message = f"{anime_title}\nBe sure to watch so you are not left out of the loop."
+                    message = "Be sure to watch so you are not left out of the loop."
                     # message = str(textwrap.wrap(message, width=50))
 
                     id = notification_["media"]["id"]

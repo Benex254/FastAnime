@@ -5,12 +5,13 @@ Contains Helper functions to read and write the user data files
 from kivy.storage.jsonstore import JsonStore
 from datetime import date, datetime
 from kivy.logger import Logger
+from kivy.resources import resource_find
 
 today = date.today()
 now = datetime.now()
 
-user_data = JsonStore("user_data.json")
-yt_cache = JsonStore("yt_cache.json")
+user_data = JsonStore(resource_find("user_data.json"))
+yt_cache = JsonStore(resource_find("yt_cache.json"))
 
 
 # Get the user data

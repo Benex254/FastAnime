@@ -42,8 +42,8 @@ class AnimeScreenView(BaseScreenView):
 
         # update header
         self.header.titles = f"{english_title}\n{jp_title}"
-        if banner_image := data["bannerImage"]:
-            self.header.banner_image = banner_image
+        # if banner_image := data["bannerImage"]:
+        self.header.banner_image = data["bannerImage"]
 
         # -----side bar-----
 

@@ -216,7 +216,6 @@ class MediaCardDataLoader(object):
                 for i in range(stars):
                     media_card.stars[i] = 1
 
-        # TODO: ADD a default image if trailer not available
         # Setting up trailer info to be gotten if available
         if anime_item["trailer"]:
             yt_watch_link = "https://youtube.com/watch?v=" + anime_item["trailer"]["id"]

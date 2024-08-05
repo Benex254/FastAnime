@@ -145,12 +145,12 @@ def run_cli(
 
     if quality:
         ctx.obj.quality = quality
-    if ctx.get_parameter_source("auto-next") == click.core.ParameterSource.COMMANDLINE:
+    if ctx.get_parameter_source("auto_next") == click.core.ParameterSource.COMMANDLINE:
         ctx.obj.auto_next = auto_next
     if ctx.get_parameter_source("icons") == click.core.ParameterSource.COMMANDLINE:
         ctx.obj.icons = icons
     if (
-        ctx.get_parameter_source("auto_select")
+        ctx.get_parameter_source("--auto_select")
         == click.core.ParameterSource.COMMANDLINE
     ):
         ctx.obj.auto_select = auto_select

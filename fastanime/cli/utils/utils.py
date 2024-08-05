@@ -1,8 +1,8 @@
 import logging
 import os
 
-from fuzzywuzzy import fuzz
 from InquirerPy import inquirer
+from thefuzz import fuzz
 
 from ... import PLATFORM
 from ...Utility.data import anime_normalizer

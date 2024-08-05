@@ -7,7 +7,7 @@ import sys
 from rich import print
 from rich.prompt import Prompt
 
-from ... import APP_CACHE_DIR, USER_CONFIG_PATH, USER_NAME
+from ... import APP_CACHE_DIR, USER_CONFIG_PATH
 from ...libs.anilist.anilist import AniList
 from ...libs.anilist.anilist_data_schema import AnilistBaseMediaDataSchema
 from ...libs.anime_provider.allanime.api import anime_provider
@@ -18,7 +18,7 @@ from ...Utility.data import anime_normalizer
 from ...Utility.utils import remove_html_tags, sanitize_filename
 from ..config import Config
 from ..utils.mpv import mpv
-from ..utils.tools import QueryDict
+from ..utils.tools import QueryDict, exit_app
 from ..utils.utils import clear
 
 SEARCH_RESULTS_CACHE = os.path.join(APP_CACHE_DIR, "search_results")
@@ -99,11 +99,6 @@ def get_preview(search_results: list[AnilistBaseMediaDataSchema], config: Config
     )
     # preview.replace("\n", ";")
     return preview
-
-
-def exit_app(*args):
-    print("Have a good day :smile:", USER_NAME)
-    sys.exit(0)
 
 
 def player_controls(config: Config, anilist_config: QueryDict):

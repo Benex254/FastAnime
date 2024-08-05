@@ -8,7 +8,13 @@ import requests
 from plyer import notification
 
 from ....anilist import AniList
-from ....constants import APP_CACHE_DIR, APP_DATA_DIR, APP_NAME, PLATFORM
+from ....constants import (
+    APP_CACHE_DIR,
+    APP_DATA_DIR,
+    APP_NAME,
+    NOTIFICATION_BELL,
+    PLATFORM,
+)
 from ..config import Config
 
 logger = logging.getLogger(__name__)
@@ -91,9 +97,13 @@ def notifier(config: Config):
                             message=message,
                             app_name=APP_NAME,
                             app_icon=ICON_PATH,
-                            hints={"image-path": ICON_PATH},
+                            hints={
+                                "image-path": ICON_PATH,
+                                "sound-file": NOTIFICATION_BELL,
+                            },
                             timeout=notification_duration,
                         )
+                        # os.system(f"play {NOTIFICATION_BELL}")
                         time.sleep(30)
         except Exception as e:
             logger.error(e)

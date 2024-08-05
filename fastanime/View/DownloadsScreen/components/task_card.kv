@@ -18,11 +18,6 @@
 
     TaskText:
         size_hint_x:.8
-        text:color_text(root.anime_task_name,root.theme_cls.primaryColor)
-    TaskText:
-        size_hint_x:.2
-        # color:self.theme_cls.surfaceDimColor
-        theme_text_color:"Secondary"
-        text:color_text(root.episodes_to_download,root.theme_cls.secondaryColor)
-    MDIcon:
-        icon:"download"
+        text:"{} Episode: {}".format(root.file[0],root.file[1])
+    
+

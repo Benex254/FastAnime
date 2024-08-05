@@ -1,116 +1,22 @@
 import json
-import re
+import logging
 
 import requests
 
-# TODO: move constants to own file
-ALLANIME_BASE = "allanime.day"
-ALLANIME_REFERER = "https://allanime.to/"
-ALLANIME_API_ENDPOINT = "https://api.{}/api/".format(ALLANIME_BASE)
+from .gql_queries import ALLANIME_SHOW_GQL, ALLANIME_SEARCH_GQL, ALLANIME_EPISODES_GQL
+from .constants import (
+    ALLANIME_BASE,
+    ALLANIME_REFERER,
+    ALLANIME_API_ENDPOINT,
+    USER_AGENT,
+)
+from .utils import decode_hex_string
+from .data_types import (
+    AllAnimeEpisode,
+    AllAnimeSearchResults,
+)
 
-
-# TODO: move th gql queries to own files
-ALLANIME_SEARCH_GQL = """
-query(
-        $search: SearchInput
-        $limit: Int
-        $page: Int
-        $translationType: VaildTranslationTypeEnumType
-        $countryOrigin: VaildCountryOriginEnumType
-    ) {
-    shows(
-        search: $search
-        limit: $limit
-        page: $page
-        translationType: $translationType
-        countryOrigin: $countryOrigin
-    ) {
-        pageInfo {
-            total
-        }
-        edges {    
-        _id
-        name
-        availableEpisodes
-        __typename
-        }
-    }
-}
-"""
-
-
-ALLANIME_EPISODES_GQL = """\
-query ($showId: String!, $translationType: VaildTranslationTypeEnumType!, $episodeString: String!) {
-    episode(
-        showId: $showId
-        translationType: $translationType
-        episodeString: $episodeString
-    ) {
-        
-        episodeString
-        sourceUrls
-        notes
-    }
-}"""
-
-ALLANIME_SHOW_GQL = """
-query ($showId: String!) {
-    show(
-        _id: $showId
-    ) {
-
-        _id
-        name
-        availableEpisodesDetail
-        
-    }
-}
-"""
-
-
-# TODO: creat a utility module for this
-# Dictionary to map hex values to characters
-hex_to_char = {
-    "01": "9",
-    "08": "0",
-    "05": "=",
-    "0a": "2",
-    "0b": "3",
-    "0c": "4",
-    "07": "?",
-    "00": "8",
-    "5c": "d",
-    "0f": "7",
-    "5e": "f",
-    "17": "/",
-    "54": "l",
-    "09": "1",
-    "48": "p",
-    "4f": "w",
-    "0e": "6",
-    "5b": "c",
-    "5d": "e",
-    "0d": "5",
-    "53": "k",
-    "1e": "&",
-    "5a": "b",
-    "59": "a",
-    "4a": "r",
-    "4c": "t",
-    "4e": "v",
-    "57": "o",
-    "51": "i",
-}
-
-
-def decode_hex_string(hex_string):
-    # Split the hex string into pairs of characters
-    hex_pairs = re.findall("..", hex_string)
-
-    # Decode each hex pair
-    decoded_chars = [hex_to_char.get(pair.lower(), pair) for pair in hex_pairs]
-
-    return "".join(decoded_chars)
+Logger = logging.getLogger(__name__)
 
 
 # TODO: create tests for the api
@@ -122,24 +28,22 @@ class AllAnimeAPI:
 
     api_endpoint = ALLANIME_API_ENDPOINT
 
-    def _fetch_gql(self, query: str, variables: dict):
+    def _fetch_gql(self, query: str, variables: dict) -> dict:
         response = requests.get(
             self.api_endpoint,
             params={
                 "variables": json.dumps(variables),
                 "query": query,
             },
-            headers={
-                "Referer": ALLANIME_REFERER,
-                "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101 Firefox/78.0",
-            },
+            headers={"Referer": ALLANIME_REFERER, "User-Agent": USER_AGENT},
         )
         if response.status_code != 200:
-            print(response.content)
             return {}
         return response.json().get("data", {})
 
-    def search_for_anime(self, user_query: str, translation_type: str = "sub"):
+    def search_for_anime(
+        self, user_query: str, translation_type: str = "sub"
+    ) -> AllAnimeSearchResults | dict:
         search = {"allowAdult": False, "allowUnknown": False, "query": user_query}
         limit = 40
         translationtype = translation_type
@@ -160,7 +64,7 @@ class AllAnimeAPI:
 
     def get_anime_episode(
         self, allanime_show_id: str, episode_string: str, translation_type: str = "sub"
-    ):
+    ) -> AllAnimeEpisode | dict:
         variables = {
             "showId": allanime_show_id,
             "translationType": translation_type,
@@ -190,23 +94,27 @@ class AllAnimeAPI:
                 embed_url,
                 headers={
                     "Referer": ALLANIME_REFERER,
-                    "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101 Firefox/78.0",
+                    "User-Agent": USER_AGENT,
                 },
             )
             if resp.status_code == 200:
                 match embed["sourceName"]:
                     case "Luf-mp4":
+                        Logger.debug("allanime:Found streams from gogoanime")
                         yield "gogoanime", resp.json()
                     case "Kir":
+                        Logger.debug("allanime:Found streams from wetransfer")
                         yield "wetransfer", resp.json()
                     case "S-mp4":
+                        Logger.debug("allanime:Found streams from sharepoint")
                         yield "sharepoint", resp.json()
                     case "Sak":
+                        Logger.debug("allanime:Found streams from dropbox")
                         yield "dropbox", resp.json()
                     case _:
                         yield "Unknown", resp.json()
             else:
-                return None
+                return {}
 
 
 anime_provider = AllAnimeAPI()
@@ -216,30 +124,7 @@ if __name__ == "__main__":
     # lets see if it works :)
     import subprocess
     import sys
-
-    def run_fzf(options):
-        """
-        Run fzf with a list of options and return the selected option.
-        """
-        # Join the list of options into a single string with newlines
-        options_str = "\n".join(options)
-
-        # Run fzf as a subprocess
-        result = subprocess.run(
-            ["fzf"],
-            input=options_str,
-            text=True,
-            stdout=subprocess.PIPE,
-        )
-
-        # Check if fzf was successful
-        if result.returncode == 0:
-            # Return the selected option
-            return result.stdout.strip()
-        else:
-            # Handle the case where fzf fails or is canceled
-            print("fzf was canceled or failed")
-            return None
+    from .utils import run_fzf
 
     anime = input("Enter the anime name: ")
     translation = input("Enter the translation type: ")
@@ -247,7 +132,7 @@ if __name__ == "__main__":
     search_results = anime_provider.search_for_anime(
         anime, translation_type=translation.strip()
     )
-    print(search_results)
+
     if not search_results:
         raise Exception("No results found")
 
@@ -260,7 +145,6 @@ if __name__ == "__main__":
 
     anime_result = list(filter(lambda x: x["name"] == anime, search_results))[0]
     anime_data = anime_provider.get_anime(anime_result["_id"])
-    print(anime_data)
     if anime_data is None:
         raise Exception("Anime not found")
     availableEpisodesDetail = anime_data["show"]["availableEpisodesDetail"]
@@ -284,11 +168,14 @@ if __name__ == "__main__":
         if not episode_streams:
             raise Exception("No streams found")
         episode_streams = list(episode_streams)
-        print(episode_streams)
+        stream_links = []
+        for server in episode_streams:
+            stream_links = [
+                *stream_links,
+                *[stream["link"] for stream in server[1]["links"]],
+            ]
+        stream_links = stream_link = run_fzf([*stream_links, "quit"])
 
-        stream_links = [stream["link"] for stream in episode_streams[2][1]["links"]]
-        stream_link = run_fzf([*stream_links, "quit"])
-        print(stream_link)
         if stream_link == "quit":
             print("Have a nice day")
             sys.exit()

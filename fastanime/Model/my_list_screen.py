@@ -7,9 +7,9 @@ from .base_model import BaseScreenModel
 class MyListScreenModel(BaseScreenModel):
     already_in_user_anime_list = []
 
-    def update_my_anime_list_view(self, not_yet_in_user_anime_list: list, page=None):
+    def update_my_anime_list_view(self, not_yet_in_user_anime_list: list):
         success, self.data = AniList.search(
-            id_in=not_yet_in_user_anime_list, page=page, sort="SCORE_DESC"
+            id_in=not_yet_in_user_anime_list, sort="SCORE_DESC"
         )
         if success:
             return self.media_card_generator()

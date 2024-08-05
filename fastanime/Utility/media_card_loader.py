@@ -87,6 +87,8 @@ class MediaCardDataLoader(object):
 
         if anime_id in user_data_helper.get_user_anime_list():
             media_card_data["is_in_my_list"] = True
+        else:
+            media_card_data["is_in_my_list"] = False
 
         if anime_item["averageScore"]:
             stars = int(anime_item["averageScore"] / 100 * 6)

@@ -1,2 +1,2 @@
-#! /usr/bin/bash
-poetry run fastanime $*
+#!/usr/bin/env sh
+exec "${PYTHON:-python3}" -Werror -Xdev "$(dirname "$(realpath "$0")")/fastanime/__main__.py" "$@"

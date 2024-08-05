@@ -8,7 +8,7 @@ from subprocess import PIPE, Popen
 import requests
 from rich import print
 
-from .. import APP_NAME, AUTHOR, GIT_REPO, REPO, __version__
+from .. import APP_NAME, AUTHOR, GIT_REPO, __version__
 
 API_URL = f"https://api.{GIT_REPO}/repos/{AUTHOR}/{APP_NAME}/releases/latest"
 
@@ -91,13 +91,12 @@ def update_app():
     else:
         executable = sys.executable
 
-        app_package_url = f"https://{REPO}/releases/download/{tag_name}/fastanime-{tag_name.replace("v","")}.tar.gz"
         args = [
             executable,
             "-m",
             "pip",
             "install",
-            app_package_url,
+            APP_NAME,
             "--user",
             "--no-warn-script-location",
         ]

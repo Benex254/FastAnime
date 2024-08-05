@@ -2,9 +2,6 @@
 
 Welcome to Fast Anime, your new favorite destination for streaming and downloading anime.
 
-[![Watch the video](https://img.youtube.com/vi/aHRlxmxo6rY/0.jpg)](https://www.youtube.com/watch?v=aHRlxmxo6rY)
-
-
 ## Table of Contents
 
 - [Installation](#installation)
@@ -16,7 +13,9 @@ Welcome to Fast Anime, your new favorite destination for streaming and downloadi
 - [Contributing](#contributing)
 - [Receiving Support](#receiving-support)
 - [Supporting the Project](#supporting-the-project)
+- [demo video](#demo-video)
 
+  
 ## Installation
 
 ### Using pip
@@ -73,4 +72,9 @@ If you have any inquiries, join our Discord server: `<Discord-server-link>`
 
 ## Supporting the Project
 
-If you want to support the project, please consider leaving a star on our GitHub repository or [buying us a coffee](ko-fi.com/benex254). We appreciate both!
+If you want to support the project, please consider leaving a star on our GitHub repository or [buying us a coffee](https://ko-fi.com/benex254). We appreciate both!
+
+## demo-video
+[![Watch the video](https://img.youtube.com/vi/aHRlxmxo6rY/0.jpg)](https://www.youtube.com/watch?v=aHRlxmxo6rY)
+
+

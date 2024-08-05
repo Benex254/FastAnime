@@ -3,11 +3,15 @@ import os
 import sys
 from platform import platform
 
+from dotenv import load_dotenv
 from platformdirs import PlatformDirs
-from rich.traceback import install
 
-install(show_locals=True)
-# Create a logger instance
+load_dotenv()
+
+if os.environ.get("FA_RICH_TRACEBACK", False):
+    from rich.traceback import install
+
+    install(show_locals=True)
 
 
 # initiate constants

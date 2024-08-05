@@ -416,8 +416,8 @@ def anilist_options(config, anilist_config: QueryDict):
         anilist_options(config, anilist_config)
 
     def _view_info(config, anilist_config):
-        from rich.prompt import Confirm
         from rich.console import Console
+        from rich.prompt import Confirm
 
         from ...Utility import anilist_data_helper
         from ...Utility.utils import remove_html_tags
@@ -534,7 +534,7 @@ def anilist(config: Config, anilist_config: QueryDict):
     def edit_config():
         import subprocess
 
-        process = subprocess.run([os.environ.get("EDITOR", "open"), USER_CONFIG_PATH])
+        subprocess.run([os.environ.get("EDITOR", "open"), USER_CONFIG_PATH])
         config.load_config()
 
         anilist(config, anilist_config)

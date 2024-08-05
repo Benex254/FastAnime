@@ -22,6 +22,7 @@ inquirerpy = "^0.3.4"
 platformdirs = "^4.2.2"
 fastapi = "^0.111.0"
 art = "^6.2"
+python-dotenv = "^1.0.1"
 [tool.poetry.group.dev.dependencies]
 black = "^24.4.2"
 isort = "^5.13.2"

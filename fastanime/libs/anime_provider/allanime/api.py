@@ -3,19 +3,17 @@ import logging
 from typing import Generator
 
 import requests
+from requests.exceptions import Timeout
 from rich import print
 from rich.progress import Progress
-from requests.exceptions import Timeout
 
 from ....libs.anime_provider.allanime.types import (
     AllAnimeEpisode,
     AllAnimeSearchResults,
     AllAnimeShow,
-    AllAnimeSources,
     AllAnimeStreams,
     Server,
 )
-
 from .constants import (
     ALLANIME_API_ENDPOINT,
     ALLANIME_BASE,
@@ -101,9 +99,7 @@ class AllAnimeAPI:
             episode = self._fetch_gql(ALLANIME_EPISODES_GQL, variables)
             return episode  # pyright: ignore
 
-    def get_episode_streams(
-        self, allanime_episode_embeds_data
-    ) -> (
+    def get_episode_streams(self, allanime_episode_embeds_data) -> (
         Generator[
             tuple[Server, AllAnimeStreams],
             tuple[Server, AllAnimeStreams],

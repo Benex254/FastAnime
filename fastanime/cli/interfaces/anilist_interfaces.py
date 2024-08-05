@@ -4,9 +4,11 @@ import os
 import random
 from datetime import datetime
 
+from InquirerPy import inquirer
+from InquirerPy.validator import EmptyInputValidator
 from rich import print
 from rich.progress import Progress
-from rich.prompt import Prompt
+from rich.prompt import Confirm, Prompt
 
 from ...anilist import AniList
 from ...constants import USER_CONFIG_PATH
@@ -19,6 +21,7 @@ from ..config import Config
 from ..utils.mpv import mpv
 from ..utils.tools import QueryDict, exit_app
 from ..utils.utils import clear, fuzzy_inquirer
+from .utils import aniskip
 
 
 def calculate_time_delta(start_time, end_time):
@@ -62,8 +65,17 @@ def player_controls(config: Config, anilist_config: QueryDict):
 
         start_time = config.watch_history[str(anime_id)]["start_time"]
         print("[green]Continuing from:[/] ", start_time)
+        custom_args = []
+        if config.skip:
+            if args := aniskip(
+                anilist_config.selected_anime_anilist["idMal"], current_episode
+            ):
+                custom_args = args
         stop_time, total_time = mpv(
-            current_link, selected_server["episode_title"], start_time=start_time
+            current_link,
+            selected_server["episode_title"],
+            start_time=start_time,
+            custom_args=custom_args,
         )
         if stop_time == "0":
             episode = str(int(current_episode) + 1)
@@ -263,8 +275,18 @@ def fetch_streams(config: Config, anilist_config: QueryDict):
     start_time = config.watch_history.get(str(anime_id), {}).get("start_time", "0")
     if start_time != "0":
         print("[green]Continuing from:[/] ", start_time)
+    custom_args = []
+    if config.skip:
+        if args := aniskip(
+            anilist_config.selected_anime_anilist["idMal"], episode_number
+        ):
+            custom_args = args
+
     stop_time, total_time = mpv(
-        stream_link, selected_server["episode_title"], start_time=start_time
+        stream_link,
+        selected_server["episode_title"],
+        start_time=start_time,
+        custom_args=custom_args,
     )
     print("Finished at: ", stop_time)
 
@@ -441,7 +463,7 @@ def anilist_options(config, anilist_config: QueryDict):
             "Paused": "PAUSED",
             "Planning": "PLANNING",
             "Dropped": "DROPPED",
-            "Repeating": "REPEATING",
+            "Rewatching": "REPEATING",
             "Completed": "COMPLETED",
         }
         if config.use_fzf:
@@ -454,15 +476,52 @@ def anilist_options(config, anilist_config: QueryDict):
             anime_list = fuzzy_inquirer(
                 "Choose the list you want to add to", list(anime_lists.keys())
             )
-        AniList.update_anime_list(
+        result = AniList.update_anime_list(
             {"status": anime_lists[anime_list], "mediaId": selected_anime["id"]}
         )
-        print("Successfully updated your list")
+        if not result[0]:
+            print("Failed to update", result)
+        else:
+            print(
+                f"Successfully added {selected_anime_title} to your {anime_list} list :smile:"
+            )
+        input("Enter to continue...")
+        anilist_options(config, anilist_config)
+
+    def _score_anime(config: Config, anilist_config: QueryDict):
+        score = inquirer.number(
+            message="Enter the score:",
+            min_allowed=0,
+            max_allowed=100,
+            validate=EmptyInputValidator(),
+        ).execute()
+
+        result = AniList.update_anime_list(
+            {"scoreRaw": score, "mediaId": selected_anime["id"]}
+        )
+        if not result[0]:
+            print("Failed to update", result)
+        else:
+            print(f"Successfully scored {selected_anime_title}; score: {score}")
         input("Enter to continue...")
         anilist_options(config, anilist_config)
 
     def _remove_from_list(config: Config, anilist_config: QueryDict):
-        config.update_anime_list(anilist_config.anime_id, True)
+        if Confirm.ask(
+            f"Are you sure you want to procede, the folowing action will permanently remove {
+                selected_anime_title} from your list and your progress will be erased",
+            default=False,
+        ):
+            success, data = AniList.delete_medialist_entry(selected_anime["id"])
+            if not success:
+                print("Failed to delete", data)
+            elif not data.get("deleted"):
+                print("Failed to delete", data)
+            else:
+                print("Successfully deleted :cry:", selected_anime_title)
+        else:
+            print(selected_anime_title, ":relieved:")
+        input("Enter to continue...")
         anilist_options(config, anilist_config)
 
     def _change_translation_type(config: Config, anilist_config: QueryDict):
@@ -537,6 +596,7 @@ def anilist_options(config, anilist_config: QueryDict):
     options = {
         f"{'📽️ ' if icons else ''}Stream": provide_anime,
         f"{'📼 ' if icons else ''}Watch Trailer": _watch_trailer,
+        f"{'✨ ' if icons else ''}Score Anime": _score_anime,
         f"{'📥 ' if icons else ''}Add to List": _add_to_list,
         f"{'📤 ' if icons else ''}Remove from List": _remove_from_list,
         f"{'📖 ' if icons else ''}View Info": _view_info,
@@ -683,7 +743,7 @@ def anilist(config: Config, anilist_config: QueryDict):
         f"{'✅ ' if icons else ''}Completed": lambda x="Completed": handle_animelist(
             anilist_config, config, x
         ),
-        f"{'🔁 ' if icons else ''}Repeating": lambda x="Repeating": handle_animelist(
+        f"{'🔁 ' if icons else ''}Rewatching": lambda x="Repeating": handle_animelist(
             anilist_config, config, x
         ),
         f"{'🔔 ' if icons else ''}Recently Updated Anime": AniList.get_most_recently_updated,

@@ -26,9 +26,9 @@ from typing import Optional
 #
 
 
-def stream_video(url, mpv_args):
+def stream_video(url, mpv_args, custom_args):
     process = subprocess.Popen(
-        ["mpv", url, *mpv_args],
+        ["mpv", url, *mpv_args, *custom_args],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
         text=True,
@@ -67,7 +67,13 @@ def stream_video(url, mpv_args):
     return last_time, total_time
 
 
-def mpv(link: str, title: Optional[str] = "", start_time: str = "0", ytdl_format=""):
+def mpv(
+    link: str,
+    title: Optional[str] = "",
+    start_time: str = "0",
+    ytdl_format="",
+    custom_args=[],
+):
     # Determine if mpv is available
     MPV = shutil.which("mpv")
 
@@ -121,7 +127,7 @@ def mpv(link: str, title: Optional[str] = "", start_time: str = "0", ytdl_format
             mpv_args.append(f"--title={title}")
         if ytdl_format:
             mpv_args.append(f"--ytdl-format={ytdl_format}")
-        stop_time, total_time = stream_video(link, mpv_args)
+        stop_time, total_time = stream_video(link, mpv_args, custom_args)
         return stop_time, total_time
 
 

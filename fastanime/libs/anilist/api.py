@@ -13,7 +13,9 @@ from .queries_graphql import (
     anime_characters_query,
     anime_query,
     anime_relations_query,
+    delete_list_entry_query,
     get_logged_in_user_query,
+    get_medialist_item_query,
     mark_as_read_mutation,
     media_list_mutation,
     media_list_query,
@@ -78,6 +80,18 @@ class AniListApi:
     ):
         variables = {"status": status, "userId": self.user_id}
         return self._make_authenticated_request(media_list_query, variables)
+
+    def get_medialist_entry(self, mediaId: int):
+        variables = {"mediaId": mediaId}
+        return self._make_authenticated_request(get_medialist_item_query, variables)
+
+    def delete_medialist_entry(self, mediaId: int):
+        result = self.get_medialist_entry(mediaId)
+        if not result[0]:
+            return result
+        id = result[1]["data"]["MediaList"]["id"]
+        variables = {"id": id}
+        return self._make_authenticated_request(delete_list_entry_query, variables)
 
     def _make_authenticated_request(self, query: str, variables: dict = {}):
         """

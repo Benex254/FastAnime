@@ -27,7 +27,8 @@ def login(config: Config, status):
             exit_app()
     # ---- new loggin -----
     print(
-        f"A browser session will be opened ( [link]{config.fastanime_anilist_app_login_url}[/link] )",
+        f"A browser session will be opened ( [link]{
+            config.fastanime_anilist_app_login_url}[/link] )",
     )
     webbrowser.open(config.fastanime_anilist_app_login_url)
     print("Please paste the token provided here")

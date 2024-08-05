@@ -49,7 +49,8 @@ def notifier(config: Config):
                 time.sleep(timeout * 60)
                 continue
             data = result[1]
-            notifications = data["data"]["Page"]["notifications"]  # pyright:ignore
+            # pyright:ignore
+            notifications = data["data"]["Page"]["notifications"]
             if not notifications:
                 logger.info("Nothing to notify")
             else:
@@ -59,13 +60,15 @@ def notifier(config: Config):
                     anime_title = notification_["media"]["title"][
                         config.preferred_language
                     ]
-                    message = f"{anime_title}\nBe sure to watch so you are not left out of the loop."  # pyright:ignore
+                    # pyright:ignore
+                    message = f"{anime_title}\nBe sure to watch so you are not left out of the loop."
                     # message = str(textwrap.wrap(message, width=50))
 
                     id = notification_["media"]["id"]
                     if past_notifications.get(str(id)) == notification_["episode"]:
                         logger.info(
-                            f"skipping id={id} title={anime_title} episode={anime_episode} already notified"
+                            f"skipping id={id} title={anime_title} episode={
+                                anime_episode} already notified"
                         )
 
                     else:

@@ -67,6 +67,11 @@ signal.signal(signal.SIGINT, handle_exit)
     help="Continue from last episode?",
 )
 @click.option(
+    "--skip/--no-skip",
+    type=bool,
+    help="Skip opening and ending theme songs?",
+)
+@click.option(
     "-q",
     "--quality",
     type=click.IntRange(0, 3),
@@ -112,6 +117,7 @@ def run_cli(
     server,
     format,
     continue_,
+    skip,
     translation_type,
     quality,
     auto_next,
@@ -134,6 +140,9 @@ def run_cli(
         ctx.obj.format = format
     if ctx.get_parameter_source("continue_") == click.core.ParameterSource.COMMANDLINE:
         ctx.obj.continue_from_history = continue_
+    if ctx.get_parameter_source("skip") == click.core.ParameterSource.COMMANDLINE:
+        ctx.obj.skip = skip
+
     if quality:
         ctx.obj.quality = quality
     if ctx.get_parameter_source("auto-next") == click.core.ParameterSource.COMMANDLINE:

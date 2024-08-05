@@ -100,6 +100,11 @@ signal.signal(signal.SIGINT, handle_exit)
 @click.option("--default", is_flag=True, help="Use the default interface")
 @click.option("--preview", is_flag=True, help="Show preview when using fzf")
 @click.option("--no-preview", is_flag=True, help="Dont show preview when using fzf")
+@click.option(
+    "--icons/--no-icons",
+    type=bool,
+    help="Use icons in the interfaces",
+)
 @click.pass_context
 def run_cli(
     ctx: click.Context,
@@ -117,6 +122,7 @@ def run_cli(
     default,
     preview,
     no_preview,
+    icons,
 ):
     ctx.obj = Config()
     if provider:
@@ -132,6 +138,8 @@ def run_cli(
         ctx.obj.quality = quality
     if ctx.get_parameter_source("auto-next") == click.core.ParameterSource.COMMANDLINE:
         ctx.obj.auto_next = auto_next
+    if ctx.get_parameter_source("icons") == click.core.ParameterSource.COMMANDLINE:
+        ctx.obj.icons = icons
     if (
         ctx.get_parameter_source("auto_select")
         == click.core.ParameterSource.COMMANDLINE

@@ -41,7 +41,11 @@ class AllAnimeAPI:
                 headers={"Referer": ALLANIME_REFERER, "User-Agent": USER_AGENT},
                 timeout=10,
             )
-            return response.json()["data"]
+            if response.status_code == 200:
+                return response.json()["data"]
+            else:
+                Logger.error("allanime(ERROR): ", response.text)
+                return {}
         except Timeout:
             Logger.error(
                 "allanime(Error):Timeout exceeded this could mean allanime is down or you have lost internet connection"

@@ -148,17 +148,17 @@ def player_controls(config: Config, anilist_config: QueryDict):
         player_controls(config, anilist_config)
 
     options = {
-        "Replay": _replay,
-        "Next Episode": _next_episode,
-        "Previous Episode": _previous_episode,
-        "Episodes": _episodes,
-        "Change Quality": _change_quality,
-        "Change Translation Type": _change_translation_type,
-        "Servers": _servers,
-        "Main Menu": lambda: anilist(config, anilist_config),
-        "Anime Options Menu": lambda: anilist_options(config, anilist_config),
-        "Search Results": lambda: select_anime(config, anilist_config),
-        "Exit": exit_app,
+        "🔂 Replay": _replay,
+        "⏭ Next Episode": _next_episode,
+        "⏮ Previous Episode": _previous_episode,
+        "🗃️ Episodes": _episodes,
+        "📀 Change Quality": _change_quality,
+        "🎧 Change Translation Type": _change_translation_type,
+        "💽 Servers": _servers,
+        "📱 Main Menu": lambda: anilist(config, anilist_config),
+        "📜 Anime Options Menu": lambda: anilist_options(config, anilist_config),
+        "🔎 Search Results": lambda: select_anime(config, anilist_config),
+        "❌ Exit": exit_app,
     }
 
     if config.auto_next:
@@ -526,14 +526,14 @@ def anilist_options(config, anilist_config: QueryDict):
         return
 
     options = {
-        "Stream": provide_anime,
-        "Watch Trailer": _watch_trailer,
-        "Add to List": _add_to_list,
-        "Remove from List": _remove_from_list,
-        "View Info": _view_info,
-        "Change Translation Type": _change_translation_type,
-        "Back": select_anime,
-        "Exit": exit_app,
+        "📽️ Stream": provide_anime,
+        "📼 Watch Trailer": _watch_trailer,
+        "📥 Add to List": _add_to_list,
+        "📤 Remove from List": _remove_from_list,
+        "📖 View Info": _view_info,
+        "🎧 Change Translation Type": _change_translation_type,
+        "🔙 Back": select_anime,
+        "❌ Exit": exit_app,
     }
     if config.use_fzf:
         action = fzf.run(
@@ -646,24 +646,24 @@ def anilist(config: Config, anilist_config: QueryDict):
         anilist(config, anilist_config)
 
     options = {
-        "Trending": AniList.get_trending,
-        "Watching": lambda x="Watching": handle_animelist(x),
-        "Paused": lambda x="Paused": handle_animelist(x),
-        "Dropped": lambda x="Dropped": handle_animelist(x),
-        "Planned": lambda x="Planned": handle_animelist(x),
-        "Completed": lambda x="Completed": handle_animelist(x),
-        "Repeating": lambda x="Repeating": handle_animelist(x),
-        "Recently Updated Anime": AniList.get_most_recently_updated,
-        "Search": _anilist_search,
-        "Watch History": _watch_history,
-        "AnimeList": _anime_list,
-        "Random Anime": _anilist_random,
-        "Most Popular Anime": AniList.get_most_popular,
-        "Most Favourite Anime": AniList.get_most_favourite,
-        "Most Scored Anime": AniList.get_most_scored,
-        "Upcoming Anime": AniList.get_upcoming_anime,
-        "Edit Config": edit_config,
-        "Exit": exit_app,
+        "🔥 Trending": AniList.get_trending,
+        "📺 Watching": lambda x="Watching": handle_animelist(x),
+        "⏸ Paused": lambda x="Paused": handle_animelist(x),
+        "🚮 Dropped": lambda x="Dropped": handle_animelist(x),
+        "📑 Planned": lambda x="Planned": handle_animelist(x),
+        "✅ Completed": lambda x="Completed": handle_animelist(x),
+        "🔁 Repeating": lambda x="Repeating": handle_animelist(x),
+        "🔔 Recently Updated Anime": AniList.get_most_recently_updated,
+        "🔎 Search": _anilist_search,
+        "🎞️ Watch History": _watch_history,
+        # "AnimeList": _anime_list💯,
+        "🎲 Random Anime": _anilist_random,
+        "🌟 Most Popular Anime": AniList.get_most_popular,
+        "💖 Most Favourite Anime": AniList.get_most_favourite,
+        "✨ Most Scored Anime": AniList.get_most_scored,
+        "🎬 Upcoming Anime": AniList.get_upcoming_anime,
+        "📝 Edit Config": edit_config,
+        "❌ Exit": exit_app,
     }
     if config.use_fzf:
 

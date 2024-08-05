@@ -11,6 +11,7 @@ from ...libs.anilist.anilist_data_schema import AnilistBaseMediaDataSchema
 from ...Utility import anilist_data_helper
 from ...Utility.utils import remove_html_tags, sanitize_filename
 from ..config import Config
+from ..utils.utils import get_true_fg
 
 fzf_preview = r"""
 #
@@ -109,6 +110,9 @@ def aniskip(mal_id, episode):
 def write_search_results(
     search_results: list[AnilistBaseMediaDataSchema], config: Config
 ):
+    H_COLOR = 215, 0, 95
+    S_COLOR = 208, 208, 208
+    S_WIDTH = 45
     for anime in search_results:
         if not os.path.exists(SEARCH_RESULTS_CACHE):
             os.mkdir(SEARCH_RESULTS_CACHE)
@@ -132,21 +136,19 @@ def write_search_results(
         with open(f"{ANIME_CACHE}/data", "w") as f:
             # data = json.dumps(anime, sort_keys=True, indent=2, separators=(',', ': '))
             template = f"""
-            {"-"*40}
-            Anime Title(jp): {anime['title']['romaji']}
-            Anime Title(eng): {anime['title']['english']}
-            {"-"*40}
-            Popularity: {anime['popularity']}
-            Favourites: {anime['favourites']}
-            Status: {anime['status']}
-            Episodes: {anime['episodes']}
-            Genres: {anilist_data_helper.format_list_data_with_comma(
-                anime['genres'])}
-            Next Episode: {anilist_data_helper.extract_next_airing_episode(anime['nextAiringEpisode'])}
-            Start Date: {anilist_data_helper.format_anilist_date_object(anime['startDate'])}
-            End Date: {anilist_data_helper.format_anilist_date_object(anime['endDate'])}
-            {"-"*40}
-            Description:
+            {get_true_fg("-"*S_WIDTH,*S_COLOR,bold=False)}
+            {get_true_fg('Anime Title(jp):',*H_COLOR)} {anime['title']['romaji']}
+            {get_true_fg('Anime Title(eng):',*H_COLOR)} {anime['title']['english']}
+            {get_true_fg('Popularity:',*H_COLOR)} {anime['popularity']}
+            {get_true_fg('Favourites:',*H_COLOR)} {anime['favourites']}
+            {get_true_fg('Status:',*H_COLOR)} {anime['status']}
+            {get_true_fg('Episodes:',*H_COLOR)} {anime['episodes']}
+            {get_true_fg('Genres:',*H_COLOR)} {anilist_data_helper.format_list_data_with_comma(anime['genres'])}
+            {get_true_fg('Next Episode:',*H_COLOR)} {anilist_data_helper.extract_next_airing_episode(anime['nextAiringEpisode'])}
+            {get_true_fg('Start Date:',*H_COLOR)} {anilist_data_helper.format_anilist_date_object(anime['startDate'])}
+            {get_true_fg('End Date:',*H_COLOR)} {anilist_data_helper.format_anilist_date_object(anime['endDate'])}
+            {get_true_fg("-"*S_WIDTH,*S_COLOR,bold=False)}
+            {get_true_fg('Description:',*H_COLOR)}
             """
             template = textwrap.dedent(template)
             template = f"""

@@ -10,6 +10,29 @@ from ...Utility.data import anime_normalizer
 logger = logging.getLogger(__name__)
 
 
+# Define ANSI escape codes as constants
+RESET = "\033[0m"
+BOLD = "\033[1m"
+INVISIBLE_CURSOR = "\033[?25l"
+VISIBLE_CURSOR = "\033[?25h"
+UNDERLINE = "\033[4m"
+
+# ESC[38;2;{r};{g};{b}m
+BG_GREEN = "\033[48;2;120;233;12;m"
+GREEN = "\033[38;2;45;24;45;m"
+
+
+def get_true_fg(string: str, r: int, g: int, b: int, bold=True) -> str:
+    if bold:
+        return f"{BOLD}\033[38;2;{r};{g};{b};m{string}{RESET}"
+    else:
+        return f"\033[38;2;{r};{g};{b};m{string}{RESET}"
+
+
+def get_true_bg(string, r: int, g: int, b: int) -> str:
+    return f"\033[48;2;{r};{g};{b};m{string}{RESET}"
+
+
 def clear():
     if PLATFORM == "Windows":
         os.system("cls")

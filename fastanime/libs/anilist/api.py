@@ -13,12 +13,14 @@ from .queries_graphql import (
     anime_query,
     anime_relations_query,
     get_logged_in_user_query,
+    mark_as_read_mutation,
     media_list_mutation,
     media_list_query,
     most_favourite_query,
     most_popular_query,
     most_recently_updated_query,
     most_scored_query,
+    notification_query,
     recommended_query,
     search_query,
     trending_query,
@@ -45,6 +47,12 @@ class AniListApi:
         user_info: AnilistUser = user[1]["data"]["Viewer"]  # pyright:ignore
         self.user_id = user_info["id"]  # pyright:ignore
         return user_info
+
+    def get_notification(self):
+        return self._make_authenticated_request(notification_query)
+
+    def reset_notification_count(self):
+        return self._make_authenticated_request(mark_as_read_mutation)
 
     def update_login_info(self, user: AnilistUser, token: str):
         self.token = token

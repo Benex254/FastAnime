@@ -3,6 +3,41 @@ This module contains all the preset queries for the sake of neatness and convini
 Mostly for internal usage
 """
 
+mark_as_read_mutation = """
+mutation{
+  UpdateUser{
+    unreadNotificationCount
+  }
+}
+"""
+notification_query = """
+query{
+    Page {
+        pageInfo {
+        total
+        }
+        notifications(resetNotificationCount:true,type:AIRING) {
+        ... on AiringNotification {
+            id
+            type
+            episode
+            contexts
+            createdAt
+            media {
+            id
+            title {
+                romaji
+                english
+            }
+            }
+        }
+        }
+  }
+}
+
+"""
+
+
 get_logged_in_user_query = """
 query{
   Viewer{
@@ -46,8 +81,8 @@ media_list_query = """
 query ($userId: Int, $status: MediaListStatus) {
   Page {
     pageInfo {
-      currentPage
-      total
+        currentPage
+        total
     }
     mediaList(userId: $userId, status: $status) {
       mediaId

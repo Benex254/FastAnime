@@ -39,6 +39,21 @@ def FastAnime():
             handlers=[RichHandler()],  # Use RichHandler to format the logs
         )
         sys.argv.remove("--log")
+    if "--log-file" in sys.argv:
+        # Configure logging
+        from rich.logging import RichHandler
+
+        from .constants import NOTIFIER_LOG_FILE_PATH
+
+        logging.getLogger(__name__)
+        logging.basicConfig(
+            level=logging.DEBUG,  # Set the logging level to DEBUG
+            format="%(asctime)s%(levelname)s: %(message)s",  # Use a simple message format
+            datefmt="[%d/%m/%Y@%H:%M:%S]",  # Use a custom date format
+            filename=NOTIFIER_LOG_FILE_PATH,
+            filemode="a",  # Use RichHandler to format the logs
+        )
+        sys.argv.remove("--log-file")
 
     from .cli import run_cli
 

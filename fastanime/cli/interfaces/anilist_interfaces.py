@@ -22,10 +22,9 @@ from ..utils.utils import clear, fuzzy_inquirer
 
 def player_controls(config: Config, anilist_config: QueryDict):
     # user config
-    translation_type: str = config.translation_type.lower()
+    config.translation_type.lower()
 
     # internal config
-    anime: Anime = anilist_config.anime
     current_episode: str = anilist_config.episode_number
     episodes: list = sorted(anilist_config.episodes, key=float)
     links: list = anilist_config.current_stream_links
@@ -55,19 +54,8 @@ def player_controls(config: Config, anilist_config: QueryDict):
         next_episode = episodes.index(current_episode) + 1
         if next_episode >= len(episodes):
             next_episode = len(episodes) - 1
-        episode = anime_provider.get_anime_episode(
-            anime["id"], episodes[next_episode], translation_type
-        )
-        if not episode:
-            print(
-                "Sth went wrong :cry: this could mean the provider is down or your internet"
-            )
-            input("Enter to continue...")
-            _next_episode()
-            return
 
         # update internal config
-        anilist_config.episode = episode
         anilist_config.episode_number = episodes[next_episode]
 
         # update user config
@@ -87,19 +75,6 @@ def player_controls(config: Config, anilist_config: QueryDict):
         prev_episode = episodes.index(current_episode) - 1
         if prev_episode <= 0:
             prev_episode = 0
-        episode = anime_provider.get_anime_episode(
-            anime["id"], episodes[prev_episode], config.translation_type.lower()
-        )
-        if not episode:
-            print(
-                "Sth went wrong :cry: this could mean the provider is down or your internet"
-            )
-            input("Enter to continue...")
-            _previous_episode()
-            return
-
-        # update internal config
-        anilist_config.episode = episode
         # anilist_config.episode_title = episode["title"]
         anilist_config.episode_number = episodes[prev_episode]
 
@@ -280,22 +255,8 @@ def fetch_episode(config: Config, anilist_config: QueryDict):
         return
     config.update_watch_history(anime_id, episode_number)
 
-    # get the episode info from provider
-    episode = anime_provider.get_anime_episode(
-        _anime["id"], episode_number, translation_type
-    )
-
-    if not episode:
-
-        print(
-            "Sth went wrong :cry: this could mean the provider is down or your internet"
-        )
-        input("Enter to continue...")
-        fetch_episode(config, anilist_config)
-        return
     # update internal config
     anilist_config.episodes = episodes
-    anilist_config.episode = episode
     # anilist_config.episode_title = episode["title"]
     anilist_config.episode_number = episode_number
 

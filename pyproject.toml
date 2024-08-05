@@ -16,6 +16,7 @@ platformdirs = "^4.2.2"
 art = "^6.2"
 python-dotenv = "^1.0.1"
 thefuzz = "^0.22.1"
+curl-cffi = "^0.7.1"
 [tool.poetry.group.dev]
 optional = true
 [tool.poetry.group.dev.dependencies]

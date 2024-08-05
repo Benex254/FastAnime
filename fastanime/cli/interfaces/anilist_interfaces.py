@@ -32,7 +32,7 @@ def write_search_results(
 ):
     import textwrap
 
-    import requests
+    from curl_cffi import requests
 
     for anime in search_results:
         if not os.path.exists(SEARCH_RESULTS_CACHE):

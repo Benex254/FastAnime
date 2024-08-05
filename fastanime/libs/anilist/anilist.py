@@ -2,7 +2,7 @@
 This is the core module availing all the abstractions of the anilist api
 """
 
-import requests
+from curl_cffi import requests
 
 from .anilist_data_schema import AnilistDataSchema
 from .queries_graphql import (

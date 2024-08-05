@@ -69,7 +69,7 @@ class BaseScreenView(MDScreen, Observer):
         super().__init__(**kw)
         # Often you need to get access to the application object from the view
         # class. You can do this using this attribute.
-        from ..__main__ import FastAnime
+        from .. import FastAnime
 
         self.app: FastAnime = MDApp.get_running_app()  # type: ignore
         # Adding a view class as observer.

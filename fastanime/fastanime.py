@@ -1,21 +1,24 @@
 import os
 import random
 
-import plyer
 from kivy.config import Config
 from kivy.loader import Loader
 from kivy.logger import Logger
-from kivy.resources import resource_add_path, resource_find
-from kivy.storage.jsonstore import JsonStore
+from kivy.resources import resource_find
 from kivy.uix.screenmanager import FadeTransition, ScreenManager
 from kivy.uix.settings import Settings, SettingsWithSidebar
 from kivymd.app import MDApp
 
+from fastanime.Utility.show_notification import show_notification
+
+from . import downloads_dir
 from .libs.mpv.player import mpv_player
 from .Utility import (
     themes_available,
+    user_data_helper,
 )
-from .Utility.show_notification import show_notification
+from .Utility.downloader.downloader import downloader
+from .Utility.utils import write_crash
 from .View.components.media_card.components.media_popup import MediaPopup
 from .View.screens import screens
 
@@ -31,57 +34,16 @@ Loader.num_workers = 5
 Loader.max_upload_per_frame = 10
 
 
-# print(plyer.storagepath.get_application_dir(), plyer.storagepath.get_home_dir())
-app_dir = os.path.abspath(os.path.dirname(__file__))
-
-
-data_folder = os.path.join(app_dir, "data")
-if not os.path.exists(data_folder):
-    os.mkdir(data_folder)
-
-
-if vid_path := plyer.storagepath.get_videos_dir():  # type: ignore
-    downloads_dir = os.path.join(vid_path, "FastAnime")
-    if not os.path.exists(downloads_dir):
-        os.mkdir(downloads_dir)
-else:
-    downloads_dir = os.path.join(app_dir, "videos")
-    if not os.path.exists(downloads_dir):
-        os.mkdir(downloads_dir)
-
-
-# TODO:confirm data integrity
-if os.path.exists(os.path.join(data_folder, "user_data.json")):
-    user_data = JsonStore(os.path.join(data_folder, "user_data.json"))
-else:
-    user_data_path = os.path.join(data_folder, "user_data.json")
-    user_data = JsonStore(user_data_path)
-
-
-assets_folder = os.path.join(app_dir, "assets")
-resource_add_path(assets_folder)
-conigs_folder = os.path.join(app_dir, "configs")
-resource_add_path(conigs_folder)
-
-
-from .Utility import user_data_helper
-
-
-from .Utility.downloader.downloader import downloader
+# Ensure the user data fields exist
+if not (user_data_helper.user_data.exists("user_anime_list")):
+    user_data_helper.update_user_anime_list([])
 
 
 class FastAnime(MDApp):
-    # Ensure the user data fields exist
-    if not (user_data.exists("user_anime_list")):
-        user_data_helper.update_user_anime_list([])
+    default_anime_image = resource_find(random.choice(["default_1.jpg", "default.jpg"]))
+    default_banner_image = resource_find(random.choice(["banner_1.jpg", "banner.jpg"]))
 
     def __init__(self, **kwargs):
-        self.default_banner_image = resource_find(
-            random.choice(["banner_1.jpg", "banner.jpg"])
-        )
-        self.default_anime_image = resource_find(
-            random.choice(["default_1.jpg", "default.jpg"])
-        )
         super().__init__(**kwargs)
         self.icon = resource_find("logo.png")
 
@@ -187,5 +149,5 @@ class FastAnime(MDApp):
         downloader.download_file(url, anime_title, progress_hook)
 
 
-def main():
+def run_app():
     FastAnime().run()

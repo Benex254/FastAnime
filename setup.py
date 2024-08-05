@@ -56,7 +56,7 @@ if __name__ == "__main__":
         python_requires=">=3.10",
         entry_points={
             "gui_scripts": [
-                "fastanime = fastanime.__main__:run_app",
+                "fastanime = fastanime:main",
             ],
         },
     )

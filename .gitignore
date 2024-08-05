@@ -5,6 +5,7 @@
 vids
 data/
 .project/
+fastanime.ini
 crashdump.txt
 # Byte-compiled / optimized / DLL files
 __pycache__/

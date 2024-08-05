@@ -1,12 +1,16 @@
 import click
 
 from ....libs.anilist.anilist import AniList
-from .utils import get_search_result
+from ...interfaces.anilist_interfaces import select_anime
+from ...utils.tools import QueryDict
 
 
 @click.command()
 @click.option("--title", prompt="Enter anime title")
-def search(title):
+@click.pass_obj
+def search(config, title):
     success, search_results = AniList.search(title)
-    if search_results and success:
-        get_search_result(search_results)
+    if success:
+        anilist_config = QueryDict()
+        anilist_config.data = search_results
+        select_anime(config, anilist_config)

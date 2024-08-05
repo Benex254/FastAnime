@@ -15,7 +15,6 @@ from ..utils.tools import QueryDict
 from ..utils.utils import clear, fuzzy_inquirer
 
 
-# FIXME:    BACK brocken
 def player_controls(config: Config, anilist_config: QueryDict):
     # user config
     translation_type: str = config.translation_type
@@ -112,14 +111,14 @@ def player_controls(config: Config, anilist_config: QueryDict):
     options = {
         "Replay": _replay,
         "Next Episode": _next_episode,
-        "Episodes": _episodes,
         "Previous Episode": _previous_episode,
+        "Episodes": _episodes,
         "Change Quality": _change_quality,
         "Change Translation Type": _change_translation_type,
         "Back to servers": _back,
-        "Go to Main Menu": lambda: anilist(config, anilist_config),
-        "Go to Anime Options Menu": lambda: anilist_options(config, anilist_config),
-        "Go to Search Results": lambda: select_anime(config, anilist_config),
+        "Main Menu": lambda: anilist(config, anilist_config),
+        "Anime Options Menu": lambda: anilist_options(config, anilist_config),
+        "Search Results": lambda: select_anime(config, anilist_config),
         "exit": sys.exit,
     }
 
@@ -350,6 +349,7 @@ def anilist_options(config, anilist_config: QueryDict):
         "view info": _view_info,
         "Change Translation Type": _change_translation_type,
         "back": select_anime,
+        "exit": sys.exit,
     }
     action = fuzzy_inquirer("Select Action:", options.keys())
     options[action](config, anilist_config)
@@ -396,6 +396,7 @@ def anilist(config: Config, anilist_config: QueryDict):
         "most scored anime": AniList.get_most_scored,
         "upcoming anime": AniList.get_upcoming_anime,
         "recently updated anime": AniList.get_most_recently_updated,
+        "exit": sys.exit,
     }
     action = fuzzy_inquirer("Select Action:", options.keys())
     anilist_data = options[action]()

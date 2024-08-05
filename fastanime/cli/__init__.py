@@ -1,3 +1,5 @@
+from sys import exit
+
 import click
 
 from .. import __version__
@@ -14,6 +16,7 @@ commands = {
     "download": download,
     "anilist": anilist,
     "config": configure,
+    "exit": exit,
 }
 
 

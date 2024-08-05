@@ -1,6 +1,12 @@
+import sys
+
+if sys.version_info < (3, 10):
+    raise ImportError(
+        "You are using an unsupported version of Python. Only Python versions 3.8 and above are supported by yt-dlp"
+    )  # noqa: F541
+
 import logging
 import os
-import sys
 
 from dotenv import load_dotenv
 

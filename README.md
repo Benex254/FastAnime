@@ -249,7 +249,7 @@ For inquiries, join our [Discord Server](https://discord.gg/4NUTj5Pt).
 
 <p align="center">
 <a href="https://discord.gg/HRjySFjQ">
-<img src="https://invidget.switchblade.xyz/gaX2Snst2j">
+<img src="https://invidget.switchblade.xyz/HRjySFjQ">
 </a>
 </p>
 

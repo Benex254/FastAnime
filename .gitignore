@@ -19,6 +19,7 @@ anixstream.ini
 build/
 develop-eggs/
 dist/
+bin/
 downloads/
 eggs/
 .eggs/
@@ -174,3 +175,4 @@ app/user_data.json
 app/View/SearchScreen/.search_screen.py.un~
 app/View/SearchScreen/search_screen.py~
 app/user_data.json
+.buildozer

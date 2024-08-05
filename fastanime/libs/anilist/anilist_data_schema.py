@@ -113,7 +113,8 @@ class AnilistBaseMediaDataSchema(TypedDict):
     This a convenience class is used to type the received Anilist data to enhance dev experience
     """
 
-    id: str
+    id: int
+    idMal: int
     title: AnilistMediaTitle
     coverImage: AnilistImage
     trailer: AnilistMediaTrailer | None

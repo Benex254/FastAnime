@@ -4,7 +4,7 @@ import os
 from InquirerPy import inquirer
 from thefuzz import fuzz
 
-from ... import PLATFORM
+from ...constants import PLATFORM
 from ...Utility.data import anime_normalizer
 
 logger = logging.getLogger(__name__)

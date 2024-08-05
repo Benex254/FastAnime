@@ -3,8 +3,8 @@ from configparser import ConfigParser
 
 from rich import print
 
-from .. import USER_CONFIG_PATH, USER_VIDEOS_DIR
 from ..AnimeProvider import AnimeProvider
+from ..constants import USER_CONFIG_PATH, USER_VIDEOS_DIR
 from ..Utility.user_data_helper import user_data_helper
 
 

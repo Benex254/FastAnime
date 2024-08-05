@@ -18,7 +18,7 @@ def exit_app(*args):
 
     from rich import print
 
-    from ... import USER_NAME
+    from ...constants import USER_NAME
 
     print("Have a good day :smile:", USER_NAME)
     sys.exit(0)

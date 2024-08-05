@@ -2,7 +2,7 @@ import json
 import logging
 import os
 
-from .. import USER_DATA_PATH
+from ..constants import USER_DATA_PATH
 
 logger = logging.getLogger(__name__)
 

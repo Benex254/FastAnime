@@ -44,18 +44,40 @@ signal.signal(signal.SIGINT, handle_exit)
     "-s",
     "--server",
     type=click.Choice(SERVERS_AVAILABLE, case_sensitive=False),
+    help="Server of choice",
 )
-@click.option("-c/-no-c", "--continue/--no-continue", "continue_", type=bool)
-@click.option("-q", "--quality", type=int)
-@click.option("-t", "--translation_type")
-@click.option("-A/-no-A", "--auto-next/--no-auto-next", type=bool)
-@click.option("-a/-no-a", "--auto-select/--no-auto-select", type=bool)
+@click.option(
+    "-c/-no-c",
+    "--continue/--no-continue",
+    "continue_",
+    type=bool,
+    help="Continue from last episode?",
+)
+@click.option(
+    "-q",
+    "--quality",
+    type=int,
+    help="set the quality of the stream",
+)
+@click.option("-t", "--translation_type", help="Anime language[dub/sub]")
+@click.option(
+    "-A/-no-A",
+    "--auto-next/--no-auto-next",
+    type=bool,
+    help="Auto select next episode?",
+)
+@click.option(
+    "-a/-no-a",
+    "--auto-select/--no-auto-select",
+    type=bool,
+    help="Auto select anime title?",
+)
 @click.option(
     "-S",
     "--sort-by",
     type=click.Choice(anilist_sort_normalizer.keys()),  # pyright: ignore
 )
-@click.option("-d", "--downloads-dir", type=click.Path())
+@click.option("-d", "--downloads-dir", type=click.Path(), help="Downloads location")
 @click.pass_context
 def run_cli(
     ctx: click.Context,
@@ -71,13 +93,16 @@ def run_cli(
     ctx.obj = Config()
     if server:
         ctx.obj.server = server
-    if continue_:
+    if ctx.get_parameter_source("continue_") == click.core.ParameterSource.COMMANDLINE:
         ctx.obj.continue_from_history = continue_
     if quality:
         ctx.obj.quality = quality
-    if auto_next:
+    if ctx.get_parameter_source("auto-next") == click.core.ParameterSource.COMMANDLINE:
         ctx.obj.auto_next = auto_next
-    if auto_select:
+    if (
+        ctx.get_parameter_source("auto_select")
+        == click.core.ParameterSource.COMMANDLINE
+    ):
         ctx.obj.auto_select = auto_select
     if sort_by:
         ctx.obj.sort_by = sort_by

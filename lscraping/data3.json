@@ -1,0 +1,159 @@
+{
+  "shows": {
+    "pageInfo": {
+      "total": 22279
+    },
+    "edges": [
+      {
+        "_id": "JsbMBPoTsp3RkGfrf",
+        "name": "Sword Art Online: Progressive Movie: Kuraki Yuuyami no Scherzo",
+        "availableEpisodes": {
+          "sub": 1,
+          "dub": 1,
+          "raw": 0
+        },
+        "__typename": "Show"
+      },
+      {
+        "_id": "YXEMgd5FLhWD2mn8Z",
+        "name": "Sword Art Online: Progressive Movie - Hoshi Naki Yoru no Aria",
+        "availableEpisodes": {
+          "sub": 1,
+          "dub": 1,
+          "raw": 0
+        },
+        "__typename": "Show"
+      },
+      {
+        "_id": "ALj8oEW6mhWuQ8pHT",
+        "name": "Sword Art Online Movie: Ordinal Scale: Sword Art Offline",
+        "availableEpisodes": {
+          "sub": 1,
+          "dub": 0,
+          "raw": 0
+        },
+        "__typename": "Show"
+      },
+      {
+        "_id": "DWZeL5vDhEokJQFXR",
+        "name": "Sword Art Offline II",
+        "availableEpisodes": {
+          "sub": 9,
+          "dub": 0,
+          "raw": 0
+        },
+        "__typename": "Show"
+      },
+      {
+        "_id": "fgEBgLfkzEWaCSHAu",
+        "name": "Sword Art Online: Sword Art Offline",
+        "availableEpisodes": {
+          "sub": 9,
+          "dub": 0,
+          "raw": 0
+        },
+        "__typename": "Show"
+      },
+      {
+        "_id": "BvzJ7btmDGBvJCC4P",
+        "name": "Sword Art Online: Extra Edition",
+        "availableEpisodes": {
+          "sub": 1,
+          "dub": 1,
+          "raw": 0
+        },
+        "__typename": "Show"
+      },
+      {
+        "_id": "4mjsuWL9sAK97zQjL",
+        "name": "Sword Art Offline: Extra Edition",
+        "availableEpisodes": {
+          "sub": 1,
+          "dub": 0,
+          "raw": 0
+        },
+        "__typename": "Show"
+      },
+      {
+        "_id": "np7xM323v5pH6KY9e",
+        "name": "Sword Art Online: Alicization",
+        "availableEpisodes": {
+          "sub": 25,
+          "dub": 25,
+          "raw": 0
+        },
+        "__typename": "Show"
+      },
+      {
+        "_id": "36bqKyjS3tFybyz7j",
+        "name": "Sword Art Online",
+        "availableEpisodes": {
+          "sub": 25,
+          "dub": 25,
+          "raw": 0
+        },
+        "__typename": "Show"
+      },
+      {
+        "_id": "ierXJrDYNiALG5haP",
+        "name": "Sword Art Online II",
+        "availableEpisodes": {
+          "sub": 26,
+          "dub": 25,
+          "raw": 0
+        },
+        "__typename": "Show"
+      },
+      {
+        "_id": "tkywv9gMqH7mYw4N5",
+        "name": "Sword Art Online: Alicization - War of Underworld Season 2",
+        "availableEpisodes": {
+          "sub": 11,
+          "dub": 11,
+          "raw": 0
+        },
+        "__typename": "Show"
+      },
+      {
+        "_id": "z2stShodurTBWbXgM",
+        "name": "Sword Art Online: Alicization - War of Underworld",
+        "availableEpisodes": {
+          "sub": 14,
+          "dub": 12,
+          "raw": 0
+        },
+        "__typename": "Show"
+      },
+      {
+        "_id": "WwdepehfXq8gpgku9",
+        "name": "Sword Art Online Alternative: Gun Gale Online",
+        "availableEpisodes": {
+          "sub": 13,
+          "dub": 12,
+          "raw": 0
+        },
+        "__typename": "Show"
+      },
+      {
+        "_id": "hjHnDp4NRh9zpcTLJ",
+        "name": "Sword Art Online: Ordinal Scale",
+        "availableEpisodes": {
+          "sub": 1,
+          "dub": 1,
+          "raw": 0
+        },
+        "__typename": "Show"
+      },
+      {
+        "_id": "TYTW9KtABBNiMcp5w",
+        "name": "Sword Art Online II: Debriefing",
+        "availableEpisodes": {
+          "sub": 1,
+          "dub": 0,
+          "raw": 0
+        },
+        "__typename": "Show"
+      }
+    ]
+  }
+}

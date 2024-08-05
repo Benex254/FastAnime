@@ -8,7 +8,7 @@ from rich.traceback import install
 
 install(show_locals=True)
 # Create a logger instance
-logger = logging.getLogger(__name__)
+
 
 # initiate constants
 __version__ = "v0.30.0"
@@ -36,11 +36,12 @@ if not APP_DATA_DIR:
 
 USER_DATA_PATH = os.path.join(APP_DATA_DIR, "user_data.json")
 USER_CONFIG_PATH = os.path.join(APP_DATA_DIR, "config.ini")
-USER_WATCH_HISTORY = os.path.join(APP_DATA_DIR, "watch_history.json")
 
 
 # video dir
-USER_DOWNLOADS_DIR = dirs.user_downloads_dir
+USER_DOWNLOADS_DIR = dirs.user_videos_dir
+
+print(f"USER_DOWNLOADS_DIR: {USER_DOWNLOADS_DIR}")
 
 
 def FastAnime(gui=False):
@@ -52,15 +53,18 @@ def FastAnime(gui=False):
     if "--gui" in sys.argv:
         gui = True
         sys.argv.remove("--gui")
+    if "--log" in sys.argv:
         # Configure logging
         from rich.logging import RichHandler
 
+        logging.getLogger(__name__)
         logging.basicConfig(
             level=logging.DEBUG,  # Set the logging level to DEBUG
             format="%(message)s",  # Use a simple message format
             datefmt="[%X]",  # Use a custom date format
             handlers=[RichHandler()],  # Use RichHandler to format the logs
         )
+        sys.argv.remove("--log")
     if gui:
         from .gui import run_gui
 

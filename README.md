@@ -104,7 +104,7 @@ The only required external dependency, unless you won't be streaming, is [MPV](h
 - [fzf](https://github.com/junegunn/fzf) :fire: which is used as a better alternative to the ui.
 - [fzf-preview](https://github.com/junegunn/fzf/blob/master/bin/fzf-preview.sh) a script that is used to preview images and is maintained by the devs of fzf.
 - [chafa](https://github.com/hpjansson/chafa) currently the best cross platform and cross terminal image viewer for the terminal.
-- [icat](https://sw.kovidgoyal.net/kitty/kittens/icat/) an image viewer that only works in [kitty terminal](https://sw.kovidgoyal.net/kitty/), which is currently the best terminal in my opinion, and by far the best image renderer for the terminal thanks to kitty's terminal graphics protocol. Its terminal graphics is so op that you can [run a browser on it](https://github.com/chase/awrit?tab=readme-ov-file)!!
+- [icat](https://sw.kovidgoyal.net/kitty/kittens/icat/) an image viewer that only works in [kitty terminal](https://sw.kovidgoyal.net/kitty/), which is currently the best terminal in my opinion, and by far the best image renderer for the terminal thanks to kitty's terminal graphics protocol. Its terminal graphics is so op that you can [run a browser on it]()!!
 - [bash](https://www.gnu.org/software/bash/) is used as the preview script language.
 
 ## Usage
@@ -248,7 +248,7 @@ If you wish to contribute directly, please first open an issue describing your p
 For inquiries, join our [Discord Server](https://discord.gg/4NUTj5Pt).
 
 <p align="center">
-<a href="http://discord.gg/4NUTj5Pt">
+<a href="https://discord.gg/HRjySFjQ">
 <img src="https://invidget.switchblade.xyz/gaX2Snst2j">
 </a>
 </p>

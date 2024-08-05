@@ -23,7 +23,7 @@ Welcome to Fast Anime, your new favorite destination for streaming and downloadi
 Fast Anime can be installed using pip with the following command:
 
 ```bash
-pip install <package-name>
+pip install https://github.com/Benex254/FastAnime/releases/download/v0.20.0/fastanime-0.2.0.tar.gz
 #then you can launch the app using the following command:
 python -m fastanime
 ```

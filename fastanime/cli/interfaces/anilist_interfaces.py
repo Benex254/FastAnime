@@ -94,6 +94,34 @@ def player_controls(config: Config, anilist_config: QueryDict):
         player_controls(config, anilist_config)
 
     def _next_episode():
+        # ensures you dont accidentally erase your progress for an in complete episode
+        stop_time = config.watch_history.get(str(anime_id), {}).get("start_time", "0")
+
+        total_time = config.watch_history.get(str(anime_id), {}).get("total_time", "0")
+
+        error = config.error * 60
+        if stop_time == "0" or total_time == "0":
+            dt = 0
+        else:
+            delta = calculate_time_delta(stop_time, total_time)
+            dt = delta.total_seconds()
+        if dt > error:
+            if config.auto_next:
+                if not Confirm.ask(
+                    "Are you sure you wish to continue to the next episode you haven't completed the current episode?",
+                    default=False,
+                ):
+                    anilist_options(config, anilist_config)
+                    return
+            else:
+                if not Confirm.ask(
+                    "Are you sure you wish to continue to the next episode, your progress for the current episodes will be erased?",
+                    default=True,
+                ):
+                    anilist_options(config, anilist_config)
+                    return
+
+        # all checks have passed lets go to the next episode
         next_episode = episodes.index(current_episode) + 1
         if next_episode >= len(episodes):
             next_episode = len(episodes) - 1

@@ -47,9 +47,9 @@ class SearchScreenView(BaseScreenView):
         self.search_results_container.data.append(widget)
 
     def update_pagination(self, pagination_info):
-        self.search_results_pagination.current_page = (
-            self.current_page
-        ) = pagination_info["currentPage"]
+        self.search_results_pagination.current_page = self.current_page = (
+            pagination_info["currentPage"]
+        )
         self.search_results_pagination.total_pages = self.total_pages = max(
             int(pagination_info["total"] / 30), 1
         )

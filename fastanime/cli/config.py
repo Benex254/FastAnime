@@ -2,7 +2,7 @@ import os
 from configparser import ConfigParser
 
 from .. import USER_CONFIG_PATH, USER_DOWNLOADS_DIR
-from ..Utility import user_data_helper
+from ..Utility.user_data_helper import user_data_helper
 
 
 class Config(object):

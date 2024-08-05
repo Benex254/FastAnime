@@ -37,6 +37,8 @@ if not APP_DATA_DIR:
 USER_DATA_PATH = os.path.join(APP_DATA_DIR, "user_data.json")
 USER_CONFIG_PATH = os.path.join(APP_DATA_DIR, "config.ini")
 
+# cache dir
+APP_CACHE_DIR = dirs.user_cache_dir
 
 # video dir
 USER_DOWNLOADS_DIR = dirs.user_videos_dir
@@ -44,7 +46,14 @@ USER_DOWNLOADS_DIR = dirs.user_videos_dir
 print(f"USER_DOWNLOADS_DIR: {USER_DOWNLOADS_DIR}")
 
 
-def FastAnime(gui=False):
+# web dirs
+
+WEB_DIR = os.path.join(APP_DIR, "web")
+FRONTEND_DIR = os.path.join(WEB_DIR, "frontend")
+BACKEND_DIR = os.path.join(WEB_DIR, "backend")
+
+
+def FastAnime(gui=False, web=False):
     if "--update" in sys.argv:
         from .Utility.app_updater import update_app
 
@@ -53,6 +62,9 @@ def FastAnime(gui=False):
     if "--gui" in sys.argv:
         gui = True
         sys.argv.remove("--gui")
+    if "--web" in sys.argv:
+        web = True
+        sys.argv.remove("--web")
     if "--log" in sys.argv:
         # Configure logging
         from rich.logging import RichHandler
@@ -69,6 +81,10 @@ def FastAnime(gui=False):
         from .gui import run_gui
 
         run_gui()
+    elif web:
+        from .web import run_web
+
+        run_web()
     else:
         from .cli import run_cli
 

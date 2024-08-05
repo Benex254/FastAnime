@@ -77,7 +77,7 @@ def sanitize_filename(filename: str):
     }
 
     # Replace invalid characters with an underscore
-    sanitized = re.sub(invalid_chars, "_", filename)
+    sanitized = re.sub(invalid_chars, " ", filename)
 
     # Remove leading and trailing whitespace
     sanitized = sanitized.strip()
@@ -95,7 +95,8 @@ def sanitize_filename(filename: str):
     return sanitized
 
 
-# Example usage
-unsafe_filename = "CON:example?file*name.txt"
-safe_filename = sanitize_filename(unsafe_filename)
-print(safe_filename)  # Output: 'CON_example_file_name.txt'
+if __name__ == "__main__":
+    # Example usage
+    unsafe_filename = "CON:example?file*name.txt"
+    safe_filename = sanitize_filename(unsafe_filename)
+    print(safe_filename)  # Output: 'CON_example_file_name.txt'

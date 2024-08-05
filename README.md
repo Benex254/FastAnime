@@ -3,11 +3,16 @@
 Welcome to **FastAnime**, anime site experience from the terminal.
 **fzf mode**
 
-[fa_demo.webm](https://github.com/user-attachments/assets/bb46642c-176e-42b3-a533-ff55d4dac111)
+[fa_fzf_demo.webm](https://github.com/user-attachments/assets/b1fecf25-e358-4e8b-a144-bcb7947210cf)
+
 
 **rofi mode**
 
 [fa_rofi_mode.webm](https://github.com/user-attachments/assets/2ce669bf-b62f-4c44-bd79-cf0dcaddf37a)
+
+**default mode**
+
+[fa_default_mode.webm](https://github.com/user-attachments/assets/1ce3a23d-f4a0-4bc1-8518-426ec7b3b69e)
 
 
 Heavily inspired by [animdl](https://github.com/justfoolingaround/animdl), [magic-tape](https://gitlab.com/christosangel/magic-tape/-/tree/main?ref_type=heads) and [ani-cli](https://github.com/pystardust/ani-cli).
@@ -41,9 +46,6 @@ Heavily inspired by [animdl](https://github.com/justfoolingaround/animdl), [magi
 >
 > This project currently scrapes allanime and is in no way related to them. The site is in the public domain and can be access by any one with a browser.
 
-> [!NOTE]
->
-> The docs are still being worked on and are far from completion.
 
 ## Installation
 
@@ -54,7 +56,6 @@ If you have any difficulty consult for help on the [discord channel](https://dis
 ### Installation using your favourite package manager
 
 Currently the app is only published on [pypi](https://pypi.org/project/fastanime/).
-The app is published approximately after every 14 days, which will include accumulative changes during that period.
 
 #### Using pipx
 
@@ -388,10 +389,11 @@ If you wish to contribute directly, please first open an issue describing your p
 For inquiries, join our [Discord Server](https://discord.gg/4NUTj5Pt).
 
 <p align="center">
-<a href="https://discord.gg/HRjySFjQ">
-<img src="https://invidget.switchblade.xyz/HRjySFjQ"/>
+<a href="https://discord.gg/C4rhMA4mmK">
+<img src="https://invidget.switchblade.xyz/C4rhMA4mmK">
 </a>
 </p>
+
 
 ## Supporting the Project
 

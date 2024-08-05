@@ -2,11 +2,11 @@ import json
 import logging
 from typing import Iterator
 
-import requests
 from requests.exceptions import Timeout
 
 from ....libs.anime_provider.allanime.types import AllAnimeEpisode
 from ....libs.anime_provider.types import Anime, Server
+from ...anime_provider.base_provider import AnimeProvider
 from .constants import (
     ALLANIME_API_ENDPOINT,
     ALLANIME_BASE,
@@ -23,7 +23,7 @@ Logger = logging.getLogger(__name__)
 # TODO: create tests for the api
 #
 # ** Based on ani-cli **
-class AllAnimeAPI:
+class AllAnimeAPI(AnimeProvider):
     """
     Provides a fast and effective interface to AllAnime site.
     """
@@ -32,7 +32,7 @@ class AllAnimeAPI:
 
     def _fetch_gql(self, query: str, variables: dict):
         try:
-            response = requests.get(
+            response = self.session.get(
                 self.api_endpoint,
                 params={
                     "variables": json.dumps(variables),
@@ -76,7 +76,6 @@ class AllAnimeAPI:
             "countryorigin": countryorigin,
         }
         try:
-
             search_results = self._fetch_gql(ALLANIME_SEARCH_GQL, variables)
             return normalize_search_results(search_results)  # pyright:ignore
         except Exception as e:
@@ -140,7 +139,7 @@ class AllAnimeAPI:
                     # get the stream url for an episode of the defined source names
                     parsed_url = decode_hex_string(url)
                     embed_url = f"https://{ALLANIME_BASE}{parsed_url.replace('clock', 'clock.json')}"
-                    resp = requests.get(
+                    resp = self.session.get(
                         embed_url,
                         headers={
                             "Referer": ALLANIME_REFERER,

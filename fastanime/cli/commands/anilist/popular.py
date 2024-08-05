@@ -6,7 +6,7 @@ from ...utils.tools import QueryDict
 
 
 @click.command(
-    help="Fetch the top 15 most popular anime", short_help="Most popular anime"
+    help="Fetch the top 15 most popular anime", short_help="View most popular anime"
 )
 @click.pass_obj
 def popular(config):

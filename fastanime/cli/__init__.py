@@ -17,7 +17,11 @@ commands = {
 }
 
 
-@click.group(commands=commands)
+@click.group(
+    commands=commands,
+    help="A command line application for streaming anime that provides a complete and featureful interface",
+    short_help="Stream Anime",
+)
 @click.version_option(__version__, "--version")
 @click.option(
     "-s",

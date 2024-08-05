@@ -24,12 +24,20 @@
                 SearchBar:
                 MDScrollView:
                     size_hint:.95,1
-                    MDGridLayout:
-                        padding: "75dp","50dp","10dp","100dp"
-                        spacing:"40dp"
+                    MDBoxLayout:
                         id:main_container
-                        cols:5
+                        orientation:"vertical"
+                        padding:"40dp"
+                        pos_hint:{"center_x":.5}
+                        spacing:"10dp"
                         adaptive_height:True
+                        HeaderLabel:
+                            text:"Download Tasks"
+                            halign:"left"
+                            MDIcon:
+                                padding:"10dp"
+                                pos_hint:{"center_y":.5}
+                                icon:"clock"
                 MDBoxLayout:
                     size_hint_y:None
                     height:"40dp"
@@ -39,7 +47,7 @@
                     DownloadsScreenLabel:
                         id:download_progress_label
                         size_hint_x: .6
-                        text:"current episode"
+                        text:"Try Downloading sth :)"
                         pos_hint: {'center_y': .5}
                     MDLinearProgressIndicator:
                         id: progress_bar

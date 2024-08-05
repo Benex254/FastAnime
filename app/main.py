@@ -139,6 +139,7 @@ class AniXStreamApp(MDApp):
                     self.theme_cls.theme_style = value
 
     def on_stop(self):
+        del self.downloads_worker_thread
         if self.animdl_streaming_subprocess:
             self.animdl_streaming_subprocess.terminate()
             Logger.info("Animdl:Successfully terminated existing animdl subprocess")
@@ -185,7 +186,6 @@ class AniXStreamApp(MDApp):
             "New Download Task Queued",
             f"{default_cmds.get('title')} has been queued for downloading",
         )
-
         self.add_anime_to_user_downloads_list(anime_id)
 
         # TODO:Add custom download cmds functionality
@@ -193,6 +193,7 @@ class AniXStreamApp(MDApp):
             *args
         )
         output_path = self.config.get("Preferences", "downloads_dir")  # type: ignore
+        self.download_screen.on_new_download_task(default_cmds["title"],default_cmds.get("episodes_range"))
         if episodes_range := default_cmds.get("episodes_range"):
             download_task = lambda: AnimdlApi.download_anime_by_title(
                 default_cmds["title"],
@@ -213,7 +214,9 @@ class AniXStreamApp(MDApp):
                 output_path,
             )  # ,default_cmds.get("quality")
             self.downloads_queue.put(download_task)
-
+            Logger.info(
+                f"Downloader:Successfully Queued {default_cmds['title']} for downloading"
+            )
     def watch_on_allanime(self, title_):
         """
         Opens the given anime in your default browser on allanimes site

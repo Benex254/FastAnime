@@ -1,0 +1,28 @@
+#:import color_text Utility.kivy_markup_helper.color_text
+
+<TaskText@MDLabel>:
+    adaptive_height:True
+    max_lines:0
+    shorten:False
+    markup:True
+    font_style: "Label"
+    role: "large"
+    bold:True
+
+
+<TaskCard>:
+    adaptive_height:True
+    radius:8
+    padding:"20dp"
+    md_bg_color:self.theme_cls.surfaceContainerHighColor
+
+    TaskText:
+        size_hint_x:.8
+        text:color_text(root.anime_task_name,root.theme_cls.primaryColor)
+    TaskText:
+        size_hint_x:.2
+        # color:self.theme_cls.surfaceDimColor
+        theme_text_color:"Secondary"
+        text:color_text(root.episodes_to_download,root.theme_cls.secondaryColor)
+    MDIcon:
+        icon:"check-bold"

@@ -8,11 +8,13 @@
 
 <PopupBoxLayout@MDBoxLayout>
     adaptive_height:True
-
+<Video>:
+    fit_mode:"fill"
+    
 # TODO: subdivide each main component to its own file
 <MediaPopup>
     size_hint: None, None
-    height: dp(500)
+    height: dp(530)
     width: dp(400)
     radius:[5,5,5,5]
     md_bg_color:self.theme_cls.backgroundColor
@@ -22,17 +24,17 @@
         orientation: 'vertical'
         MDRelativeLayout:
             size_hint_y: None
-            height: dp(250)
+            height: dp(280)
             line_color:root.caller.has_trailer_color
-            line_width:2
+            line_width:1
             MediaPopupVideoPlayer:
                 id:player
-                source:root.caller.trailer_url
-                preview:app.default_anime_image
+                source: root.caller.trailer_url
+                thumbnail:app.default_anime_image
                 state:"play" if root.caller.trailer_url else "stop"
-                fit_mode:"fill"
+                # fit_mode:"fill"
                 size_hint_y: None
-                height: dp(250)
+                height: dp(280)
             PopupBoxLayout:
                 padding: "10dp","5dp"
                 spacing:"5dp"

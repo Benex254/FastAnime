@@ -5,8 +5,8 @@ from Utility import MediaCardLoader,show_notification
 
 class MyListScreenModel(BaseScreenModel):
     already_in_user_anime_list = []
-    def update_my_anime_list_view(self,not_yet_in_user_anime_list:list,**kwargs):
-        success,self.data = AniList.search(id_in=not_yet_in_user_anime_list)
+    def update_my_anime_list_view(self,not_yet_in_user_anime_list:list,page=None):
+        success,self.data = AniList.search(id_in=not_yet_in_user_anime_list,page=page,sort="SCORE_DESC")
         if success:    
             return self.media_card_generator()
         else:

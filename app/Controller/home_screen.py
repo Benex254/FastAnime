@@ -23,8 +23,8 @@ class HomeScreenController:
     def __init__(self, model:HomeScreenModel):
         self.model = model  # Model.main_screen.MainScreenModel
         self.view = HomeScreenView(controller=self, model=self.model)
-        if self.view.app.config.get("Preferences","is_startup_anime_enable")=="1": # type: ignore
-            Clock.schedule_once(lambda _:self.populate_home_screen())
+        # if self.view.app.config.get("Preferences","is_startup_anime_enable")=="1": # type: ignore
+        #     Clock.schedule_once(lambda _:self.populate_home_screen())
 
     def get_view(self) -> HomeScreenView:
         return self.view
@@ -109,12 +109,12 @@ class HomeScreenController:
 
     def populate_home_screen(self):
         self.populate_errors = []
-        Clock.schedule_once(lambda _:self.trending_anime())
-        Clock.schedule_once(lambda _:self.highest_scored_anime())
-        Clock.schedule_once(lambda _:self.popular_anime())
-        Clock.schedule_once(lambda _: self.favourite_anime())
-        Clock.schedule_once(lambda _:self.recently_updated_anime())
-        Clock.schedule_once(lambda _:self.upcoming_anime())
+        Clock.schedule_once(lambda _:self.trending_anime(),1)
+        Clock.schedule_once(lambda _:self.highest_scored_anime(),2)
+        Clock.schedule_once(lambda _:self.popular_anime(),3)
+        Clock.schedule_once(lambda _: self.favourite_anime(),4)
+        Clock.schedule_once(lambda _:self.recently_updated_anime(),5)
+        Clock.schedule_once(lambda _:self.upcoming_anime(),6)
 
         if self.populate_errors:
             show_notification(f"Failed to fetch all home screen data",f"Theres probably a problem with your internet connection or anilist servers are down.\nFailed include:{', '.join(self.populate_errors)}")

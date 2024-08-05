@@ -64,6 +64,7 @@ class AniXStreamApp(MDApp):
     animdl_streaming_subprocess: Popen | None = None
     default_anime_image = resource_find(random.choice(["default_1.jpg","default.jpg"]))
     default_banner_image = resource_find(random.choice(["banner_1.jpg","banner.jpg"]))
+    # default_video = resource_find("Billyhan_When you cant afford Crunchyroll to watch anime.mp4")
 
     def worker(self, queue: Queue):
         while True:
@@ -121,10 +122,12 @@ class AniXStreamApp(MDApp):
         self.anime_screen = self.manager_screens.get_screen("anime screen")
         self.search_screen = self.manager_screens.get_screen("search screen")
         self.download_screen = self.manager_screens.get_screen("downloads screen")
+        self.home_screen = self.manager_screens.get_screen("home screen")
         return self.manager_screens
 
     def on_start(self, *args):
-        pass
+        if self.config.get("Preferences","is_startup_anime_enable")=="1": # type: ignore
+            Clock.schedule_once(lambda _:self.home_screen.controller.populate_home_screen(),1)
 
     def generate_application_screens(self) -> None:
         for i, name_screen in enumerate(screens.keys()):

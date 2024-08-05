@@ -36,7 +36,7 @@ class MediaCard(ButtonBehavior, HoverBehavior, MDBoxLayout):
     stars = ListProperty([0, 0, 0, 0, 0, 0])
     cover_image_url = StringProperty()
     preview_image = StringProperty()
-    has_trailer_color = ListProperty([1, 1, 1, 0])
+    has_trailer_color = ListProperty([.5, .5, .5, .5])
 
     def __init__(self, trailer_url=None, **kwargs):
         super().__init__(**kwargs)
@@ -62,7 +62,9 @@ class MediaCard(ButtonBehavior, HoverBehavior, MDBoxLayout):
         popup.center = self.center
 
     def on_dismiss(self, popup: MediaPopup):
-        popup.player.unload()
+        popup.player.state = "stop"
+        if popup.player._video:
+            popup.player._video.unload()
 
     def set_preview_image(self, image):
         self.preview_image = image

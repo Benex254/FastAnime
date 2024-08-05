@@ -64,6 +64,6 @@ class AnimdlStreamDialog(
                 cmds = [*cmds, "-q", quality]
 
             app.watch_on_animdl(custom_options=cmds)
-
+        self.dismiss()
     def stream_anime(self, app):
         Clock.schedule_once(lambda _: self._stream_anime(app))

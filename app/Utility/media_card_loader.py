@@ -9,16 +9,20 @@ from pytube import YouTube
 from kivy.loader import _ThreadPool 
 from kivy.clock import Clock
 from kivy.cache import Cache
-from datetime import date
+from datetime import date,datetime
 
 Cache.register("anime")
+today = date.today()
+now = datetime.now()
 
 user_data = JsonStore("user_data.json")
 my_list = user_data.get("my_list")["list"] # returns a list of anime ids
 
 yt_cache = JsonStore("yt_cache.json")
-today = date.today()
-yt_stream_links = yt_cache.get("yt_stream_links")[f"{today}"]
+yt_stream_links = []
+name_of_yt_cache = f"{today}{0 if now.hour>=12 else 1}"
+if yt_streams:=yt_cache.get("yt_stream_links").get(name_of_yt_cache):
+    yt_stream_links = yt_streams
 
 if yt_stream_links:
     for link in yt_stream_links:
@@ -82,7 +86,7 @@ class MediaCardDataLoader(object):
                 # sleep(0.5)
                 data = preview_image,video_stream_url
                 yt_stream_links.append((yt_watch_url,data))
-                yt_cache.put("yt_stream_links",**{f"{today}":yt_stream_links})
+                yt_cache.put("yt_stream_links",**{f"{name_of_yt_cache}":yt_stream_links})
             except:
                 data = preview_image,None
         return data

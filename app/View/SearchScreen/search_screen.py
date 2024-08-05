@@ -87,7 +87,7 @@ class SearchScreenView(BaseScreenView):
 
     def update_pagination(self,pagination_info):
         self.search_results_pagination.current_page =self.current_page = pagination_info["currentPage"]
-        self.search_results_pagination.total_pages = self.total_pages = pagination_info["total"]
+        self.search_results_pagination.total_pages = self.total_pages = max(int(pagination_info["total"]/30),1)
         self.has_next_page = pagination_info["hasNextPage"]
 
     def next_page(self):

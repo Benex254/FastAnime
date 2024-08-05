@@ -1,16 +1,15 @@
 from kivy.properties import ObjectProperty
 from View.base_screen import BaseScreenView
 from kivy.uix.modalview import ModalView
-
+from kivy.utils import format_bytes_to_human
 class DownloadAnimePopup(ModalView):
     pass
 
 class DownloadsScreenView(BaseScreenView):
     main_container = ObjectProperty()
-    def model_is_changed(self) -> None:
-        """
-        Called whenever any change has occurred in the data model.
-        The view in this method tracks these changes and updates the UI
-        according to these changes.
-        """
-
+    progress_bar = ObjectProperty()
+    download_progress_label = ObjectProperty()
+    def on_episode_download_progress(self,current_bytes_downloaded,total_bytes,episode_info):
+        percentage_completion = (current_bytes_downloaded/total_bytes)*100
+        self.progress_bar.value= percentage_completion
+        self.download_progress_label.text = f"Downloading: {episode_info['anime_title']} - {episode_info['episode']} ({format_bytes_to_human(current_bytes_downloaded)}/{format_bytes_to_human(total_bytes)})"

@@ -61,7 +61,7 @@ class AniXStreamApp(MDApp):
         while True:
             download_task = queue.get() # task should be a function
             download_task()
-            self.queue.task_done()
+            self.downloads_queue.task_done()
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -91,6 +91,7 @@ class AniXStreamApp(MDApp):
                 self.theme_cls.theme_style = theme_style
         self.anime_screen = self.manager_screens.get_screen("anime screen")
         self.search_screen = self.manager_screens.get_screen("search screen")
+        self.download_screen = self.manager_screens.get_screen("downloads screen")
         return self.manager_screens
     
     def on_start(self,*args):
@@ -164,22 +165,19 @@ class AniXStreamApp(MDApp):
             show_notification("Failure",f"Failed to open {title} in browser on allanime site")
 
 
+    def download_anime_complete(self,successful_downloads:list,failed_downloads:list,anime_title:str):
+        show_notification(f"Finished Dowloading {anime_title}",f"There were {len(successful_downloads)} successful downloads and {len(failed_downloads)} failed downloads")
 
-    def open_download_anime_dialog(self):
-        """"
-        calls the download dialog
-        """
-        DownloadAnimePopup().open()
-    def download_anime(self,on_complete,on_progress,default_cmds:dict[str,str]|None=None,custom_cmds:tuple[str]|None=None):
+    def download_anime(self,default_cmds):
         # TODO:Add custom download cmds functionality
+        on_progress = lambda *args:self.download_screen.on_episode_download_progress(*args)
         output_path = self.config.get("Preferences","downloads_dir")
-        if default_cmds:
-            if episodes_range:=default_cmds.get("episodes_range"):
-                download_task =lambda: AnimdlApi.download_anime_by_title(default_cmds["title"],on_progress,on_complete,output_path,episodes_range,default_cmds["quality"])
-                self.downloads_queue.put(download_task)
-            else:
-                download_task =lambda: AnimdlApi.download_anime_by_title(default_cmds["title"],on_progress,on_complete,output_path,None,default_cmds["quality"])
-                self.downloads_queue.put(download_task)
+        if episodes_range:=default_cmds.get("episodes_range"):
+            download_task =lambda: AnimdlApi.download_anime_by_title(default_cmds["title"],on_progress,self.download_anime_complete,output_path,episodes_range) # ,default_cmds["quality"]
+            self.downloads_queue.put(download_task)
+        else:
+            download_task =lambda: AnimdlApi.download_anime_by_title(default_cmds["title"],on_progress,self.download_anime_complete,output_path) # ,default_cmds.get("quality")
+            self.downloads_queue.put(download_task)
 
     def stream_anime_with_custom_input_cmds(self,*cmds):
         self.animdl_streaming_subprocess = AnimdlApi.run_custom_command("stream",*cmds)

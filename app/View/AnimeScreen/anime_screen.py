@@ -6,7 +6,7 @@ from kivymd.uix.label import MDLabel
 from kivy.utils import QueryDict,get_hex_from_color
 from collections import defaultdict
 
-from . import AnimdlStreamDialog
+from .components import AnimdlStreamDialog,DownloadAnimeDialog
 
 # TODO:move the rest of the classes to their own files
 
@@ -287,3 +287,9 @@ class AnimeScreenView(BaseScreenView):
         Called when user wants to stream with custom commands
         """
         AnimdlStreamDialog(self.data).open()
+
+    def open_download_anime_dialog(self):
+        """
+        Opens the download anime dialog
+        """
+        DownloadAnimeDialog(self.data).open()

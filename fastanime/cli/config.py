@@ -34,6 +34,7 @@ class Config(object):
                 "preview": "False",
                 "format": "best[height<=1080]/bestvideo[height<=1080]+bestaudio/best",
                 "provider": "allanime",
+                "error": "3",
             }
         )
         self.configparser.add_section("stream")
@@ -55,6 +56,7 @@ class Config(object):
         self.auto_next = self.get_auto_next()
         self.auto_select = self.get_auto_select()
         self.quality = self.get_quality()
+        self.error = self.get_error()
         self.server = self.get_server()
         self.format = self.get_format()
         self.preferred_language = self.get_preferred_language()
@@ -129,6 +131,9 @@ class Config(object):
 
     def get_quality(self):
         return self.configparser.getint("stream", "quality")
+
+    def get_error(self):
+        return self.configparser.getint("stream", "error")
 
     def get_server(self):
         return self.configparser.get("stream", "server")

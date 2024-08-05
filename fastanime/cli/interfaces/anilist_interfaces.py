@@ -246,12 +246,12 @@ def fetch_streams(config: Config, anilist_config: QueryDict):
         episode_number,
     )
     # -- update anilist info if user --
-    if config.user:
+    if config.user and episode_number:
         AniList.update_anime_list(
             {
                 "mediaId": anime_id,
                 "status": "CURRENT",
-                "progress": episode_number if episode_number else 0,
+                "progress": episode_number,
             }
         )
 
@@ -267,7 +267,7 @@ def fetch_streams(config: Config, anilist_config: QueryDict):
     if stop_time == "0":
         episode = str(int(episode_number) + 1)
     else:
-        error = 5 * 60
+        error = config.error * 60
         delta = calculate_time_delta(stop_time, total_time)
         if delta.total_seconds() > error:
             episode = episode_number

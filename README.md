@@ -4,30 +4,30 @@
 This project was created as a gui solution to any and all anime cli's. Thus freeing the cli developer from worrying about making it look good and instead focus on functionality.
 
 # Screenshots
-[Home Screen](https://github.com/Benex254/aniXstream/blob/master/assets/screenshots/home_1.png)
-[Home Screen](https://github.com/Benex254/aniXstream/blob/master/assets/screenshots/home_2.png)
-[Home Screen](https://github.com/Benex254/aniXstream/blob/master/assets/screenshots/home_3.png)
-[Home Screen](https://github.com/Benex254/aniXstream/blob/master/assets/screenshots/home_4.png)
+![Home Screen](https://github.com/Benex254/aniXstream/blob/master/assets/screenshots/home_1.png)
+![Home Screen](https://github.com/Benex254/aniXstream/blob/master/assets/screenshots/home_2.png)
+![Home Screen](https://github.com/Benex254/aniXstream/blob/master/assets/screenshots/home_3.png)
+![Home Screen](https://github.com/Benex254/aniXstream/blob/master/assets/screenshots/home_4.png)
 
-[Search Screen](https://github.com/Benex254/aniXstream/blob/master/assets/screenshots/search_1.png)
-[Search Screen](https://github.com/Benex254/aniXstream/blob/master/assets/screenshots/search_2.png)
-[Search Screen](https://github.com/Benex254/aniXstream/blob/master/assets/screenshots/search_3.png)
+![Search Screen](https://github.com/Benex254/aniXstream/blob/master/assets/screenshots/search_1.png)
+![Search Screen](https://github.com/Benex254/aniXstream/blob/master/assets/screenshots/search_2.png)
+![Search Screen](https://github.com/Benex254/aniXstream/blob/master/assets/screenshots/search_3.png)
 
-[MyAnimeList](https://github.com/Benex254/aniXstream/blob/master/assets/screenshots/myanimelist.png)
+![MyAnimeList](https://github.com/Benex254/aniXstream/blob/master/assets/screenshots/myanimelist.png)
 
-[Settings Screen](https://github.com/Benex254/aniXstream/blob/master/assets/screenshots/settings_1.png)
-[Settings Screen](https://github.com/Benex254/aniXstream/blob/master/assets/screenshots/settings_2.png)
+![Settings Screen](https://github.com/Benex254/aniXstream/blob/master/assets/screenshots/settings_1.png)
+![Settings Screen](https://github.com/Benex254/aniXstream/blob/master/assets/screenshots/settings_2.png)
 
-[Theming Example](https://github.com/Benex254/aniXstream/blob/master/assets/screenshots/theme_example_1.png)
-[Theming Example](https://github.com/Benex254/aniXstream/blob/master/assets/screenshots/theme_example_2.png)
-[Theming Example](https://github.com/Benex254/aniXstream/blob/master/assets/screenshots/theme_example_3.png)
+![Theming Example](https://github.com/Benex254/aniXstream/blob/master/assets/screenshots/theme_example_1.png)
+![Theming Example](https://github.com/Benex254/aniXstream/blob/master/assets/screenshots/theme_example_2.png)
+![Theming Example](https://github.com/Benex254/aniXstream/blob/master/assets/screenshots/theme_example_3.png)
 
-[Anime Screen](https://github.com/Benex254/aniXstream/blob/master/assets/screenshots/anime_screen.png)
-[Anime Screen](https://github.com/Benex254/aniXstream/blob/master/assets/screenshots/anime_screen_1.png)
-[Anime Screen](https://github.com/Benex254/aniXstream/blob/master/assets/screenshots/anime_screen_2.png)
+![Anime Screen](https://github.com/Benex254/aniXstream/blob/master/assets/screenshots/anime_screen.png)
+![Anime Screen](https://github.com/Benex254/aniXstream/blob/master/assets/screenshots/anime_screen_1.png)
+![Anime Screen](https://github.com/Benex254/aniXstream/blob/master/assets/screenshots/anime_screen_2.png)
 
 
-[Trailer Fullscreen](https://github.com/Benex254/aniXstream/blob/master/assets/screenshots/trailer_fullscreen.png)
+![Trailer Fullscreen](https://github.com/Benex254/aniXstream/blob/master/assets/screenshots/trailer_fullscreen.png)
 
 
 ## Authors

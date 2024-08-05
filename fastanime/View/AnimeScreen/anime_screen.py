@@ -25,6 +25,7 @@ class AnimeScreenView(BaseScreenView):
     episodes_container = ObjectProperty()
     total_episodes = 0
     current_episode = 1
+    video_player = ObjectProperty()
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -58,11 +59,16 @@ class AnimeScreenView(BaseScreenView):
 
     def on_current_anime_data(self, instance, value):
         self.current_episode = int("1")
+        self.update_current_video_stream("dropbox")
+        self.video_player.state = "play"
+
         data = value["show"]
         self.update_episodes(data["availableEpisodesDetail"]["sub"][::-1])
 
     def update_current_episode(self, episode):
         self.controller.fetch_streams(self.current_title, episode)
+        self.update_current_video_stream("dropbox")
+        self.video_player.state = "play"
 
     def update_current_video_stream(self, server, is_dub=False):
         for link in self.current_links:

@@ -1,4 +1,3 @@
-from requests.models import StreamConsumedError
 from ..libs.anilist import AniList
 from .base_model import BaseScreenModel
 from ..libs.anime_provider.allanime_api import anime_provider

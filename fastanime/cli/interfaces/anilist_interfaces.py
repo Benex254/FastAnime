@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 import random
+from datetime import datetime
 
 from rich import print
 from rich.progress import Progress
@@ -18,6 +19,19 @@ from ..config import Config
 from ..utils.mpv import mpv
 from ..utils.tools import QueryDict, exit_app
 from ..utils.utils import clear, fuzzy_inquirer
+
+
+def calculate_time_delta(start_time, end_time):
+    time_format = "%H:%M:%S"
+
+    # Convert string times to datetime objects
+    start = datetime.strptime(start_time, time_format)
+    end = datetime.strptime(end_time, time_format)
+
+    # Calculate the difference
+    delta = end - start
+
+    return delta
 
 
 def player_controls(config: Config, anilist_config: QueryDict):
@@ -46,8 +60,25 @@ def player_controls(config: Config, anilist_config: QueryDict):
             current_episode,
         )
 
-        mpv(current_link, selected_server["episode_title"])
+        start_time = config.watch_history[str(anime_id)]["start_time"]
+        print("[green]Continuing from:[/] ", start_time)
+        stop_time, total_time = mpv(
+            current_link, selected_server["episode_title"], start_time=start_time
+        )
+        if stop_time == "0":
+            episode = str(int(current_episode) + 1)
+        else:
+            error = 5 * 60
+            delta = calculate_time_delta(stop_time, total_time)
+            if delta.total_seconds() > error:
+                episode = current_episode
+            else:
+                episode = str(int(current_episode) + 1)
+                stop_time = "0"
+                total_time = "0"
+
         clear()
+        config.update_watch_history(anime_id, episode, stop_time, total_time)
         player_controls(config, anilist_config)
 
     def _next_episode():
@@ -220,14 +251,34 @@ def fetch_streams(config: Config, anilist_config: QueryDict):
             {
                 "mediaId": anime_id,
                 "status": "CURRENT",
-                "progress": episode_number if episode_number else 1,
+                "progress": episode_number if episode_number else 0,
             }
         )
 
-    mpv(stream_link, selected_server["episode_title"])
+    start_time = config.watch_history.get(str(anime_id), {}).get("start_time", "0")
+    if start_time != "0":
+        print("[green]Continuing from:[/] ", start_time)
+    stop_time, total_time = mpv(
+        stream_link, selected_server["episode_title"], start_time=start_time
+    )
+    print("Finished at: ", stop_time)
 
     # update_watch_history
-    config.update_watch_history(anime_id, str(int(episode_number) + 1))
+    if stop_time == "0":
+        episode = str(int(episode_number) + 1)
+    else:
+        error = 5 * 60
+        delta = calculate_time_delta(stop_time, total_time)
+        if delta.total_seconds() > error:
+            episode = episode_number
+        else:
+            episode = str(int(episode_number) + 1)
+            stop_time = "0"
+            total_time = "0"
+
+    config.update_watch_history(
+        anime_id, episode, start_time=stop_time, total_time=total_time
+    )
 
     # switch to controls
     clear()
@@ -249,8 +300,11 @@ def fetch_episode(config: Config, anilist_config: QueryDict):
 
     # prompt for episode number
     episodes = anime["availableEpisodesDetail"][translation_type]
-    if continue_from_history and user_watch_history.get(str(anime_id)) in episodes:
-        episode_number = user_watch_history[str(anime_id)]
+    if (
+        continue_from_history
+        and user_watch_history.get(str(anime_id), {}).get("episode") in episodes
+    ):
+        episode_number = user_watch_history[str(anime_id)]["episode"]
         print(f"[bold cyan]Continuing from Episode:[/] [bold]{episode_number}[/]")
     else:
         choices = [*episodes, "Back"]
@@ -266,7 +320,8 @@ def fetch_episode(config: Config, anilist_config: QueryDict):
     if episode_number == "Back":
         anilist_options(config, anilist_config)
         return
-    config.update_watch_history(anime_id, episode_number)
+    start_time = user_watch_history.get(str(anime_id), {}).get("start_time", "0")
+    config.update_watch_history(anime_id, episode_number, start_time=start_time)
 
     # update internal config
     anilist_config.episodes = episodes

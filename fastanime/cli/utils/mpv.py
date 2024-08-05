@@ -3,7 +3,6 @@ import shutil
 import subprocess
 from typing import Optional
 
-
 # legacy
 # def mpv(link, title: None | str = "anime", *custom_args):
 #     MPV = shutil.which("mpv")
@@ -25,8 +24,50 @@ from typing import Optional
 #     else:
 #         subprocess.run([MPV, *custom_args, f"--title={title}", link])
 #
-#
-def mpv(link: str, title: Optional[str] = "anime", *custom_args):
+
+
+def stream_video(url, mpv_args):
+    process = subprocess.Popen(
+        ["mpv", url, *mpv_args],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+    )
+
+    last_time = None
+    av_time_pattern = re.compile(r"AV: ([0-9:]*) / ([0-9:]*) \(([0-9]*)%\)")
+    last_time = "0"
+    total_time = "0"
+
+    try:
+        while True:
+            output = process.stderr.readline()
+
+            if output:
+                # Match the timestamp in the output
+                match = av_time_pattern.search(output.strip())
+                if match:
+                    current_time = match.group(1)
+                    total_time = match.group(2)
+                    match.group(3)
+                    last_time = current_time
+                    # print(f"Current stream time: {current_time}, Total time: {total_time}, Progress: {percentage}%")
+
+            # Check if the process has terminated
+            retcode = process.poll()
+            if retcode is not None:
+                print("Finshed at: ", last_time)
+                break
+
+    except Exception as e:
+        print(f"An error occurred: {e}")
+    finally:
+        process.terminate()
+
+    return last_time, total_time
+
+
+def mpv(link: str, title: Optional[str] = "anime", start_time: str = "0", *custom_args):
     # Determine if mpv is available
     MPV = shutil.which("mpv")
 
@@ -54,6 +95,7 @@ def mpv(link: str, title: Optional[str] = "anime", *custom_args):
                 "-n",
                 "com.google.android.youtube/.UrlActivity",
             ]
+            return "0"
         else:
             # Android specific commands to launch mpv with a regular URL
             args = [
@@ -71,10 +113,12 @@ def mpv(link: str, title: Optional[str] = "anime", *custom_args):
             ]
 
         subprocess.run(args)
+        return "0"
     else:
         # General mpv command with custom arguments
-        mpv_args = [MPV, *custom_args, f"--title={title}", link]
-        subprocess.run(mpv_args)
+        mpv_args = [*custom_args, f"--title={title}", f"--start={start_time}"]
+        stop_time, total_time = stream_video(link, mpv_args)
+        return stop_time, total_time
 
 
 # Example usage

@@ -7,7 +7,12 @@ from typing import Literal
 
 import requests
 
-from .anilist_data_schema import AnilistDataSchema, AnilistUser
+from .anilist_data_schema import (
+    AnilistDataSchema,
+    AnilistMediaLists,
+    AnilistNotifications,
+    AnilistUser,
+)
 from .queries_graphql import (
     airing_schedule_query,
     anime_characters_query,
@@ -52,7 +57,9 @@ class AniListApi:
         self.user_id = user_info["id"]  # pyright:ignore
         return user_info
 
-    def get_notification(self):
+    def get_notification(
+        self,
+    ) -> tuple[bool, AnilistNotifications] | tuple[bool, None]:
         return self._make_authenticated_request(notification_query)
 
     def reset_notification_count(self):
@@ -77,19 +84,22 @@ class AniListApi:
         status: Literal[
             "CURRENT", "PLANNING", "COMPLETED", "DROPPED", "PAUSED", "REPEATING"
         ],
-    ):
+    ) -> tuple[bool, AnilistMediaLists] | tuple[bool, None]:
         variables = {"status": status, "userId": self.user_id}
         return self._make_authenticated_request(media_list_query, variables)
 
-    def get_medialist_entry(self, mediaId: int):
+    def get_medialist_entry(
+        self, mediaId: int
+    ) -> tuple[bool, dict] | tuple[bool, None]:
         variables = {"mediaId": mediaId}
         return self._make_authenticated_request(get_medialist_item_query, variables)
 
     def delete_medialist_entry(self, mediaId: int):
         result = self.get_medialist_entry(mediaId)
-        if not result[0]:
+        data = result[1]
+        if not result[0] or not data:
             return result
-        id = result[1]["data"]["MediaList"]["id"]
+        id = data["data"]["MediaList"]["id"]
         variables = {"id": id}
         return self._make_authenticated_request(delete_list_entry_query, variables)
 
@@ -139,26 +149,16 @@ class AniListApi:
             logger.warning(
                 "Timeout has been exceeded this could mean anilist is down or you have lost internet connection"
             )
-            return (
-                False,
-                {
-                    "Error": "Timeout Exceeded for connection there might be a problem with your internet or anilist is down."
-                },
-            )  # type: ignore
+            return (False, None)
         except requests.exceptions.ConnectionError:
             logger.warning(
                 "ConnectionError this could mean anilist is down or you have lost internet connection"
             )
+            return (False, None)
 
-            return (
-                False,
-                {
-                    "Error": "There might be a problem with your internet or anilist is down."
-                },
-            )  # type: ignore
         except Exception as e:
             logger.error(f"Something unexpected occured {e}")
-            return (False, {"Error": f"{e}"})  # type: ignore
+            return (False, None)  # type: ignore
 
     def get_watchlist(self):
         variables = {"status": "CURRENT", "userId": self.user_id}

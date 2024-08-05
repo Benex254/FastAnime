@@ -17,7 +17,7 @@ def rewatching(config: Config):
     anime_list = AniList.get_anime_list("REPEATING")
     if not anime_list:
         return
-    if not anime_list[0]:
+    if not anime_list[0] or not anime_list[1]:
         return
     media = [
         mediaListItem["media"]

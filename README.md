@@ -1,8 +1,8 @@
 # Fast Anime
 
-Welcome to **FastAnime**, an anime scrapper that brings a browser experience to the terminal.
+Welcome to **FastAnime**, anime site experience from the terminal.
 
-[intro.webm](https://github.com/user-attachments/assets/036af7fc-83ff-4f9b-bda6-0c913f7d0f38)
+[fa_demo.webm](https://github.com/user-attachments/assets/bb46642c-176e-42b3-a533-ff55d4dac111)
 
 Heavily inspired by [animdl](https://github.com/justfoolingaround/animdl), [magic-tape](https://gitlab.com/christosangel/magic-tape/-/tree/main?ref_type=heads) and [ani-cli](https://github.com/pystardust/ani-cli).
 

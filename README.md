@@ -38,11 +38,16 @@ Heavily inspired by [animdl](https://github.com/justfoolingaround/animdl), [magi
 
 ### Using pip
 
-Work in progress...
+```bash
+pip install https://github.com/Benex254/FastAnime/releases/download/v0.30.0/fastanime-0.3.0.tar.gz
+```
 
 ### Using pipx
 
-Work in progress...
+```bash
+
+pipx install https://github.com/Benex254/FastAnime/releases/download/v0.30.0/fastanime-0.3.0.tar.gz
+```
 
 ### Pre-built binaries
 

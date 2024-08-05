@@ -35,7 +35,7 @@ query($id:Int){
 """
 notification_query = """
 query{
-    Page {
+    Page(perPage:5){
         pageInfo {
             total
         }

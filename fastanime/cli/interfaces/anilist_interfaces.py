@@ -508,8 +508,7 @@ def anilist_options(config, anilist_config: QueryDict):
 
     def _remove_from_list(config: Config, anilist_config: QueryDict):
         if Confirm.ask(
-            f"Are you sure you want to procede, the folowing action will permanently remove {
-                selected_anime_title} from your list and your progress will be erased",
+            f"Are you sure you want to procede, the folowing action will permanently remove {selected_anime_title} from your list and your progress will be erased",
             default=False,
         ):
             success, data = AniList.delete_medialist_entry(selected_anime["id"])

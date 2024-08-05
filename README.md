@@ -1,10 +1,10 @@
 
-# AniXStream
+# FastAnime
 
-This project was created as a gui solution to any and all anime cli's. Thus freeing the cli developer from worrying about making it look good and instead focus on functionality.
+The best and only gui anime scrapper for your benefit. 
 
 # Screenshots
-![Home Screen](https://github.com/Benex254/aniXstream/blob/master/assets/screenshots/home_1.png)
+![Home Screen](https://github.com/Benex254/aniXstream/blob/master/assets/screenshots/home.png)
 ![Home Screen](https://github.com/Benex254/aniXstream/blob/master/assets/screenshots/home_2.png)
 ![Home Screen](https://github.com/Benex254/aniXstream/blob/master/assets/screenshots/home_3.png)
 ![Home Screen](https://github.com/Benex254/aniXstream/blob/master/assets/screenshots/home_4.png)
@@ -36,4 +36,5 @@ This project was created as a gui solution to any and all anime cli's. Thus free
 
 
 ## Installation
-For now you will have to clone the repo or if you are a windows user there is an installer in the releases, this is the link to download the installer [anixstream installer](https://github.com/Benex254/aniXstream/releases/download/v0.10.0/AniXStream.Installer.exe)
+The project is undergoing some changes though you can always get a working legacy version by cloning the legacy branch
+Or for windows users to go to the first releases, this is the link to download the installer [anixstream installer](https://github.com/Benex254/aniXstream/releases/download/v0.10.0/AniXStream.Installer.exe)

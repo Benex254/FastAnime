@@ -50,7 +50,7 @@ signal.signal(signal.SIGINT, handle_exit)
 @click.option(
     "-s",
     "--server",
-    type=click.Choice(SERVERS_AVAILABLE, case_sensitive=False),
+    type=click.Choice([*SERVERS_AVAILABLE, "top"], case_sensitive=False),
     help="Server of choice",
 )
 @click.option(

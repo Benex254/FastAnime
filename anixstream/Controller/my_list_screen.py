@@ -4,9 +4,9 @@ from kivy.logger import Logger
 # from kivy.clock import Clock
 from kivy.utils import difference
 
-from View import MyListScreenView
-from Model import MyListScreenModel
-from Utility import user_data_helper
+from anixstream.View import MyListScreenView
+from anixstream.Model import MyListScreenModel
+from anixstream.Utility import user_data_helper
 
 class MyListScreenController:
     """

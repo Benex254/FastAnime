@@ -1,6 +1,6 @@
 from kivy.properties import ObjectProperty
 
-from View.base_screen import BaseScreenView
+from anixstream.View.base_screen import BaseScreenView
 
 
 class HomeScreenView(BaseScreenView):

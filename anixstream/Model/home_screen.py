@@ -1,6 +1,6 @@
-from Model.base_model import BaseScreenModel
-from libs.anilist import AniList
-from Utility.media_card_loader import MediaCardLoader
+from .base_model import BaseScreenModel
+from anixstream.libs.anilist import AniList
+from anixstream.Utility.media_card_loader import MediaCardLoader
 
 
 class HomeScreenModel(BaseScreenModel):

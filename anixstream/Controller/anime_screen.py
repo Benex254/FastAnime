@@ -2,8 +2,8 @@ from kivy.clock import Clock
 from kivy.logger import Logger
 from kivy.cache import Cache
 
-from Model import AnimeScreenModel
-from View import AnimeScreenView
+from anixstream.Model import AnimeScreenModel
+from anixstream.View import AnimeScreenView
 
 Cache.register("data.anime", limit=20, timeout=600)
 

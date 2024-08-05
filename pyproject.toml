@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+[project]
+name = "AniXStream"
+version = "0.0.1"
+authors = [
+  { name="Benex254", email="benexprojects@gmail.com" },
+]
+description = "A wrapper over all and every anime cli or package"
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "kivy",
+    "plyer",
+	"fuzzywuzzy",
+	"python-Levenshtein",
+	"kivymd @ https://github.com/kivymd/KivyMD/archive/master.zip",
+	"ffpyplayer",
+	"pytube",
+	"animdl"
+]
+[project.urls]
+Homepage = "https://github.com/benex254/aniXstream"
+Issues = "https://github.com/benex254/aniXstream"
+[project.scripts]
+anixstream="anixstream.__main__:run_app"
+

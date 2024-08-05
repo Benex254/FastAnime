@@ -3,7 +3,7 @@ from kivy.properties import ObjectProperty
 from kivy.logger import Logger
 from kivy.utils import format_bytes_to_human
 
-from View.base_screen import BaseScreenView
+from anixstream.View.base_screen import BaseScreenView
 from .components.task_card import TaskCard
 
 

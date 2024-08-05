@@ -1,8 +1,8 @@
 from kivy.properties import ObjectProperty, StringProperty
 
-from View.base_screen import BaseScreenView
-from Utility.kivy_markup_helper import bolden, color_text, underline
-from Utility.data import themes_available
+from anixstream.View.base_screen import BaseScreenView
+from anixstream.Utility.kivy_markup_helper import bolden, color_text, underline
+from anixstream.Utility.data import themes_available
 
 
 class HelpScreenView(BaseScreenView):

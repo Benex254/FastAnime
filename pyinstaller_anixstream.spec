@@ -9,13 +9,27 @@ from kivymd import hooks_path as kivymd_hooks_path
 
 path = os.path.abspath(".")
 
+kv_file_paths = []
+
+app_dir = os.path.join(os.getcwd(),"anixstream")
+print(app_dir)
+
+views_folder = os.path.join(app_dir,"View")
+for dirpath,dirnames,filenames in os.walk(views_folder):
+    for filename in filenames:
+        if os.path.splitext(filename)[1]==".kv":
+            kv_file = os.path.join(dirpath,filename)
+            kv_file_paths.append((kv_file,"./Views/"))
+
+
+
 a = Analysis(
-    ["main.py"],
-    datas=[ 
-('./assets/*', './assets'),("./data/*","./data/*"),("./configs/*","./configs")
+    ['./anixstream/__main__.py'],
+    datas=[ *kv_file_paths,
+(f'{app_dir}./assets/*', './assets/'),(f"{app_dir}./data/*","./data/"),(f"{app_dir}./configs/*","./configs/")
  ],
     pathex=[path],
-    hiddenimports=["kivymd.icon_definitions.md_icons"],
+    hiddenimports=["kivymd.icon_definitions.md_icons","plyer.platforms","plyer.platforms.win","plyer.platforms.win.storagepath","win32timezone"],
     hookspath=[kivymd_hooks_path],
     win_no_prefer_redirects=False,
     win_private_assemblies=False,
@@ -35,8 +49,9 @@ exe = EXE(
     strip=False,
     upx=True,
     name="AniXStream",
-    console=True,
-	icon="./assets/logo.ico"
+    console=False,
+	icon=f"{app_dir}./assets/logo.ico",
+    exclude_binaries=True,
     bootloader_ignore_signals=False,
     disable_windowed_traceback=False,
     argv_emulation=False,
@@ -48,9 +63,10 @@ exe = EXE(
 coll = COLLECT(
     exe,
     a.binaries,
+    a.zipfiles,
     a.datas,
     strip=False,
     upx=True,
     upx_exclude=[],
-    name='anixstream',
+    name='AniXStream',
 )

@@ -3,8 +3,8 @@ from inspect import isgenerator
 from kivy.clock import Clock
 from kivy.logger import Logger
 
-from View import SearchScreenView
-from Model import SearchScreenModel
+from anixstream.View import SearchScreenView
+from anixstream.Model import SearchScreenModel
 
 
 class SearchScreenController:

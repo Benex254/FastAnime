@@ -9,9 +9,9 @@ from kivy.cache import Cache
 from kivy.loader import _ThreadPool
 from kivy.logger import Logger
 
-from View.components import MediaCard
-from Utility import anilist_data_helper, user_data_helper
-from libs.anilist.anilist_data_schema import AnilistBaseMediaDataSchema
+from anixstream.View.components import MediaCard
+from anixstream.Utility import anilist_data_helper, user_data_helper
+from anixstream.libs.anilist.anilist_data_schema import AnilistBaseMediaDataSchema
 
 
 # Register anime cache in memory

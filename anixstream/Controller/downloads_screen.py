@@ -1,6 +1,6 @@
 
-from View import DownloadsScreenView
-from Model import DownloadsScreenModel
+from anixstream.View import DownloadsScreenView
+from anixstream.Model import DownloadsScreenModel
 
 
 class DownloadsScreenController:

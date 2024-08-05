@@ -1,6 +1,6 @@
 
-from View import CrashLogScreenView
-from Model import CrashLogScreenModel
+from anixstream.View import CrashLogScreenView
+from anixstream.Model import CrashLogScreenModel
 
 
 

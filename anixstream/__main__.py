@@ -1,6 +1,5 @@
 import os
 import random
-
 os.environ["KIVY_VIDEO"] = "ffpyplayer"
 
 from queue import Queue
@@ -11,11 +10,26 @@ import webbrowser
 import plyer
 
 from kivy.config import Config
-from kivy.resources import resource_find,resource_add_path
-resource_add_path("_internal")
-resource_add_path("assets")
-resource_add_path("configs")
-resource_add_path("data")
+from kivy.resources import resource_find,resource_add_path,resource_remove_path
+# resource_add_path("_internal")
+
+app_dir = os.path.dirname(__file__)
+
+# test
+
+# test_end
+
+
+# make sure we aint searching dist folder
+dist_folder = os.path.join(app_dir,"dist")
+resource_remove_path(dist_folder)
+
+assets_folder = os.path.join(app_dir,"assets")
+resource_add_path(assets_folder)
+conigs_folder = os.path.join(app_dir,"configs")
+resource_add_path(conigs_folder)
+data_folder = os.path.join(app_dir,"data")
+resource_add_path(data_folder)
 
 Config.set("graphics","width","1000")
 Config.set("graphics","minimum_width","1000")
@@ -38,15 +52,15 @@ from kivy.uix.settings import SettingsWithSidebar, Settings
 from kivymd.icon_definitions import md_icons
 from kivymd.app import MDApp
 
-from View.screens import screens
-from libs.animdl import AnimdlApi
-from Utility import (
+from anixstream.View.screens import screens
+from anixstream.libs.animdl import AnimdlApi
+from anixstream.Utility import (
     themes_available,
     show_notification,
     user_data_helper,
     animdl_config_manager,
 )
-
+from anixstream.Utility.utils import write_crash
 
 # Ensure the user data fields exist
 if not (user_data_helper.user_data.exists("user_anime_list")):
@@ -411,5 +425,11 @@ class AniXStreamApp(MDApp):
         show_notification("Streamer", "Started streaming")
 
 
-if __name__ == "__main__":
+def run_app():
     AniXStreamApp().run()
+
+if __name__ == "__main__":
+    try:
+        run_app()
+    except Exception as e:
+        write_crash(e)

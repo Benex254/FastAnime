@@ -1,4 +1,4 @@
-<Controls@MDBoxLayout>
+<Controls>
     adaptive_height:True
     padding:"10dp"
     spacing:"10dp"
@@ -8,10 +8,11 @@
         MDButtonText:
             text:"Add to MyList"
     MDButton:
-        on_press: print("presed")
+        on_press: 
+            if root.screen:root.screen.stream_anime_with_custom_cmds_dialog()
         MDButtonText:
             text:"Watch on Animdl"
     MDButton:
-        on_press: print("presed")
+        on_press: app.watch_on_allanime(root.screen.data["title"]["romaji"])
         MDButtonText:
             text:"Watch on AllAnime"

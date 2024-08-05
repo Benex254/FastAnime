@@ -2,3 +2,6 @@ from .home_screen import HomeScreenController
 from .search_screen import SearchScreenController
 from .my_list_screen import MyListScreenController
 from .anime_screen import AnimeScreenController
+from .downloads_screen import DownloadsScreenController
+from .help_screen import HelpScreenController
+from .crashlog_screen import CrashLogScreenController

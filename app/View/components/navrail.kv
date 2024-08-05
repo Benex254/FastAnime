@@ -30,14 +30,21 @@
         on_press: 
             root.screen.manager_screens.current = "my list screen"
     CommonNavigationRailItem:
-        icon: "library"
-        text: "Library"
+        icon: "download-circle"
+        text: "Downloads"
         on_press:
-            root.screen.manager_screens.current = "anime screen"
+            root.screen.manager_screens.current = "downloads screen"
     CommonNavigationRailItem:
         icon: "cog"
         text: "settings"
         on_press:app.open_settings()
     CommonNavigationRailItem:
+        icon: "help-circle"
+        text: "Help"
+        on_press:
+            root.screen.manager_screens.current = "help screen"
+    CommonNavigationRailItem:
         icon: "bug"
         text: "debug"
+        on_press:
+            root.screen.manager_screens.current = "crashlog screen"

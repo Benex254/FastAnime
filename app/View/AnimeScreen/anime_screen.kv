@@ -34,6 +34,7 @@
                     height: self.minimum_height
                     AnimeSideBar:
                         id:side_bar
+                        screen:root
                         size_hint_y:None
                         height:max(self.parent.height,self.minimum_height)
 
@@ -45,6 +46,7 @@
                         RankingsBar:
                             id:rankings_bar
                         Controls:
+                            screen:root
                         MDBoxLayout:
                             adaptive_height:True
                             padding:"20dp"

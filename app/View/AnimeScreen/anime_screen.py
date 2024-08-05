@@ -6,8 +6,9 @@ from kivymd.uix.label import MDLabel
 from kivy.utils import QueryDict,get_hex_from_color
 from collections import defaultdict
 
+from . import AnimdlStreamDialog
 
-
+# TODO:move the rest of the classes to their own files
 
 class RankingsBar(MDBoxLayout):
     rankings = DictProperty(
@@ -22,6 +23,7 @@ class RankingsBar(MDBoxLayout):
 class AnimeDescription(MDBoxLayout):
     description = StringProperty()
 
+
 class AnimeCharacter(MDBoxLayout):
     voice_actors = ObjectProperty({
         "name":"",
@@ -35,6 +37,7 @@ class AnimeCharacter(MDBoxLayout):
         "age":"",
         "description":""
     })
+
 
 class AnimeCharacters(MDBoxLayout):
     container = ObjectProperty()
@@ -62,12 +65,14 @@ class AnimeCharacters(MDBoxLayout):
             # anime_character.voice_actor =
             self.container.add_widget(anime_character)
 
+
 class AnimeReview(MDBoxLayout):
     review = ObjectProperty({
         "username":"",
         "avatar":"",
         "summary":""
     })
+
 
 class AnimeReviews(MDBoxLayout):
     reviews = ListProperty()
@@ -83,16 +88,22 @@ class AnimeReviews(MDBoxLayout):
             }
             self.container.add_widget(review_)
 
+
 class AnimeHeader(MDBoxLayout):
     titles = StringProperty()
     banner_image = StringProperty()
 
+
 class SideBarLabel(MDLabel):
     pass
+
+
 class SideBarHeaderLabel(MDLabel):
     pass
 
+
 class AnimeSideBar(MDBoxLayout):
+    screen = ObjectProperty()
     image = StringProperty()
     alternative_titles = DictProperty({
         "synonyms":"",
@@ -163,6 +174,10 @@ class AnimeSideBar(MDBoxLayout):
                 site[1])
             self.external_links_container.add_widget(label)
 
+class Controls(MDBoxLayout):
+    screen = ObjectProperty()
+
+
 class AnimeScreenView(BaseScreenView):
     header:AnimeHeader = ObjectProperty()
     side_bar:AnimeSideBar = ObjectProperty()
@@ -170,7 +185,7 @@ class AnimeScreenView(BaseScreenView):
     anime_description:AnimeDescription = ObjectProperty()
     anime_characters:AnimeCharacters = ObjectProperty()
     anime_reviews:AnimeReviews = ObjectProperty()
-    
+    data = DictProperty()
     def model_is_changed(self) -> None:
         """
         Called whenever any change has occurred in the data model.
@@ -179,6 +194,7 @@ class AnimeScreenView(BaseScreenView):
         """
     
     def update_layout(self,data):
+        self.data = data
         # uitlity functions
         format_date = lambda date_:  f"{date_['day']}/{date_['month']}/{date_['year']}" if date_ else ""
         format_list_with_comma = lambda list_: ", ".join(list_) if list_ else ""
@@ -265,3 +281,9 @@ class AnimeScreenView(BaseScreenView):
 
         # for r in data["recommendation"]["nodes"]:
         #     r["mediaRecommendation"]
+
+    def stream_anime_with_custom_cmds_dialog(self):
+        """
+        Called when user wants to stream with custom commands
+        """
+        AnimdlStreamDialog(self.data).open()

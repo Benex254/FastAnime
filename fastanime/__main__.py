@@ -1,12 +1,10 @@
 import os
 import random
-import webbrowser
 from queue import Queue
 from subprocess import Popen
 from threading import Thread
 
 import plyer
-from kivy.clock import Clock
 from kivy.config import Config
 from kivy.loader import Loader
 from kivy.logger import Logger
@@ -24,6 +22,7 @@ from .Utility import (
     user_data_helper,
 )
 from .Utility.utils import write_crash
+from .libs.mpv.player import mpv_player
 from .View.components.media_card.components.media_popup import MediaPopup
 from .View.screens import screens
 
@@ -33,6 +32,8 @@ os.environ["KIVY_VIDEO"] = "ffpyplayer"  # noqa: E402
 Config.set("graphics", "width", "1000")  # noqa: E402
 Config.set("graphics", "minimum_width", "1000")  # noqa: E402
 Config.set("kivy", "window_icon", resource_find("logo.ico"))  # noqa: E402
+Config.set("graphics", "fullscreen", 0)
+Config.set("graphics", "window_state", "visible")
 Config.write()  # noqa: E402
 # resource_add_path("_internal")
 
@@ -306,42 +307,6 @@ class AniXStreamApp(MDApp):
                 f"Downloader:Successfully Queued {default_cmds['title']} for downloading"
             )
 
-    def watch_on_allanime(self, title_):
-        """
-        Opens the given anime in your default browser on allanimes site
-        Parameters:
-        ----------
-        title_: The anime title requested to be opened
-        """
-        try:
-            if anime := AnimdlApi.get_anime_url_by_title(title_):
-                title, link = anime
-                parsed_link = f"https://allmanga.to/bangumi/{link.split('/')[-1]}"
-            else:
-                Logger.error(
-                    f"AniXStream:Failed to open {title_} in browser on allanime site"
-                )
-                show_notification(
-                    "Failure", f"Failed to open {title_} in browser on allanime site"
-                )
-                return
-            if webbrowser.open(parsed_link):
-                Logger.info(
-                    f"AniXStream:Successfully opened {title} in browser allanime site"
-                )
-                show_notification(
-                    "Success", f"Successfully opened {title} in browser allanime site"
-                )
-            else:
-                Logger.error(
-                    f"AniXStream:Failed to open {title} in browser on allanime site"
-                )
-                show_notification(
-                    "Failure", f"Failed to open {title} in browser on allanime site"
-                )
-        except Exception as e:
-            show_notification("Something went wrong", f"{e}")
-
     def stream_anime_with_custom_input_cmds(self, *cmds):
         self.animdl_streaming_subprocess = (
             AnimdlApi._run_animdl_command_and_get_subprocess(["stream", *cmds])
@@ -355,70 +320,10 @@ class AniXStreamApp(MDApp):
             title, episodes_range
         )
 
-    def stream_anime_with_mpv(
-        self, title, episodes_range: str | None = None, quality: str = "best"
-    ):
-        self.stop_streaming = False
-        streams = AnimdlApi.stream_anime_with_mpv(title, episodes_range, quality)
-        # TODO: End mpv child process properly
-        for stream in streams:
-            try:
-                if isinstance(stream, str):
-                    show_notification("Failed to stream current episode", f"{stream}")
-                    continue
-                self.animdl_streaming_subprocess = stream
-
-                for line in self.animdl_streaming_subprocess.stderr:  # type: ignore
-                    if self.stop_streaming:
-                        if stream:
-                            stream.terminate()
-                            stream.kill()
-                        del stream
-                        return
-            except Exception as e:
-                show_notification("Something went wrong while streaming", f"{e}")
-
-    def watch_on_animdl(
-        self,
-        stream_with_mpv_options: dict | None = None,
-        episodes_range: str | None = None,
-        custom_options: tuple[str] | None = None,
-    ):
-        """
-        Enables you to stream an anime using animdl either by parsing a title or custom animdl options
-
-        parameters:
-        -----------
-        title_dict:dict["japanese","kanji"]
-        a dictionary containing the titles of the anime
-        custom_options:tuple[str]
-        a tuple containing valid animdl stream commands
-        """
-        if self.animdl_streaming_subprocess:
-            self.animdl_streaming_subprocess.kill()
-            self.stop_streaming = True
-
-        if stream_with_mpv_options:
-
-            def stream_func():
-                return self.stream_anime_with_mpv(
-                    stream_with_mpv_options["title"],
-                    stream_with_mpv_options.get("episodes_range"),
-                    stream_with_mpv_options["quality"],
-                )
-
-            self.queue.put(stream_func)
-
-            Logger.info(
-                f"Animdl:Successfully started to stream {stream_with_mpv_options['title']}"
-            )
-        else:
-
-            def stream_func():
-                return self.stream_anime_with_custom_input_cmds(*custom_options)
-
-            self.queue.put(stream_func)
-        show_notification("Streamer", "Started streaming")
+    def play_on_mpv(self, anime_video_url: str):
+        if mpv_player.mpv_process:
+            mpv_player.stop_mpv()
+        mpv_player.run_mpv(anime_video_url)
 
 
 def run_app():

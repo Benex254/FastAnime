@@ -2,6 +2,8 @@ import os
 
 import click
 
+from fastanime.libs.rofi import Rofi
+
 from ...cli.utils.mpv import mpv
 from ...libs.fzf import fzf
 from ..config import Config
@@ -28,6 +30,8 @@ def downloads(config: Config, path: bool):
     def stream():
         if config.use_fzf:
             playlist_name = fzf.run(playlists, "Enter Playlist Name", "Downloads")
+        elif config.use_rofi:
+            playlist_name = Rofi.run(playlists, "Enter Playlist Name")
         else:
             playlist_name = fuzzy_inquirer("Enter Playlist Name: ", playlists)
         if playlist_name == "Exit":

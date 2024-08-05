@@ -118,7 +118,7 @@ def player_controls(config: Config, anilist_config: QueryDict):
                     "Are you sure you wish to continue to the next episode, your progress for the current episodes will be erased?",
                     default=True,
                 ):
-                    anilist_options(config, anilist_config)
+                    player_controls(config, anilist_config)
                     return
 
         # all checks have passed lets go to the next episode

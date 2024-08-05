@@ -386,6 +386,10 @@ def anilist_options(config, anilist_config: QueryDict):
             print("[bold magenta]Watching Trailer of:[/]", selected_anime_title)
             mpv(trailer_url, selected_anime_title)
             anilist_options(config, anilist_config)
+        else:
+            print("no trailer available :confused:")
+            input("Enter to continue...")
+            anilist_options(config, anilist_config)
 
     def _add_to_list(config: Config, anilist_config: QueryDict):
         config.update_anime_list(anilist_config.anime_id)

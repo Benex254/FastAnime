@@ -322,8 +322,8 @@ query{
 
 most_recently_updated_query = """
 query{
-  Page(perPage:15,genre_not_in:["hentai"]){
-    media(sort:UPDATED_AT_DESC,type:ANIME,averageScore_greater:50){
+  Page(perPage:15){
+    media(sort:UPDATED_AT_DESC,type:ANIME,averageScore_greater:50,genre_not_in:["hentai"]){
       id
       title{
         romaji

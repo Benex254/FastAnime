@@ -1,8 +1,12 @@
 # FastAnime
 
 Welcome to **FastAnime**, anime site experience from the terminal.
-
+**fzf mode**
 [fa_demo.webm](https://github.com/user-attachments/assets/bb46642c-176e-42b3-a533-ff55d4dac111)
+
+**rofi mode**
+[fa_rofi_mode.webm](https://github.com/user-attachments/assets/2ce669bf-b62f-4c44-bd79-cf0dcaddf37a)
+
 
 Heavily inspired by [animdl](https://github.com/justfoolingaround/animdl), [magic-tape](https://gitlab.com/christosangel/magic-tape/-/tree/main?ref_type=heads) and [ani-cli](https://github.com/pystardust/ani-cli).
 

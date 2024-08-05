@@ -120,9 +120,9 @@ class HomeScreenController:
         Clock.schedule_once(lambda _: self.trending_anime(), 1)
         Clock.schedule_once(lambda _: self.highest_scored_anime(), 2)
         Clock.schedule_once(lambda _: self.popular_anime(), 3)
-        Clock.schedule_once(lambda _: self.favourite_anime(), 4)
-        Clock.schedule_once(lambda _: self.recently_updated_anime(), 5)
-        Clock.schedule_once(lambda _: self.upcoming_anime(), 6)
+        # Clock.schedule_once(lambda _: self.favourite_anime(), 4)
+        # Clock.schedule_once(lambda _: self.recently_updated_anime(), 5)
+        # Clock.schedule_once(lambda _: self.upcoming_anime(), 6)
 
         if self.populate_errors:
             show_notification(

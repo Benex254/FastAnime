@@ -19,10 +19,10 @@ class MediaCardDataLoader(object):
         media_card_data["anime_id"] = anime_id = anime_item["id"]
 
         # TODO: ADD language preference
-        if anime_item["title"].get("english"):
-            media_card_data["title"] = anime_item["title"]["english"]
-        else:
+        if anime_item["title"].get("romaji"):
             media_card_data["title"] = anime_item["title"]["romaji"]
+        else:
+            media_card_data["title"] = anime_item["title"]["english"]
 
         media_card_data["cover_image_url"] = anime_item["coverImage"]["medium"]
 

@@ -196,15 +196,15 @@ class AllAnimeAPI:
             if resp.status_code == 200:
                 match embed["sourceName"]:
                     case "Luf-mp4":
-                        return "gogoanime", resp.json()
+                        yield "gogoanime", resp.json()
                     case "Kir":
-                        return "wetransfer", resp.json()
+                        yield "wetransfer", resp.json()
                     case "S-mp4":
-                        return "sharepoint", resp.json()
+                        yield "sharepoint", resp.json()
                     case "Sak":
-                        return "dropbox", resp.json()
+                        yield "dropbox", resp.json()
                     case _:
-                        return "Unknown", resp.json()
+                        yield "Unknown", resp.json()
             else:
                 return None
 
@@ -247,6 +247,7 @@ if __name__ == "__main__":
     search_results = anime_provider.search_for_anime(
         anime, translation_type=translation.strip()
     )
+    print(search_results)
     if not search_results:
         raise Exception("No results found")
 
@@ -259,7 +260,7 @@ if __name__ == "__main__":
 
     anime_result = list(filter(lambda x: x["name"] == anime, search_results))[0]
     anime_data = anime_provider.get_anime(anime_result["_id"])
-
+    print(anime_data)
     if anime_data is None:
         raise Exception("Anime not found")
     availableEpisodesDetail = anime_data["show"]["availableEpisodesDetail"]
@@ -279,11 +280,15 @@ if __name__ == "__main__":
             raise Exception("Episode not found")
 
         episode_streams = anime_provider.get_episode_streams(episode_data)
+
         if not episode_streams:
             raise Exception("No streams found")
-        stream_links = [stream["link"] for stream in episode_streams[1]["links"]]
-        stream_link = run_fzf([*stream_links, "quit"])
+        episode_streams = list(episode_streams)
+        print(episode_streams)
 
+        stream_links = [stream["link"] for stream in episode_streams[2][1]["links"]]
+        stream_link = run_fzf([*stream_links, "quit"])
+        print(stream_link)
         if stream_link == "quit":
             print("Have a nice day")
             sys.exit()

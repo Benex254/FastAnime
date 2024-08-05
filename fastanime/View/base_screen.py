@@ -30,6 +30,11 @@ class CommonNavigationRailItem(MDNavigationRailItem):
     text = StringProperty()
 
 
+class HeaderLabel(MDBoxLayout):
+    text = StringProperty()
+    halign = StringProperty("left")
+
+
 class BaseScreenView(MDScreen, Observer):
     """
     A base class that implements a visual representation of the model data.

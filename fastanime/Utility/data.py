@@ -2,6 +2,9 @@
 Just contains some useful data used across the codebase
 """
 
+anime_maps = {"1P": "one piece"}
+
+
 themes_available = [
     "Aliceblue",
     "Antiquewhite",

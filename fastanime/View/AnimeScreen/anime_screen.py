@@ -48,13 +48,13 @@ class AnimeScreenView(BaseScreenView):
     def next_episode(self):
         next_episode = self.current_episode + 1
         if next_episode <= self.total_episodes:
-            self.current_episode = next_episode
+            # self.current_episode = next_episode
             self.update_current_episode(str(next_episode))
 
     def previous_episode(self):
         previous_episode = self.current_episode - 1
         if previous_episode > 0:
-            self.current_episode = previous_episode
+            # self.current_episode = previous_episode
             self.update_current_episode(str(previous_episode))
 
     def on_current_anime_data(self, instance, value):
@@ -66,6 +66,7 @@ class AnimeScreenView(BaseScreenView):
         self.update_episodes(data["availableEpisodesDetail"]["sub"][::-1])
 
     def update_current_episode(self, episode):
+        self.current_episode = int(episode)
         self.controller.fetch_streams(self.current_title, episode)
         self.update_current_video_stream("dropbox")
         self.video_player.state = "play"

@@ -89,7 +89,6 @@ class FastAnime(MDApp):
                 "theme_color": "Cyan",
                 "theme_style": "Dark",
                 "downloads_dir": downloads_dir,
-                "is_startup_anime_enable": False,
             },
         )
 

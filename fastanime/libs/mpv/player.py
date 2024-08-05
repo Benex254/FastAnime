@@ -16,7 +16,7 @@ class MPVPlayer:
     def run_mpv(self, url):
         self.mpv_process = Popen(
             ["mpv", "--input-ipc-server=/tmp/mpvsocket", "--osc", url],
-            stdin=DEVNULL,
+            stdin=PIPE,
             stdout=DEVNULL,
             stderr=DEVNULL,
             preexec_fn=os.setsid,

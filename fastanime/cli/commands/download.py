@@ -1,6 +1,4 @@
 import click
-from fuzzywuzzy import fuzz
-from rich import print
 
 from ...libs.anime_provider.allanime.api import anime_provider
 from ...libs.anime_provider.types import Anime
@@ -37,15 +35,9 @@ def download(config: Config, anime_title, episode_range):
         search_result["title"]: search_result for search_result in search_results
     }
 
-    if config.auto_select:
-        search_result = max(
-            search_results_.keys(), key=lambda title: fuzz.ratio(title, anime_title)
-        )
-        print("[cyan]Auto selecting:[/] ", search_result)
-    else:
-        search_result = fzf.run(
-            list(search_results_.keys()), "Please Select title: ", "FastAnime"
-        )
+    search_result = fzf.run(
+        list(search_results_.keys()), "Please Select title: ", "FastAnime"
+    )
 
     anime: Anime = anime_provider.get_anime(search_results_[search_result]["id"])
 
@@ -59,7 +51,7 @@ def download(config: Config, anime_title, episode_range):
         try:
             episode = str(episode)
             if episode not in episodes:
-                print(f"[cyan]Warning[/]: Episode {episode} not found, skipping")
+                print("Episode not found skipping")
                 continue
             streams = anime_provider.get_episode_streams(
                 anime, episode, config.translation_type

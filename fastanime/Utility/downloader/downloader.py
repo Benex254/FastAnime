@@ -9,28 +9,6 @@ from ..utils import sanitize_filename
 logger = logging.getLogger(__name__)
 
 
-class MyLogger:
-    def debug(self, msg):
-        pass
-
-    def warning(self, msg):
-        pass
-
-    def error(self, msg):
-        pass
-
-
-def main_progress_hook(data):
-    match data["status"]:
-        case "error":
-            logger.error("sth went wrong")
-        case "finished":
-            logger.info("download complete")
-
-
-# Options for yt-dlp
-
-
 class YtDLPDownloader:
     downloads_queue = Queue()
 
@@ -49,15 +27,13 @@ class YtDLPDownloader:
         self._thread.start()
 
     # Function to download the file
+    # TODO: untpack the title to its actual values episode_title and anime_title
     def _download_file(self, url: str, download_dir, title, silent, vid_format="best"):
         anime_title = sanitize_filename(title[0])
         episode_title = sanitize_filename(title[1])
         ydl_opts = {
             # Specify the output path and template
             "outtmpl": f"{download_dir}/{anime_title}/{episode_title}.%(ext)s",
-            "progress_hooks": [
-                main_progress_hook,
-            ],  # Progress hook
             "silent": silent,
             "verbose": False,
             "format": vid_format,

@@ -3,6 +3,7 @@ This module contains all the preset queries for the sake of neatness and convini
 Mostly for internal usage
 """
 
+# TODO: Format the queries
 mark_as_read_mutation = """
 mutation{
   UpdateUser{
@@ -627,10 +628,10 @@ query  {
               medium
               large
             }
-                    mediaListEntry{
-        id
-        progress
-        }
+            mediaListEntry{
+                id
+                progress
+            }
             description
             episodes
             trailer{
@@ -976,5 +977,3 @@ query($id:Int){
   }
 }
 """
-
-# print(search_query)

@@ -3,6 +3,7 @@ import requests
 from .constants import ANIMEPAHE_BASE, ANIMEPAHE_ENDPOINT, REQUEST_HEADERS
 
 
+# TODO: hack this to completion
 class AnimePaheApi:
     def search_for_anime(self, user_query, *args):
         try:

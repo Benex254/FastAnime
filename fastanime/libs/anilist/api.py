@@ -110,6 +110,7 @@ class AniListApi:
         variables = {"id": id}
         return self._make_authenticated_request(delete_list_entry_query, variables)
 
+    # TODO: unify the _make_authenticated_request with original since sessions are now in use
     def _make_authenticated_request(self, query: str, variables: dict = {}):
         """
         The core abstraction for getting authenticated data from the anilist api
@@ -121,9 +122,7 @@ class AniListApi:
         variables:dict
             variables to pass to the anilist api
         """
-        # req=UrlRequestRequests(url, self.got_data,)
         try:
-            # TODO: check if data is as expected
             response = self.session.post(
                 ANILIST_ENDPOINT,
                 json={"query": query, "variables": variables},
@@ -184,9 +183,7 @@ class AniListApi:
         variables:dict
             variables to pass to the anilist api
         """
-        # req=UrlRequestRequests(url, self.got_data,)
         try:
-            # TODO: check if data is as expected
             response = self.session.post(
                 ANILIST_ENDPOINT,
                 json={"query": query, "variables": variables},

@@ -7,6 +7,7 @@ from ..constants import USER_DATA_PATH
 logger = logging.getLogger(__name__)
 
 
+# TODO: merger this functionality with the config object
 class UserData:
     user_data = {"watch_history": {}, "animelist": [], "user": {}}
 

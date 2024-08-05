@@ -2,6 +2,8 @@
 This module defines the shape of the anilist data that can be received in order to enhance dev experience
 """
 
+# TODO: rename this module to types
+
 from typing import TypedDict
 
 
@@ -88,10 +90,6 @@ class AnilistCharacter(TypedDict):
     age: int
     image: AnilistImage
     description: str
-
-
-# class AnilistCharacterNode(TypedDict):
-#     node
 
 
 class AnilistVoiceActor(TypedDict):

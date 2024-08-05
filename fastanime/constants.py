@@ -14,8 +14,6 @@ APP_DIR = os.path.abspath(os.path.dirname(__file__))
 CONFIGS_DIR = os.path.join(APP_DIR, "configs")
 ASSETS_DIR = os.path.join(APP_DIR, "assets")
 
-# --- notification bell ---
-NOTIFICATION_BELL = os.path.join(ASSETS_DIR, "tut_turu.mp3")
 
 # --- icon stuff ---
 if PLATFORM == "Windows":

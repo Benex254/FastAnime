@@ -1,8 +1,6 @@
 import logging
 import os
 import re
-import shutil
-from datetime import datetime
 from functools import lru_cache
 
 from thefuzz import fuzz
@@ -12,44 +10,12 @@ from fastanime.libs.anilist.anilist_data_schema import AnilistBaseMediaDataSchem
 from .data import anime_normalizer
 
 logger = logging.getLogger(__name__)
-# TODO: make it use color_text instead of fixed vals
-# from .kivy_markup_helper import color_text
 
 
 @lru_cache()
 def remove_html_tags(text: str):
     clean = re.compile("<.*?>")
     return re.sub(clean, "", text)
-
-
-# utility functions
-def write_crash(e: Exception):
-    index = datetime.today()
-    error = f"[b][color=#fa0000][ {index} ]:[/color][/b]\n(\n\n{e}\n\n)\n"
-    try:
-        with open("crashdump.txt", "a") as file:
-            file.write(error)
-    except Exception:
-        with open("crashdump.txt", "w") as file:
-            file.write(error)
-    return index
-
-
-def read_crash_file():
-    crash_file_path = "./crashfile.txt"
-    if not os.path.exists(crash_file_path):
-        return None
-    else:
-        with open(crash_file_path, "r") as file:
-            return file.read()
-
-
-def move_file(source_path, dest_path):
-    try:
-        path = shutil.move(source_path, dest_path)
-        return (1, path)
-    except Exception as e:
-        return (0, e)
 
 
 @lru_cache()

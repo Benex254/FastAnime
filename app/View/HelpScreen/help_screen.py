@@ -4,11 +4,13 @@ from View.base_screen import BaseScreenView
 from Utility.kivy_markup_helper import bolden, color_text, underline
 from Utility.data import themes_available
 
+
 class HelpScreenView(BaseScreenView):
     main_container = ObjectProperty()
     animdl_help = StringProperty()
     installing_animdl_help = StringProperty()
     available_themes = StringProperty()
+
     def __init__(self, **kw):
         super(HelpScreenView, self).__init__(**kw)
         self.animdl_help = f"""

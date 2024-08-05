@@ -1,16 +1,16 @@
 from inspect import isgenerator
 
 from kivy.logger import Logger
-from kivy.clock import Clock
+# from kivy.clock import Clock
 from kivy.utils import difference
 
 from View import MyListScreenView
 from Model import MyListScreenModel
-from Utility import show_notification,user_data_helper
+from Utility import user_data_helper
 
 class MyListScreenController:
     """
-    The `MainScreenController` class represents a controller implementation.
+    The `MyListScreenController` class represents a controller implementation.
     Coordinates work of the view with the model.
     The controller implements the strategy pattern. The controller connects to
     the view to control its actions.
@@ -20,6 +20,7 @@ class MyListScreenController:
         self.model = model  
         self.view = MyListScreenView(controller=self, model=self.model)
         self.requested_update_my_list_screen()
+
     def get_view(self) -> MyListScreenView:
         return self.view
 
@@ -33,5 +34,3 @@ class MyListScreenController:
                 for result_card in anime_cards:
                     result_card.screen = self.view
                     self.view.update_layout(result_card)
-
-            

@@ -58,7 +58,6 @@ class Filters(MDBoxLayout):
                     "NOT_YET_RELEASED",
                     "CANCELLED",
                     "HIATUS",
-
                 ]
             case _:
                 items = []

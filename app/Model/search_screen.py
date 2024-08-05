@@ -1,10 +1,6 @@
-from typing import Generator
-
 from Model.base_model import BaseScreenModel
 from libs.anilist import AniList
-from Utility.media_card_loader import MediaCardLoader
-from View.components import MediaCard
-from Utility import show_notification
+from Utility import MediaCardLoader, show_notification
 
 
 class SearchScreenModel(BaseScreenModel):
@@ -31,7 +27,3 @@ class SearchScreenModel(BaseScreenModel):
         for anime_item in self.data["data"]["Page"]["media"]:
             yield MediaCardLoader.media_card(anime_item)
         self.pagination_info = self.data["data"]["Page"]["pageInfo"]
-
-    # def extract_pagination_info(self):
-    #     pagination_info = None
-    #     return pagination_info

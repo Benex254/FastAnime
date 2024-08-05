@@ -4,7 +4,11 @@ import json
 from fuzzywuzzy import fuzz
 
 from .extras import Logger
-from .animdl_types import AnimdlAnimeUrlAndTitle,AnimdlData,AnimdlAnimeEpisode,AnimdlEpisodeStream
+from .animdl_types import (
+    AnimdlAnimeUrlAndTitle,
+    AnimdlAnimeEpisode,
+    AnimdlEpisodeStream,
+)
 
 
 # Currently this links don't work so we filter it out
@@ -70,6 +74,15 @@ def anime_title_percentage_match(
 def filter_broken_streams(
     streams: list[AnimdlEpisodeStream],
 ) -> list[AnimdlEpisodeStream]:
+    """filters the streams that the project has evaluated doesnt work
+
+    Args:
+        streams (list[AnimdlEpisodeStream]): the streams to filter
+
+    Returns:
+        list[AnimdlEpisodeStream]: the valid streams
+    """
+
     stream_filter = lambda stream: (
         True if not re.match(broken_link_pattern, stream["stream_url"]) else False
     )
@@ -77,9 +90,19 @@ def filter_broken_streams(
 
 
 def filter_streams_by_quality(
-    anime_episode_streams: list[AnimdlEpisodeStream], quality: str|int, strict=False
+    anime_episode_streams: list[AnimdlEpisodeStream], quality: str | int, strict=False
 ) -> AnimdlEpisodeStream:
-    # filtered_streams = []
+    """filters streams by quality
+
+    Args:
+        anime_episode_streams (list[AnimdlEpisodeStream]): the streams to filter
+        quality (str | int): the quality you want to get
+        strict (bool, optional): whether to always return an episode if quality isn,t found. Defaults to False.
+
+    Returns:
+        AnimdlEpisodeStream: the stream of specified quality
+    """
+
     # get the appropriate stream or default to best
     get_quality_func = lambda stream_: (
         stream_.get("quality") if stream_.get("quality") else 0
@@ -104,8 +127,16 @@ def filter_streams_by_quality(
                 #     return AnimdlEpisodeStream({})
 
 
-# TODO: add typing to return dict
 def parse_stream_urls_data(raw_stream_urls_data: str) -> list[AnimdlAnimeEpisode]:
+    """parses the streams data gotten from animdl grab
+
+    Args:
+        raw_stream_urls_data (str): the animdl grab data to parse
+
+    Returns:
+        list[AnimdlAnimeEpisode]: the parsed streams for all episode
+    """
+
     try:
         return [
             AnimdlAnimeEpisode(json.loads(episode.strip()))
@@ -123,8 +154,9 @@ def search_output_parser(raw_data: str) -> list[AnimdlAnimeUrlAndTitle]:
         raw_data (str): valid animdl data
 
     Returns:
-        dict: parsed animdl data containing an anime title
+        AnimdlAnimeUrlAndTitle: parsed animdl data containing an animdl anime url and anime title
     """
+
     # get each line of dat and ignore those that contain unwanted data
     data = raw_data.split("\n")[3:]
 

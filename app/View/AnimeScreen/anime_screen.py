@@ -19,6 +19,7 @@ from .components import (
 
 
 class AnimeScreenView(BaseScreenView):
+    """The anime screen view"""
     caller_screen_name = StringProperty()
     header: AnimeHeader = ObjectProperty()
     side_bar: AnimeSideBar = ObjectProperty()

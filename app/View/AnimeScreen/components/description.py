@@ -4,5 +4,6 @@ from kivymd.uix.boxlayout import MDBoxLayout
 
 
 class AnimeDescription(MDBoxLayout):
-    description = StringProperty()
+    """The anime description"""
 
+    description = StringProperty()

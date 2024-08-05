@@ -13,7 +13,7 @@ from Utility import show_notification
 # TODO:Move the update home screen to homescreen.py
 class HomeScreenController:
     """
-    The `MainScreenController` class represents a controller implementation.
+    The `HomeScreenController` class represents a controller implementation.
     Coordinates work of the view with the model.
     The controller implements the strategy pattern. The controller connects to
     the view to control its actions.
@@ -25,6 +25,7 @@ class HomeScreenController:
         self.view = HomeScreenView(controller=self, model=self.model)
         if self.view.app.config.get("Preferences","is_startup_anime_enable")=="1": # type: ignore
             Clock.schedule_once(lambda _:self.populate_home_screen())
+
     def get_view(self) -> HomeScreenView:
         return self.view
 
@@ -108,16 +109,13 @@ class HomeScreenController:
 
     def populate_home_screen(self):
         self.populate_errors = []
-        self.trending_anime()
-        self.highest_scored_anime()
-        self.popular_anime()
-        self.favourite_anime()
-        self.recently_updated_anime()
-        self.upcoming_anime()
+        Clock.schedule_once(lambda _:self.trending_anime())
+        Clock.schedule_once(lambda _:self.highest_scored_anime())
+        Clock.schedule_once(lambda _:self.popular_anime())
+        Clock.schedule_once(lambda _: self.favourite_anime())
+        Clock.schedule_once(lambda _:self.recently_updated_anime())
+        Clock.schedule_once(lambda _:self.upcoming_anime())
 
         if self.populate_errors:
             show_notification(f"Failed to fetch all home screen data",f"Theres probably a problem with your internet connection or anilist servers are down.\nFailed include:{', '.join(self.populate_errors)}")
 
-    def update_my_list(self,*args):
-        self.model.update_user_anime_list(*args)
-    

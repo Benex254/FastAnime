@@ -42,7 +42,6 @@ if not (user_data_helper.yt_cache.exists("yt_stream_links")):
 # TODO: Confirm data integrity from user_data and yt_cache
 
 
-# TODO: Arrange the app methods
 class AniXStreamApp(MDApp):
     queue = Queue()
     downloads_queue = Queue()
@@ -51,13 +50,19 @@ class AniXStreamApp(MDApp):
     def worker(self, queue: Queue):
         while True:
             task = queue.get()  # task should be a function
-            task()
+            try:
+                task()
+            except Exception as e:
+                show_notification("An error occured while streaming",f"{e}")
             self.queue.task_done()
 
     def downloads_worker(self, queue: Queue):
         while True:
             download_task = queue.get()  # task should be a function
-            download_task()
+            try:
+                download_task()
+            except Exception as e:
+                show_notification("An error occured while downloading",f"{e}")
             self.downloads_queue.task_done()
 
     def __init__(self, **kwargs):
@@ -111,12 +116,20 @@ class AniXStreamApp(MDApp):
             self.manager_screens.add_widget(view)
 
     def build_config(self, config):
+        if vid_path := plyer.storagepath.get_videos_dir():  # type: ignore
+            downloads_dir = os.path.join(vid_path, "anixstream")
+            if not os.path.exists(downloads_dir):
+                os.mkdir(downloads_dir)
+        else:
+            downloads_dir = os.path.join(".", "videos")
+            if not os.path.exists(downloads_dir):
+                os.mkdir(downloads_dir)
         config.setdefaults(
             "Preferences",
             {
                 "theme_color": "Cyan",
                 "theme_style": "Dark",
-                "downloads_dir": plyer.storagepath.get_videos_dir() if plyer.storagepath.get_videos_dir() else ".",  # type: ignore
+                "downloads_dir": downloads_dir,
                 "is_startup_anime_enable": False,
             },
         )
@@ -204,6 +217,9 @@ class AniXStreamApp(MDApp):
             download_task = lambda: AnimdlApi.download_anime_by_title(
                 default_cmds["title"],
                 on_progress,
+                lambda anime_title, episode: show_notification(
+                    "Finished installing an episode", f"{anime_title}-{episode}"
+                ),
                 self.download_anime_complete,
                 output_path,
                 episodes_range,
@@ -216,7 +232,9 @@ class AniXStreamApp(MDApp):
             download_task = lambda: AnimdlApi.download_anime_by_title(
                 default_cmds["title"],
                 on_progress,
-                lambda *arg:print(arg),
+                lambda anime_title, episode: show_notification(
+                    "Finished installing an episode", f"{anime_title}-{episode}"
+                ),
                 self.download_anime_complete,
                 output_path,
             )  # ,default_cmds.get("quality")
@@ -271,20 +289,20 @@ class AniXStreamApp(MDApp):
         )
 
     def stream_anime_with_mpv(
-        self, title, episodes_range: str | None = None,quality:str="best"
+        self, title, episodes_range: str | None = None, quality: str = "best"
     ):
         self.stop_streaming = False
-        streams = AnimdlApi.stream_anime_with_mpv(title,episodes_range,quality)
-        # TODO: End mpv child process properly 
+        streams = AnimdlApi.stream_anime_with_mpv(title, episodes_range, quality)
+        # TODO: End mpv child process properly
         for stream in streams:
-            self.animdl_streaming_subprocess= stream
-            for line in self.animdl_streaming_subprocess.stderr: # type: ignore
+            self.animdl_streaming_subprocess = stream
+            for line in self.animdl_streaming_subprocess.stderr:  # type: ignore
                 if self.stop_streaming:
                     if stream:
                         stream.terminate()
                         stream.kill()
                     del stream
-                    return 
+                    return
 
     def watch_on_animdl(
         self,
@@ -306,20 +324,24 @@ class AniXStreamApp(MDApp):
             self.animdl_streaming_subprocess.kill()
             self.stop_streaming = True
 
-
         if stream_with_mpv_options:
             stream_func = lambda: self.stream_anime_with_mpv(
-                stream_with_mpv_options["title"], stream_with_mpv_options.get("episodes_range"),stream_with_mpv_options["quality"]
+                stream_with_mpv_options["title"],
+                stream_with_mpv_options.get("episodes_range"),
+                stream_with_mpv_options["quality"],
             )
             self.queue.put(stream_func)
 
-            Logger.info(f"Animdl:Successfully started to stream {stream_with_mpv_options['title']}")
+            Logger.info(
+                f"Animdl:Successfully started to stream {stream_with_mpv_options['title']}"
+            )
         else:
             stream_func = lambda: self.stream_anime_with_custom_input_cmds(
                 *custom_options
             )
             self.queue.put(stream_func)
-        show_notification("Streamer","Started streaming")
+        show_notification("Streamer", "Started streaming")
+
 
 if __name__ == "__main__":
     AniXStreamApp().run()

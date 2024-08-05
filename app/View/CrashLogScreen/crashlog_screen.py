@@ -3,6 +3,7 @@ from View.base_screen import BaseScreenView
 
 
 class CrashLogScreenView(BaseScreenView):
+    """The crash log screen"""
     main_container = ObjectProperty()
     def model_is_changed(self) -> None:
         """

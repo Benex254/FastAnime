@@ -1,0 +1,35 @@
+[
+  {
+    "type": "title",
+    "title": "Preferences"
+  },
+  {
+    "type": "string",
+    "title": "Theme Color",
+    "desc": "Sets the theme color to be used for the app for more info on valid theme names refer to help",
+    "section": "Preferences",
+    "key": "theme_color"
+  },
+  {
+    "type": "options",
+    "title": "Theme Style",
+    "desc": "Sets the app to dark or light theme",
+    "section": "Preferences",
+    "key": "theme_style",
+    "options":["Light","Dark"]
+  },
+  {
+    "type": "path",
+    "title": "Downloads Directory",
+    "desc": "location to download your videos",
+    "section": "Preferences",
+    "key": "downloads_dir"
+  },
+  {
+    "type": "bool",
+    "title": "Show Startup anime",
+    "desc": "whether to show the startup anime, switch it off for faster app startup times",
+    "section": "Preferences",
+    "key": "is_startup_anime_enable"
+  }
+]

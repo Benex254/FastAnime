@@ -5,15 +5,18 @@ Contains Helper functions to read and write the user data files
 from datetime import date, datetime
 
 from kivy.logger import Logger
+from kivy.storage.jsonstore import JsonStore
+
+from ... import USER_DATA_PATH
 
 today = date.today()
 now = datetime.now()
 
+user_data = JsonStore(USER_DATA_PATH)
+
 
 # Get the user data
 def get_user_anime_list() -> list:
-    from .. import user_data
-
     try:
         return user_data.get("user_anime_list")[
             "user_anime_list"
@@ -24,8 +27,6 @@ def get_user_anime_list() -> list:
 
 
 def update_user_anime_list(updated_list: list):
-    from .. import user_data
-
     try:
         updated_list_ = list(set(updated_list))
         user_data.put("user_anime_list", user_anime_list=updated_list_)

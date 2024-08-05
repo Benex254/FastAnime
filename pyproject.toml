@@ -35,3 +35,9 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
 fastanime = 'fastanime:FastAnime'
+
+# FILE: .bandit
+[tool.bandit]
+#exclude = tests,path/to/file
+#tests = B201,B301
+skips = ["B311","B603","B607","B404"]

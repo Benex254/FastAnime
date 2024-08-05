@@ -36,6 +36,7 @@ class AllAnimeAPI:
                     "query": query,
                 },
                 headers={"Referer": ALLANIME_REFERER, "User-Agent": USER_AGENT},
+                timeout=10,
             )
             if response.status_code != 200:
                 return {}
@@ -121,25 +122,26 @@ class AllAnimeAPI:
                         "Referer": ALLANIME_REFERER,
                         "User-Agent": USER_AGENT,
                     },
+                    timeout=10,
                 )
                 if resp.status_code == 200:
                     match embed["sourceName"]:
                         case "Luf-mp4":
                             Logger.debug("allanime:Found streams from gogoanime")
-                            print("[yellow]gogoanime")
+                            print("[yellow]GogoAnime Fetched")
                             yield "gogoanime", resp.json()
                         case "Kir":
                             Logger.debug("allanime:Found streams from wetransfer")
-                            print("[yellow]wetransfer")
+                            print("[yellow]WeTransfer Fetched")
                             yield "wetransfer", resp.json()
                         case "S-mp4":
                             Logger.debug("allanime:Found streams from sharepoint")
 
-                            print("[yellow]sharepoint")
+                            print("[yellow]Sharepoint Fetched")
                             yield "sharepoint", resp.json()
                         case "Sak":
                             Logger.debug("allanime:Found streams from dropbox")
-                            print("[yellow]dropbox")
+                            print("[yellow]Dropbox Fetched")
                             yield "dropbox", resp.json()
                         case _:
                             yield "Unknown", resp.json()

@@ -1,4 +1,5 @@
 #! /usr/bin/bash
+cd $HOME/code/python/kivy_apps/FastAnime
 poetry install
 clear
 poetry run fastanime $*

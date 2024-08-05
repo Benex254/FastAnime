@@ -3,7 +3,7 @@ from threading import Thread
 
 import yt_dlp
 
-from ... import downloads_dir
+from ... import USER_DOWNLOADS_DIR
 from ..show_notification import show_notification
 from ..utils import sanitize_filename
 
@@ -53,7 +53,7 @@ class YtDLPDownloader:
     def _download_file(self, url: str, title, custom_progress_hook, silent):
         anime_title = sanitize_filename(title[0])
         ydl_opts = {
-            "outtmpl": f"{downloads_dir}/{anime_title}/{anime_title}-episode {title[1]}.%(ext)s",  # Specify the output path and template
+            "outtmpl": f"{USER_DOWNLOADS_DIR}/{anime_title}/{anime_title}-episode {title[1]}.%(ext)s",  # Specify the output path and template
             "progress_hooks": [
                 main_progress_hook,
                 custom_progress_hook,

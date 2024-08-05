@@ -90,6 +90,7 @@ class AniList:
         start_greater: int | None = None,
         start_lesser: int | None = None,
         page: int | None = None,
+        **kwargs,
     ):
         """
         A powerful method for searching anime using the anilist api availing most of its options
@@ -110,7 +111,7 @@ class AniList:
         return cls.get_data(anime_query, variables)
 
     @classmethod
-    def get_trending(cls):
+    def get_trending(cls, *_, **kwargs):
         """
         Gets the currently trending anime
         """
@@ -118,7 +119,7 @@ class AniList:
         return trending
 
     @classmethod
-    def get_most_favourite(cls):
+    def get_most_favourite(cls, *_, **kwargs):
         """
         Gets the most favoured anime on anilist
         """
@@ -126,7 +127,7 @@ class AniList:
         return most_favourite
 
     @classmethod
-    def get_most_scored(cls):
+    def get_most_scored(cls, *_, **kwargs):
         """
         Gets most scored anime on anilist
         """
@@ -134,7 +135,7 @@ class AniList:
         return most_scored
 
     @classmethod
-    def get_most_recently_updated(cls):
+    def get_most_recently_updated(cls, *_, **kwargs):
         """
         Gets most recently updated anime from anilist
         """
@@ -142,7 +143,7 @@ class AniList:
         return most_recently_updated
 
     @classmethod
-    def get_most_popular(cls):
+    def get_most_popular(cls, *_, **kwargs):
         """
         Gets most popular anime on anilist
         """
@@ -151,30 +152,30 @@ class AniList:
 
     # FIXME:dont know why its not giving useful data
     @classmethod
-    def get_recommended_anime_for(cls, id: int):
+    def get_recommended_anime_for(cls, id: int, *_, **kwargs):
         recommended_anime = cls.get_data(recommended_query)
         return recommended_anime
 
     @classmethod
-    def get_charcters_of(cls, id: int):
+    def get_charcters_of(cls, id: int, *_, **kwargs):
         variables = {"id": id}
         characters = cls.get_data(anime_characters_query, variables)
         return characters
 
     @classmethod
-    def get_related_anime_for(cls, id: int):
+    def get_related_anime_for(cls, id: int, *_, **kwargs):
         variables = {"id": id}
         related_anime = cls.get_data(anime_relations_query, variables)
         return related_anime
 
     @classmethod
-    def get_airing_schedule_for(cls, id: int):
+    def get_airing_schedule_for(cls, id: int, *_, **kwargs):
         variables = {"id": id}
         airing_schedule = cls.get_data(airing_schedule_query, variables)
         return airing_schedule
 
     @classmethod
-    def get_upcoming_anime(cls, page: int):
+    def get_upcoming_anime(cls, page: int, *_, **kwargs):
         """
         Gets upcoming anime from anilist
         """

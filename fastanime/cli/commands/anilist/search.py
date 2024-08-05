@@ -5,7 +5,10 @@ from ...interfaces.anilist_interfaces import select_anime
 from ...utils.tools import QueryDict
 
 
-@click.command()
+@click.command(
+    help="Search for anime using anilists api and get top ~50 results",
+    short_help="Search for anime",
+)
 @click.option("--title", prompt="Enter anime title")
 @click.pass_obj
 def search(config, title):

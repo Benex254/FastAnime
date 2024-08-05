@@ -5,7 +5,10 @@ from ...interfaces.anilist_interfaces import select_anime
 from ...utils.tools import QueryDict
 
 
-@click.command()
+@click.command(
+    help="Fetch the 15 most recently updated anime from anilist that are currently releasing",
+    short_help="View recently updated anime",
+)
 @click.pass_obj
 def recent(config):
     anime_data = AniList.get_most_recently_updated()

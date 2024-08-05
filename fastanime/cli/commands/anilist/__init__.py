@@ -21,7 +21,12 @@ commands = {
 }
 
 
-@click.group(commands=commands, invoke_without_command=True)
+@click.group(
+    commands=commands,
+    invoke_without_command=True,
+    help="A beautiful interface that gives you access to a commplete streaming experience",
+    short_help="Access all streaming options",
+)
 @click.pass_context
 def anilist(ctx: click.Context):
     if ctx.invoked_subcommand is None:

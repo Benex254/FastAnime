@@ -5,7 +5,7 @@ from ...interfaces.anilist_interfaces import select_anime
 from ...utils.tools import QueryDict
 
 
-@click.command()
+@click.command(help="Fetch the 15 most scored anime", short_help="Most scored anime")
 @click.pass_obj
 def scores(config):
     anime_data = AniList.get_most_scored()

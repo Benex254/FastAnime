@@ -1,6 +1,7 @@
 from subprocess import Popen, PIPE, DEVNULL
 import os
 import threading
+import shutil
 
 
 class MPVPlayer:
@@ -14,15 +15,17 @@ class MPVPlayer:
             self.mpv_thread.start()
 
     def run_mpv(self, url):
-        self.mpv_process = Popen(
-            ["mpv", "--input-ipc-server=/tmp/mpvsocket", "--osc", url],
-            stdin=PIPE,
-            stdout=DEVNULL,
-            stderr=DEVNULL,
-            preexec_fn=os.setsid,
-        )
-        self.mpv_process.wait()
-        self.mpv_process = None
+        mpv = shutil.which("mpv")
+        if mpv:
+            self.mpv_process = Popen(
+                [mpv, "--input-ipc-server=/tmp/mpvsocket", "--osc", url],
+                stdin=PIPE,
+                stdout=DEVNULL,
+                stderr=DEVNULL,
+                preexec_fn=os.setsid,
+            )
+            self.mpv_process.wait()
+            self.mpv_process = None
 
     def send_command(self, command):
         if self.mpv_process:

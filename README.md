@@ -207,7 +207,7 @@ The following are commands you can only run if you are signed in to your AniList
 
 - `fastanime anilist watching`
 - `fastanime anilist planning`
-- `fastanime anilist repeating`
+- `fastanime anilist rewatching`
 - `fastanime anilist dropped`
 - `fastanime anilist paused`
 - `fastanime anilist completed`

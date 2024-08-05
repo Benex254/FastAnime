@@ -19,7 +19,7 @@ if os.environ.get("FA_RICH_TRACEBACK", False):
 
 
 # initiate constants
-__version__ = "v0.40.2"
+__version__ = "v0.50.0"
 
 APP_NAME = "FastAnime"
 AUTHOR = "Benex254"

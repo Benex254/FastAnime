@@ -11,8 +11,7 @@ import requests
 from ...constants import APP_CACHE_DIR
 from ...libs.anilist.anilist_data_schema import AnilistBaseMediaDataSchema
 from ...Utility import anilist_data_helper
-from ...Utility.utils import remove_html_tags, sanitize_filename
-from ..config import Config
+from ...Utility.utils import remove_html_tags
 from ..utils.utils import get_true_fg
 
 logger = logging.getLogger(__name__)
@@ -133,22 +132,20 @@ def save_info_from_str(info: str, file_name: str):
 
 
 def write_search_results(
-    search_results: list[AnilistBaseMediaDataSchema], config: Config, workers=None
+    search_results: list[AnilistBaseMediaDataSchema],
+    titles,
+    workers=None,
 ):
     H_COLOR = 215, 0, 95
     S_COLOR = 208, 208, 208
     S_WIDTH = 45
     with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:
         future_to_task = {}
-        for anime in search_results:
-            anime_title = (
-                anime["title"][config.preferred_language] or anime["title"]["romaji"]
-            )
-            anime_title = sanitize_filename(anime_title)
+        for anime, title in zip(search_results, titles):
             image_url = anime["coverImage"]["large"]
-            future_to_task[
-                executor.submit(save_image_from_url, image_url, anime_title)
-            ] = image_url
+            future_to_task[executor.submit(save_image_from_url, image_url, title)] = (
+                image_url
+            )
 
             # handle the text data
             template = f"""
@@ -172,9 +169,7 @@ def write_search_results(
             {textwrap.fill(remove_html_tags(
                 str(anime['description'])), width=45)}
             """
-            future_to_task[
-                executor.submit(save_info_from_str, template, anime_title)
-            ] = anime_title
+            future_to_task[executor.submit(save_info_from_str, template, title)] = title
 
         # execute the jobs
         for future in concurrent.futures.as_completed(future_to_task):
@@ -186,19 +181,15 @@ def write_search_results(
 
 
 # get rofi icons
-def get_icons(search_results: list[AnilistBaseMediaDataSchema], config, workers=None):
+def get_icons(search_results: list[AnilistBaseMediaDataSchema], titles, workers=None):
     with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:
         # load the jobs
         future_to_url = {}
-        for anime in search_results:
-            anime_title = (
-                anime["title"][config.preferred_language] or anime["title"]["romaji"]
-            )
-            anime_title = sanitize_filename(anime_title)
+        for anime, title in zip(search_results, titles):
             image_url = anime["coverImage"]["large"]
-            future_to_url[
-                executor.submit(save_image_from_url, image_url, anime_title)
-            ] = image_url
+            future_to_url[executor.submit(save_image_from_url, image_url, title)] = (
+                image_url
+            )
 
         # execute the jobs
         for future in concurrent.futures.as_completed(future_to_url):
@@ -209,12 +200,10 @@ def get_icons(search_results: list[AnilistBaseMediaDataSchema], config, workers=
                 logger.error("%r generated an exception: %s" % (url, exc))
 
 
-def get_preview(
-    search_results: list[AnilistBaseMediaDataSchema], config: Config, wait=False
-):
+def get_preview(search_results: list[AnilistBaseMediaDataSchema], titles, wait=False):
     # ensure images and info exists
     background_worker = Thread(
-        target=write_search_results, args=(search_results, config)
+        target=write_search_results, args=(search_results, titles)
     )
     background_worker.daemon = True
     background_worker.start()

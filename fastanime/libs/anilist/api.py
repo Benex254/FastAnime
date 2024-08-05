@@ -45,9 +45,15 @@ class AniListApi:
     This class provides an abstraction for the anilist api
     """
 
+    session: requests.Session
+
+    def __init__(self) -> None:
+        self.session = requests.session()
+
     def login_user(self, token: str):
         self.token = token
         self.headers = {"Authorization": f"Bearer {self.token}"}
+        self.session.headers.update(self.headers)
         user = self.get_logged_in_user()
         if not user:
             return
@@ -68,6 +74,7 @@ class AniListApi:
     def update_login_info(self, user: AnilistUser, token: str):
         self.token = token
         self.headers = {"Authorization": f"Bearer {self.token}"}
+        self.session.headers.update(self.headers)
         self.user_id = user["id"]
 
     def get_logged_in_user(self):
@@ -117,7 +124,7 @@ class AniListApi:
         # req=UrlRequestRequests(url, self.got_data,)
         try:
             # TODO: check if data is as expected
-            response = requests.post(
+            response = self.session.post(
                 ANILIST_ENDPOINT,
                 json={"query": query, "variables": variables},
                 timeout=10,
@@ -180,7 +187,7 @@ class AniListApi:
         # req=UrlRequestRequests(url, self.got_data,)
         try:
             # TODO: check if data is as expected
-            response = requests.post(
+            response = self.session.post(
                 ANILIST_ENDPOINT,
                 json={"query": query, "variables": variables},
                 timeout=10,

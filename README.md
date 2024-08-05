@@ -1,10 +1,35 @@
-# Fast Anime
+# FastAnime
 
 Welcome to **FastAnime**, anime site experience from the terminal.
 
 [fa_demo.webm](https://github.com/user-attachments/assets/bb46642c-176e-42b3-a533-ff55d4dac111)
 
 Heavily inspired by [animdl](https://github.com/justfoolingaround/animdl), [magic-tape](https://gitlab.com/christosangel/magic-tape/-/tree/main?ref_type=heads) and [ani-cli](https://github.com/pystardust/ani-cli).
+
+<!--toc:start-->
+
+- [FastAnime](#fastanime)
+  - [Installation](#installation)
+    - [Installation using your favourite package manager](#installation-using-your-favourite-package-manager)
+      - [Using pipx](#using-pipx)
+      - [Using pip](#using-pip)
+    - [Installing the bleeding edge version](#installing-the-bleeding-edge-version)
+    - [Building from the source](#building-from-the-source)
+    - [External Dependencies](#external-dependencies)
+  - [Usage](#usage)
+    - [The Commandline interface :fire:](#the-commandline-interface-fire)
+      - [The anilist command](#the-anilist-command)
+        - [Running without any subcommand](#running-without-any-subcommand)
+        - [Subcommands](#subcommands)
+      - [download subcommand](#download-subcommand)
+      - [search subcommand](#search-subcommand)
+      - [downloads subcommand](#downloads-subcommand)
+      - [config subcommand](#config-subcommand)
+  - [Configuration](#configuration)
+  - [Contributing](#contributing)
+  - [Receiving Support](#receiving-support)
+  - [Supporting the Project](#supporting-the-project)
+  <!--toc:end-->
 
 > [!IMPORTANT]
 >
@@ -13,27 +38,6 @@ Heavily inspired by [animdl](https://github.com/justfoolingaround/animdl), [magi
 > [!NOTE]
 >
 > The docs are still being worked on and are far from completion.
-
-## Table of Contents
-
-- [Installation](#installation)
-  - [Installation using your favourite package manager](#installation-using-your-favourite-package-manager)
-    - [Using pipx](#using-pipx)
-    - [Using pip](#using-pip)
-  - [Installing the building edge version](#installing-the-bleeding-edge-version)
-  - [Building from the source](#building-from-the-source)
-  - [External Dependencies](#external-dependencies)
-- [Usage](#usage)
-  - [The Commandline interface](#the-commandline-interface-fire)
-    - [The anilist command](#the-anilist-command)
-    - [download subcommand](#download-subcommand)
-    - [search subcommand](#search-subcommand)
-    - [downloads subcommand](#downloads-subcommand)
-    - [config subcommand](#config-subcommand)
-- [Configuration](#configuration)
-- [Contributing](#contributing)
-- [Receiving Support](#receiving-support)
-- [Supporting the Project](#supporting-the-project)
 
 ## Installation
 
@@ -63,7 +67,7 @@ pip install fastanime
 
 ### Installing the bleeding edge version
 
-To install the latest build which are created on every push by Github actions, download the [fastanime_debug_build](https://github.com/Benex254/FastAnime/actions) of your choosing from the Github actions page.
+To install the latest build which are created on every push by GitHub actions, download the [fastanime_debug_build](https://github.com/Benex254/FastAnime/actions) of your choosing from the GitHub actions page.
 Then:
 
 ```bash
@@ -130,7 +134,7 @@ The only required external dependency, unless you won't be streaming, is [MPV](h
 > everything you could ever need with a small footprint.
 > But if you have a reason feel free to encourage as to do so.
 
-**Other dependecies that will just make your experience better:**
+**Other dependencies that will just make your experience better:**
 
 - [fzf](https://github.com/junegunn/fzf) :fire: which is used as a better alternative to the ui.
 - [chafa](https://github.com/hpjansson/chafa) currently the best cross platform and cross terminal image viewer for the terminal.
@@ -153,13 +157,13 @@ Designed for power users who prefer efficiency over browser-based streaming and 
 
 Overview of main commands:
 
-- `fastanime anilist`: Powerful command for browsing and exploring anime due to Anilist intergration.
+- `fastanime anilist`: Powerful command for browsing and exploring anime due to AniList integration.
 - `fastanime download`: Download anime.
 - `fastanime search`: Powerful command meant for binging since it doesn't require the interfaces
-- `fastanime downloads`: View downloaded anime and watch with mpv.
+- `fastanime downloads`: View downloaded anime and watch with MPV.
 - `fastanime config`: Quickly edit configuration settings.
 
-Configuration is directly passed into this command at run time to overide your config.
+Configuration is directly passed into this command at run time to override your config.
 
 Available options include:
 
@@ -174,9 +178,10 @@ Available options include:
 - `--default` use the default ui
 - `--preview` show a preview when using fzf
 - `--no-preview` dont show a preview when using fzf
-- `--format <yt-dlp format string>` set the format of anime downloaded and streamed based on yt-dlp format. works when `--server gogoanime`
+- `--format <yt-dlp format string>` set the format of anime downloaded and streamed based on yt-dlp format. Works when `--server gogoanime`
+- `--icons/--no-icons` toggle the visibility of the icons
 
-#### The anilist command
+#### The anilist command :fire: :fire: :fire:
 
 Stream, browse, and discover anime efficiently from the terminal using the [AniList API](https://github.com/AniList/ApiV2-GraphQL-Docs).
 
@@ -195,6 +200,47 @@ The subcommands are mainly their as convenience. Since all the features already 
 - `fastanime anilist popular`: Top 15 popular anime.
 - `fastanime anilist favourites`: Top 15 favorite anime.
 - `fastanime anilist random`: get random anime
+
+The following are commands you can only run if you are signed in to your AniList account:
+
+- `fastanime anilist watching`
+- `fastanime anilist planning`
+- `fastanime anilist repeating`
+- `fastanime anilist dropped`
+- `fastanime anilist paused`
+- `fastanime anilist completed`
+
+Plus: `fastanime anilist notifier` :fire:
+
+```bash
+# basic form
+fastanime anilist notifier
+
+# with logging to stdout
+fastanime --log anilist notifier
+
+# with logging to a file. stored in the same place as your config
+fastanime --log-file anilist notifier
+```
+
+The above commands will start a loop that checks every 2 minutes if any of the anime in your watch list that are aireing has just released a new episode.
+
+The notification will consist of a cover image of the anime in none windows systems.
+
+You can place the command among your machines startup scripts.
+
+For fish users for example you can decide to put this in your `~/.config/fish/config.fish`:
+
+```fish
+if ! ps aux | grep -q '[f]astanime .* notifier'
+  echo initializing fastanime anilist notifier
+  fastanime --log-file anilist notifier>/dev/null &
+end
+```
+
+> [!NOTE]
+> To sign in just run `fastanime anilist login` and follow the instructions.
+> To view your login status `fastanime anilist login --status`
 
 #### download subcommand
 
@@ -269,17 +315,21 @@ fastanime config --path
 
 ## Configuration
 
-The app includes sensible defaults but can be customized extensively. Configuration is stored in `.ini` format at `~/.config/FastAnime/config.ini` on linux and mac or somewhere on windows.
+The app includes sensible defaults but can be customized extensively. Configuration is stored in `.ini` format at `~/.config/FastAnime/config.ini` on Linux and mac or somewhere on windows; you can check by running `fastanime config --path`.
 
 ```ini
 [stream]
 continue_from_history = True  # Auto continue from watch history
 translation_type = sub  # Preferred language for anime (options: dub, sub)
-server = top  # Default server (options: dropbox, sharepoint, wetransfer.gogoanime, top)
+server = top  # Default server (options: dropbox, sharepoint, wetransfer.gogoanime, top, wixmp)
 auto_next = False  # Auto-select next episode
-# Auto select the anime provider results with fuzzyfind.
+# Auto select the anime provider results with fuzzy find.
 # Note this wont always be correct.But 99% of the time will be.
 auto_select=True
+
+# the maximum delta time in minutes after which the episode should be considered as completed
+# used in the continue from time stamp
+error=3
 
 # the format of downloaded anime and trailer
 # based on yt-dlp format and passed directly to it
@@ -294,6 +344,13 @@ preferred_language = romaji  # Display language (options: english, romaji)
 downloads_dir = <Default-videos-dir>/FastAnime  # Download directory
 use_fzf=False # whether to use fzf as the interface for the anilist command and others.
 preview=false # whether to show a preview window when using fzf
+
+# whether to show the icons
+icons=false
+
+# the duration in minutes a notification will stay in the screen
+# used by notifier command
+notification_duration=2
 
 [anilist]
 # Not implemented yet

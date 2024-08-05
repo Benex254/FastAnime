@@ -151,7 +151,7 @@ class AllAnimeAPI:
                                 yield {
                                     "server": "gogoanime",
                                     "episode_title": allanime_episode["notes"]
-                                    or f"{anime["title"]} Episode:{episode_number}",
+                                    or f"{anime["title"]}: Episode {episode_number}",
                                     "links": resp.json()["links"],
                                 }  # pyright:ignore
                             case "Kir":
@@ -160,7 +160,7 @@ class AllAnimeAPI:
                                 yield {
                                     "server": "wetransfer",
                                     "episode_title": allanime_episode["notes"]
-                                    or f"{anime["title"]} Episode:{episode_number}",
+                                    or f"{anime["title"]}: Episode {episode_number}",
                                     "links": resp.json()["links"],
                                 }  # pyright:ignore
                             case "S-mp4":
@@ -169,7 +169,7 @@ class AllAnimeAPI:
                                 yield {
                                     "server": "sharepoint",
                                     "episode_title": allanime_episode["notes"]
-                                    or f"{anime["title"]} Episode:{episode_number}",
+                                    or f"{anime["title"]}: Episode {episode_number}",
                                     "links": resp.json()["links"],
                                 }  # pyright:ignore
                             case "Sak":
@@ -178,7 +178,7 @@ class AllAnimeAPI:
                                 yield {
                                     "server": "dropbox",
                                     "episode_title": allanime_episode["notes"]
-                                    or f"{anime["title"]} Episode:{episode_number}",
+                                    or f"{anime["title"]}: Episode {episode_number}",
                                     "links": resp.json()["links"],
                                 }  # pyright:ignore
                 except Timeout:

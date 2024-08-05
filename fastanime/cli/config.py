@@ -21,6 +21,7 @@ class Config(object):
                 "continue_from_history": "False",
                 "quality": "0",
                 "auto_next": "True",
+                "auto_select": "True",
                 "sort_by": "search match",
                 "downloads_dir": USER_VIDEOS_DIR,
                 "translation_type": "sub",
@@ -41,6 +42,7 @@ class Config(object):
         self.sort_by = self.get_sort_by()
         self.continue_from_history = self.get_continue_from_history()
         self.auto_next = self.get_auto_next()
+        self.auto_select = self.get_auto_select()
         self.quality = self.get_quality()
         self.server = self.get_server()
         self.preferred_language = self.get_preferred_language()
@@ -83,6 +85,9 @@ class Config(object):
 
     def get_auto_next(self):
         return self.configparser.getboolean("stream", "auto_next")
+
+    def get_auto_select(self):
+        return self.configparser.getboolean("stream", "auto_select")
 
     def get_quality(self):
         return self.configparser.getint("stream", "quality")

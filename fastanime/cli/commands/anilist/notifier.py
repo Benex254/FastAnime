@@ -8,14 +8,7 @@ import requests
 from plyer import notification
 
 from ....anilist import AniList
-from ....constants import (
-    APP_CACHE_DIR,
-    APP_DATA_DIR,
-    APP_NAME,
-    ICON_PATH,
-    NOTIFICATION_BELL,
-    PLATFORM,
-)
+from ....constants import APP_CACHE_DIR, APP_DATA_DIR, APP_NAME, ICON_PATH, PLATFORM
 from ...config import Config
 
 logger = logging.getLogger(__name__)
@@ -112,7 +105,6 @@ def notifier(config: Config):
                             app_icon=app_icon,
                             hints={
                                 "image-path": app_icon,
-                                "sound-file": NOTIFICATION_BELL,
                             },
                             timeout=notification_duration,
                         )

@@ -27,7 +27,7 @@ class AnimeProvider:
         self,
         user_query,
         translation_type,
-        anilist_obj: AnilistBaseMediaDataSchema,
+        anilist_obj: AnilistBaseMediaDataSchema | None = None,
         nsfw=True,
         unknown=True,
     ) -> SearchResults | None:
@@ -42,7 +42,7 @@ class AnimeProvider:
         return results  # pyright:ignore
 
     def get_anime(
-        self, anime_id: str, anilist_obj: AnilistBaseMediaDataSchema
+        self, anime_id: str, anilist_obj: AnilistBaseMediaDataSchema | None = None
     ) -> Anime | None:
         anime_provider = self.anime_provider
         try:
@@ -57,7 +57,7 @@ class AnimeProvider:
         anime,
         episode: str,
         translation_type: str,
-        anilist_obj: AnilistBaseMediaDataSchema,
+        anilist_obj: AnilistBaseMediaDataSchema | None = None,
     ) -> Iterator[Server] | None:
         anime_provider = self.anime_provider
         try:

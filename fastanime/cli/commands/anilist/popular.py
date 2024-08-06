@@ -1,15 +1,15 @@
 import click
 
-from ....anilist import AniList
-from ...interfaces.anilist_interfaces import select_anime
-from ...utils.tools import QueryDict
-
 
 @click.command(
     help="Fetch the top 15 most popular anime", short_help="View most popular anime"
 )
 @click.pass_obj
 def popular(config):
+    from ....anilist import AniList
+    from ...interfaces.anilist_interfaces import select_anime
+    from ...utils.tools import QueryDict
+
     anime_data = AniList.get_most_popular()
     if anime_data[0]:
         anilist_config = QueryDict()

@@ -11,7 +11,6 @@ from .commands.config import configure
 from .commands.download import download
 from .commands.downloads import downloads
 from .commands.search import search
-from .config import Config
 
 commands = {
     "search": search,
@@ -150,6 +149,8 @@ def run_cli(
     rofi_theme_confirm,
     rofi_theme_input,
 ):
+    from .config import Config
+
     ctx.obj = Config()
     if provider:
         ctx.obj.provider = provider

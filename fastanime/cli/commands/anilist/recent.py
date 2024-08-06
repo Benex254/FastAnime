@@ -1,9 +1,5 @@
 import click
 
-from ....anilist import AniList
-from ...interfaces.anilist_interfaces import select_anime
-from ...utils.tools import QueryDict
-
 
 @click.command(
     help="Fetch the 15 most recently updated anime from anilist that are currently releasing",
@@ -11,6 +7,10 @@ from ...utils.tools import QueryDict
 )
 @click.pass_obj
 def recent(config):
+    from ....anilist import AniList
+    from ...interfaces.anilist_interfaces import select_anime
+    from ...utils.tools import QueryDict
+
     anime_data = AniList.get_most_recently_updated()
     if anime_data[0]:
         anilist_config = QueryDict()

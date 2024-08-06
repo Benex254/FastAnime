@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 import click
 
 if TYPE_CHECKING:
-    from fastanime.cli.config import Config
+    from ...config import Config
 
 
 @click.command(help="View anime you completed")

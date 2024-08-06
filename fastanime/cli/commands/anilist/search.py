@@ -1,9 +1,5 @@
 import click
 
-from ....anilist import AniList
-from ...interfaces.anilist_interfaces import select_anime
-from ...utils.tools import QueryDict
-
 
 @click.command(
     help="Search for anime using anilists api and get top ~50 results",
@@ -14,6 +10,10 @@ from ...utils.tools import QueryDict
 )
 @click.pass_obj
 def search(config, title):
+    from ....anilist import AniList
+    from ...interfaces.anilist_interfaces import select_anime
+    from ...utils.tools import QueryDict
+
     success, search_results = AniList.search(title)
     if success:
         anilist_config = QueryDict()

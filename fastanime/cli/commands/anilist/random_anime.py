@@ -1,10 +1,4 @@
-import random
-
 import click
-
-from ....anilist import AniList
-from ...interfaces.anilist_interfaces import select_anime
-from ...utils.tools import QueryDict
 
 
 @click.command(
@@ -13,6 +7,12 @@ from ...utils.tools import QueryDict
 )
 @click.pass_obj
 def random_anime(config):
+    import random
+
+    from ....anilist import AniList
+    from ...interfaces.anilist_interfaces import select_anime
+    from ...utils.tools import QueryDict
+
     random_anime = range(1, 15000)
 
     random_anime = random.sample(random_anime, k=50)

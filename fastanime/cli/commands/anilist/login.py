@@ -1,12 +1,6 @@
-import webbrowser
 from typing import TYPE_CHECKING
 
 import click
-from rich import print
-from rich.prompt import Confirm, Prompt
-
-from ....anilist import AniList
-from ...utils.tools import exit_app
 
 if TYPE_CHECKING:
     from ...config import Config
@@ -16,6 +10,14 @@ if TYPE_CHECKING:
 @click.option("--status", "-s", help="Whether you are logged in or not", is_flag=True)
 @click.pass_obj
 def login(config: "Config", status):
+    import webbrowser
+
+    from rich import print
+    from rich.prompt import Confirm, Prompt
+
+    from ....anilist import AniList
+    from ...utils.tools import exit_app
+
     if status:
         is_logged_in = True if config.user else False
         message = (

@@ -1,23 +1,24 @@
-import json
-import logging
-import os
-import time
-
 import click
-import requests
-from plyer import notification
 
-from ....anilist import AniList
-from ....constants import APP_CACHE_DIR, APP_DATA_DIR, APP_NAME, ICON_PATH, PLATFORM
 from ...config import Config
 
-logger = logging.getLogger(__name__)
 
-
-# plyer.notification(title="anime",message="Update",app_name=APP_NAME)
 @click.command(help="Check for notifications on anime you currently watching")
 @click.pass_obj
 def notifier(config: Config):
+    import json
+    import logging
+    import os
+    import time
+
+    import requests
+    from plyer import notification
+
+    from ....anilist import AniList
+    from ....constants import APP_CACHE_DIR, APP_DATA_DIR, APP_NAME, ICON_PATH, PLATFORM
+
+    logger = logging.getLogger(__name__)
+
     notified = os.path.join(APP_DATA_DIR, "last_notification.json")
     anime_image = os.path.join(APP_CACHE_DIR, "notification_image")
     notification_duration = config.notification_duration * 60

@@ -1,12 +1,4 @@
-import os
-import subprocess
-
 import click
-from pyshortcuts import make_shortcut
-from rich import print
-
-from ...constants import APP_NAME, ICON_PATH, USER_CONFIG_PATH
-from ..utils.tools import exit_app
 
 
 @click.command(
@@ -22,6 +14,15 @@ from ..utils.tools import exit_app
 )
 # @click.pass_obj
 def configure(path, desktop_entry):
+    import os
+    import subprocess
+
+    from pyshortcuts import make_shortcut
+    from rich import print
+
+    from ...constants import APP_NAME, ICON_PATH, USER_CONFIG_PATH
+    from ..utils.tools import exit_app
+
     if path:
         print(USER_CONFIG_PATH)
     elif desktop_entry:

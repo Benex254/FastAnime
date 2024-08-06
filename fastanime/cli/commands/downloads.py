@@ -1,14 +1,9 @@
-import os
+from typing import TYPE_CHECKING
 
 import click
 
-from fastanime.libs.rofi import Rofi
-
-from ...cli.utils.mpv import mpv
-from ...libs.fzf import fzf
-from ..config import Config
-from ..utils.tools import exit_app
-from ..utils.utils import fuzzy_inquirer
+if TYPE_CHECKING:
+    from ..config import Config
 
 
 @click.command(
@@ -16,7 +11,15 @@ from ..utils.utils import fuzzy_inquirer
 )
 @click.option("--path", "-p", help="print the downloads folder and exit", is_flag=True)
 @click.pass_obj
-def downloads(config: Config, path: bool):
+def downloads(config: "Config", path: bool):
+    import os
+
+    from ...cli.utils.mpv import mpv
+    from ...libs.fzf import fzf
+    from ...libs.rofi import Rofi
+    from ..utils.tools import exit_app
+    from ..utils.utils import fuzzy_inquirer
+
     USER_VIDEOS_DIR = config.downloads_dir
     if path:
         print(USER_VIDEOS_DIR)

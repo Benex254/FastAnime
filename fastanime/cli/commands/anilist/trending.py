@@ -1,9 +1,5 @@
 import click
 
-from ....anilist import AniList
-from ...interfaces.anilist_interfaces import select_anime
-from ...utils.tools import QueryDict
-
 
 @click.command(
     help="Fetch the top 15 anime that are currently trending",
@@ -11,6 +7,10 @@ from ...utils.tools import QueryDict
 )
 @click.pass_obj
 def trending(config):
+    from ....anilist import AniList
+    from ...interfaces.anilist_interfaces import select_anime
+    from ...utils.tools import QueryDict
+
     success, data = AniList.get_trending()
     if success:
         anilist_config = QueryDict()

@@ -1,7 +1,5 @@
 import click
 
-from ....anilist import AniList
-from ...interfaces.anilist_interfaces import anilist as anilist_interface
 from ...utils.tools import QueryDict
 from .completed import completed
 from .dropped import dropped
@@ -48,6 +46,9 @@ commands = {
 )
 @click.pass_context
 def anilist(ctx: click.Context):
+    from ....anilist import AniList
+    from ...interfaces.anilist_interfaces import anilist as anilist_interface
+
     if user := ctx.obj.user:
         AniList.update_login_info(user, user["token"])
     if ctx.invoked_subcommand is None:

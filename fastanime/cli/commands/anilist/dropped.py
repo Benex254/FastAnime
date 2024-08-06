@@ -2,11 +2,6 @@ from typing import TYPE_CHECKING
 
 import click
 
-from fastanime.cli.interfaces import anilist_interfaces
-from fastanime.cli.utils.tools import QueryDict, exit_app
-
-from ....anilist import AniList
-
 if TYPE_CHECKING:
     from fastanime.cli.config import Config
 
@@ -14,6 +9,10 @@ if TYPE_CHECKING:
 @click.command(help="View anime you dropped")
 @click.pass_obj
 def dropped(config: "Config"):
+    from ....anilist import AniList
+    from ...interfaces import anilist_interfaces
+    from ...utils.tools import QueryDict, exit_app
+
     if not config.user:
         print("Not authenticated")
         print("Please run: fastanime anilist loggin")

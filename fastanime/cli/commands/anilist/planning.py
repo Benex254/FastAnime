@@ -1,15 +1,15 @@
 import click
 
-from fastanime.cli.config import Config
-from fastanime.cli.interfaces import anilist_interfaces
-from fastanime.cli.utils.tools import QueryDict, exit_app
-
-from ....anilist import AniList
+from ...config import Config
 
 
 @click.command(help="View anime you are planning on watching")
 @click.pass_obj
 def planning(config: Config):
+    from ....anilist import AniList
+    from ...interfaces import anilist_interfaces
+    from ...utils.tools import QueryDict, exit_app
+
     if not config.user:
         print("Not authenticated")
         print("Please run: fastanime anilist loggin")

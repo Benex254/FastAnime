@@ -3,6 +3,7 @@
 [TODO:description]
 """
 
+import importlib
 import logging
 from typing import TYPE_CHECKING
 
@@ -36,12 +37,15 @@ class AnimeProvider:
         self.provider = provider
         self.dynamic = dynamic
         self.retries = retries
-        self.load_provider_obj()
+        self.lazyload_provider()
 
-    def load_provider_obj(self):
+    def lazyload_provider(self):
         """updates the current provider being used"""
-        anime_provider = anime_sources[self.provider]()
-        self.anime_provider = anime_provider
+        _, anime_provider_cls_name = anime_sources[self.provider].split(".", 1)
+        package = f"fastanime.libs.anime_provider.{self.provider}"
+        provider_api = importlib.import_module(".api", package)
+        anime_provider = getattr(provider_api, anime_provider_cls_name)
+        self.anime_provider = anime_provider()
 
     def search_for_anime(
         self,

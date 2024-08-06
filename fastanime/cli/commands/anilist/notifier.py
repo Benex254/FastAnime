@@ -1,11 +1,14 @@
+from typing import TYPE_CHECKING
+
 import click
 
-from ...config import Config
+if TYPE_CHECKING:
+    from ...config import Config
 
 
 @click.command(help="Check for notifications on anime you currently watching")
 @click.pass_obj
-def notifier(config: Config):
+def notifier(config: "Config"):
     import json
     import logging
     import os

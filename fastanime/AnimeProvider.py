@@ -4,12 +4,12 @@
 """
 
 import logging
-from typing import TYPE_CHECKING, Iterator
+from typing import TYPE_CHECKING
 
 from .libs.anime_provider import anime_sources
 
 if TYPE_CHECKING:
-    from typing import Union
+    from typing import Iterator
 
     from .libs.anilist.anilist_data_schema import AnilistBaseMediaDataSchema
     from .libs.anime_provider.types import Anime, SearchResults, Server
@@ -46,7 +46,7 @@ class AnimeProvider:
         self,
         user_query,
         translation_type,
-        anilist_obj: "Union[AnilistBaseMediaDataSchema ,None]" = None,
+        anilist_obj: "AnilistBaseMediaDataSchema | None" = None,
         nsfw=True,
         unknown=True,
     ) -> "SearchResults | None":
@@ -75,7 +75,7 @@ class AnimeProvider:
     def get_anime(
         self,
         anime_id: str,
-        anilist_obj: "Union[AnilistBaseMediaDataSchema,None]" = None,
+        anilist_obj: "AnilistBaseMediaDataSchema | None" = None,
     ) -> "Anime | None":
         """core abstraction over getting info of an anime from all providers
 
@@ -99,7 +99,7 @@ class AnimeProvider:
         anime,
         episode: str,
         translation_type: str,
-        anilist_obj: "Union[AnilistBaseMediaDataSchema,None]" = None,
+        anilist_obj: "AnilistBaseMediaDataSchema|None" = None,
     ) -> Iterator["Server"] | None:
         """core abstractions for getting juicy streams from all providers
 

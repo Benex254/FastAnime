@@ -1,11 +1,14 @@
+from typing import TYPE_CHECKING
+
 import click
 
-from ...config import Config
+if TYPE_CHECKING:
+    from ...config import Config
 
 
 @click.command(help="View anime you are watching")
 @click.pass_obj
-def watching(config: Config):
+def watching(config: "Config"):
     from ....anilist import AniList
     from ...interfaces import anilist_interfaces
     from ...utils.tools import QueryDict, exit_app

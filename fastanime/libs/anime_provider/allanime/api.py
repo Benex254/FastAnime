@@ -5,7 +5,7 @@ abstraction over allanime api
 
 import json
 import logging
-from typing import TYPE_CHECKING, Iterator
+from typing import TYPE_CHECKING
 
 from requests.exceptions import Timeout
 
@@ -21,6 +21,8 @@ from .gql_queries import ALLANIME_EPISODES_GQL, ALLANIME_SEARCH_GQL, ALLANIME_SH
 from .normalizer import normalize_anime, normalize_search_results
 
 if TYPE_CHECKING:
+    from typing import Iterator
+
     from ....libs.anime_provider.allanime.types import AllAnimeEpisode
     from ....libs.anime_provider.types import Anime, Server
 logger = logging.getLogger(__name__)

@@ -1,11 +1,14 @@
+from typing import TYPE_CHECKING
+
 import click
 
-from ...config import Config
+if TYPE_CHECKING:
+    from ...config import Config
 
 
 @click.command(help="View anime you are rewatching")
 @click.pass_obj
-def rewatching(config: Config):
+def rewatching(config: "Config"):
     from ....anilist import AniList
     from ...interfaces import anilist_interfaces
     from ...utils.tools import QueryDict, exit_app

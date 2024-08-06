@@ -1,5 +1,4 @@
 import re
-import subprocess
 
 # Dictionary to map hex values to characters
 hex_to_char = {
@@ -36,6 +35,14 @@ hex_to_char = {
 
 
 def decode_hex_string(hex_string):
+    """some of the sources encrypt the urls into hex codes this function decrypts the urls
+
+    Args:
+        hex_string ([TODO:parameter]): [TODO:description]
+
+    Returns:
+        [TODO:return]
+    """
     # Split the hex string into pairs of characters
     hex_pairs = re.findall("..", hex_string)
 
@@ -43,28 +50,3 @@ def decode_hex_string(hex_string):
     decoded_chars = [hex_to_char.get(pair.lower(), pair) for pair in hex_pairs]
 
     return "".join(decoded_chars)
-
-
-def run_fzf(options):
-    """
-    Run fzf with a list of options and return the selected option.
-    """
-    # Join the list of options into a single string with newlines
-    options_str = "\n".join(options)
-
-    # Run fzf as a subprocess
-    result = subprocess.run(
-        ["fzf"],
-        input=options_str,
-        text=True,
-        stdout=subprocess.PIPE,
-    )
-
-    # Check if fzf was successful
-    if result.returncode == 0:
-        # Return the selected option
-        return result.stdout.strip()
-    else:
-        # Handle the case where fzf fails or is canceled
-        print("fzf was canceled or failed")
-        return None

@@ -41,6 +41,8 @@ def stream_video(MPV, url, mpv_args, custom_args):
 
     try:
         while True:
+            if not process.stderr:
+                continue
             output = process.stderr.readline()
 
             if output:

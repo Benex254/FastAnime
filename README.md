@@ -18,7 +18,9 @@ Welcome to **FastAnime**, anime site experience from the terminal.
 
 <details>
 <summary><b>Default mode</b></summary>
+  
 [fa_default_mode.webm](https://github.com/user-attachments/assets/1ce3a23d-f4a0-4bc1-8518-426ec7b3b69e)
+
 </details>
 
 

@@ -4,7 +4,7 @@ This module defines the shape of the anilist data that can be received in order 
 
 # TODO: rename this module to types
 
-from typing import TypedDict
+from typing import Literal, TypedDict
 
 
 class AnilistMediaTitle(TypedDict):
@@ -25,6 +25,14 @@ class AnilistUser(TypedDict):
     bannerImage: str | None
     avatar: AnilistImage
     token: str
+
+
+class AnilistViewer(TypedDict):
+    Viewer: AnilistUser
+
+
+class AnilistUserData(TypedDict):
+    data: AnilistViewer
 
 
 class AnilistMediaTrailer(TypedDict):
@@ -109,6 +117,23 @@ class AnilistCharactersEdges(TypedDict):
 class AnilistMediaList_(TypedDict):
     id: int
     progress: int
+
+
+AnilistMediaListStatus = Literal[
+    "CURRENT", "PLANNING", "COMPLETED", "DROPPED", "PAUSED", "REPEATING"
+]
+
+
+class AnilistMediaListProperties(TypedDict):
+    status: AnilistMediaListStatus
+    score: float
+    scoreRaw: int
+    progress: int
+    repeat: int
+    priority: bool
+    private: bool
+    notes: str
+    hiddenFromStatusLists: bool
 
 
 class AnilistBaseMediaDataSchema(TypedDict):

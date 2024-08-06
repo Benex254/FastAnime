@@ -3,15 +3,16 @@ This is the core module availing all the abstractions of the anilist api
 """
 
 import logging
-from typing import Literal
 
 import requests
 
 from .anilist_data_schema import (
     AnilistDataSchema,
     AnilistMediaLists,
+    AnilistMediaListStatus,
     AnilistNotifications,
     AnilistUser,
+    AnilistUserData,
 )
 from .queries_graphql import (
     airing_schedule_query,
@@ -21,7 +22,6 @@ from .queries_graphql import (
     delete_list_entry_query,
     get_logged_in_user_query,
     get_medialist_item_query,
-    mark_as_read_mutation,
     media_list_mutation,
     media_list_query,
     most_favourite_query,
@@ -36,13 +36,21 @@ from .queries_graphql import (
 )
 
 logger = logging.getLogger(__name__)
-# from kivy.network.urlrequest import UrlRequestRequests
 ANILIST_ENDPOINT = "https://graphql.anilist.co"
 
 
 class AniListApi:
-    """
-    This class provides an abstraction for the anilist api
+    """An abstraction over the anilist api offering an easy and simple interface
+
+    Attributes:
+        session: [TODO:attribute]
+        session: [TODO:attribute]
+        token: [TODO:attribute]
+        headers: [TODO:attribute]
+        user_id: [TODO:attribute]
+        token: [TODO:attribute]
+        headers: [TODO:attribute]
+        user_id: [TODO:attribute]
     """
 
     session: requests.Session
@@ -51,57 +59,107 @@ class AniListApi:
         self.session = requests.session()
 
     def login_user(self, token: str):
+        """methosd used to login a new user enabling authenticated requests
+
+        Args:
+            token: anilist app token
+
+        Returns:
+            the logged in user
+        """
         self.token = token
         self.headers = {"Authorization": f"Bearer {self.token}"}
         self.session.headers.update(self.headers)
-        user = self.get_logged_in_user()
+        success, user = self.get_logged_in_user()
         if not user:
             return
-        if not user[0]:
+        if not success or not user:
             return
-        user_info: AnilistUser = user[1]["data"]["Viewer"]  # pyright:ignore
-        self.user_id = user_info["id"]  # pyright:ignore
+        user_info: AnilistUser = user["data"]["Viewer"]
+        self.user_id = user_info["id"]
         return user_info
 
     def get_notification(
         self,
     ) -> tuple[bool, AnilistNotifications] | tuple[bool, None]:
+        """get the top five latest notifications for anime thats airing
+
+        Returns:
+            airing notifications
+        """
         return self._make_authenticated_request(notification_query)
 
-    def reset_notification_count(self):
-        return self._make_authenticated_request(mark_as_read_mutation)
-
     def update_login_info(self, user: AnilistUser, token: str):
+        """method used to login a user enabling authenticated requests
+
+        Args:
+            user: an anilist user object
+            token: the login token
+        """
         self.token = token
         self.headers = {"Authorization": f"Bearer {self.token}"}
         self.session.headers.update(self.headers)
         self.user_id = user["id"]
 
-    def get_logged_in_user(self):
+    def get_logged_in_user(self) -> tuple[bool, AnilistUserData] | tuple[bool, None]:
+        """get the details of the user who is currently logged in
+
+        Returns:
+            an anilist user
+        """
         if not self.headers:
-            return
+            return (False, None)
         return self._make_authenticated_request(get_logged_in_user_query)
 
     def update_anime_list(self, values_to_update: dict):
+        """a powerful method for managing mediaLists giving full power to the user
+
+        Args:
+            values_to_update: a dict containing valid media list options
+
+        Returns:
+            an anilist object indicating success
+        """
         variables = {"userId": self.user_id, **values_to_update}
         return self._make_authenticated_request(media_list_mutation, variables)
 
     def get_anime_list(
-        self,
-        status: Literal[
-            "CURRENT", "PLANNING", "COMPLETED", "DROPPED", "PAUSED", "REPEATING"
-        ],
+        self, status: AnilistMediaListStatus
     ) -> tuple[bool, AnilistMediaLists] | tuple[bool, None]:
+        """gets an anime list from your media list given the list status
+
+        Args:
+            status: the mediaListStatus of the anime list
+
+        Returns:
+            a media list
+        """
         variables = {"status": status, "userId": self.user_id}
         return self._make_authenticated_request(media_list_query, variables)
 
     def get_medialist_entry(
         self, mediaId: int
     ) -> tuple[bool, dict] | tuple[bool, None]:
+        """Get the id entry of the items in an Anilist MediaList
+
+        Args:
+            mediaId: The mediaList item entry mediaId
+
+        Returns:
+            a boolean indicating whether the request succeeded and either a dict object containing the id of the media list entry
+        """
         variables = {"mediaId": mediaId}
         return self._make_authenticated_request(get_medialist_item_query, variables)
 
     def delete_medialist_entry(self, mediaId: int):
+        """Deletes a mediaList item given its mediaId
+
+        Args:
+            mediaId: the media id of the anime
+
+        Returns:
+            a tuple containing a boolean whether the operation was successful and either an anilist object or none depending on success
+        """
         result = self.get_medialist_entry(mediaId)
         data = result[1]
         if not result[0] or not data:
@@ -112,15 +170,14 @@ class AniListApi:
 
     # TODO: unify the _make_authenticated_request with original since sessions are now in use
     def _make_authenticated_request(self, query: str, variables: dict = {}):
-        """
-        The core abstraction for getting authenticated data from the anilist api
+        """the abstraction over all authenticated requests
 
-        Parameters:
-        ----------
-        query:str
-            a valid anilist graphql query
-        variables:dict
-            variables to pass to the anilist api
+        Args:
+            query: the anilist query to make
+            variables: the anilist variables to use
+
+        Returns:
+            an anilist object containing the queried data or none and a boolean indicating whether the request was successful
         """
         try:
             response = self.session.post(
@@ -166,22 +223,17 @@ class AniListApi:
             logger.error(f"Something unexpected occured {e}")
             return (False, None)  # type: ignore
 
-    def get_watchlist(self):
-        variables = {"status": "CURRENT", "userId": self.user_id}
-        return self._make_authenticated_request(media_list_query, variables)
-
     def get_data(
         self, query: str, variables: dict = {}
     ) -> tuple[bool, AnilistDataSchema]:
-        """
-        The core abstraction for getting data from the anilist api
+        """the abstraction over all none authenticated requests and that returns data of a similar type
 
-        Parameters:
-        ----------
-        query:str
-            a valid anilist graphql query
-        variables:dict
-            variables to pass to the anilist api
+        Args:
+            query: the anilist query
+            variables: the anilist api variables
+
+        Returns:
+            a boolean indicating success and none or an anilist object depending on success
         """
         try:
             response = self.session.post(
@@ -259,7 +311,7 @@ class AniListApi:
         **kwargs,
     ):
         """
-        A powerful method for searching anime using the anilist api availing most of its options
+        A powerful method abstracting all of anilist media queries
         """
         variables = {}
         for key, val in list(locals().items())[1:]:
@@ -310,7 +362,15 @@ class AniListApi:
         most_popular = self.get_data(most_popular_query)
         return most_popular
 
-    # FIXME:dont know why its not giving useful data
+    def get_upcoming_anime(self, page: int = 1, *_, **kwargs):
+        """
+        Gets upcoming anime from anilist
+        """
+        variables = {"page": page}
+        upcoming_anime = self.get_data(upcoming_anime_query, variables)
+        return upcoming_anime
+
+    # NOTE: THe following methods will probably be scraped soon
     def get_recommended_anime_for(self, id: int, *_, **kwargs):
         recommended_anime = self.get_data(recommended_query)
         return recommended_anime
@@ -329,11 +389,3 @@ class AniListApi:
         variables = {"id": id}
         airing_schedule = self.get_data(airing_schedule_query, variables)
         return airing_schedule
-
-    def get_upcoming_anime(self, page: int = 1, *_, **kwargs):
-        """
-        Gets upcoming anime from anilist
-        """
-        variables = {"page": page}
-        upcoming_anime = self.get_data(upcoming_anime_query, variables)
-        return upcoming_anime

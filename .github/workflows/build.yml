@@ -11,9 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install Python
-        uses: actions/setup-python@v4
-        # see details (matrix, python-version, python-version-file, etc.)
-        # https://github.com/actions/setup-python
+        uses: actions/setup-python@v5
       - name: Install poetry
         uses: abatilo/actions-poetry@v2
       - name: Setup a local virtual environment (if no poetry.toml file)

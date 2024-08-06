@@ -17,9 +17,9 @@ art = "^6.2"
 python-dotenv = "^1.0.1"
 thefuzz = "^0.22.1"
 requests = "^2.32.3"
-
 plyer = "^2.1.0"
 pyshortcuts = "^1.9.0"
+
 [tool.poetry.group.dev.dependencies]
 black = "^24.4.2"
 isort = "^5.13.2"
@@ -27,8 +27,8 @@ pytest = "^8.2.2"
 ruff = "^0.4.10"
 pre-commit = "^3.7.1"
 autoflake = "^2.3.1"
-
 tox = "^4.16.0"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"

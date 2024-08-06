@@ -1,7 +1,12 @@
 name: debug_build
-on: push
+on:
+  workflow_run:
+    workflows: ["Test Workflow"]
+    types:
+      - completed
 jobs:
-  ci:
+  debug_build:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

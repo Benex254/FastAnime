@@ -34,8 +34,8 @@ jobs:
       - name: run linter, formatters and sort imports
         run: |
           poetry run black .
-          poetry run ruff check . --fix
-          poetry run isort --profile black
+          poetry run ruff check --output-format=github . --fix
+          poetry run isort . --profile black
       - name: run type checking
         run: poetry run pyright
       - name: run tests

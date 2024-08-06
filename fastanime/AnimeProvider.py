@@ -17,6 +17,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
+# TODO: improve performance of this class and add cool features like auto retry
 class AnimeProvider:
     """Class that manages all anime sources adding some extra functionality to them.
     Attributes:
@@ -100,7 +101,7 @@ class AnimeProvider:
         episode: str,
         translation_type: str,
         anilist_obj: "AnilistBaseMediaDataSchema|None" = None,
-    ) -> Iterator["Server"] | None:
+    ) -> "Iterator[Server] | None":
         """core abstractions for getting juicy streams from all providers
 
         Args:

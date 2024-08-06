@@ -31,13 +31,15 @@ def download(config: "Config", anime_title, episode_range, highest_priority):
     from rich.progress import Progress
     from thefuzz import fuzz
 
+    from ...AnimeProvider import AnimeProvider
     from ...libs.anime_provider.types import Anime
     from ...libs.fzf import fzf
     from ...Utility.downloader.downloader import downloader
     from ..utils.tools import exit_app
     from ..utils.utils import clear, fuzzy_inquirer
 
-    anime_provider = config.anime_provider
+    anime_provider = AnimeProvider(config.provider)
+
     translation_type = config.translation_type
     download_dir = config.downloads_dir
 

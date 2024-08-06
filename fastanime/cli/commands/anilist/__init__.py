@@ -32,9 +32,16 @@ commands = {
 )
 @click.pass_context
 def anilist(ctx: click.Context):
+    from typing import TYPE_CHECKING
+
     from ....anilist import AniList
+    from ....AnimeProvider import AnimeProvider
     from ...interfaces.anilist_interfaces import anilist as anilist_interface
 
+    if TYPE_CHECKING:
+        from ...config import Config
+    config: Config = ctx.obj
+    config.anime_provider = AnimeProvider(config.provider)
     if user := ctx.obj.user:
         AniList.update_login_info(user, user["token"])
     if ctx.invoked_subcommand is None:

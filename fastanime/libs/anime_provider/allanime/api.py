@@ -155,7 +155,7 @@ class AllAnimeAPI(AnimeProvider):
 
     def get_episode_streams(
         self, anime: "Anime", episode_number: str, translation_type="sub"
-    ) -> Iterator["Server"] | None:
+    ) -> "Iterator[Server] | None":
         """get the streams of an episode
 
         Args:

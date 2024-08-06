@@ -19,6 +19,7 @@ def search(config: Config, anime_title: str, episode_range: str):
     from rich.progress import Progress
     from thefuzz import fuzz
 
+    from ...AnimeProvider import AnimeProvider
     from ...libs.anime_provider.types import Anime
     from ...libs.fzf import fzf
     from ...libs.rofi import Rofi
@@ -26,7 +27,7 @@ def search(config: Config, anime_title: str, episode_range: str):
     from ..utils.tools import exit_app
     from ..utils.utils import clear, fuzzy_inquirer
 
-    anime_provider = config.anime_provider
+    anime_provider = AnimeProvider(config.provider)
 
     # ---- search for anime ----
     with Progress() as progress:

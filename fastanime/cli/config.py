@@ -1,12 +1,15 @@
 import os
 from configparser import ConfigParser
+from typing import TYPE_CHECKING
 
 from rich import print
 
-from ..AnimeProvider import AnimeProvider
 from ..constants import USER_CONFIG_PATH, USER_VIDEOS_DIR
 from ..libs.rofi import Rofi
 from ..Utility.user_data_helper import user_data_helper
+
+if TYPE_CHECKING:
+    from ..AnimeProvider import AnimeProvider
 
 
 class Config(object):
@@ -15,6 +18,7 @@ class Config(object):
     fastanime_anilist_app_login_url = (
         "https://anilist.co/api/v2/oauth/authorize?client_id=20148&response_type=token"
     )
+    anime_provider: "AnimeProvider"
 
     def __init__(self) -> None:
         self.load_config()
@@ -83,8 +87,6 @@ class Config(object):
         self.watch_history: dict = user_data_helper.user_data.get("watch_history", {})
         self.anime_list: list = user_data_helper.user_data.get("animelist", [])
         self.user: dict = user_data_helper.user_data.get("user", {})
-
-        self.anime_provider = AnimeProvider(self.provider)
 
     def update_user(self, user):
         self.user = user

@@ -1,45 +1,31 @@
 import click
 
 from ...utils.tools import QueryDict
-from .completed import completed
-from .dropped import dropped
-from .favourites import favourites
-from .login import login
-from .notifier import notifier
-from .paused import paused
-from .planning import planning
-from .popular import popular
-from .random_anime import random_anime
-from .recent import recent
-from .rewatching import rewatching
-from .scores import scores
-from .search import search
-from .trending import trending
-from .upcoming import upcoming
-from .watching import watching
+from .__lazyloader__ import LazyGroup
 
 commands = {
-    "trending": trending,
-    "recent": recent,
-    "search": search,
-    "upcoming": upcoming,
-    "scores": scores,
-    "popular": popular,
-    "favourites": favourites,
-    "random": random_anime,
-    "login": login,
-    "watching": watching,
-    "paused": paused,
-    "rewatching": rewatching,
-    "dropped": dropped,
-    "completed": completed,
-    "planning": planning,
-    "notifier": notifier,
+    "trending": "trending.trending",
+    "recent": "recent.recent",
+    "search": "search.search",
+    "upcoming": "upcoming.upcoming",
+    "scores": "scores.scores",
+    "popular": "popular.popular",
+    "favourites": "favourites.favourites",
+    "random": "random_anime.random_anime",
+    "login": "login.login",
+    "watching": "watching.watching",
+    "paused": "paused.paused",
+    "rewatching": "rewatching.rewatching",
+    "dropped": "dropped.dropped",
+    "completed": "completed.completed",
+    "planning": "planning.planning",
+    "notifier": "notifier.notifier",
 }
 
 
 @click.group(
-    commands=commands,
+    lazy_subcommands=commands,
+    cls=LazyGroup,
     invoke_without_command=True,
     help="A beautiful interface that gives you access to a commplete streaming experience",
     short_help="Access all streaming options",

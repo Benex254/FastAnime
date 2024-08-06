@@ -13,7 +13,7 @@ import click
     is_flag=True,
 )
 # @click.pass_obj
-def configure(path, desktop_entry):
+def config(path, desktop_entry):
     import os
     import subprocess
 

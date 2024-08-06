@@ -6,18 +6,14 @@ from .. import __version__
 from ..libs.anime_provider import anime_sources
 from ..libs.anime_provider.allanime.constants import SERVERS_AVAILABLE
 from ..Utility.data import anilist_sort_normalizer
-from .commands.anilist import anilist
-from .commands.config import configure
-from .commands.download import download
-from .commands.downloads import downloads
-from .commands.search import search
+from .commands import LazyGroup
 
 commands = {
-    "search": search,
-    "download": download,
-    "anilist": anilist,
-    "config": configure,
-    "downloads": downloads,
+    "search": "search.search",
+    "download": "download.download",
+    "anilist": "anilist.anilist",
+    "config": "config.config",
+    "downloads": "downloads.downloads",
 }
 
 
@@ -35,7 +31,8 @@ signal.signal(signal.SIGINT, handle_exit)
 
 
 @click.group(
-    commands=commands,
+    lazy_subcommands=commands,
+    cls=LazyGroup,
     help="A command line application for streaming anime that provides a complete and featureful interface",
     short_help="Stream Anime",
 )

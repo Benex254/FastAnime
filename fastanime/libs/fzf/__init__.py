@@ -5,29 +5,13 @@ import subprocess
 import sys
 from typing import Callable, List
 
+# TODO: will probably scrap art not to useful
 from art import text2art
 from rich import print
 
 from ...constants import PLATFORM
-from .config import FZF_DEFAULT_OPTS, FzfOptions
 
 logger = logging.getLogger(__name__)
-
-
-# fzf\
-#   --info=hidden \
-#   --layout=reverse \
-#   --height=100% \
-#   --prompt="Select Channel: " \
-#   --header="$fzf_header" \
-#   --preview-window=left,50%\
-#   --bind=right:accept \
-#   --expect=shift-left,shift-right\
-#   --tabstop=1 \
-#   --no-margin  \
-#   +m \
-#   -i \
-#   --exact \
 
 
 def clear():
@@ -37,7 +21,25 @@ def clear():
         os.system("clear")
 
 
+FZF_DEFAULT_OPTS = """ 
+    --color=fg:#d0d0d0,fg+:#d0d0d0,bg:#121212,bg+:#262626
+    --color=hl:#5f87af,hl+:#5fd7ff,info:#afaf87,marker:#87ff00
+    --color=prompt:#d7005f,spinner:#af5fff,pointer:#af5fff,header:#87afaf
+    --color=border:#262626,label:#aeaeae,query:#d9d9d9
+    --border="rounded" --border-label="" --preview-window="border-rounded" --prompt="> "
+    --marker=">" --pointer="◆" --separator="─" --scrollbar="│"
+"""
+
+
 class FZF:
+    """an abstraction over the fzf commandline utility
+
+    Attributes:
+        FZF_EXECUTABLE: [TODO:attribute]
+        default_options: [TODO:attribute]
+        stdout: [TODO:attribute]
+    """
+
     if not os.getenv("FZF_DEFAULT_OPTS"):
         os.environ["FZF_DEFAULT_OPTS"] = FZF_DEFAULT_OPTS
     FZF_EXECUTABLE = shutil.which("fzf")
@@ -57,6 +59,15 @@ class FZF:
     ]
 
     def _with_filter(self, command: str, work: Callable) -> List[str]:
+        """ported from the fzf docs demo
+
+        Args:
+            command: [TODO:description]
+            work: [TODO:description]
+
+        Returns:
+            [TODO:return]
+        """
         try:
             process = subprocess.Popen(
                 command,
@@ -88,7 +99,19 @@ class FZF:
 
         return output
 
-    def _run_fzf(self, commands: list[FzfOptions], _fzf_input) -> str:
+    def _run_fzf(self, commands: list[str], _fzf_input) -> str:
+        """core abstraction
+
+        Args:
+            _fzf_input ([TODO:parameter]): [TODO:description]
+            commands: [TODO:description]
+
+        Raises:
+            Exception: [TODO:throw]
+
+        Returns:
+            [TODO:return]
+        """
         fzf_input = "\n".join(_fzf_input)
 
         if not self.FZF_EXECUTABLE:
@@ -118,6 +141,19 @@ class FZF:
         expect: str | None = None,
         validator: Callable | None = None,
     ) -> str:
+        """a helper method that wraps common use cases over the fzf utility
+
+        Args:
+            fzf_input: [TODO:description]
+            prompt: [TODO:description]
+            header: [TODO:description]
+            preview: [TODO:description]
+            expect: [TODO:description]
+            validator: [TODO:description]
+
+        Returns:
+            [TODO:return]
+        """
         _commands = [
             *self.default_options,
             "--header",
@@ -149,4 +185,5 @@ class FZF:
 fzf = FZF()
 
 if __name__ == "__main__":
-    fzf.run([*os.listdir(), "exit"], "Prompt: ", "Header", preview="bat {}")
+    action = fzf.run([*os.listdir(), "exit"], "Prompt: ", "Header", preview="bat {}")
+    print(action)

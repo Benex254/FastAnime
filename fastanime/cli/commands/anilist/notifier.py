@@ -23,16 +23,17 @@ def notifier(config: "Config"):
     logger = logging.getLogger(__name__)
 
     notified = os.path.join(APP_DATA_DIR, "last_notification.json")
-    anime_image = os.path.join(APP_CACHE_DIR, "notification_image")
+    anime_image_path = os.path.join(APP_CACHE_DIR, "notification_image")
     notification_duration = config.notification_duration * 60
-    app_icon = ""
+    notification_image_path = ""
 
     if not config.user:
         print("Not Authenticated")
         print("Run the following to get started: fastanime anilist loggin")
         return
     run = True
-    timeout = 2
+    # NOTE: Mess around with this value at your own risk
+    timeout = 2  # time is in minutes
     if os.path.exists(notified):
         with open(notified, "r") as f:
             past_notifications = json.load(f)
@@ -46,7 +47,6 @@ def notifier(config: "Config"):
             logger.info("checking for notifications")
             result = AniList.get_notification()
             if not result[0]:
-                print(result)
                 logger.warning(
                     "Something went wrong this could mean anilist is down or you have lost internet connection"
                 )
@@ -55,7 +55,6 @@ def notifier(config: "Config"):
                 continue
             data = result[1]
             if not data:
-                print(result)
                 logger.warning(
                     "Something went wrong this could mean anilist is down or you have lost internet connection"
                 )
@@ -63,7 +62,6 @@ def notifier(config: "Config"):
                 time.sleep(timeout * 60)
                 continue
 
-            # pyright:ignore
             notifications = data["data"]["Page"]["notifications"]
             if not notifications:
                 logger.info("Nothing to notify")
@@ -85,18 +83,24 @@ def notifier(config: "Config"):
                         )
 
                     else:
+                        # windows only supports ico,
+                        # and you still ask why linux
                         if PLATFORM != "Windows":
                             image_link = notification_["media"]["coverImage"]["medium"]
-                            print(image_link)
-                            logger.info("Downloading image")
+                            logger.info("Downloading image...")
 
                             resp = requests.get(image_link)
                             if resp.status_code == 200:
-                                with open(anime_image, "wb") as f:
+                                with open(anime_image_path, "wb") as f:
                                     f.write(resp.content)
-                                app_icon = anime_image
+                                notification_image_path = anime_image_path
+                            else:
+                                logger.warn(
+                                    f"Failed to get image response_status={resp.status_code} response_content={resp.content}"
+                                )
+                                notification_image_path = ICON_PATH
                         else:
-                            app_icon = ICON_PATH
+                            notification_image_path = ICON_PATH
 
                         past_notifications[f"{id}"] = notification_["episode"]
                         with open(notified, "w") as f:
@@ -106,13 +110,12 @@ def notifier(config: "Config"):
                             title=title,
                             message=message,
                             app_name=APP_NAME,
-                            app_icon=app_icon,
+                            app_icon=notification_image_path,
                             hints={
-                                "image-path": app_icon,
+                                "image-path": notification_image_path,
                             },
                             timeout=notification_duration,
                         )
-                        # os.system(f"play {NOTIFICATION_BELL}")
                         time.sleep(30)
         except Exception as e:
             logger.error(e)

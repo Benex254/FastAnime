@@ -3,17 +3,10 @@ This is the core module availing all the abstractions of the anilist api
 """
 
 import logging
+from typing import TYPE_CHECKING
 
 import requests
 
-from .anilist_data_schema import (
-    AnilistDataSchema,
-    AnilistMediaLists,
-    AnilistMediaListStatus,
-    AnilistNotifications,
-    AnilistUser,
-    AnilistUserData,
-)
 from .queries_graphql import (
     airing_schedule_query,
     anime_characters_query,
@@ -35,6 +28,15 @@ from .queries_graphql import (
     upcoming_anime_query,
 )
 
+if TYPE_CHECKING:
+    from .anilist_data_schema import (
+        AnilistDataSchema,
+        AnilistMediaLists,
+        AnilistMediaListStatus,
+        AnilistNotifications,
+        AnilistUser,
+        AnilistUserData,
+    )
 logger = logging.getLogger(__name__)
 ANILIST_ENDPOINT = "https://graphql.anilist.co"
 
@@ -81,7 +83,7 @@ class AniListApi:
 
     def get_notification(
         self,
-    ) -> tuple[bool, AnilistNotifications] | tuple[bool, None]:
+    ) -> tuple[bool, "AnilistNotifications"] | tuple[bool, None]:
         """get the top five latest notifications for anime thats airing
 
         Returns:
@@ -89,7 +91,7 @@ class AniListApi:
         """
         return self._make_authenticated_request(notification_query)
 
-    def update_login_info(self, user: AnilistUser, token: str):
+    def update_login_info(self, user: "AnilistUser", token: str):
         """method used to login a user enabling authenticated requests
 
         Args:
@@ -101,7 +103,7 @@ class AniListApi:
         self.session.headers.update(self.headers)
         self.user_id = user["id"]
 
-    def get_logged_in_user(self) -> tuple[bool, AnilistUserData] | tuple[bool, None]:
+    def get_logged_in_user(self) -> tuple[bool, "AnilistUserData"] | tuple[bool, None]:
         """get the details of the user who is currently logged in
 
         Returns:
@@ -124,8 +126,8 @@ class AniListApi:
         return self._make_authenticated_request(media_list_mutation, variables)
 
     def get_anime_list(
-        self, status: AnilistMediaListStatus
-    ) -> tuple[bool, AnilistMediaLists] | tuple[bool, None]:
+        self, status: "AnilistMediaListStatus"
+    ) -> tuple[bool, "AnilistMediaLists"] | tuple[bool, None]:
         """gets an anime list from your media list given the list status
 
         Args:
@@ -225,7 +227,7 @@ class AniListApi:
 
     def get_data(
         self, query: str, variables: dict = {}
-    ) -> tuple[bool, AnilistDataSchema]:
+    ) -> tuple[bool, "AnilistDataSchema"]:
         """the abstraction over all none authenticated requests and that returns data of a similar type
 
         Args:

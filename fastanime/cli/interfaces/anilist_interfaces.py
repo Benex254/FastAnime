@@ -3,6 +3,7 @@ from __future__ import annotations
 import os
 import random
 from datetime import datetime
+from typing import TYPE_CHECKING
 
 from InquirerPy import inquirer
 from InquirerPy.validator import EmptyInputValidator
@@ -12,17 +13,19 @@ from rich.prompt import Confirm, Prompt
 
 from ...anilist import AniList
 from ...constants import USER_CONFIG_PATH
-from ...libs.anilist.anilist_data_schema import AnilistBaseMediaDataSchema
-from ...libs.anime_provider.types import Anime, SearchResult, Server
 from ...libs.fzf import fzf
 from ...libs.rofi import Rofi
 from ...Utility.data import anime_normalizer
 from ...Utility.utils import anime_title_percentage_match, sanitize_filename
-from ..config import Config
 from ..utils.mpv import mpv
 from ..utils.tools import QueryDict, exit_app
 from ..utils.utils import clear, fuzzy_inquirer
 from .utils import aniskip
+
+if TYPE_CHECKING:
+    from ...libs.anilist.anilist_data_schema import AnilistBaseMediaDataSchema
+    from ...libs.anime_provider.types import Anime, SearchResult, Server
+    from ..config import Config
 
 
 def calculate_time_delta(start_time, end_time):
@@ -38,7 +41,7 @@ def calculate_time_delta(start_time, end_time):
     return delta
 
 
-def player_controls(config: Config, anilist_config: QueryDict):
+def player_controls(config: "Config", anilist_config: QueryDict):
     # user config
     config.translation_type.lower()
 
@@ -56,7 +59,7 @@ def player_controls(config: Config, anilist_config: QueryDict):
         fetch_streams(config, anilist_config)
 
     def _replay():
-        selected_server: Server = anilist_config.current_server
+        selected_server: "Server" = anilist_config.current_server
         print(
             "[bold magenta]Now Replaying:[/]",
             anime_title,
@@ -233,7 +236,7 @@ def player_controls(config: Config, anilist_config: QueryDict):
     options[action]()
 
 
-def fetch_streams(config: Config, anilist_config: QueryDict):
+def fetch_streams(config: "Config", anilist_config: QueryDict):
     # user config
     quality: int = config.quality
 
@@ -241,7 +244,7 @@ def fetch_streams(config: Config, anilist_config: QueryDict):
     episode_number: str = anilist_config.episode_number
     anime_title: str = anilist_config.anime_title
     anime_id: int = anilist_config.anime_id
-    anime: Anime = anilist_config.anime
+    anime: "Anime" = anilist_config.anime
     translation_type = config.translation_type
     anime_provider = config.anime_provider
 
@@ -375,7 +378,7 @@ def fetch_streams(config: Config, anilist_config: QueryDict):
     player_controls(config, anilist_config)
 
 
-def fetch_episode(config: Config, anilist_config: QueryDict):
+def fetch_episode(config: "Config", anilist_config: QueryDict):
     # user config
     translation_type: str = config.translation_type.lower()
     continue_from_history: bool = config.continue_from_history
@@ -384,9 +387,9 @@ def fetch_episode(config: Config, anilist_config: QueryDict):
     anime_title: str = anilist_config.anime_title
 
     # internal config
-    anime: Anime = anilist_config.anime
-    _anime: SearchResult = anilist_config._anime
-    selected_anime_anilist: AnilistBaseMediaDataSchema = (
+    anime: "Anime" = anilist_config.anime
+    _anime: "SearchResult" = anilist_config._anime
+    selected_anime_anilist: "AnilistBaseMediaDataSchema" = (
         anilist_config.selected_anime_anilist
     )
     # prompt for episode number
@@ -437,7 +440,7 @@ def fetch_episode(config: Config, anilist_config: QueryDict):
 
 
 def fetch_anime_episode(config, anilist_config: QueryDict):
-    selected_anime: SearchResult = anilist_config._anime
+    selected_anime: "SearchResult" = anilist_config._anime
     anime_provider = config.anime_provider
     with Progress() as progress:
         progress.add_task("Fetching Anime Info...", total=None)
@@ -459,14 +462,14 @@ def fetch_anime_episode(config, anilist_config: QueryDict):
     fetch_episode(config, anilist_config)
 
 
-def provide_anime(config: Config, anilist_config: QueryDict):
+def provide_anime(config: "Config", anilist_config: QueryDict):
     # user config
     translation_type = config.translation_type.lower()
 
     # internal config
     selected_anime_title = anilist_config.selected_anime_title
 
-    anime_data: AnilistBaseMediaDataSchema = anilist_config.selected_anime_anilist
+    anime_data: "AnilistBaseMediaDataSchema" = anilist_config.selected_anime_anilist
     anime_provider = config.anime_provider
 
     # search and get the requested title from provider
@@ -529,12 +532,12 @@ def provide_anime(config: Config, anilist_config: QueryDict):
 
 
 def anilist_options(config, anilist_config: QueryDict):
-    selected_anime: AnilistBaseMediaDataSchema = anilist_config.selected_anime_anilist
+    selected_anime: "AnilistBaseMediaDataSchema" = anilist_config.selected_anime_anilist
     selected_anime_title: str = anilist_config.selected_anime_title
     progress = (selected_anime["mediaListEntry"] or {"progress": 0}).get("progress", 0)
     episodes_total = selected_anime["episodes"] or "Inf"
 
-    def _watch_trailer(config: Config, anilist_config: QueryDict):
+    def _watch_trailer(config: "Config", anilist_config: QueryDict):
         if trailer := selected_anime.get("trailer"):
             trailer_url = "https://youtube.com/watch?v=" + trailer["id"]
             print("[bold magenta]Watching Trailer of:[/]", selected_anime_title)
@@ -552,7 +555,7 @@ def anilist_options(config, anilist_config: QueryDict):
                     exit(0)
             anilist_options(config, anilist_config)
 
-    def _add_to_list(config: Config, anilist_config: QueryDict):
+    def _add_to_list(config: "Config", anilist_config: QueryDict):
         # config.update_anime_list(anilist_config.anime_id)
         anime_lists = {
             "Watching": "CURRENT",
@@ -589,7 +592,7 @@ def anilist_options(config, anilist_config: QueryDict):
             input("Enter to continue...")
         anilist_options(config, anilist_config)
 
-    def _score_anime(config: Config, anilist_config: QueryDict):
+    def _score_anime(config: "Config", anilist_config: QueryDict):
         if config.use_rofi:
             score = Rofi.ask("Enter Score", is_int=True)
             score = max(100, min(0, score))
@@ -612,7 +615,7 @@ def anilist_options(config, anilist_config: QueryDict):
             input("Enter to continue...")
         anilist_options(config, anilist_config)
 
-    def _remove_from_list(config: Config, anilist_config: QueryDict):
+    def _remove_from_list(config: "Config", anilist_config: QueryDict):
         if Confirm.ask(
             f"Are you sure you want to procede, the folowing action will permanently remove {selected_anime_title} from your list and your progress will be erased",
             default=False,
@@ -630,7 +633,7 @@ def anilist_options(config, anilist_config: QueryDict):
             input("Enter to continue...")
         anilist_options(config, anilist_config)
 
-    def _change_translation_type(config: Config, anilist_config: QueryDict):
+    def _change_translation_type(config: "Config", anilist_config: QueryDict):
         # prompt for new translation type
         options = ["Sub", "Dub"]
         if config.use_fzf:
@@ -733,12 +736,12 @@ def anilist_options(config, anilist_config: QueryDict):
     options[action](config, anilist_config)
 
 
-def select_anime(config: Config, anilist_config: QueryDict):
+def select_anime(config: "Config", anilist_config: QueryDict):
     search_results = anilist_config.data["data"]["Page"]["media"]
 
     anime_data = {}
     for anime in search_results:
-        anime: AnilistBaseMediaDataSchema
+        anime: "AnilistBaseMediaDataSchema"
         progress = (anime["mediaListEntry"] or {"progress": 0}).get("progress", 0)
         episodes_total = anime["episodes"] or "Inf"
         title = str(
@@ -746,7 +749,11 @@ def select_anime(config: Config, anilist_config: QueryDict):
         )
         title = sanitize_filename(f"{title} ({progress} of {episodes_total})")
         # Check if the anime is currently airing and has new/unwatched episodes
-        if anime["status"] == "RELEASING" and anime["nextAiringEpisode"] and progress > 0:
+        if (
+            anime["status"] == "RELEASING"
+            and anime["nextAiringEpisode"]
+            and progress > 0
+        ):
             last_aired_episode = anime["nextAiringEpisode"]["episode"] - 1
             if last_aired_episode - progress > 0:
                 title += f" 🔹{last_aired_episode - progress} new episode(s)🔹"
@@ -791,7 +798,7 @@ def select_anime(config: Config, anilist_config: QueryDict):
         anilist(config, anilist_config)
         return
 
-    selected_anime: AnilistBaseMediaDataSchema = anime_data[selected_anime_title]
+    selected_anime: "AnilistBaseMediaDataSchema" = anime_data[selected_anime_title]
     anilist_config.selected_anime_anilist = selected_anime
     anilist_config.selected_anime_title = (
         selected_anime["title"]["romaji"] or selected_anime["title"]["english"]
@@ -801,7 +808,7 @@ def select_anime(config: Config, anilist_config: QueryDict):
     anilist_options(config, anilist_config)
 
 
-def handle_animelist(anilist_config, config: Config, list_type: str):
+def handle_animelist(anilist_config, config: "Config", list_type: str):
     if not config.user:
         if not config.use_rofi:
             print("You haven't logged in please run: fastanime anilist login")
@@ -854,7 +861,7 @@ def handle_animelist(anilist_config, config: Config, list_type: str):
     return anime_list
 
 
-def anilist(config: Config, anilist_config: QueryDict):
+def anilist(config: "Config", anilist_config: QueryDict):
     def _anilist_search():
         if config.use_rofi:
             search_term = str(Rofi.ask("Search for"))
@@ -873,6 +880,7 @@ def anilist(config: Config, anilist_config: QueryDict):
         watch_history = list(map(int, config.watch_history.keys()))
         return AniList.search(id_in=watch_history, sort="TRENDING_DESC")
 
+    # NOTE: Will probably be depracated
     def _anime_list():
         anime_list = config.anime_list
         return AniList.search(id_in=anime_list)

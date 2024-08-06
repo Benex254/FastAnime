@@ -1,18 +1,21 @@
 import webbrowser
+from typing import TYPE_CHECKING
 
 import click
 from rich import print
 from rich.prompt import Confirm, Prompt
 
 from ....anilist import AniList
-from ...config import Config
 from ...utils.tools import exit_app
+
+if TYPE_CHECKING:
+    from ...config import Config
 
 
 @click.command(help="Login to your anilist account")
 @click.option("--status", "-s", help="Whether you are logged in or not", is_flag=True)
 @click.pass_obj
-def login(config: Config, status):
+def login(config: "Config", status):
     if status:
         is_logged_in = True if config.user else False
         message = (

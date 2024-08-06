@@ -5,12 +5,10 @@ abstraction over allanime api
 
 import json
 import logging
-from typing import Iterator
+from typing import TYPE_CHECKING, Iterator
 
 from requests.exceptions import Timeout
 
-from ....libs.anime_provider.allanime.types import AllAnimeEpisode
-from ....libs.anime_provider.types import Anime, Server
 from ...anime_provider.base_provider import AnimeProvider
 from ..utils import decode_hex_string
 from .constants import (
@@ -22,7 +20,10 @@ from .constants import (
 from .gql_queries import ALLANIME_EPISODES_GQL, ALLANIME_SEARCH_GQL, ALLANIME_SHOW_GQL
 from .normalizer import normalize_anime, normalize_search_results
 
-Logger = logging.getLogger(__name__)
+if TYPE_CHECKING:
+    from ....libs.anime_provider.allanime.types import AllAnimeEpisode
+    from ....libs.anime_provider.types import Anime, Server
+logger = logging.getLogger(__name__)
 
 
 # TODO: create tests for the api
@@ -58,15 +59,15 @@ class AllAnimeAPI(AnimeProvider):
             if response.status_code == 200:
                 return response.json()["data"]
             else:
-                Logger.error("allanime(ERROR): ", response.text)
+                logger.error("allanime(ERROR): ", response.text)
                 return {}
         except Timeout:
-            Logger.error(
+            logger.error(
                 "allanime(Error):Timeout exceeded this could mean allanime is down or you have lost internet connection"
             )
             return {}
         except Exception as e:
-            Logger.error(f"allanime:Error: {e}")
+            logger.error(f"allanime:Error: {e}")
             return {}
 
     def search_for_anime(
@@ -105,7 +106,7 @@ class AllAnimeAPI(AnimeProvider):
             search_results = self._fetch_gql(ALLANIME_SEARCH_GQL, variables)
             return normalize_search_results(search_results)  # pyright:ignore
         except Exception as e:
-            Logger.error(f"FA(AllAnime): {e}")
+            logger.error(f"FA(AllAnime): {e}")
             return {}
 
     def get_anime(self, allanime_show_id: str):
@@ -122,12 +123,12 @@ class AllAnimeAPI(AnimeProvider):
             anime = self._fetch_gql(ALLANIME_SHOW_GQL, variables)
             return normalize_anime(anime["show"])
         except Exception as e:
-            Logger.error(f"FA(AllAnime): {e}")
+            logger.error(f"FA(AllAnime): {e}")
             return None
 
     def _get_anime_episode(
         self, allanime_show_id: str, episode_string: str, translation_type: str = "sub"
-    ) -> AllAnimeEpisode | dict:
+    ) -> "AllAnimeEpisode | dict":
         """get the episode details and sources info
 
         Args:
@@ -147,12 +148,12 @@ class AllAnimeAPI(AnimeProvider):
             episode = self._fetch_gql(ALLANIME_EPISODES_GQL, variables)
             return episode["episode"]
         except Exception as e:
-            Logger.error(f"FA(AllAnime): {e}")
+            logger.error(f"FA(AllAnime): {e}")
             return {}
 
     def get_episode_streams(
-        self, anime: Anime, episode_number: str, translation_type="sub"
-    ) -> Iterator[Server] | None:
+        self, anime: "Anime", episode_number: str, translation_type="sub"
+    ) -> Iterator["Server"] | None:
         """get the streams of an episode
 
         Args:
@@ -205,7 +206,7 @@ class AllAnimeAPI(AnimeProvider):
                     if resp.status_code == 200:
                         match embed["sourceName"]:
                             case "Luf-mp4":
-                                Logger.debug("allanime:Found streams from gogoanime")
+                                logger.debug("allanime:Found streams from gogoanime")
                                 yield {
                                     "server": "gogoanime",
                                     "episode_title": (
@@ -215,7 +216,7 @@ class AllAnimeAPI(AnimeProvider):
                                     "links": resp.json()["links"],
                                 }  # pyright:ignore
                             case "Kir":
-                                Logger.debug("allanime:Found streams from wetransfer")
+                                logger.debug("allanime:Found streams from wetransfer")
                                 yield {
                                     "server": "wetransfer",
                                     "episode_title": (
@@ -225,7 +226,7 @@ class AllAnimeAPI(AnimeProvider):
                                     "links": resp.json()["links"],
                                 }  # pyright:ignore
                             case "S-mp4":
-                                Logger.debug("allanime:Found streams from sharepoint")
+                                logger.debug("allanime:Found streams from sharepoint")
                                 yield {
                                     "server": "sharepoint",
                                     "episode_title": (
@@ -235,7 +236,7 @@ class AllAnimeAPI(AnimeProvider):
                                     "links": resp.json()["links"],
                                 }  # pyright:ignore
                             case "Sak":
-                                Logger.debug("allanime:Found streams from dropbox")
+                                logger.debug("allanime:Found streams from dropbox")
                                 yield {
                                     "server": "dropbox",
                                     "episode_title": (
@@ -245,7 +246,7 @@ class AllAnimeAPI(AnimeProvider):
                                     "links": resp.json()["links"],
                                 }  # pyright:ignore
                             case "Default":
-                                Logger.debug("allanime:Found streams from wixmp")
+                                logger.debug("allanime:Found streams from wixmp")
                                 yield {
                                     "server": "wixmp",
                                     "episode_title": (
@@ -255,15 +256,15 @@ class AllAnimeAPI(AnimeProvider):
                                     "links": resp.json()["links"],
                                 }  # pyright:ignore
                 except Timeout:
-                    Logger.error(
+                    logger.error(
                         "Timeout has been exceeded this could mean allanime is down or you have lost internet connection"
                     )
                     return []
                 except Exception as e:
-                    Logger.error(f"FA(Allanime): {e}")
+                    logger.error(f"FA(Allanime): {e}")
                     return []
         except Exception as e:
-            Logger.error(f"FA(Allanime): {e}")
+            logger.error(f"FA(Allanime): {e}")
             return []
 
 

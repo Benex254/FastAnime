@@ -4,11 +4,15 @@
 """
 
 import logging
-from typing import Iterator
+from typing import TYPE_CHECKING, Iterator
 
-from .libs.anilist.anilist_data_schema import AnilistBaseMediaDataSchema
 from .libs.anime_provider import anime_sources
-from .libs.anime_provider.types import Anime, SearchResults, Server
+
+if TYPE_CHECKING:
+    from typing import Union
+
+    from .libs.anilist.anilist_data_schema import AnilistBaseMediaDataSchema
+    from .libs.anime_provider.types import Anime, SearchResults, Server
 
 logger = logging.getLogger(__name__)
 
@@ -42,10 +46,10 @@ class AnimeProvider:
         self,
         user_query,
         translation_type,
-        anilist_obj: AnilistBaseMediaDataSchema | None = None,
+        anilist_obj: "Union[AnilistBaseMediaDataSchema ,None]" = None,
         nsfw=True,
         unknown=True,
-    ) -> SearchResults | None:
+    ) -> "SearchResults | None":
         """core abstraction over all providers search functionality
 
         Args:
@@ -69,8 +73,10 @@ class AnimeProvider:
         return results
 
     def get_anime(
-        self, anime_id: str, anilist_obj: AnilistBaseMediaDataSchema | None = None
-    ) -> Anime | None:
+        self,
+        anime_id: str,
+        anilist_obj: "Union[AnilistBaseMediaDataSchema,None]" = None,
+    ) -> "Anime | None":
         """core abstraction over getting info of an anime from all providers
 
         Args:
@@ -93,8 +99,8 @@ class AnimeProvider:
         anime,
         episode: str,
         translation_type: str,
-        anilist_obj: AnilistBaseMediaDataSchema | None = None,
-    ) -> Iterator[Server] | None:
+        anilist_obj: "Union[AnilistBaseMediaDataSchema,None]" = None,
+    ) -> Iterator["Server"] | None:
         """core abstractions for getting juicy streams from all providers
 
         Args:

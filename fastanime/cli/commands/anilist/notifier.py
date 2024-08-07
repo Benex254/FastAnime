@@ -32,7 +32,7 @@ def notifier(config: "Config"):
         print("Run the following to get started: fastanime anilist loggin")
         return
     run = True
-    # NOTE: Mess around with this value at your own risk
+    # WARNING: Mess around with this value at your own risk
     timeout = 2  # time is in minutes
     if os.path.exists(notified):
         with open(notified, "r") as f:
@@ -113,6 +113,7 @@ def notifier(config: "Config"):
                             app_icon=notification_image_path,
                             hints={
                                 "image-path": notification_image_path,
+                                "desktop-entry": f"{APP_NAME}.desktop",
                             },
                             timeout=notification_duration,
                         )

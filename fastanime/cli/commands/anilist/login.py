@@ -10,8 +10,7 @@ if TYPE_CHECKING:
 @click.option("--status", "-s", help="Whether you are logged in or not", is_flag=True)
 @click.pass_obj
 def login(config: "Config", status):
-    import webbrowser
-
+    from click import launch
     from rich import print
     from rich.prompt import Confirm, Prompt
 
@@ -34,7 +33,7 @@ def login(config: "Config", status):
     print(
         f"A browser session will be opened ( [link]{config.fastanime_anilist_app_login_url}[/link] )",
     )
-    webbrowser.open(config.fastanime_anilist_app_login_url)
+    launch(config.fastanime_anilist_app_login_url, wait=True)
     print("Please paste the token provided here")
     token = Prompt.ask("Enter token")
     user = AniList.login_user(token)

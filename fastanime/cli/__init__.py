@@ -20,8 +20,9 @@ commands = {
 
 # handle keyboard interupt
 def handle_exit(signum, frame):
+    from click import clear
+
     from .utils.tools import exit_app
-    from .utils.utils import clear
 
     clear()
 
@@ -38,6 +39,10 @@ signal.signal(signal.SIGINT, handle_exit)
     short_help="Stream Anime",
 )
 @click.version_option(__version__, "--version")
+@click.option("--log", help="Allow logging to stdout", is_flag=True)
+@click.option("--log-file", help="Allow logging to a file", is_flag=True)
+@click.option("--rich-traceback", help="Use rich to output tracebacks", is_flag=True)
+@click.option("--update", help="Update fastanime to the latest version", is_flag=True)
 @click.option(
     "-p",
     "--provider",
@@ -124,6 +129,10 @@ signal.signal(signal.SIGINT, handle_exit)
 @click.pass_context
 def run_cli(
     ctx: click.Context,
+    log,
+    log_file,
+    rich_traceback,
+    update,
     provider,
     server,
     format,
@@ -150,6 +159,41 @@ def run_cli(
     from .config import Config
 
     ctx.obj = Config()
+    if log:
+        import logging
+
+        from rich.logging import RichHandler
+
+        FORMAT = "%(message)s"
+
+        logging.basicConfig(
+            level="NOTSET", format=FORMAT, datefmt="[%X]", handlers=[RichHandler()]
+        )
+        logger = logging.getLogger(__name__)
+        logger.info("logging has been initialized")
+    elif log_file:
+        import logging
+
+        from ..constants import NOTIFIER_LOG_FILE_PATH
+
+        format = "%(asctime)s%(levelname)s: %(message)s"
+        logging.basicConfig(
+            level=logging.DEBUG,
+            filename=NOTIFIER_LOG_FILE_PATH,
+            format=format,
+            datefmt="[%d/%m/%Y@%H:%M:%S]",
+            filemode="w",
+        )
+    if rich_traceback:
+        from rich.traceback import install
+
+        install()
+    if update and None:
+        from .app_updater import update_app
+
+        update_app()
+        return
+
     if provider:
         ctx.obj.provider = provider
         ctx.obj.load_config()

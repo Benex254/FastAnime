@@ -14,14 +14,12 @@ import click
 )
 # @click.pass_obj
 def config(path, desktop_entry):
-    import os
-    import subprocess
+    pass
 
     from pyshortcuts import make_shortcut
     from rich import print
 
     from ...constants import APP_NAME, ICON_PATH, USER_CONFIG_PATH
-    from ..utils.tools import exit_app
 
     if path:
         print(USER_CONFIG_PATH)
@@ -45,11 +43,6 @@ def config(path, desktop_entry):
         else:
             print("Failed")
     else:
-        if EDITOR := os.environ.get("EDITOR"):
-            subprocess.run([EDITOR, USER_CONFIG_PATH])
-            exit_app()
-        else:
-            print("$EDITOR environment variable missing :confused:")
-            print(
-                "Please Set the $EDITOR environment variable to enable editing of config"
-            )
+        import click
+
+        click.edit(filename=USER_CONFIG_PATH)

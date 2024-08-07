@@ -5,6 +5,7 @@ import random
 from datetime import datetime
 from typing import TYPE_CHECKING
 
+from click import clear
 from InquirerPy import inquirer
 from InquirerPy.validator import EmptyInputValidator
 from rich import print
@@ -19,7 +20,7 @@ from ...Utility.data import anime_normalizer
 from ...Utility.utils import anime_title_percentage_match, sanitize_filename
 from ..utils.mpv import run_mpv
 from ..utils.tools import QueryDict, exit_app
-from ..utils.utils import clear, fuzzy_inquirer
+from ..utils.utils import fuzzy_inquirer
 from .utils import aniskip
 
 if TYPE_CHECKING:

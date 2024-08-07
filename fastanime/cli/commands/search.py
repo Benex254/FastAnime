@@ -15,6 +15,7 @@ from ...cli.config import Config
 @click.argument("anime_title", required=True, type=str)
 @click.pass_obj
 def search(config: Config, anime_title: str, episode_range: str):
+    from click import clear
     from rich import print
     from rich.progress import Progress
     from thefuzz import fuzz
@@ -25,7 +26,7 @@ def search(config: Config, anime_title: str, episode_range: str):
     from ...libs.rofi import Rofi
     from ..utils.mpv import run_mpv
     from ..utils.tools import exit_app
-    from ..utils.utils import clear, fuzzy_inquirer
+    from ..utils.utils import fuzzy_inquirer
 
     anime_provider = AnimeProvider(config.provider)
 

@@ -1,10 +1,8 @@
 import logging
-import os
 
 from InquirerPy import inquirer
 from thefuzz import fuzz
 
-from ...constants import PLATFORM
 from ...Utility.data import anime_normalizer
 
 logger = logging.getLogger(__name__)
@@ -41,14 +39,9 @@ def get_true_bg(string, r: int, g: int, b: int) -> str:
     return f"\033[48;2;{r};{g};{b};m{string}{RESET}"
 
 
-def clear():
-    if PLATFORM == "Windows":
-        os.system("cls")
-    else:
-        os.system("clear")
-
-
 def fuzzy_inquirer(prompt: str, choices, **kwargs):
+    from click import clear
+
     clear()
     action = inquirer.fuzzy(
         prompt,

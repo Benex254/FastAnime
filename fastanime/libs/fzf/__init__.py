@@ -7,18 +7,10 @@ from typing import Callable, List
 
 # TODO: will probably scrap art not to useful
 from art import text2art
+from click import clear
 from rich import print
 
-from ...constants import PLATFORM
-
 logger = logging.getLogger(__name__)
-
-
-def clear():
-    if PLATFORM == "Windows":
-        os.system("cls")
-    else:
-        os.system("clear")
 
 
 FZF_DEFAULT_OPTS = """ 

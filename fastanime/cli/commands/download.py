@@ -27,6 +27,7 @@ if TYPE_CHECKING:
 )
 @click.pass_obj
 def download(config: "Config", anime_title, episode_range, highest_priority):
+    from click import clear
     from rich import print
     from rich.progress import Progress
     from thefuzz import fuzz
@@ -36,7 +37,7 @@ def download(config: "Config", anime_title, episode_range, highest_priority):
     from ...libs.fzf import fzf
     from ...Utility.downloader.downloader import downloader
     from ..utils.tools import exit_app
-    from ..utils.utils import clear, fuzzy_inquirer
+    from ..utils.utils import fuzzy_inquirer
 
     anime_provider = AnimeProvider(config.provider)
 

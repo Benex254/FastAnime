@@ -2,11 +2,9 @@
 
 Welcome to **FastAnime**, anime site experience from the terminal.
 
-
 **fzf mode**
 
 [fa_fzf_demo.webm](https://github.com/user-attachments/assets/b1fecf25-e358-4e8b-a144-bcb7947210cf)
-
 
 **other modes:**
 
@@ -14,6 +12,7 @@ Welcome to **FastAnime**, anime site experience from the terminal.
 <summary><b>rofi mode</b></summary>
 
 [fa_rofi_mode.webm](https://github.com/user-attachments/assets/2ce669bf-b62f-4c44-bd79-cf0dcaddf37a)
+
 </details>
 
 <details>
@@ -23,10 +22,7 @@ Welcome to **FastAnime**, anime site experience from the terminal.
 
 </details>
 
-
 Heavily inspired by [animdl](https://github.com/justfoolingaround/animdl), [magic-tape](https://gitlab.com/christosangel/magic-tape/-/tree/main?ref_type=heads) and [ani-cli](https://github.com/pystardust/ani-cli).
-
-
 
 <!--toc:start-->
 
@@ -40,13 +36,17 @@ Heavily inspired by [animdl](https://github.com/justfoolingaround/animdl), [magi
     - [External Dependencies](#external-dependencies)
   - [Usage](#usage)
     - [The Commandline interface :fire:](#the-commandline-interface-fire)
-      - [The anilist command](#the-anilist-command)
+      - [The anilist command :fire: :fire: :fire:](#the-anilist-command-fire-fire-fire)
         - [Running without any subcommand](#running-without-any-subcommand)
         - [Subcommands](#subcommands)
       - [download subcommand](#download-subcommand)
       - [search subcommand](#search-subcommand)
       - [downloads subcommand](#downloads-subcommand)
       - [config subcommand](#config-subcommand)
+      - [cache subcommand](#cache-subcommand)
+  - [MPV specific commands](#mpv-specific-commands)
+    - [Added keybindings](#added-keybindings)
+    - [Added script messages](#added-script-messages)
   - [Configuration](#configuration)
   - [Contributing](#contributing)
   - [Receiving Support](#receiving-support)
@@ -56,7 +56,6 @@ Heavily inspired by [animdl](https://github.com/justfoolingaround/animdl), [magi
 > [!IMPORTANT]
 >
 > This project currently scrapes allanime and is in no way related to them. The site is in the public domain and can be access by any one with a browser.
-
 
 ## Installation
 
@@ -75,12 +74,21 @@ Preferred method of installation since [Pipx](https://github.com/pypa/pipx) crea
 ```bash
 
 pipx install fastanime
+# -- or for the development version --
+pipx install 'fastanime==<latest-pre-release-tag>.dev1'
+# example
+# pipx install 'fastanime==0.60.1.dev1'
+
 ```
 
 #### Using pip
 
 ```bash
 pip install fastanime
+# -- or for the development version --
+pip install 'fastanime==<latest-pre-release-tag>.dev1'
+# example
+# pip install 'fastanime==0.60.1.dev1'
 ```
 
 ### Installing the bleeding edge version
@@ -152,7 +160,7 @@ The only required external dependency, unless you won't be streaming, is [MPV](h
 > everything you could ever need with a small footprint.
 > But if you have a reason feel free to encourage as to do so.
 
-**Other dependencies that will just make your experience better:**
+**Other external dependencies that will just make your experience better:**
 
 - [fzf](https://github.com/junegunn/fzf) :fire: which is used as a better alternative to the ui.
 - [chafa](https://github.com/hpjansson/chafa) currently the best cross platform and cross terminal image viewer for the terminal.
@@ -181,6 +189,7 @@ Overview of main commands:
 - `fastanime search`: Powerful command meant for binging since it doesn't require the interfaces
 - `fastanime downloads`: View downloaded anime and watch with MPV.
 - `fastanime config`: Quickly edit configuration settings.
+- `fastanime cache`: Quickly manage the cache fastanime uses
 
 Configuration is directly passed into this command at run time to override your config.
 
@@ -204,6 +213,9 @@ Available options include:
 - `--rofi-theme <path>` theme to use with rofi
 - `--rofi-theme-input <path>` theme to use with rofi input
 - `--rofi-theme-confirm <path>` theme to use with rofi confirm
+- `--log` allow logging to stdout
+- `--log-file` allow logging to a file
+- `--rich-traceback` allow rich traceback
 
 #### The anilist command :fire: :fire: :fire:
 
@@ -331,11 +343,57 @@ fastanime config
 
 # to get config path which is useful if you want to use it for another program.
 fastanime config --path
+
+# add a desktop entry
+fastanime config --desktop-entry
 ```
 
 > [!Note]
 >
-> If it opens [vim](https://www.vim.org/download.php) you can exit by typing `:q` in case you don't know.
+> If it opens [vim](https://www.vim.org/download.php) you can exit by typing `:q` .
+
+#### cache subcommand
+
+Easily manage the data fastanime has cached; for the previews.
+
+**Syntax:**
+
+```bash
+# delete everything in the cache dir
+fastanime cache --clean
+
+# print the path to the cache dir and exit
+fastanime cache --path
+
+# print the current size of the cache dir and exit
+fastanime cache --size
+
+# open the cache dir and exit
+fastanime cache
+```
+
+## MPV specific commands
+
+The project now allows on the fly media controls directly from mpv. This means you can go to the next or previous episode without the window ever closing thus offering a seamless experience.
+This is all powered with [python-mpv]() which enables writing mpv scripts with python just like how it would be done in lua.
+
+### Added keybindings
+
+`<shift>+n` fetch the next episode
+
+`<shift>+p` fetch the previous episode
+
+`<shift>+t` toggle the translation type from dub to sub
+
+`<shift>+a` toggle auto next episode
+
+### Added script messages
+
+Examples:
+
+```bash
+script-message select-episode <episode-number>
+```
 
 ## Configuration
 
@@ -356,6 +414,7 @@ skip=false
 # the maximum delta time in minutes after which the episode should be considered as completed
 # used in the continue from time stamp
 error=3
+use_mpv_mod=True
 
 # the format of downloaded anime and trailer
 # based on yt-dlp format and passed directly to it
@@ -393,7 +452,7 @@ notification_duration=2
 
 We welcome your issues and feature requests. However, due to time constraints, we currently do not plan to add another provider.
 
-If you wish to contribute directly, please first open an issue describing your proposed changes so it can be discussed.
+If you wish to contribute directly, please first open an issue describing your proposed changes so it can be discussed or if you are in a rush for the feature to be merged just open a pr.
 
 ## Receiving Support
 
@@ -404,7 +463,6 @@ For inquiries, join our [Discord Server](https://discord.gg/4NUTj5Pt).
 <img src="https://invidget.switchblade.xyz/C4rhMA4mmK">
 </a>
 </p>
-
 
 ## Supporting the Project
 

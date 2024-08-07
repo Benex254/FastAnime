@@ -38,26 +38,30 @@ class MpvPlayer(object):
         anime = anilist_config.anime
         translation_type = config.translation_type
         anime_provider = config.anime_provider
+        self.last_stop_time: str = "0"
+        self.last_total_time: str = "0"
+        self.last_stop_time_secs = 0
+        self.last_total_time_secs = 0
 
         # next or prev
         if type == "next":
-            self.mpv_player.print_text("Fetching next episode")
+            self.mpv_player.show_text("Fetching next episode...")
             next_episode = episodes.index(episode_number) + 1
             if next_episode >= len(episodes):
                 next_episode = len(episodes) - 1
             anilist_config.episode_number = episodes[next_episode]
             episode_number = anilist_config.episode_number
-            config.update_watch_history(anime_id, episodes[next_episode])
+            config.update_watch_history(anime_id, str(episode_number))
         elif type == "reload":
-            episode_number = anilist_config.episode_number
+            self.mpv_player.show_text("Replaying Episode...")
         else:
-            self.mpv_player.print_text("Fetching previous episode")
+            self.mpv_player.show_text("Fetching previous episode...")
             prev_episode = episodes.index(episode_number) - 1
             if prev_episode <= 0:
                 prev_episode = 0
             anilist_config.episode_number = episodes[prev_episode]
             episode_number = anilist_config.episode_number
-            config.update_watch_history(anime_id, episodes[prev_episode])
+            config.update_watch_history(anime_id, str(episode_number))
         # update episode progress
         if config.user and episode_number:
             AniList.update_anime_list(
@@ -74,7 +78,7 @@ class MpvPlayer(object):
             anilist_config.selected_anime_anilist,
         )
         if not episode_streams:
-            self.mpv_player.print_text("No streams were found")
+            self.mpv_player.show_text("No streams were found")
             return None
 
         # always select the first
@@ -115,15 +119,11 @@ class MpvPlayer(object):
                 mpv_player.loadfile(url, options=f"title={self.current_media_title}")
                 mpv_player.title = self.current_media_title
 
-        # TODO: select episode from mpv
-        #
-        # @mpv_player.on_key_press("shift+e")
-        # def _episodes():
-        # mpv_player
-        # url = self.get_episode("next")
-        # if url:
-        # mpv_player.loadfile(url, options=f"title={self.current_media_title}")
-        # mpv_player.title = self.current_media_title
+        @mpv_player.event_callback("file-loaded")
+        def set_total_time(event, *args):
+            d = mpv_player._get_property("duration")
+            if isinstance(d, float):
+                self.last_total_time = format_time(d)
 
         @mpv_player.on_key_press("shift+p")
         def _previous_episode():
@@ -135,12 +135,20 @@ class MpvPlayer(object):
         @mpv_player.on_key_press("shift+a")
         def _toggle_auto_next():
             config.auto_next = not config.auto_next
+            if config.auto_next:
+                mpv_player.show_text("Auto next enabled")
+            else:
+                mpv_player.show_text("Auto next disabled")
 
         @mpv_player.on_key_press("shift+t")
         def _toggle_translation_type():
             config.translation_type = (
                 "sub" if config.translation_type == "dub" else "dub"
             )
+            if config.translation_type == "dub":
+                mpv_player.show_text("Translation Type set to dub")
+            else:
+                mpv_player.show_text("Translation Type set to sub")
 
         @mpv_player.on_key_press("shift+r")
         def _reload():
@@ -163,8 +171,6 @@ class MpvPlayer(object):
                 value = args[1]
                 if value is not None:
                     rem_time = value
-                    value += self.last_stop_time_secs
-                    self.last_total_time = format_time(value)
                     if rem_time < 10 and config.auto_next:
                         url = self.get_episode("next")
                         if url:
@@ -173,39 +179,9 @@ class MpvPlayer(object):
                             )
                             mpv_player.title = self.current_media_title
 
-        # TODO: custom skip functionality based on chapterskip.
-        #
-        # @mpv_player.property_observer("chapter-number")
-        # def chapterskip(_, current_chapter: int):
-        # mpv_player
-        # chapters = mpv_player..get_property_native("chapter-list")
-
-        # skipped={"1":1}
-        # skip = false
-        # for i, chapter in enumerate(chapters):
-        #     if (not options.skip_once or not skipped[i]) and matches(i, chapter.title):
-        #         if i == current_chapter + 1 or skip == i - 1:
-        #             if skip:
-        #                 skipped[skip] = true
-        #             skip = i
-        #     elif skip:
-        #         mpv_player.set_property("time-pos", chapter.time)
-        #         skipped[skip] = true
-        #         return
-        # if skip:
-        #     if mpv_player.get_property_native("playlist-count") == mpv_player.get_property_native("playlist-pos-1"):
-        #         return self.mpv_player.set_property("time-pos", mpv_player.get_property_native("duration"))
-        #     mpv_player.command("playlist-next")
-        #
-
         mpv_player.observe_property("time-pos", handle_time_start_update)
+        mpv_player.register_event_callback(set_total_time)
         mpv_player.observe_property("time-remaining", handle_time_remaining_update)
-        # mpv_player.observe_property("chapter-number", chapterskip)
-        # mpv_player.register_event("file-loaded", function() skipped = {} end)
-        self.mpv_player = mpv_player
-        return mpv_player
-
-        # mpv_player.register_event("file-loaded", function() skipped = {} end)
         self.mpv_player = mpv_player
         return mpv_player
 

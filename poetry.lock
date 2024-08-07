@@ -598,6 +598,21 @@ files = [
 ]
 
 [[package]]
+name = "mpv"
+version = "1.0.7"
+description = "A python interface to the mpv media player"
+optional = false
+python-versions = ">=3.9"
+files = [
+    {file = "mpv-1.0.7-py3-none-any.whl", hash = "sha256:520fb134c18185b69c7fce4aa3514f14371028022d92eb193818e9fefb1e9fe8"},
+    {file = "mpv-1.0.7.tar.gz", hash = "sha256:ae17d56176e05e4d046aa28a0732a478c0d58603e878e8da6d82b6c145ae1d82"},
+]
+
+[package.extras]
+screenshot-raw = ["Pillow"]
+test = ["PyVirtualDisplay"]
+
+[[package]]
 name = "mutagen"
 version = "1.47.0"
 description = "read and write audio tags for many formats"
@@ -1389,4 +1404,4 @@ test = ["pytest (>=8.1,<9.0)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "2d7f1b5a02a768bdb64ab22f07174a68f3fd595b0a661523988d4368c48a4106"
+content-hash = "5305621bc02d824065519913f0d754e269f1e4525ba8796be08504120614259d"

@@ -20,6 +20,7 @@ requests = "^2.32.3"
 plyer = "^2.1.0"
 pyshortcuts = "^1.9.0"
 
+mpv = "^1.0.7"
 [tool.poetry.group.dev.dependencies]
 black = "^24.4.2"
 isort = "^5.13.2"

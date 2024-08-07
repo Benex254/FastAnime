@@ -83,12 +83,6 @@ def player_controls(config: "Config", anilist_config: QueryDict):
                 anilist_config,
                 config,
                 selected_server["episode_title"],
-                anilist_config,
-                config,
-                selected_server["episode_title"],
-                anilist_config,
-                config,
-                selected_server["episode_title"],
             )
             mpv.play(current_link)
             mpv.wait_for_shutdown()

@@ -28,7 +28,7 @@ class MpvPlayer(object):
     last_total_time_secs = 0
     current_media_title = ""
 
-    def get_episode(self, type: "Literal['next','previous']"):
+    def get_episode(self, type: "Literal['next','previous','reload']"):
         anilist_config = self.anilist_config
         config = self.config
         episode_number: str = anilist_config.episode_number
@@ -48,6 +48,8 @@ class MpvPlayer(object):
             anilist_config.episode_number = episodes[next_episode]
             episode_number = anilist_config.episode_number
             config.update_watch_history(anime_id, episodes[next_episode])
+        elif type == "reload":
+            episode_number = anilist_config.episode_number
         else:
             self.mpv_player.print_text("Fetching previous episode")
             prev_episode = episodes.index(episode_number) - 1
@@ -133,6 +135,19 @@ class MpvPlayer(object):
         @mpv_player.on_key_press("shift+a")
         def _toggle_auto_next():
             config.auto_next = not config.auto_next
+
+        @mpv_player.on_key_press("shift+t")
+        def _toggle_translation_type():
+            config.translation_type = (
+                "sub" if config.translation_type == "dub" else "dub"
+            )
+
+        @mpv_player.on_key_press("shift+r")
+        def _reload():
+            url = self.get_episode("reload")
+            if url:
+                mpv_player.loadfile(url, options=f"title={self.current_media_title}")
+                mpv_player.title = self.current_media_title
 
         @mpv_player.property_observer("time-pos")
         def handle_time_start_update(*args):

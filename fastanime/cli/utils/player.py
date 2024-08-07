@@ -130,6 +130,10 @@ class MpvPlayer(object):
                 mpv_player.loadfile(url, options=f"title={self.current_media_title}")
                 mpv_player.title = self.current_media_title
 
+        @mpv_player.on_key_press("shift+a")
+        def _toggle_auto_next():
+            config.auto_next = not config.auto_next
+
         @mpv_player.property_observer("time-pos")
         def handle_time_start_update(*args):
             if len(args) > 1:
@@ -143,9 +147,16 @@ class MpvPlayer(object):
             if len(args) > 1:
                 value = args[1]
                 if value is not None:
+                    rem_time = value
                     value += self.last_stop_time_secs
                     self.last_total_time = format_time(value)
-                    print(self.last_total_time)
+                    if rem_time < 10 and config.auto_next:
+                        url = self.get_episode("next")
+                        if url:
+                            mpv_player.loadfile(
+                                url, options=f"title={self.current_media_title}"
+                            )
+                            mpv_player.title = self.current_media_title
 
         # TODO: custom skip functionality based on chapterskip.
         #

@@ -75,12 +75,33 @@ def player_controls(config: "Config", anilist_config: QueryDict):
                 anilist_config.selected_anime_anilist["idMal"], current_episode
             ):
                 custom_args = args
-        stop_time, total_time = run_mpv(
-            current_link,
-            selected_server["episode_title"],
-            start_time=start_time,
-            custom_args=custom_args,
-        )
+        if config.use_mpv_mod:
+            from ..utils.player import player
+
+            mpv = player.create_player(
+                config.anime_provider,
+                anilist_config,
+                config,
+                selected_server["episode_title"],
+                anilist_config,
+                config,
+                selected_server["episode_title"],
+                anilist_config,
+                config,
+                selected_server["episode_title"],
+            )
+            mpv.play(current_link)
+            mpv.wait_for_shutdown()
+            mpv.terminate()
+            stop_time = player.last_stop_time
+            total_time = player.last_total_time
+        else:
+            stop_time, total_time = run_mpv(
+                current_link,
+                selected_server["episode_title"],
+                start_time=start_time,
+                custom_args=custom_args,
+            )
         if stop_time == "0":
             episode = str(int(current_episode) + 1)
         else:
@@ -148,7 +169,7 @@ def player_controls(config: "Config", anilist_config: QueryDict):
 
     def _episodes():
         # reset watch_history
-        config.update_watch_history(anime_id, None)
+        config.continue_from_history = False
 
         # call interface
         fetch_episode(config, anilist_config)
@@ -341,6 +362,11 @@ def fetch_streams(config: "Config", anilist_config: QueryDict):
     if start_time != "0":
         print("[green]Continuing from:[/] ", start_time)
     custom_args = []
+    if config.skip:
+        if args := aniskip(
+            anilist_config.selected_anime_anilist["idMal"], episode_number
+        ):
+            custom_args.extend(args)
     if config.use_mpv_mod:
         from ..utils.player import player
 
@@ -354,11 +380,6 @@ def fetch_streams(config: "Config", anilist_config: QueryDict):
         total_time = player.last_total_time
 
     else:
-        if config.skip:
-            if args := aniskip(
-                anilist_config.selected_anime_anilist["idMal"], episode_number
-            ):
-                custom_args.extend(args)
         stop_time, total_time = run_mpv(
             stream_link,
             selected_server["episode_title"],

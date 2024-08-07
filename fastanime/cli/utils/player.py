@@ -55,6 +55,9 @@ class MpvPlayer(object):
             episode_number = anilist_config.episode_number
             config.update_watch_history(anime_id, str(episode_number))
         elif type == "reload":
+            if episode_number not in episodes:
+                self.mpv_player.show_text("Episode not available")
+                return
             self.mpv_player.show_text("Replaying Episode...")
         elif type == "custom":
             if not ep_no or ep_no not in episodes:

@@ -22,6 +22,14 @@ BG_GREEN = "\033[48;2;120;233;12;m"
 GREEN = "\033[38;2;45;24;45;m"
 
 
+def sizeof_fmt(num, suffix="B"):
+    for unit in ("", "K", "M", "G", "T", "P", "E", "Z"):
+        if abs(num) < 1024.0:
+            return f"{num:3.1f}{unit}{suffix}"
+        num /= 1024.0
+    return f"{num:.1f}Yi{suffix}"
+
+
 def get_true_fg(string: str, r: int, g: int, b: int, bold=True) -> str:
     if bold:
         return f"{BOLD}\033[38;2;{r};{g};{b};m{string}{RESET}"

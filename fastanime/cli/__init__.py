@@ -14,6 +14,7 @@ commands = {
     "anilist": "anilist.anilist",
     "config": "config.config",
     "downloads": "downloads.downloads",
+    "cache": "cache.cache",
 }
 
 

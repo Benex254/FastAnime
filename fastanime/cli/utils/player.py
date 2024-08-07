@@ -162,9 +162,17 @@ class MpvPlayer(object):
 
         @mpv_player.on_key_press("shift+t")
         def _toggle_translation_type():
-            config.translation_type = (
-                "sub" if config.translation_type == "dub" else "dub"
+            translation_type = "sub" if config.translation_type == "dub" else "dub"
+            anime = anime_provider.get_anime(
+                anilist_config._anime["id"],
+                anilist_config.selected_anime_anilist,
             )
+            if not anime:
+                mpv_player.show_text("Failed to update translation type")
+                return
+            anilist_config.episodes = anime["availableEpisodesDetail"][translation_type]
+            config.translation_type = translation_type
+
             if config.translation_type == "dub":
                 mpv_player.show_text("Translation Type set to dub")
             else:

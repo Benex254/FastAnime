@@ -74,7 +74,7 @@ def player_controls(config: "Config", anilist_config: QueryDict):
             if args := aniskip(
                 anilist_config.selected_anime_anilist["idMal"], current_episode
             ):
-                custom_args = args
+                custom_args.extend(args)
         if config.use_mpv_mod:
             from ..utils.player import player
 
@@ -84,6 +84,13 @@ def player_controls(config: "Config", anilist_config: QueryDict):
                 config,
                 selected_server["episode_title"],
             )
+
+            if custom_args:
+                chapters_file = custom_args[0].split("=", 1)
+                script_opts = custom_args[1].split("=", 1)
+                mpv._set_property("chapters-file", chapters_file[1])
+                mpv._set_property("script-opts", script_opts[1])
+            mpv.start = start_time
             mpv.play(current_link)
             mpv.wait_for_shutdown()
             mpv.terminate()
@@ -367,6 +374,13 @@ def fetch_streams(config: "Config", anilist_config: QueryDict):
         mpv = player.create_player(
             anime_provider, anilist_config, config, selected_server["episode_title"]
         )
+
+        if custom_args:
+            chapters_file = custom_args[0].split("=", 1)
+            script_opts = custom_args[1].split("=", 1)
+            mpv._set_property("chapters-file", chapters_file[1])
+            mpv._set_property("script-opts", script_opts[1])
+        mpv.start = start_time
         mpv.play(stream_link)
         mpv.wait_for_shutdown()
         mpv.terminate()

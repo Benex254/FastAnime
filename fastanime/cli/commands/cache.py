@@ -33,3 +33,7 @@ def cache(clean, path, size):
                 fp = os.path.join(dirpath, f)
                 total_size += os.path.getsize(fp)
         print("Total Size: ", sizeof_fmt(total_size))
+    else:
+        import click
+
+        click.launch(APP_CACHE_DIR)

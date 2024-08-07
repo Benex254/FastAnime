@@ -85,7 +85,7 @@ def player_controls(config: "Config", anilist_config: QueryDict):
                 selected_server["episode_title"],
             )
 
-            if custom_args:
+            if custom_args and None:
                 chapters_file = custom_args[0].split("=", 1)
                 script_opts = custom_args[1].split("=", 1)
                 mpv._set_property("chapters-file", chapters_file[1])
@@ -103,7 +103,7 @@ def player_controls(config: "Config", anilist_config: QueryDict):
                 start_time=start_time,
                 custom_args=custom_args,
             )
-        if stop_time == "0":
+        if stop_time == "0" or total_time == "0":
             episode = str(int(current_episode) + 1)
         else:
             error = 5 * 60
@@ -375,7 +375,7 @@ def fetch_streams(config: "Config", anilist_config: QueryDict):
             anime_provider, anilist_config, config, selected_server["episode_title"]
         )
 
-        if custom_args:
+        if custom_args and None:
             chapters_file = custom_args[0].split("=", 1)
             script_opts = custom_args[1].split("=", 1)
             mpv._set_property("chapters-file", chapters_file[1])
@@ -397,7 +397,7 @@ def fetch_streams(config: "Config", anilist_config: QueryDict):
     print("Finished at: ", stop_time)
 
     # update_watch_history
-    if stop_time == "0":
+    if stop_time == "0" or total_time == "0":
         episode = str(int(episode_number) + 1)
     else:
         error = config.error * 60

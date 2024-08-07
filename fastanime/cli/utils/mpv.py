@@ -1,29 +1,6 @@
 import re
 import shutil
 import subprocess
-from typing import Optional
-
-# legacy
-# def mpv(link, title: None | str = "anime", *custom_args):
-#     MPV = shutil.which("mpv")
-#     if not MPV:
-#         args = [
-#             "nohup",
-#             "am",
-#             "start",
-#             "--user",
-#             "0",
-#             "-a",
-#             "android.intent.action.VIEW",
-#             "-d",
-#             link,
-#             "-n",
-#             "is.xyz.mpv/.MPVActivity",
-#         ]
-#         subprocess.run(args)
-#     else:
-#         subprocess.run([MPV, *custom_args, f"--title={title}", link])
-#
 
 
 def stream_video(MPV, url, mpv_args, custom_args):
@@ -69,9 +46,9 @@ def stream_video(MPV, url, mpv_args, custom_args):
     return last_time, total_time
 
 
-def mpv(
+def run_mpv(
     link: str,
-    title: Optional[str] = "",
+    title: str | None = "",
     start_time: str = "0",
     ytdl_format="",
     custom_args=[],
@@ -135,7 +112,7 @@ def mpv(
 
 # Example usage
 if __name__ == "__main__":
-    mpv(
+    run_mpv(
         "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
         "Example Video",
         "--fullscreen",

@@ -17,7 +17,8 @@ from ...libs.fzf import fzf
 from ...libs.rofi import Rofi
 from ...Utility.data import anime_normalizer
 from ...Utility.utils import anime_title_percentage_match, sanitize_filename
-from ..utils.mpv import mpv
+from ..utils.mpv import run_mpv
+from ..utils.player import player
 from ..utils.tools import QueryDict, exit_app
 from ..utils.utils import clear, fuzzy_inquirer
 from .utils import aniskip
@@ -75,7 +76,7 @@ def player_controls(config: "Config", anilist_config: QueryDict):
                 anilist_config.selected_anime_anilist["idMal"], current_episode
             ):
                 custom_args = args
-        stop_time, total_time = mpv(
+        stop_time, total_time = run_mpv(
             current_link,
             selected_server["episode_title"],
             start_time=start_time,
@@ -341,18 +342,28 @@ def fetch_streams(config: "Config", anilist_config: QueryDict):
     if start_time != "0":
         print("[green]Continuing from:[/] ", start_time)
     custom_args = []
-    if config.skip:
-        if args := aniskip(
-            anilist_config.selected_anime_anilist["idMal"], episode_number
-        ):
-            custom_args = args
+    if config.use_mpv_mod:
+        mpv = player.create_player(
+            anime_provider, anilist_config, config, selected_server["episode_title"]
+        )
+        mpv.play(stream_link)
+        mpv.wait_for_shutdown()
+        mpv.terminate()
+        stop_time = player.last_stop_time
+        total_time = player.last_total_time
 
-    stop_time, total_time = mpv(
-        stream_link,
-        selected_server["episode_title"],
-        start_time=start_time,
-        custom_args=custom_args,
-    )
+    else:
+        if config.skip:
+            if args := aniskip(
+                anilist_config.selected_anime_anilist["idMal"], episode_number
+            ):
+                custom_args.extend(args)
+        stop_time, total_time = run_mpv(
+            stream_link,
+            selected_server["episode_title"],
+            start_time=start_time,
+            custom_args=custom_args,
+        )
     print("Finished at: ", stop_time)
 
     # update_watch_history
@@ -541,7 +552,7 @@ def anilist_options(config, anilist_config: QueryDict):
         if trailer := selected_anime.get("trailer"):
             trailer_url = "https://youtube.com/watch?v=" + trailer["id"]
             print("[bold magenta]Watching Trailer of:[/]", selected_anime_title)
-            mpv(
+            run_mpv(
                 trailer_url,
                 ytdl_format=config.format,
             )

@@ -23,7 +23,7 @@ def search(config: Config, anime_title: str, episode_range: str):
     from ...libs.anime_provider.types import Anime
     from ...libs.fzf import fzf
     from ...libs.rofi import Rofi
-    from ..utils.mpv import mpv
+    from ..utils.mpv import run_mpv
     from ..utils.tools import exit_app
     from ..utils.utils import clear, fuzzy_inquirer
 
@@ -138,7 +138,7 @@ def search(config: Config, anime_title: str, episode_range: str):
 
         print(f"[purple]Now Playing:[/] {search_result} Episode {episode}")
 
-        mpv(link, search_result)
+        run_mpv(link, search_result)
         stream_anime()
 
     stream_anime()

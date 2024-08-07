@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 def downloads(config: "Config", path: bool):
     import os
 
-    from ...cli.utils.mpv import mpv
+    from ...cli.utils.mpv import run_mpv
     from ...libs.fzf import fzf
     from ...libs.rofi import Rofi
     from ..utils.tools import exit_app
@@ -41,7 +41,7 @@ def downloads(config: "Config", path: bool):
             exit_app()
             return
         playlist = os.path.join(USER_VIDEOS_DIR, playlist_name)
-        mpv(playlist)
+        run_mpv(playlist)
         stream()
 
     stream()

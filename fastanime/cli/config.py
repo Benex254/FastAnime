@@ -47,6 +47,7 @@ class Config(object):
                 "rofi_theme": "",
                 "rofi_theme_input": "",
                 "rofi_theme_confirm": "",
+                "use_mpv_mod": "true",
             }
         )
         self.configparser.add_section("stream")
@@ -71,6 +72,7 @@ class Config(object):
         self.continue_from_history = self.get_continue_from_history()
         self.auto_next = self.get_auto_next()
         self.auto_select = self.get_auto_select()
+        self.use_mpv_mod = self.get_use_mpv_mod()
         self.quality = self.get_quality()
         self.notification_duration = self.get_notification_duration()
         self.error = self.get_error()
@@ -169,6 +171,9 @@ class Config(object):
 
     def get_quality(self):
         return self.configparser.getint("stream", "quality")
+
+    def get_use_mpv_mod(self):
+        return self.configparser.getboolean("stream", "use_mpv_mod")
 
     def get_notification_duration(self):
         return self.configparser.getint("general", "notification_duration")

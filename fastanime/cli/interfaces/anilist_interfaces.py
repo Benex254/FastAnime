@@ -18,7 +18,6 @@ from ...libs.rofi import Rofi
 from ...Utility.data import anime_normalizer
 from ...Utility.utils import anime_title_percentage_match, sanitize_filename
 from ..utils.mpv import run_mpv
-from ..utils.player import player
 from ..utils.tools import QueryDict, exit_app
 from ..utils.utils import clear, fuzzy_inquirer
 from .utils import aniskip
@@ -343,6 +342,8 @@ def fetch_streams(config: "Config", anilist_config: QueryDict):
         print("[green]Continuing from:[/] ", start_time)
     custom_args = []
     if config.use_mpv_mod:
+        from ..utils.player import player
+
         mpv = player.create_player(
             anime_provider, anilist_config, config, selected_server["episode_title"]
         )

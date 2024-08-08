@@ -120,11 +120,16 @@ class MpvPlayer(object):
         self.current_media_title = ""
 
         mpv_player = mpv.MPV(
+            log_handler=print,
+            loglevel="error",
             config=True,
             input_default_bindings=True,
             input_vo_keyboard=True,
             osc=True,
         )
+        mpv_player.force_window = config.force_window
+        # mpv_player.cache = "yes"
+        # mpv_player.cache_pause = "no"
         mpv_player.title = title
 
         @mpv_player.on_key_press("shift+n")
@@ -195,7 +200,6 @@ class MpvPlayer(object):
             if len(args) > 1:
                 value = args[1]
                 if value is not None:
-                    self.last_stop_time_secs = value
                     self.last_stop_time = format_time(value)
 
         @mpv_player.property_observer("time-remaining")
@@ -203,8 +207,7 @@ class MpvPlayer(object):
             if len(args) > 1:
                 value = args[1]
                 if value is not None:
-                    rem_time = value
-                    if rem_time < 10 and config.auto_next:
+                    if value < 10 and config.auto_next:
                         url = self.get_episode("next")
                         if url:
                             mpv_player.loadfile(

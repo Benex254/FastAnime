@@ -48,6 +48,7 @@ class Config(object):
                 "rofi_theme_input": "",
                 "rofi_theme_confirm": "",
                 "use_mpv_mod": "true",
+                "force_window": "immediate",
             }
         )
         self.configparser.add_section("stream")
@@ -78,6 +79,7 @@ class Config(object):
         self.error = self.get_error()
         self.server = self.get_server()
         self.format = self.get_format()
+        self.force_window = self.get_force_window()
         self.preferred_language = self.get_preferred_language()
         self.rofi_theme = self.get_rofi_theme()
         Rofi.rofi_theme = self.rofi_theme
@@ -144,6 +146,9 @@ class Config(object):
 
     def get_skip(self):
         return self.configparser.getboolean("stream", "skip")
+
+    def get_force_window(self):
+        return self.configparser.get("stream", "force_window")
 
     def get_icons(self):
         return self.configparser.getboolean("general", "icons")

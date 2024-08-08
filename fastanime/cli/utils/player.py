@@ -148,6 +148,7 @@ class MpvPlayer(object):
             input_default_bindings=True,
             input_vo_keyboard=True,
             osc=True,
+            ytdl=True,
         )
         mpv_player.force_window = config.force_window
         # mpv_player.cache = "yes"

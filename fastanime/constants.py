@@ -20,6 +20,8 @@ if PLATFORM == "Windows":
     ICON_PATH = os.path.join(ASSETS_DIR, "logo.ico")
 else:
     ICON_PATH = os.path.join(ASSETS_DIR, "logo.png")
+PREVIEW_IMAGE = os.path.join(ASSETS_DIR, "preview")
+
 
 # ----- user configs and data -----
 APP_DATA_DIR = dirs.user_config_dir

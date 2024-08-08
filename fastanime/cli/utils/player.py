@@ -29,7 +29,10 @@ class MpvPlayer(object):
     current_media_title = ""
 
     def get_episode(
-        self, type: "Literal['next','previous','reload','custom']", ep_no=None
+        self,
+        type: "Literal['next','previous','reload','custom']",
+        ep_no=None,
+        server="top",
     ):
         anilist_config = self.anilist_config
         config = self.config
@@ -62,7 +65,9 @@ class MpvPlayer(object):
         elif type == "custom":
             if not ep_no or ep_no not in episodes:
                 self.mpv_player.show_text("Episode number not specified or invalid")
-                self.mpv_player.show_text(f"Acceptable episodes are:  {episodes}")
+                self.mpv_player.show_text(
+                    f"Acceptable episodes are:  {episodes}",
+                )
                 return
 
             self.mpv_player.show_text(f"Fetching episode {ep_no}")
@@ -97,7 +102,19 @@ class MpvPlayer(object):
             return None
 
         # always select the first
-        selected_server = next(episode_streams)
+        if server == "top":
+            selected_server = next(episode_streams)
+        else:
+            episode_streams_dict = {
+                episode_stream["server"]: episode_stream
+                for episode_stream in episode_streams
+            }
+            selected_server = episode_streams_dict.get(server)
+            if selected_server is None:
+                self.mpv_player.show_text(
+                    f"Invalid server!!; servers available are: {episode_streams_dict.keys()}",
+                )
+                return None
         self.current_media_title = selected_server["episode_title"]
         links = selected_server["links"]
         if quality > len(links) - 1:
@@ -108,7 +125,12 @@ class MpvPlayer(object):
         return stream_link
 
     def create_player(
-        self, anime_provider: "AnimeProvider", anilist_config, config: "Config", title
+        self,
+        stream_link,
+        anime_provider: "AnimeProvider",
+        anilist_config,
+        config: "Config",
+        title,
     ):
         self.anime_provider = anime_provider
         self.anilist_config = anilist_config
@@ -132,24 +154,42 @@ class MpvPlayer(object):
         # mpv_player.cache_pause = "no"
         mpv_player.title = title
 
-        @mpv_player.on_key_press("shift+n")
-        def _next_episode():
-            url = self.get_episode("next")
-            if url:
-                mpv_player.loadfile(url, options=f"title={self.current_media_title}")
-                mpv_player.title = self.current_media_title
+        mpv_player.play(stream_link)
 
+        # -- events --
         @mpv_player.event_callback("file-loaded")
         def set_total_time(event, *args):
             d = mpv_player._get_property("duration")
             if isinstance(d, float):
                 self.last_total_time = format_time(d)
 
-        @mpv_player.event_callback("shutdown")
-        def set_total_time_on_shutdown(event, *args):
-            d = mpv_player._get_property("duration")
-            if isinstance(d, float):
-                self.last_total_time = format_time(d)
+        @mpv_player.property_observer("time-pos")
+        def handle_time_start_update(*args):
+            if len(args) > 1:
+                value = args[1]
+                if value is not None:
+                    self.last_stop_time = format_time(value)
+
+        @mpv_player.property_observer("time-remaining")
+        def handle_time_remaining_update(*args):
+            if len(args) > 1:
+                value = args[1]
+                if value is not None:
+                    if value < 10 and config.auto_next:
+                        url = self.get_episode("next")
+                        if url:
+                            mpv_player.loadfile(
+                                url,
+                            )
+                            mpv_player.title = self.current_media_title
+
+        # -- keybindings --
+        @mpv_player.on_key_press("shift+n")
+        def _next_episode():
+            url = self.get_episode("next")
+            if url:
+                mpv_player.loadfile(url, options=f"title={self.current_media_title}")
+                mpv_player.title = self.current_media_title
 
         @mpv_player.on_key_press("shift+p")
         def _previous_episode():
@@ -195,29 +235,11 @@ class MpvPlayer(object):
                 )
                 mpv_player.title = self.current_media_title
 
-        @mpv_player.property_observer("time-pos")
-        def handle_time_start_update(*args):
-            if len(args) > 1:
-                value = args[1]
-                if value is not None:
-                    self.last_stop_time = format_time(value)
-
-        @mpv_player.property_observer("time-remaining")
-        def handle_time_remaining_update(*args):
-            if len(args) > 1:
-                value = args[1]
-                if value is not None:
-                    if value < 10 and config.auto_next:
-                        url = self.get_episode("next")
-                        if url:
-                            mpv_player.loadfile(
-                                url,
-                            )
-                            mpv_player.title = self.current_media_title
-
+        # -- script messages --
         @mpv_player.message_handler("select-episode")
         def select_episode(episode: bytes | None = None, *args):
             if not episode:
+                mpv_player.show_text("No episode was selected")
                 return
             url = self.get_episode("custom", episode.decode())
             if url:
@@ -226,11 +248,29 @@ class MpvPlayer(object):
                 )
                 mpv_player.title = self.current_media_title
 
-        mpv_player.register_message_handler("select-episode", select_episode)
+        @mpv_player.message_handler("select-server")
+        def select_server(server: bytes | None = None, *args):
+            if not server:
+                mpv_player.show_text("No server was selected")
+                return
+            url = self.get_episode("reload", server=server.decode())
+            if url:
+                mpv_player.loadfile(
+                    url,
+                )
+                mpv_player.title = self.current_media_title
+            else:
+                pass
+
+        # -- events --
         mpv_player.observe_property("time-pos", handle_time_start_update)
-        mpv_player.register_event_callback(set_total_time)
-        mpv_player.register_event_callback(set_total_time_on_shutdown)
         mpv_player.observe_property("time-remaining", handle_time_remaining_update)
+        mpv_player.register_event_callback(set_total_time)
+
+        # --script-messages --
+        mpv_player.register_message_handler("select-episode", select_episode)
+        mpv_player.register_message_handler("select-server", select_server)
+
         self.mpv_player = mpv_player
         return mpv_player
 

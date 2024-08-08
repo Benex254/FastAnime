@@ -80,6 +80,7 @@ def player_controls(config: "Config", anilist_config: QueryDict):
             from ..utils.player import player
 
             mpv = player.create_player(
+                current_link,
                 config.anime_provider,
                 anilist_config,
                 config,
@@ -92,7 +93,6 @@ def player_controls(config: "Config", anilist_config: QueryDict):
                 mpv._set_property("chapters-file", chapters_file[1])
                 mpv._set_property("script-opts", script_opts[1])
             mpv.start = start_time
-            mpv.play(current_link)
             mpv.wait_for_shutdown()
             mpv.terminate()
             stop_time = player.last_stop_time
@@ -373,7 +373,11 @@ def fetch_streams(config: "Config", anilist_config: QueryDict):
         from ..utils.player import player
 
         mpv = player.create_player(
-            anime_provider, anilist_config, config, selected_server["episode_title"]
+            stream_link,
+            anime_provider,
+            anilist_config,
+            config,
+            selected_server["episode_title"],
         )
 
         if custom_args and None:
@@ -382,7 +386,6 @@ def fetch_streams(config: "Config", anilist_config: QueryDict):
             mpv._set_property("chapters-file", chapters_file[1])
             mpv._set_property("script-opts", script_opts[1])
         mpv.start = start_time
-        mpv.play(stream_link)
         mpv.wait_for_shutdown()
         mpv.terminate()
         stop_time = player.last_stop_time

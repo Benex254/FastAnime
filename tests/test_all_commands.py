@@ -45,6 +45,16 @@ def test_search_help(runner: CliRunner):
     assert result.exit_code == 0
 
 
+def test_cache_help(runner: CliRunner):
+    result = runner.invoke(run_cli, ["cache", "--help"])
+    assert result.exit_code == 0
+
+
+def test_completions_help(runner: CliRunner):
+    result = runner.invoke(run_cli, ["completions", "--help"])
+    assert result.exit_code == 0
+
+
 def test_anilist_help(runner: CliRunner):
     result = runner.invoke(run_cli, ["anilist", "--help"])
     assert result.exit_code == 0

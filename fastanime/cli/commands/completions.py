@@ -6,7 +6,26 @@ import click
 @click.option("--zsh", is_flag=True)
 @click.option("--bash", is_flag=True)
 def completions(fish, zsh, bash):
-    if fish:
+    try:
+        import shellingham
+
+        try:
+            current_shell, _ = shellingham.detect_shell()
+        except shellingham.ShellDetectionFailure:
+            current_shell = None
+    except ImportError:
+        import os
+
+        shell = os.environ.get("SHELL", "")
+        if "fish" in shell:
+            current_shell = "fish"
+        elif "zsh" in shell:
+            current_shell = "zsh"
+        elif "bash" in shell:
+            current_shell = "bash"
+        else:
+            current_shell = None
+    if fish or current_shell == "fish" and not zsh and not bash:
         print(
             """
 function _fastanime_completion;
@@ -28,7 +47,7 @@ end;
 complete --no-files --command fastanime --arguments "(_fastanime_completion)";
         """
         )
-    elif zsh:
+    elif zsh or current_shell == "zsh" and not bash:
         print(
             """
 #compdef fastanime
@@ -73,7 +92,7 @@ else
 fi
         """
         )
-    elif bash:
+    elif bash or current_shell == "bash":
         print(
             """
 _fastanime_completion() {
@@ -107,4 +126,4 @@ _fastanime_completion_setup;
         """
         )
     else:
-        print("Specify either --zsh/--fish/--bash")
+        print("Could not detect shell")

@@ -178,7 +178,6 @@ class MpvPlayer(object):
             property, time_remaining: float | None = None, *args
         ):
             if time_remaining is not None:
-                print(time_remaining, self.player_fetching)
                 if time_remaining < 1 and config.auto_next and not self.player_fetching:
                     print("Auto Fetching Next Episode")
                     self.player_fetching = True

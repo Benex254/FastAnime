@@ -931,9 +931,9 @@ def anilist(config: "Config", anilist_config: QueryDict):
         return AniList.search(id_in=anime_list)
 
     def edit_config():
-        import subprocess
+        from click import edit
 
-        subprocess.run([os.environ.get("EDITOR", "open"), USER_CONFIG_PATH])
+        edit(filename=USER_CONFIG_PATH)
         if config.use_rofi:
             config.load_config()
             config.use_rofi = True

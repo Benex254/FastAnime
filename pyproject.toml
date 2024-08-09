@@ -21,7 +21,6 @@ plyer = "^2.1.0"
 pyshortcuts = "^1.9.0"
 
 mpv = "^1.0.7"
-dbus-python = "^1.3.2"
 [tool.poetry.group.dev.dependencies]
 black = "^24.4.2"
 isort = "^5.13.2"

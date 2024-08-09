@@ -454,20 +454,6 @@ files = [
 ]
 
 [[package]]
-name = "dbus-python"
-version = "1.3.2"
-description = "Python bindings for libdbus"
-optional = false
-python-versions = ">=3.7"
-files = [
-    {file = "dbus-python-1.3.2.tar.gz", hash = "sha256:ad67819308618b5069537be237f8e68ca1c7fcc95ee4a121fe6845b1418248f8"},
-]
-
-[package.extras]
-doc = ["sphinx", "sphinx_rtd_theme"]
-test = ["tap.py"]
-
-[[package]]
 name = "distlib"
 version = "0.3.8"
 description = "Distribution utilities"
@@ -1435,4 +1421,4 @@ test = ["pytest (>=8.1,<9.0)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "0d3d33b96f371efe07ca158306fb09de4aff8a1afce47007d8dffd8b382846a2"
+content-hash = "5305621bc02d824065519913f0d754e269f1e4525ba8796be08504120614259d"

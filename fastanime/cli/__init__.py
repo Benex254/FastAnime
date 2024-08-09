@@ -15,6 +15,7 @@ commands = {
     "config": "config.config",
     "downloads": "downloads.downloads",
     "cache": "cache.cache",
+    "completions": "completions.completions",
 }
 
 

@@ -126,6 +126,9 @@ signal.signal(signal.SIGINT, handle_exit)
     help="Rofi theme to use for the user input prompt",
     type=click.Path(),
 )
+@click.option(
+    "--use-mpv-mod/--use-default-player", help="Whether to use python-mpv", type=bool
+)
 @click.pass_context
 def run_cli(
     ctx: click.Context,
@@ -155,6 +158,7 @@ def run_cli(
     rofi_theme,
     rofi_theme_confirm,
     rofi_theme_input,
+    use_mpv_mod,
 ):
     from .config import Config
 
@@ -217,6 +221,11 @@ def run_cli(
         == click.core.ParameterSource.COMMANDLINE
     ):
         ctx.obj.auto_select = auto_select
+    if (
+        ctx.get_parameter_source("use_mpv_mod")
+        == click.core.ParameterSource.COMMANDLINE
+    ):
+        ctx.obj.use_mpv_mod = use_mpv_mod
     if sort_by:
         ctx.obj.sort_by = sort_by
     if downloads_dir:

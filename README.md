@@ -44,6 +44,7 @@ Heavily inspired by [animdl](https://github.com/justfoolingaround/animdl), [magi
       - [downloads subcommand](#downloads-subcommand)
       - [config subcommand](#config-subcommand)
       - [cache subcommand](#cache-subcommand)
+      - [completions subcommand](#completions-subcommand)
   - [MPV specific commands](#mpv-specific-commands)
     - [Added keybindings](#added-keybindings)
     - [Added script messages](#added-script-messages)
@@ -380,6 +381,8 @@ Helper command to setup shell completions
 **Syntax:**
 
 ```bash
+# try to detect your shell and print completions
+fastanime completions
 # print fish completions
 fastanime completions --fish
 # print bash completions

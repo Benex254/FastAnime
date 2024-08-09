@@ -16,12 +16,12 @@ def completions(fish, zsh, bash):
     except ImportError:
         import os
 
-        shell = os.environ.get("SHELL", "")
-        if "fish" in shell:
+        shell_env = os.environ.get("SHELL", "")
+        if "fish" in shell_env:
             current_shell = "fish"
-        elif "zsh" in shell:
+        elif "zsh" in shell_env:
             current_shell = "zsh"
-        elif "bash" in shell:
+        elif "bash" in shell_env:
             current_shell = "bash"
         else:
             current_shell = None

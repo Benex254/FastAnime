@@ -27,6 +27,7 @@ class MpvPlayer(object):
     last_stop_time_secs = 0
     last_total_time_secs = 0
     current_media_title = ""
+    player_fetching = False
 
     def get_episode(
         self,
@@ -161,6 +162,7 @@ class MpvPlayer(object):
         @mpv_player.event_callback("file-loaded")
         def set_total_time(event, *args):
             d = mpv_player._get_property("duration")
+            self.player_fetching = False
             if isinstance(d, float):
                 self.last_total_time = format_time(d)
 
@@ -172,17 +174,20 @@ class MpvPlayer(object):
                     self.last_stop_time = format_time(value)
 
         @mpv_player.property_observer("time-remaining")
-        def handle_time_remaining_update(*args):
-            if len(args) > 1:
-                value = args[1]
-                if value is not None:
-                    if value < 10 and config.auto_next:
-                        url = self.get_episode("next")
-                        if url:
-                            mpv_player.loadfile(
-                                url,
-                            )
-                            mpv_player.title = self.current_media_title
+        def handle_time_remaining_update(
+            property, time_remaining: float | None = None, *args
+        ):
+            if time_remaining is not None:
+                print(time_remaining, self.player_fetching)
+                if time_remaining < 1 and config.auto_next and not self.player_fetching:
+                    print("Auto Fetching Next Episode")
+                    self.player_fetching = True
+                    url = self.get_episode("next")
+                    if url:
+                        mpv_player.loadfile(
+                            url,
+                        )
+                        mpv_player.title = self.current_media_title
 
         # -- keybindings --
         @mpv_player.on_key_press("shift+n")

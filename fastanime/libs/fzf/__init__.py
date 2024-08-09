@@ -6,7 +6,6 @@ import sys
 from typing import Callable, List
 
 # TODO: will probably scrap art not to useful
-from art import text2art
 from click import clear
 from rich import print
 
@@ -20,6 +19,17 @@ FZF_DEFAULT_OPTS = """
     --color=border:#262626,label:#aeaeae,query:#d9d9d9
     --border="rounded" --border-label="" --preview-window="border-rounded" --prompt="> "
     --marker=">" --pointer="◆" --separator="─" --scrollbar="│"
+"""
+
+HEADER = """
+
+███████╗░█████╗░░██████╗████████╗░█████╗░███╗░░██╗██╗███╗░░░███╗███████╗
+██╔════╝██╔══██╗██╔════╝╚══██╔══╝██╔══██╗████╗░██║██║████╗░████║██╔════╝
+█████╗░░███████║╚█████╗░░░░██║░░░███████║██╔██╗██║██║██╔████╔██║█████╗░░
+██╔══╝░░██╔══██║░╚═══██╗░░░██║░░░██╔══██║██║╚████║██║██║╚██╔╝██║██╔══╝░░
+██║░░░░░██║░░██║██████╔╝░░░██║░░░██║░░██║██║░╚███║██║██║░╚═╝░██║███████╗
+╚═╝░░░░░╚═╝░░╚═╝╚═════╝░░░░╚═╝░░░╚═╝░░╚═╝╚═╝░░╚══╝╚═╝╚═╝░░░░░╚═╝╚══════╝
+
 """
 
 
@@ -149,7 +159,7 @@ class FZF:
         _commands = [
             *self.default_options,
             "--header",
-            text2art(header),
+            HEADER,
             "--header-first",
             "--prompt",
             prompt.title(),

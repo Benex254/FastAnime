@@ -6,7 +6,7 @@ if sys.version_info < (3, 10):
     )  # noqa: F541
 
 
-__version__ = "v0.61.0"
+__version__ = "v0.61.5"
 
 APP_NAME = "FastAnime"
 AUTHOR = "Benex254"

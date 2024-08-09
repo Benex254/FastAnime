@@ -151,7 +151,7 @@ fastanime --version
 
 ### External Dependencies
 
-The only required external dependency, unless you won't be streaming, is [MPV](https://mpv.io/installation/), which i recommend installing with [uosc](https://github.com/tomasklaen/uosc) and [thumbfast](https://github.com/po5/thumbfast) for the best experience since they add a better interface to it.
+The only required external dependency, unless you won't be streaming, is [MPV](https://mpv.io/installation/), which i recommend installing with [uosc](https://github.com/tomasklaen/uosc) :fire: and [thumbfast](https://github.com/po5/thumbfast) for the best experience since they add a better interface to it.
 
 > [!NOTE]
 >
@@ -166,7 +166,7 @@ The only required external dependency, unless you won't be streaming, is [MPV](h
 - [chafa](https://github.com/hpjansson/chafa) currently the best cross platform and cross terminal image viewer for the terminal.
 - [icat](https://sw.kovidgoyal.net/kitty/kittens/icat/) an image viewer that only works in [kitty terminal](https://sw.kovidgoyal.net/kitty/), which is currently the best terminal in my opinion, and by far the best image renderer for the terminal thanks to kitty's terminal graphics protocol. Its terminal graphics is so op that you can [run a browser on it](https://github.com/chase/awrit?tab=readme-ov-file)!!
 - [bash](https://www.gnu.org/software/bash/) is used as the preview script language.
-- [ani-skip](https://github.com/synacktraa/ani-skip) :fire: used for skipping the opening and ending theme songs
+- [ani-skip](https://github.com/synacktraa/ani-skip) used for skipping the opening and ending theme songs
 
 ## Usage
 
@@ -216,6 +216,7 @@ Available options include:
 - `--log` allow logging to stdout
 - `--log-file` allow logging to a file
 - `--rich-traceback` allow rich traceback
+- `--use-mpv-mod/--use-default-player` whether to use python-mpv
 
 #### The anilist command :fire: :fire: :fire:
 
@@ -372,6 +373,21 @@ fastanime cache --size
 fastanime cache
 ```
 
+#### completions subcommand
+
+Helper command to setup shell completions
+
+**Syntax:**
+
+```bash
+# print fish completions
+fastanime completions --fish
+# print bash completions
+fastanime completions --bash
+# print zsh completions
+fastanime completions --zsh
+```
+
 ## MPV specific commands
 
 The project now allows on the fly media controls directly from mpv. This means you can go to the next or previous episode without the window ever closing thus offering a seamless experience.
@@ -387,12 +403,17 @@ This is all powered with [python-mpv]() which enables writing mpv scripts with p
 
 `<shift>+a` toggle auto next episode
 
+`<shit>+r` reload episode
+
 ### Added script messages
 
 Examples:
 
 ```bash
+# to select episode from mpv without window closing
 script-message select-episode <episode-number>
+# to select server from mpv without window closing
+script-message select-server <server-name>
 ```
 
 ## Configuration
@@ -414,7 +435,7 @@ skip=false
 # the maximum delta time in minutes after which the episode should be considered as completed
 # used in the continue from time stamp
 error=3
-use_mpv_mod=True
+use_mpv_mod=False
 
 # the format of downloaded anime and trailer
 # based on yt-dlp format and passed directly to it

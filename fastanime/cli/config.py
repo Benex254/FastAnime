@@ -47,7 +47,7 @@ class Config(object):
                 "rofi_theme": "",
                 "rofi_theme_input": "",
                 "rofi_theme_confirm": "",
-                "use_mpv_mod": "true",
+                "use_mpv_mod": "false",
                 "force_window": "immediate",
             }
         )

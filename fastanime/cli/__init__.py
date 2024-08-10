@@ -201,7 +201,6 @@ def run_cli(
 
     if provider:
         ctx.obj.provider = provider
-        ctx.obj.load_config()
     if server:
         ctx.obj.server = server
     if format:

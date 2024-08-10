@@ -29,7 +29,7 @@ from .queries_graphql import (
 )
 
 if TYPE_CHECKING:
-    from .anilist_data_schema import (
+    from .types import (
         AnilistDataSchema,
         AnilistMediaLists,
         AnilistMediaListStatus,
@@ -126,7 +126,9 @@ class AniListApi:
         return self._make_authenticated_request(media_list_mutation, variables)
 
     def get_anime_list(
-        self, status: "AnilistMediaListStatus"
+        self,
+        status: "AnilistMediaListStatus",
+        type="ANIME",
     ) -> tuple[bool, "AnilistMediaLists"] | tuple[bool, None]:
         """gets an anime list from your media list given the list status
 
@@ -136,7 +138,7 @@ class AniListApi:
         Returns:
             a media list
         """
-        variables = {"status": status, "userId": self.user_id}
+        variables = {"status": status, "userId": self.user_id, "type": type}
         return self._make_authenticated_request(media_list_query, variables)
 
     def get_medialist_entry(
@@ -310,6 +312,7 @@ class AniListApi:
         start_greater: int | None = None,
         start_lesser: int | None = None,
         page: int | None = None,
+        type="ANIME",
         **kwargs,
     ):
         """
@@ -329,65 +332,74 @@ class AniListApi:
         variables = {"id": id}
         return self.get_data(anime_query, variables)
 
-    def get_trending(self, *_, **kwargs):
+    def get_trending(self, type="ANIME", *_, **kwargs):
         """
         Gets the currently trending anime
         """
-        trending = self.get_data(trending_query)
+        variables = {"type": type}
+        trending = self.get_data(trending_query, variables)
         return trending
 
-    def get_most_favourite(self, *_, **kwargs):
+    def get_most_favourite(self, type="ANIME", *_, **kwargs):
         """
         Gets the most favoured anime on anilist
         """
-        most_favourite = self.get_data(most_favourite_query)
+        variables = {"type": type}
+        most_favourite = self.get_data(most_favourite_query, variables)
         return most_favourite
 
-    def get_most_scored(self, *_, **kwargs):
+    def get_most_scored(self, type="ANIME", *_, **kwargs):
         """
         Gets most scored anime on anilist
         """
-        most_scored = self.get_data(most_scored_query)
+        variables = {"type": type}
+        most_scored = self.get_data(most_scored_query, variables)
         return most_scored
 
-    def get_most_recently_updated(self, *_, **kwargs):
+    def get_most_recently_updated(self, type="ANIME", *_, **kwargs):
         """
         Gets most recently updated anime from anilist
         """
-        most_recently_updated = self.get_data(most_recently_updated_query)
+        variables = {"type": type}
+        most_recently_updated = self.get_data(most_recently_updated_query, variables)
         return most_recently_updated
 
-    def get_most_popular(self):
+    def get_most_popular(
+        self,
+        type="ANIME",
+    ):
         """
         Gets most popular anime on anilist
         """
-        most_popular = self.get_data(most_popular_query)
+        variables = {"type": type}
+        most_popular = self.get_data(most_popular_query, variables)
         return most_popular
 
-    def get_upcoming_anime(self, page: int = 1, *_, **kwargs):
+    def get_upcoming_anime(self, type="ANIME", page: int = 1, *_, **kwargs):
         """
         Gets upcoming anime from anilist
         """
-        variables = {"page": page}
+        variables = {"page": page, "type": type}
         upcoming_anime = self.get_data(upcoming_anime_query, variables)
         return upcoming_anime
 
     # NOTE: THe following methods will probably be scraped soon
-    def get_recommended_anime_for(self, id: int, *_, **kwargs):
-        recommended_anime = self.get_data(recommended_query)
+    def get_recommended_anime_for(self, id: int, type="ANIME", *_, **kwargs):
+        variables = {"type": type}
+        recommended_anime = self.get_data(recommended_query, variables)
         return recommended_anime
 
-    def get_charcters_of(self, id: int, *_, **kwargs):
+    def get_charcters_of(self, id: int, type="ANIME", *_, **kwargs):
         variables = {"id": id}
         characters = self.get_data(anime_characters_query, variables)
         return characters
 
-    def get_related_anime_for(self, id: int, *_, **kwargs):
+    def get_related_anime_for(self, id: int, type="ANIME", *_, **kwargs):
         variables = {"id": id}
         related_anime = self.get_data(anime_relations_query, variables)
         return related_anime
 
-    def get_airing_schedule_for(self, id: int, *_, **kwargs):
+    def get_airing_schedule_for(self, id: int, type="ANIME", *_, **kwargs):
         variables = {"id": id}
         airing_schedule = self.get_data(airing_schedule_query, variables)
         return airing_schedule

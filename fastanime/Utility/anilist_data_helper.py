@@ -1,9 +1,6 @@
 from datetime import datetime
 
-from ..libs.anilist.anilist_data_schema import (
-    AnilistDateObject,
-    AnilistMediaNextAiringEpisode,
-)
+from ..libs.anilist.types import AnilistDateObject, AnilistMediaNextAiringEpisode
 
 
 # TODO: Add formating options for the final date

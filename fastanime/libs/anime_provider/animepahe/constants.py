@@ -2,7 +2,7 @@ from yt_dlp.utils.networking import random_user_agent
 
 USER_AGENT = random_user_agent()
 ANIMEPAHE = "animepahe.ru"
-ANIMEPAHE_BASE = f"https://{ANIMEPAHE}/"
+ANIMEPAHE_BASE = f"https://{ANIMEPAHE}"
 ANIMEPAHE_ENDPOINT = f"{ANIMEPAHE_BASE}/api?"
 
 REQUEST_HEADERS = {
@@ -19,4 +19,21 @@ REQUEST_HEADERS = {
     "Sec-Fetch-Site": "same-origin",
     "Sec-Fetch-Mode": "cors",
     "TE": "trailers",
+}
+SERVER_HEADERS = {
+    "User-Agent": USER_AGENT,
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/png,image/svg+xml,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.5",
+    "Accept-Encoding": "gzip, deflate, br, zstd",
+    "DNT": "1",
+    "Alt-Used": "kwik.si",
+    "Connection": "keep-alive",
+    "Referer": ANIMEPAHE_BASE,
+    "Cookie": "kwik_session=eyJpdiI6IlZ5UDd0c0lKTDB1NXlhTHZPeWxFc2c9PSIsInZhbHVlIjoieDJZbGhZUG1QZDNaeWtqR3lwWFNnREdhaHBxNVZRMWNDOHVucGpiMHRJOVdhVmpBc3lpTko1VExRMTFWcE1yUVJtVitoTWdOOU5ObTQ0Q0dHU0MzZU0yRUVvNmtWcUdmY3R4UWx4YklJTmpUL0ZodjhtVEpjWU96cEZoUUhUbVYiLCJtYWMiOiI2OGY2YThkOGU0MTgwOThmYzcyZThmNzFlZjlhMzQzMDgwNjlmMTc4NTIzMzc2YjE3YjNmMWQyNTk4NzczMmZiIiwidGFnIjoiIn0%3D; srv=s0; cf_clearance=QMoZtUpZrX0Mh4XJiFmFSSmoWndISPne5FcsGmKKvTQ-1723297585-1.0.1.1-6tVUnP.aef9XeNj0CnN.19D1el_r53t.lhqddX.J88gohH9UnsPWKeJ4yT0pTbcaGRbPuXTLOS.U72.wdy.gMg",
+    "Upgrade-Insecure-Requests": "1",
+    "Sec-Fetch-Dest": "iframe",
+    "Sec-Fetch-Mode": "navigate",
+    "Sec-Fetch-Site": "cross-site",
+    "Sec-Fetch-User": "?1",
+    "Priority": "u=4",
 }

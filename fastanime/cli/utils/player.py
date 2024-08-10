@@ -152,6 +152,7 @@ class MpvPlayer(object):
             ytdl=True,
         )
         mpv_player.force_window = config.force_window
+        mpv_player._set_property("auto-window-resize", "no") # Prevents MPV from resizing the window when a new video is loaded. Useful for tiling window managers. Does not affect fullscreen.
         # mpv_player.cache = "yes"
         # mpv_player.cache_pause = "no"
         mpv_player.title = title
@@ -193,7 +194,8 @@ class MpvPlayer(object):
         def _next_episode():
             url = self.get_episode("next")
             if url:
-                mpv_player.loadfile(url, options=f"title={self.current_media_title}")
+                mpv_player.loadfile(url, 
+                                    )
                 mpv_player.title = self.current_media_title
 
         @mpv_player.on_key_press("shift+p")

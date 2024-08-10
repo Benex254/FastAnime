@@ -53,6 +53,7 @@ def run_mpv(
     ytdl_format="",
     custom_args=[],
 ):
+    custom_args.append("--auto-window-resize=no") # Prevents MPV from resizing the window when a new video is loaded. Useful for tiling window managers. Does not affect fullscreen.
     # Determine if mpv is available
     MPV = shutil.which("mpv")
 

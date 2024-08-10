@@ -122,13 +122,13 @@ mutation($mediaId:Int,$scoreRaw:Int,$repeat:Int,$progress:Int,$status:MediaListS
 """
 
 media_list_query = """
-query ($userId: Int, $status: MediaListStatus) {
+query ($userId: Int, $status: MediaListStatus,$type:MediaType) {
   Page {
     pageInfo {
         currentPage
         total
     }
-    mediaList(userId: $userId, status: $status, type: ANIME) {
+    mediaList(userId: $userId, status: $status, type: $type) {
       mediaId
       
       media {
@@ -223,7 +223,8 @@ $averageScore_lesser:Int,\
 $startDate_greater:FuzzyDateInt,\
 $startDate_lesser:FuzzyDateInt,\
 $endDate_greater:FuzzyDateInt,\
-$endDate_lesser:FuzzyDateInt\
+$endDate_lesser:FuzzyDateInt,\
+$type:MediaType\
 "
 # FuzzyDateInt = (yyyymmdd)
 # MediaStatus = (FINISHED,RELEASING,NOT_YET_RELEASED,CANCELLED,HIATUS)
@@ -255,7 +256,7 @@ query($query:String,%s){
       endDate_greater:$endDate_greater,
       endDate_lesser:$endDate_lesser,
       sort:$sort,
-      type:ANIME
+      type:$type
       )
     {
       id
@@ -316,10 +317,10 @@ query($query:String,%s){
 )
 
 trending_query = """
-query{  
+query($type:MediaType){  
   Page(perPage:15){
     
-    media(sort:TRENDING_DESC,type:ANIME,genre_not_in:["hentai"]){
+    media(sort:TRENDING_DESC,type:$type,genre_not_in:["hentai"]){
       id
         idMal
       title{
@@ -376,9 +377,9 @@ query{
 
 # mosts
 most_favourite_query = """
-query{
+query($type:MediaType){
   Page(perPage:15){    
-    media(sort:FAVOURITES_DESC,type:ANIME,genre_not_in:["hentai"]){
+    media(sort:FAVOURITES_DESC,type:$type,genre_not_in:["hentai"]){
       id
         idMal
       title{
@@ -435,9 +436,9 @@ query{
 """
 
 most_scored_query = """
-query{
+query($type:MediaType){
   Page(perPage:15){
-    media(sort:SCORE_DESC,type:ANIME,genre_not_in:["hentai"]){
+    media(sort:SCORE_DESC,type:$type,genre_not_in:["hentai"]){
       id
         idMal
       title{
@@ -494,9 +495,9 @@ query{
 """
 
 most_popular_query = """
-query{  
+query($type:MediaType){  
   Page(perPage:15){
-    media(sort:POPULARITY_DESC,type:ANIME,genre_not_in:["hentai"]){
+    media(sort:POPULARITY_DESC,type:$type,genre_not_in:["hentai"]){
       id
         idMal
       title{
@@ -553,9 +554,9 @@ query{
 """
 
 most_recently_updated_query = """
-query{
+query($type:MediaType){
   Page(perPage:15){
-    media(sort:UPDATED_AT_DESC,type:ANIME,averageScore_greater:50,genre_not_in:["hentai"],status:RELEASING){
+    media(sort:UPDATED_AT_DESC,type:$type,averageScore_greater:50,genre_not_in:["hentai"],status:RELEASING){
       id
         idMal
       title{
@@ -611,9 +612,9 @@ query{
 """
 
 recommended_query = """
-query  {
+query($type:MediaType){
   Page(perPage:15) {
-    media( type: ANIME,genre_not_in:["hentai"]) {
+    media( type: $type,genre_not_in:["hentai"]) {
       recommendations(sort:RATING_DESC){
         nodes{
           media{
@@ -671,9 +672,9 @@ query  {
 """
 
 anime_characters_query = """
-query($id:Int){
+query($id:Int,$type:MediaType){
   Page {
-    media(id:$id, type: ANIME) {
+    media(id:$id, type: $type) {
       characters {
         nodes {
           name {
@@ -706,9 +707,9 @@ query($id:Int){
 
 
 anime_relations_query = """
-query ($id: Int) {
+query ($id: Int,$type:MediaType) {
   Page(perPage: 20) {
-    media(id: $id, sort: POPULARITY_DESC, type: ANIME,genre_not_in:["hentai"]) {
+    media(id: $id, sort: POPULARITY_DESC, type: $type,genre_not_in:["hentai"]) {
       relations {
         nodes {
           id
@@ -763,9 +764,9 @@ query ($id: Int) {
 """
 
 airing_schedule_query = """
-query ($id: Int) {
+query ($id: Int,$type:MediaType) {
   Page {
-    media(id: $id, sort: POPULARITY_DESC, type: ANIME) {
+    media(id: $id, sort: POPULARITY_DESC, type: $type) {
       airingSchedule(notYetAired:true){
         nodes{
           airingAt
@@ -780,7 +781,7 @@ query ($id: Int) {
 """
 
 upcoming_anime_query = """
-query ($page: Int) {
+query ($page: Int,$type:MediaType) {
   Page(page: $page) {
     pageInfo {
       total
@@ -788,7 +789,7 @@ query ($page: Int) {
       currentPage
       hasNextPage
     }
-    media(type: ANIME, status: NOT_YET_RELEASED,sort:POPULARITY_DESC,genre_not_in:["hentai"]) {
+    media(type: $type, status: NOT_YET_RELEASED,sort:POPULARITY_DESC,genre_not_in:["hentai"]) {
       id
         idMal
       title {

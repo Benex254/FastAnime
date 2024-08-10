@@ -24,7 +24,7 @@ from ..utils.utils import fuzzy_inquirer
 from .utils import aniskip
 
 if TYPE_CHECKING:
-    from ...libs.anilist.anilist_data_schema import AnilistBaseMediaDataSchema
+    from ...libs.anilist.types import AnilistBaseMediaDataSchema
     from ...libs.anime_provider.types import Anime, SearchResult, Server
     from ..config import Config
 

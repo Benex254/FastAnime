@@ -1,4 +1,4 @@
-from ...anilist.anilist_data_schema import AnilistBaseMediaDataSchema
+from ...anilist.types import AnilistBaseMediaDataSchema
 from ..base_provider import AnimeProvider
 
 """

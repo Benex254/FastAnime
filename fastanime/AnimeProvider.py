@@ -12,7 +12,7 @@ from .libs.anime_provider import anime_sources
 if TYPE_CHECKING:
     from typing import Iterator
 
-    from .libs.anilist.anilist_data_schema import AnilistBaseMediaDataSchema
+    from .libs.anilist.types import AnilistBaseMediaDataSchema
     from .libs.anime_provider.types import Anime, SearchResults, Server
 
 logger = logging.getLogger(__name__)

@@ -29,7 +29,7 @@ from .queries_graphql import (
 )
 
 if TYPE_CHECKING:
-    from .anilist_data_schema import (
+    from .types import (
         AnilistDataSchema,
         AnilistMediaLists,
         AnilistMediaListStatus,

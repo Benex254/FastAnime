@@ -5,7 +5,7 @@ from functools import lru_cache
 
 from thefuzz import fuzz
 
-from fastanime.libs.anilist.anilist_data_schema import AnilistBaseMediaDataSchema
+from fastanime.libs.anilist.types import AnilistBaseMediaDataSchema
 
 from .data import anime_normalizer
 

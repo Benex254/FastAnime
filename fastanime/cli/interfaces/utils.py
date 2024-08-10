@@ -9,7 +9,7 @@ from threading import Thread
 import requests
 
 from ...constants import APP_CACHE_DIR
-from ...libs.anilist.anilist_data_schema import AnilistBaseMediaDataSchema
+from ...libs.anilist.types import AnilistBaseMediaDataSchema
 from ...Utility import anilist_data_helper
 from ...Utility.utils import remove_html_tags
 from ..utils.utils import get_true_fg

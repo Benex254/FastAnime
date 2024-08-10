@@ -6,14 +6,7 @@ import click
 @click.option("--zsh", is_flag=True)
 @click.option("--bash", is_flag=True)
 def completions(fish, zsh, bash):
-    try:
-        import shellingham
-
-        try:
-            current_shell, _ = shellingham.detect_shell()
-        except shellingham.ShellDetectionFailure:
-            current_shell = None
-    except ImportError:
+    if not fish or not zsh or not bash:
         import os
 
         shell_env = os.environ.get("SHELL", "")
@@ -25,6 +18,8 @@ def completions(fish, zsh, bash):
             current_shell = "bash"
         else:
             current_shell = None
+    else:
+        current_shell = None
     if fish or current_shell == "fish" and not zsh and not bash:
         print(
             """

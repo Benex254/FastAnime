@@ -352,14 +352,17 @@ def fetch_streams(config: "Config", anilist_config: QueryDict):
     )
     # -- update anilist info if user --
     if config.user and episode_number:
-        AniList.update_anime_list(
-            {
-                "mediaId": anime_id,
-                # "status": "CURRENT",
-                "progress": episode_number,
-            }
-        )
-
+        # Get current progress on AniList
+        anilist_progress = (anilist_config.selected_anime_anilist["mediaListEntry"] or {"progress": 0}).get("progress", 0)
+        if int(episode_number) > int(anilist_progress): # don't update if the user already watched a later episode
+            AniList.update_anime_list(
+                {
+                    "mediaId": anime_id,
+                    # "status": "CURRENT",
+                    "progress": episode_number,
+                }
+            )
+    
     start_time = config.watch_history.get(str(anime_id), {}).get("start_time", "0")
     if start_time != "0":
         print("[green]Continuing from:[/] ", start_time)
@@ -573,14 +576,24 @@ def provide_anime(config: "Config", anilist_config: QueryDict):
             return
     anilist_config.anime_title = anime_normalizer.get(anime_title) or anime_title
     anilist_config._anime = search_results[anime_title]
-    fetch_anime_episode(config, anilist_config)
 
+    return config, anilist_config
 
 def anilist_options(config, anilist_config: QueryDict):
     selected_anime: "AnilistBaseMediaDataSchema" = anilist_config.selected_anime_anilist
     selected_anime_title: str = anilist_config.selected_anime_title
     progress = (selected_anime["mediaListEntry"] or {"progress": 0}).get("progress", 0)
     episodes_total = selected_anime["episodes"] or "Inf"
+
+    def _continue_watching(config: Config, anilist_config: QueryDict):
+        config.continue_from_history = True
+        config, anilist_config = provide_anime(config, anilist_config)
+        fetch_anime_episode(config, anilist_config)
+
+    def _show_all_episodes(config: Config, anilist_config: QueryDict):
+        config, anilist_config = provide_anime(config, anilist_config)
+        config.continue_from_history = False
+        fetch_anime_episode(config, anilist_config)
 
     def _watch_trailer(config: "Config", anilist_config: QueryDict):
         if trailer := selected_anime.get("trailer"):
@@ -758,7 +771,8 @@ def anilist_options(config, anilist_config: QueryDict):
 
     icons = config.icons
     options = {
-        f"{'📽️ ' if icons else ''}Stream ({progress}/{episodes_total})": provide_anime,
+        f"{'📽️ ' if icons else ''}Stream ({progress}/{episodes_total})": _continue_watching,
+        f"{'📺 ' if icons else ''}Episodes": _show_all_episodes,
         f"{'📼 ' if icons else ''}Watch Trailer": _watch_trailer,
         f"{'✨ ' if icons else ''}Score Anime": _score_anime,
         f"{'📥 ' if icons else ''}Add to List": _add_to_list,

@@ -138,7 +138,7 @@ class FZF:
         self,
         fzf_input: list[str],
         prompt: str,
-        header: str,
+        header: str = HEADER,
         preview: str | None = None,
         expect: str | None = None,
         validator: Callable | None = None,

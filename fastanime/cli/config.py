@@ -249,9 +249,79 @@ class Config(object):
         with open(USER_CONFIG_PATH, "w") as config:
             self.configparser.write(config)
 
-    # TODO: update this
     def __repr__(self):
-        return f"Config(server:{self.get_server()},quality:{self.get_quality()},auto_next:{self.get_auto_next()},continue_from_history:{self.get_continue_from_history()},sort_by:{self.get_sort_by()},downloads_dir:{self.get_downloads_dir()})"
+        current_config_state = f"""
+[stream]
+# Auto continue from watch history
+continue_from_history = {self.continue_from_history}  
+
+# Preferred language for anime (options: dub, sub)
+translation_type = {self.translation_type}
+
+# Default server (options: dropbox, sharepoint, wetransfer.gogoanime, top, wixmp)
+server = {self.server}
+
+# Auto-select next episode
+auto_next = {self.auto_next}
+
+# Auto select the anime provider results with fuzzy find.
+# Note this wont always be correct.But 99% of the time will be.
+auto_select = {self.auto_select}
+
+# whether to skip the opening and ending theme songs
+# NOTE: requires ani-skip to be in path
+skip = {self.skip}
+
+# the maximum delta time in minutes after which the episode should be considered as completed
+# used in the continue from time stamp
+error = {self.error}
+
+# whether to use python-mpv
+# to enable superior control over the player 
+# adding more options to it
+use_mpv_mod = {self.use_mpv_mod}
+
+# the format of downloaded anime and trailer
+# based on yt-dlp format and passed directly to it
+# learn more by looking it up on their site
+# only works for downloaded anime if server=gogoanime
+# since its the only one that offers different formats
+# the others tend not to
+format = {self.format}
+
+[general]
+
+# can be [allanime,animepahe]
+provider = {self.provider}
+
+# Display language (options: english, romaji)
+preferred_language = {self.preferred_language}
+
+# Download directory
+downloads_dir = {self.downloads_dir}
+
+# whether to show a preview window when using fzf or rofi
+preview = {self.preview} 
+
+# whether to use fzf as the interface for the anilist command and others.
+use_fzf = {self.use_fzf} 
+
+# whether to use rofi for the ui
+use_rofi = {self.use_rofi}
+
+# rofi theme to use
+rofi_theme = {self.rofi_theme}
+rofi_theme_input = {self.rofi_theme_input}
+rofi_theme_confirm = {self.rofi_theme_confirm}
+
+# whether to show the icons
+icons = {self.icons}
+
+# the duration in minutes a notification will stay in the screen
+# used by notifier command
+notification_duration = {self.notification_duration}
+        """
+        return current_config_state
 
     def __str__(self):
         return self.__repr__()

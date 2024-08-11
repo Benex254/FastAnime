@@ -1,4 +1,9 @@
+from typing import TYPE_CHECKING
+
 import click
+
+if TYPE_CHECKING:
+    from ..config import Config
 
 
 @click.command(
@@ -7,15 +12,16 @@ import click
 )
 @click.option("--path", "-p", help="Print the config location and exit", is_flag=True)
 @click.option(
+    "--view", "-v", help="View the current contents of your config", is_flag=True
+)
+@click.option(
     "--desktop-entry",
     "-d",
     help="Configure the desktop entry of fastanime",
     is_flag=True,
 )
-# @click.pass_obj
-def config(path, desktop_entry):
-    pass
-
+@click.pass_obj
+def config(config: "Config", path, view, desktop_entry):
     from pyshortcuts import make_shortcut
     from rich import print
 
@@ -23,6 +29,8 @@ def config(path, desktop_entry):
 
     if path:
         print(USER_CONFIG_PATH)
+    elif view:
+        print(config)
     elif desktop_entry:
         import shutil
 

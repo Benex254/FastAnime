@@ -121,7 +121,7 @@ class AnimePaheApi(AnimeProvider):
             for episode in self.anime["data"]
             if float(episode["episode"]) == float(episode_number)
         ]
-        
+
         if not episode:
             logger.error(f"AnimePahe(streams): episode {episode_number} doesn't exist")
             return []

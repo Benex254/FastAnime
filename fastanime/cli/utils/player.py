@@ -290,7 +290,9 @@ class MpvPlayer(object):
                 return
             q = ["360", "720", "1080"]
             quality = quality_raw.decode()
-            links: list = fastanime_runtime_state.current_stream_links
+            links: list = (
+                fastanime_runtime_state.provider_server_episode_streams_objects
+            )
             q = [link["quality"] for link in links]
             if quality in q:
                 config.quality = quality

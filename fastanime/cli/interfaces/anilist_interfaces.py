@@ -50,18 +50,18 @@ def player_controls(config: "Config", fastanime_runtime_state: FastAnimeRuntimeS
     # internal config
     current_episode: str = fastanime_runtime_state.provider_current_episode_number
     episodes: list = sorted(fastanime_runtime_state.provider_total_episodes, key=float)
-    links: list = fastanime_runtime_state.current_stream_links
-    current_link: str = fastanime_runtime_state.current_stream_link
+    links: list = fastanime_runtime_state.provider_server_episode_streams_objects
+    current_link: str = fastanime_runtime_state.provider_current_stream_link
     anime_title: str = fastanime_runtime_state.provider_anime_title
     anime_id: int = fastanime_runtime_state.selected_anime_id_anilist
 
     def _servers():
         config.server = ""
 
-        fetch_streams(config, fastanime_runtime_state)
+        provider_anime_episode_servers_menu(config, fastanime_runtime_state)
 
     def _replay():
-        selected_server: "Server" = fastanime_runtime_state.current_server
+        selected_server: "Server" = fastanime_runtime_state.provider_current_server
         print(
             "[bold magenta]Now Replaying:[/]",
             anime_title,
@@ -168,7 +168,7 @@ def player_controls(config: "Config", fastanime_runtime_state: FastAnimeRuntimeS
         config.update_watch_history(anime_id, episodes[next_episode])
 
         # call interface
-        fetch_streams(config, fastanime_runtime_state)
+        provider_anime_episode_servers_menu(config, fastanime_runtime_state)
 
     def _episodes():
         # reset watch_history
@@ -188,7 +188,7 @@ def player_controls(config: "Config", fastanime_runtime_state: FastAnimeRuntimeS
         config.update_watch_history(anime_id, episodes[prev_episode])
 
         # call interface
-        fetch_streams(config, fastanime_runtime_state)
+        provider_anime_episode_servers_menu(config, fastanime_runtime_state)
 
     def _change_quality():
         # extract the actual link urls
@@ -266,138 +266,165 @@ def player_controls(config: "Config", fastanime_runtime_state: FastAnimeRuntimeS
     options[action]()
 
 
-def fetch_streams(config: "Config", fastanime_runtime_state: FastAnimeRuntimeState):
+def provider_anime_episode_servers_menu(
+    config: "Config", fastanime_runtime_state: FastAnimeRuntimeState
+):
+    """Menu that enables selection of a server either manually or automatically based on user config then plays the stream link of the quality the user prefers
+
+    Args:
+        config: [TODO:description]
+        fastanime_runtime_state: [TODO:description]
+
+    Returns:
+        [TODO:return]
+    """
     # user config
     quality: str = config.quality
-
-    # internal config
-    episode_number: str = fastanime_runtime_state.provider_current_episode_number
-    anime_title: str = fastanime_runtime_state.provider_anime_title
-    anime_id: int = fastanime_runtime_state.selected_anime_id_anilist
-    anime: "Anime" = fastanime_runtime_state.provider_anime
     translation_type = config.translation_type
     anime_provider = config.anime_provider
 
-    server = None
+    # runtime configuration
+    current_episode_number: str = (
+        fastanime_runtime_state.provider_current_episode_number
+    )
+    provider_anime_title: str = fastanime_runtime_state.provider_anime_title
+    anime_id_anilist: int = fastanime_runtime_state.selected_anime_id_anilist
+    provider_anime: "Anime" = fastanime_runtime_state.provider_anime
+
+    server_name = None
     # get streams for episode from provider
     with Progress() as progress:
         progress.add_task("Fetching Episode Streams...", total=None)
-        episode_streams = anime_provider.get_episode_streams(
-            anime,
-            episode_number,
+        episode_streams_generator = anime_provider.get_episode_streams(
+            provider_anime,
+            current_episode_number,
             translation_type,
             fastanime_runtime_state.selected_anime_anilist,
         )
-    if not episode_streams:
+    if not episode_streams_generator:
         if not config.use_rofi:
             print("Failed to fetch :cry:")
             input("Enter to retry...")
         else:
             if not Rofi.confirm("Sth went wrong!!Enter to continue..."):
                 exit(1)
-        return fetch_streams(config, fastanime_runtime_state)
+        provider_anime_episode_servers_menu(config, fastanime_runtime_state)
+        return
 
     if config.server == "top":
         # no need to get all servers if top just works
         with Progress() as progress:
             progress.add_task("Fetching top server...", total=None)
-            selected_server = next(episode_streams)
-            server = "top"
+            selected_server = next(episode_streams_generator)
+            server_name = "top"
     else:
         with Progress() as progress:
             progress.add_task("Fetching servers...", total=None)
             episode_streams_dict = {
                 episode_stream["server"]: episode_stream
-                for episode_stream in episode_streams
+                for episode_stream in episode_streams_generator
             }
 
-        # prompt for preferred server
+        # check if user server exists and is actually a valid serrver then sets it
         if config.server and config.server in episode_streams_dict.keys():
-            server = config.server
-        if not server:
+            server_name = config.server
+
+        # prompt for preferred server if not automatically set using config
+        if not server_name:
             choices = [*episode_streams_dict.keys(), "top", "Back"]
             if config.use_fzf:
-                server = fzf.run(
+                server_name = fzf.run(
                     choices,
                     prompt="Select Server: ",
                     header="Servers",
                 )
             elif config.use_rofi:
-                server = Rofi.run(choices, "Select Server")
+                server_name = Rofi.run(choices, "Select Server")
             else:
-                server = fuzzy_inquirer(
+                server_name = fuzzy_inquirer(
                     choices,
                     "Select Server",
                 )
-        if server == "Back":
-            # reset watch_history
-            config.update_watch_history(anime_id, None)
+        if server_name == "Back":
+            # set continue_from_history to false in order for episodes menu to be shown or continue from history if true will prevent this from happening
+            config.continue_from_history = False
 
             provider_anime_episodes_menu(config, fastanime_runtime_state)
             return
-        elif server == "top":
+        elif server_name == "top":
             selected_server = episode_streams_dict[list(episode_streams_dict.keys())[0]]
         else:
-            selected_server = episode_streams_dict[server]
+            selected_server = episode_streams_dict[server_name]
 
-    links = selected_server["links"]
-
-    stream_link_ = filter_by_quality(quality, links)
-    if not stream_link_:
+    # get the stream of the preferred quality
+    provider_server_episode_streams = selected_server["links"]
+    provider_server_episode_stream = filter_by_quality(
+        quality, provider_server_episode_streams
+    )
+    if not provider_server_episode_stream:
         print("Quality not found")
         input("Enter to continue...")
         anilist_media_actions_menu(config, fastanime_runtime_state)
         return
-    stream_link = stream_link_["link"]
+
+    current_stream_link = provider_server_episode_stream["link"]
+
     # update internal config
-    fastanime_runtime_state.current_stream_links = links
-    fastanime_runtime_state.current_stream_link = stream_link
-    fastanime_runtime_state.current_server = selected_server
-    fastanime_runtime_state.current_server_name = server
+    fastanime_runtime_state.provider_server_episode_streams = (
+        provider_server_episode_streams
+    )
+    fastanime_runtime_state.provider_current_stream_link = current_stream_link
+    fastanime_runtime_state.provider_current_server = selected_server
+    fastanime_runtime_state.provider_current_server_name = server_name
 
     # play video
     print(
         "[bold magenta]Now playing:[/]",
-        anime_title,
+        provider_anime_title,
         "[bold magenta] Episode: [/]",
-        episode_number,
+        current_episode_number,
     )
-    # -- update anilist info if user --
-    if config.user and episode_number:
+    # -- update anilist progress if user --
+    if config.user and current_episode_number:
         AniList.update_anime_list(
             {
-                "mediaId": anime_id,
-                # "status": "CURRENT",
-                "progress": episode_number,
+                "mediaId": anime_id_anilist,
+                "progress": current_episode_number,
             }
         )
 
-    start_time = config.watch_history.get(str(anime_id), {}).get("start_time", "0")
+    # try to get the timestamp you left off from if available
+    start_time = config.watch_history.get(str(anime_id_anilist), {}).get(
+        "start_time", "0"
+    )
     if start_time != "0":
         print("[green]Continuing from:[/] ", start_time)
     custom_args = []
     if config.skip:
         if args := aniskip(
-            fastanime_runtime_state.selected_anime_anilist["idMal"], episode_number
+            fastanime_runtime_state.selected_anime_anilist["idMal"],
+            current_episode_number,
         ):
             custom_args.extend(args)
     if config.use_mpv_mod:
         from ..utils.player import player
 
         mpv = player.create_player(
-            stream_link,
+            current_stream_link,
             anime_provider,
             fastanime_runtime_state,
             config,
             selected_server["episode_title"],
         )
 
+        # TODO: implement custom aniskip intergration
         if custom_args and None:
             chapters_file = custom_args[0].split("=", 1)
             script_opts = custom_args[1].split("=", 1)
             mpv._set_property("chapters-file", chapters_file[1])
             mpv._set_property("script-opts", script_opts[1])
-        mpv.start = start_time
+        if not start_time == "0":
+            mpv.start = start_time
         mpv.wait_for_shutdown()
         mpv.terminate()
         stop_time = player.last_stop_time
@@ -405,7 +432,7 @@ def fetch_streams(config: "Config", fastanime_runtime_state: FastAnimeRuntimeSta
 
     else:
         stop_time, total_time = run_mpv(
-            stream_link,
+            current_stream_link,
             selected_server["episode_title"],
             start_time=start_time,
             custom_args=custom_args,
@@ -413,20 +440,24 @@ def fetch_streams(config: "Config", fastanime_runtime_state: FastAnimeRuntimeSta
     print("Finished at: ", stop_time)
 
     # update_watch_history
+    # this will try to update the episode to be the next episode if delta has reached a specific threshhold
+    # this update will only apply locally
+    # the remote(anilist) is only updated when its certain you are going to open the player
     if stop_time == "0" or total_time == "0":
-        episode = str(int(episode_number) + 1)
+        # increment the episode
+        episode = str(int(current_episode_number) + 1)
     else:
         error = config.error * 60
         delta = calculate_time_delta(stop_time, total_time)
         if delta.total_seconds() > error:
-            episode = episode_number
+            episode = current_episode_number
         else:
-            episode = str(int(episode_number) + 1)
+            episode = str(int(current_episode_number) + 1)
             stop_time = "0"
             total_time = "0"
 
     config.update_watch_history(
-        anime_id, episode, start_time=stop_time, total_time=total_time
+        anime_id_anilist, episode, start_time=stop_time, total_time=total_time
     )
 
     # switch to controls
@@ -436,8 +467,14 @@ def fetch_streams(config: "Config", fastanime_runtime_state: FastAnimeRuntimeSta
 
 
 def provider_anime_episodes_menu(
-    config: "Config", fastanime_runtime_state: FastAnimeRuntimeState
+    config: "Config", fastanime_runtime_state: "FastAnimeRuntimeState"
 ):
+    """A menu that handles selection of episode either manually or automatically based on either local episode progress or remote(anilist) progress
+
+    Args:
+        config: [TODO:description]
+        fastanime_runtime_state: [TODO:description]
+    """
     # user config
     translation_type: str = config.translation_type.lower()
     continue_from_history: bool = config.continue_from_history
@@ -520,7 +557,7 @@ def provider_anime_episodes_menu(
     fastanime_runtime_state.provider_current_episode_number = current_episode_number
 
     # next interface
-    fetch_streams(config, fastanime_runtime_state)
+    provider_anime_episode_servers_menu(config, fastanime_runtime_state)
 
 
 # WARNING: Marked for deletion, the function is quite useless and function calls in python are expensive

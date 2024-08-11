@@ -48,8 +48,8 @@ def player_controls(config: "Config", fastanime_runtime_state: FastAnimeRuntimeS
     config.translation_type.lower()
 
     # internal config
-    current_episode: str = fastanime_runtime_state.episode_number
-    episodes: list = sorted(fastanime_runtime_state.episodes, key=float)
+    current_episode: str = fastanime_runtime_state.provider_current_episode_number
+    episodes: list = sorted(fastanime_runtime_state.provider_total_episodes, key=float)
     links: list = fastanime_runtime_state.current_stream_links
     current_link: str = fastanime_runtime_state.current_stream_link
     anime_title: str = fastanime_runtime_state.provider_anime_title
@@ -162,7 +162,7 @@ def player_controls(config: "Config", fastanime_runtime_state: FastAnimeRuntimeS
             next_episode = len(episodes) - 1
 
         # updateinternal config
-        fastanime_runtime_state.episode_number = episodes[next_episode]
+        fastanime_runtime_state.provider_current_episode_number = episodes[next_episode]
 
         # update user config
         config.update_watch_history(anime_id, episodes[next_episode])
@@ -175,14 +175,14 @@ def player_controls(config: "Config", fastanime_runtime_state: FastAnimeRuntimeS
         config.continue_from_history = False
 
         # call interface
-        fetch_episode(config, fastanime_runtime_state)
+        provider_anime_episodes_menu(config, fastanime_runtime_state)
 
     def _previous_episode():
         prev_episode = episodes.index(current_episode) - 1
         if prev_episode <= 0:
             prev_episode = 0
         # fastanime_runtime_state.episode_title = episode["title"]
-        fastanime_runtime_state.episode_number = episodes[prev_episode]
+        fastanime_runtime_state.provider_current_episode_number = episodes[prev_episode]
 
         # update user config
         config.update_watch_history(anime_id, episodes[prev_episode])
@@ -271,10 +271,10 @@ def fetch_streams(config: "Config", fastanime_runtime_state: FastAnimeRuntimeSta
     quality: str = config.quality
 
     # internal config
-    episode_number: str = fastanime_runtime_state.episode_number
+    episode_number: str = fastanime_runtime_state.provider_current_episode_number
     anime_title: str = fastanime_runtime_state.provider_anime_title
     anime_id: int = fastanime_runtime_state.selected_anime_id_anilist
-    anime: "Anime" = fastanime_runtime_state.anime
+    anime: "Anime" = fastanime_runtime_state.provider_anime
     translation_type = config.translation_type
     anime_provider = config.anime_provider
 
@@ -333,7 +333,7 @@ def fetch_streams(config: "Config", fastanime_runtime_state: FastAnimeRuntimeSta
             # reset watch_history
             config.update_watch_history(anime_id, None)
 
-            fetch_episode(config, fastanime_runtime_state)
+            provider_anime_episodes_menu(config, fastanime_runtime_state)
             return
         elif server == "top":
             selected_server = episode_streams_dict[list(episode_streams_dict.keys())[0]]
@@ -435,81 +435,106 @@ def fetch_streams(config: "Config", fastanime_runtime_state: FastAnimeRuntimeSta
     player_controls(config, fastanime_runtime_state)
 
 
-def fetch_episode(config: "Config", fastanime_runtime_state: FastAnimeRuntimeState):
+def provider_anime_episodes_menu(
+    config: "Config", fastanime_runtime_state: FastAnimeRuntimeState
+):
     # user config
     translation_type: str = config.translation_type.lower()
     continue_from_history: bool = config.continue_from_history
     user_watch_history: dict = config.watch_history
-    anime_id: int = fastanime_runtime_state.selected_anime_id_anilist
-    anime_title: str = fastanime_runtime_state.provider_anime_title
 
-    # internal config
-    anime: "Anime" = fastanime_runtime_state.anime
-    _anime: "SearchResult" = fastanime_runtime_state.provider_anime_search_result
+    # runtime configuration
+    anime_id_anilist: int = fastanime_runtime_state.selected_anime_id_anilist
+    anime_title: str = fastanime_runtime_state.provider_anime_title
+    provider_anime: "Anime" = fastanime_runtime_state.provider_anime
     selected_anime_anilist: "AnilistBaseMediaDataSchema" = (
         fastanime_runtime_state.selected_anime_anilist
     )
+
     # prompt for episode number
-    episodes = anime["availableEpisodesDetail"][translation_type]
-    episode_number = ""
+    total_episodes = provider_anime["availableEpisodesDetail"][translation_type]
+    current_episode_number = ""
+
+    # auto select episode if continue from history otherwise prompt episode number
     if continue_from_history:
-        if user_watch_history.get(str(anime_id), {}).get("episode") in episodes:
-            episode_number = user_watch_history[str(anime_id)]["episode"]
-            print(f"[bold cyan]Continuing from Episode:[/] [bold]{episode_number}[/]")
+        # the user watch history thats locally available
+        # will be preferred over remote
+        if (
+            user_watch_history.get(str(anime_id_anilist), {}).get("episode")
+            in total_episodes
+        ):
+            current_episode_number = user_watch_history[str(anime_id_anilist)][
+                "episode"
+            ]
+            print(
+                f"[bold cyan]Continuing from Episode:[/] [bold]{current_episode_number}[/]"
+            )
+
+        # try to get the episode from anilist if present
         elif selected_anime_anilist["mediaListEntry"]:
-            episode_number = str(
-                (selected_anime_anilist["mediaListEntry"] or {"progress": ""}).get(
+            current_episode_number = str(
+                (selected_anime_anilist["mediaListEntry"] or {"progress": 0}).get(
                     "progress"
                 )
             )
-            if episode_number not in episodes:
-                episode_number = ""
-            print(f"[bold cyan]Continuing from Episode:[/] [bold]{episode_number}[/]")
+            if current_episode_number not in total_episodes:
+                current_episode_number = ""
+            print(
+                f"[bold cyan]Continuing from Episode:[/] [bold]{current_episode_number}[/]"
+            )
+        # reset to none if not found
         else:
-            episode_number = ""
+            current_episode_number = ""
 
-    if not episode_number:
-        choices = [*episodes, "Back"]
+    # prompt for episode number if not set
+    if not current_episode_number:
+        choices = [*total_episodes, "Back"]
         if config.use_fzf:
-            episode_number = fzf.run(
+            current_episode_number = fzf.run(
                 choices,
                 prompt="Select Episode:",
                 header=anime_title,
             )
         elif config.use_rofi:
-            episode_number = Rofi.run(choices, "Select Episode")
+            current_episode_number = Rofi.run(choices, "Select Episode")
         else:
-            episode_number = fuzzy_inquirer(
+            current_episode_number = fuzzy_inquirer(
                 choices,
                 "Select Episode",
             )
 
-    if episode_number == "Back":
+    if current_episode_number == "Back":
         anilist_media_actions_menu(config, fastanime_runtime_state)
         return
-    start_time = user_watch_history.get(str(anime_id), {}).get("start_time", "0")
-    config.update_watch_history(anime_id, episode_number, start_time=start_time)
 
-    # update internal config
-    fastanime_runtime_state.episodes = episodes
-    # fastanime_runtime_state.episode_title = episode["title"]
-    fastanime_runtime_state.episode_number = episode_number
+    # try to get the start time and if not found default to "0"
+    start_time = user_watch_history.get(str(anime_id_anilist), {}).get(
+        "start_time", "0"
+    )
+    config.update_watch_history(
+        anime_id_anilist, current_episode_number, start_time=start_time
+    )
+
+    # update runtime data
+    fastanime_runtime_state.provider_total_episodes = total_episodes
+    fastanime_runtime_state.provider_current_episode_number = current_episode_number
 
     # next interface
     fetch_streams(config, fastanime_runtime_state)
 
 
-def fetch_anime_episode(config, fastanime_runtime_state: FastAnimeRuntimeState):
+# WARNING: Marked for deletion, the function is quite useless and function calls in python are expensive
+def fetch_anime_episode(config, fastanime_runtime_state: "FastAnimeRuntimeState"):
     selected_anime: "SearchResult" = (
         fastanime_runtime_state.provider_anime_search_result
     )
     anime_provider = config.anime_provider
     with Progress() as progress:
         progress.add_task("Fetching Anime Info...", total=None)
-        fastanime_runtime_state.anime = anime_provider.get_anime(
+        provider_anime = anime_provider.get_anime(
             selected_anime["id"], fastanime_runtime_state.selected_anime_anilist
         )
-    if not fastanime_runtime_state.anime:
+    if not provider_anime:
         print(
             "Sth went wrong :cry: this could mean the provider is down or your internet"
         )
@@ -521,7 +546,8 @@ def fetch_anime_episode(config, fastanime_runtime_state: FastAnimeRuntimeState):
         fetch_anime_episode(config, fastanime_runtime_state)
         return
 
-    fetch_episode(config, fastanime_runtime_state)
+    fastanime_runtime_state.provider_anime = provider_anime
+    provider_anime_episodes_menu(config, fastanime_runtime_state)
 
 
 #

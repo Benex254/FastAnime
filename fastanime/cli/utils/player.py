@@ -38,11 +38,15 @@ class MpvPlayer(object):
     ):
         fastanime_runtime_state = self.fastanime_runtime_state
         config = self.config
-        episode_number: str = fastanime_runtime_state.episode_number
+        current_episode_number: str = (
+            fastanime_runtime_state.provider_current_episode_number
+        )
         quality = config.quality
-        episodes: list = sorted(fastanime_runtime_state.episodes, key=float)
-        anime_id: int = fastanime_runtime_state.selected_anime_id_anilist
-        anime = fastanime_runtime_state.anime
+        total_episodes: list = sorted(
+            fastanime_runtime_state.provider_total_episodes, key=float
+        )
+        anime_id_anilist: int = fastanime_runtime_state.selected_anime_id_anilist
+        provider_anime = fastanime_runtime_state.provider_anime
         translation_type = config.translation_type
         anime_provider = config.anime_provider
         self.last_stop_time: str = "0"
@@ -53,49 +57,57 @@ class MpvPlayer(object):
         # next or prev
         if type == "next":
             self.mpv_player.show_text("Fetching next episode...")
-            next_episode = episodes.index(episode_number) + 1
-            if next_episode >= len(episodes):
-                next_episode = len(episodes) - 1
-            fastanime_runtime_state.episode_number = episodes[next_episode]
-            episode_number = fastanime_runtime_state.episode_number
-            config.update_watch_history(anime_id, str(episode_number))
+            next_episode = total_episodes.index(current_episode_number) + 1
+            if next_episode >= len(total_episodes):
+                next_episode = len(total_episodes) - 1
+            fastanime_runtime_state.provider_current_episode_number = total_episodes[
+                next_episode
+            ]
+            current_episode_number = (
+                fastanime_runtime_state.provider_current_episode_number
+            )
+            config.update_watch_history(anime_id_anilist, str(current_episode_number))
         elif type == "reload":
-            if episode_number not in episodes:
+            if current_episode_number not in total_episodes:
                 self.mpv_player.show_text("Episode not available")
                 return
             self.mpv_player.show_text("Replaying Episode...")
         elif type == "custom":
-            if not ep_no or ep_no not in episodes:
+            if not ep_no or ep_no not in total_episodes:
                 self.mpv_player.show_text("Episode number not specified or invalid")
                 self.mpv_player.show_text(
-                    f"Acceptable episodes are:  {episodes}",
+                    f"Acceptable episodes are:  {total_episodes}",
                 )
                 return
 
             self.mpv_player.show_text(f"Fetching episode {ep_no}")
-            episode_number = ep_no
-            config.update_watch_history(anime_id, str(ep_no))
-            fastanime_runtime_state.episode_number = str(ep_no)
+            current_episode_number = ep_no
+            config.update_watch_history(anime_id_anilist, str(ep_no))
+            fastanime_runtime_state.provider_current_episode_number = str(ep_no)
         else:
             self.mpv_player.show_text("Fetching previous episode...")
-            prev_episode = episodes.index(episode_number) - 1
+            prev_episode = total_episodes.index(current_episode_number) - 1
             if prev_episode <= 0:
                 prev_episode = 0
-            fastanime_runtime_state.episode_number = episodes[prev_episode]
-            episode_number = fastanime_runtime_state.episode_number
-            config.update_watch_history(anime_id, str(episode_number))
+            fastanime_runtime_state.provider_current_episode_number = total_episodes[
+                prev_episode
+            ]
+            current_episode_number = (
+                fastanime_runtime_state.provider_current_episode_number
+            )
+            config.update_watch_history(anime_id_anilist, str(current_episode_number))
         # update episode progress
-        if config.user and episode_number:
+        if config.user and current_episode_number:
             AniList.update_anime_list(
                 {
-                    "mediaId": anime_id,
-                    "progress": episode_number,
+                    "mediaId": anime_id_anilist,
+                    "progress": current_episode_number,
                 }
             )
         # get them juicy streams
         episode_streams = anime_provider.get_episode_streams(
-            anime,
-            episode_number,
+            provider_anime,
+            current_episode_number,
             translation_type,
             fastanime_runtime_state.selected_anime_anilist,
         )
@@ -225,9 +237,9 @@ class MpvPlayer(object):
             if not anime:
                 mpv_player.show_text("Failed to update translation type")
                 return
-            fastanime_runtime_state.episodes = anime["availableEpisodesDetail"][
-                translation_type
-            ]
+            fastanime_runtime_state.provider_total_episodes = anime[
+                "availableEpisodesDetail"
+            ][translation_type]
             config.translation_type = translation_type
 
             if config.translation_type == "dub":

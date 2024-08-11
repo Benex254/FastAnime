@@ -3,8 +3,7 @@ import signal
 import click
 
 from .. import __version__
-from ..libs.anime_provider import anime_sources
-from ..libs.anime_provider.allanime.constants import SERVERS_AVAILABLE
+from ..libs.anime_provider import SERVERS_AVAILABLE, anime_sources
 from ..Utility.data import anilist_sort_normalizer
 from .commands import LazyGroup
 
@@ -53,7 +52,7 @@ signal.signal(signal.SIGINT, handle_exit)
 @click.option(
     "-s",
     "--server",
-    type=click.Choice([*SERVERS_AVAILABLE, "top"], case_sensitive=False),
+    type=click.Choice([*SERVERS_AVAILABLE, "top"]),
     help="Server of choice",
 )
 @click.option(
@@ -77,7 +76,7 @@ signal.signal(signal.SIGINT, handle_exit)
 @click.option(
     "-q",
     "--quality",
-    type=click.IntRange(0, 3),
+    type=click.Choice(["360", "720", "1080", "unknown"]),
     help="set the quality of the stream",
 )
 @click.option(

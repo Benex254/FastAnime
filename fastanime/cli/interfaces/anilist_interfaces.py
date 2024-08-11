@@ -917,9 +917,9 @@ def media_actions_menu(
         """
         from rich.console import Console
         from rich.prompt import Confirm
+        from yt_dlp.utils import clean_html
 
         from ...Utility import anilist_data_helper
-        from ...Utility.utils import remove_html_tags
         from ..utils.print_img import print_img
 
         clear()
@@ -970,7 +970,7 @@ def media_actions_menu(
             )
         console.print(
             "[bold underline cyan]Description\n[/]",
-            remove_html_tags(str(selected_anime_anilist["description"])),
+            clean_html(str(selected_anime_anilist["description"])),
         )
         if Confirm.ask("Enter to continue...", default=True):
             media_actions_menu(config, fastanime_runtime_state)

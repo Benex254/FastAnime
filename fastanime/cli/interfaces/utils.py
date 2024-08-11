@@ -7,11 +7,11 @@ import textwrap
 from threading import Thread
 
 import requests
+from yt_dlp.utils import clean_html
 
 from ...constants import APP_CACHE_DIR
 from ...libs.anilist.types import AnilistBaseMediaDataSchema
 from ...Utility import anilist_data_helper
-from ...Utility.utils import remove_html_tags
 from ..utils.utils import get_true_fg
 
 logger = logging.getLogger(__name__)
@@ -201,7 +201,7 @@ def write_search_results(
             template = textwrap.dedent(template)
             template = f"""
             {template}
-            {textwrap.fill(remove_html_tags(
+            {textwrap.fill(clean_html(
                 str(anime['description'])), width=45)}
             """
             future_to_task[executor.submit(save_info_from_str, template, title)] = title

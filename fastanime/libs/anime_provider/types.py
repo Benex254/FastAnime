@@ -67,5 +67,5 @@ class EpisodeStream(TypedDict):
 
 class Server(TypedDict):
     server: str
-    episode_title: str | None
+    episode_title: str
     links: list[EpisodeStream]

@@ -27,9 +27,27 @@ class YtDLPDownloader:
 
     # Function to download the file
     # TODO: untpack the title to its actual values episode_title and anime_title
-    def _download_file(self, url: str, download_dir, title, silent, vid_format="best"):
-        anime_title = sanitize_filename(title[0])
-        episode_title = sanitize_filename(title[1])
+    def _download_file(
+        self,
+        url: str,
+        anime_title: str,
+        episode_title: str,
+        download_dir: str,
+        silent: bool,
+        vid_format: str = "best",
+    ):
+        """Helper function that downloads anime given url and path details
+
+        Args:
+            url: [TODO:description]
+            anime_title: [TODO:description]
+            episode_title: [TODO:description]
+            download_dir: [TODO:description]
+            silent: [TODO:description]
+            vid_format: [TODO:description]
+        """
+        anime_title = sanitize_filename(anime_title)
+        episode_title = sanitize_filename(episode_title)
         ydl_opts = {
             # Specify the output path and template
             "outtmpl": f"{download_dir}/{anime_title}/{episode_title}.%(ext)s",
@@ -41,7 +59,15 @@ class YtDLPDownloader:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             ydl.download([url])
 
+    # WARN: May remove this legacy functionality
     def download_file(self, url: str, title, silent=True):
+        """A helper that just does things in the background
+
+        Args:
+            title ([TODO:parameter]): [TODO:description]
+            silent ([TODO:parameter]): [TODO:description]
+            url: [TODO:description]
+        """
         self.downloads_queue.put((self._download_file, (url, title, silent)))
 
 

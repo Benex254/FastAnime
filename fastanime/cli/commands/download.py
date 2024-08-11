@@ -1,3 +1,4 @@
+import time
 from typing import TYPE_CHECKING
 
 import click
@@ -145,14 +146,16 @@ def download(config: "Config", anime_title, episode_range, highest_priority):
 
             downloader._download_file(
                 link,
+                anime["title"],
+                episode_title,
                 download_dir,
-                (anime["title"], episode_title),
                 True,
                 config.format,
             )
         except Exception as e:
             print(e)
+            time.sleep(1)
             print("Continuing")
             clear()
-    print("Done")
+    print("Done Downloading")
     exit_app()

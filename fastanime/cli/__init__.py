@@ -15,6 +15,7 @@ commands = {
     "downloads": "downloads.downloads",
     "cache": "cache.cache",
     "completions": "completions.completions",
+    "update": "update.update",
 }
 
 
@@ -42,7 +43,6 @@ signal.signal(signal.SIGINT, handle_exit)
 @click.option("--log", help="Allow logging to stdout", is_flag=True)
 @click.option("--log-file", help="Allow logging to a file", is_flag=True)
 @click.option("--rich-traceback", help="Use rich to output tracebacks", is_flag=True)
-@click.option("--update", help="Update fastanime to the latest version", is_flag=True)
 @click.option(
     "-p",
     "--provider",
@@ -135,7 +135,6 @@ def run_cli(
     log,
     log_file,
     rich_traceback,
-    update,
     provider,
     server,
     format,
@@ -192,11 +191,6 @@ def run_cli(
         from rich.traceback import install
 
         install()
-    if update and None:
-        from .app_updater import update_app
-
-        update_app()
-        return
 
     if provider:
         ctx.obj.provider = provider

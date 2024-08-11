@@ -62,7 +62,7 @@ def update_app():
     is_latest, release_json = check_for_updates()
     if is_latest:
         print("[green]App is up to date[/]")
-        return
+        return False, release_json
     tag_name = release_json["tag_name"]
 
     print("[cyan]Updating app to version %s[/]" % tag_name)
@@ -76,7 +76,8 @@ def update_app():
         print(f"Pulling latest changes from the repository via git: {shlex.join(args)}")
 
         if not GIT_EXECUTABLE:
-            return print("[red]Cannot find git please install it.[/]")
+            print("[red]Cannot find git please install it.[/]")
+            return False, release_json
 
         process = subprocess.run(
             args,
@@ -99,6 +100,6 @@ def update_app():
             ]
             process = subprocess.run(args)
     if process.returncode == 0:
-        return True
+        return True, release_json
     else:
-        return False
+        return False, release_json

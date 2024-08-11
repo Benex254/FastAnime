@@ -1,10 +1,12 @@
 from datetime import datetime
+from typing import TYPE_CHECKING
 
-from ..libs.anilist.types import AnilistDateObject, AnilistMediaNextAiringEpisode
+if TYPE_CHECKING:
+    from ..libs.anilist.types import AnilistDateObject, AnilistMediaNextAiringEpisode
 
 
 # TODO: Add formating options for the final date
-def format_anilist_date_object(anilist_date_object: AnilistDateObject):
+def format_anilist_date_object(anilist_date_object: "AnilistDateObject"):
     if anilist_date_object:
         return f"{anilist_date_object['day']}/{anilist_date_object['month']}/{anilist_date_object['year']}"
     else:
@@ -25,7 +27,7 @@ def format_list_data_with_comma(data: list | None):
         return "None"
 
 
-def extract_next_airing_episode(airing_episode: AnilistMediaNextAiringEpisode):
+def extract_next_airing_episode(airing_episode: "AnilistMediaNextAiringEpisode"):
     if airing_episode:
         return f"{airing_episode['episode']} on {format_anilist_timestamp(airing_episode['airingAt'])}"
     else:

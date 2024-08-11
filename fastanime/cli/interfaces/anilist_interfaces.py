@@ -52,7 +52,7 @@ def player_controls(config: "Config", fastanime_runtime_state: FastAnimeRuntimeS
     episodes: list = sorted(fastanime_runtime_state.episodes, key=float)
     links: list = fastanime_runtime_state.current_stream_links
     current_link: str = fastanime_runtime_state.current_stream_link
-    anime_title: str = fastanime_runtime_state.anime_title
+    anime_title: str = fastanime_runtime_state.provider_anime_title
     anime_id: int = fastanime_runtime_state.selected_anime_id_anilist
 
     def _servers():
@@ -272,7 +272,7 @@ def fetch_streams(config: "Config", fastanime_runtime_state: FastAnimeRuntimeSta
 
     # internal config
     episode_number: str = fastanime_runtime_state.episode_number
-    anime_title: str = fastanime_runtime_state.anime_title
+    anime_title: str = fastanime_runtime_state.provider_anime_title
     anime_id: int = fastanime_runtime_state.selected_anime_id_anilist
     anime: "Anime" = fastanime_runtime_state.anime
     translation_type = config.translation_type
@@ -441,11 +441,11 @@ def fetch_episode(config: "Config", fastanime_runtime_state: FastAnimeRuntimeSta
     continue_from_history: bool = config.continue_from_history
     user_watch_history: dict = config.watch_history
     anime_id: int = fastanime_runtime_state.selected_anime_id_anilist
-    anime_title: str = fastanime_runtime_state.anime_title
+    anime_title: str = fastanime_runtime_state.provider_anime_title
 
     # internal config
     anime: "Anime" = fastanime_runtime_state.anime
-    _anime: "SearchResult" = fastanime_runtime_state._anime
+    _anime: "SearchResult" = fastanime_runtime_state.provider_anime_search_result
     selected_anime_anilist: "AnilistBaseMediaDataSchema" = (
         fastanime_runtime_state.selected_anime_anilist
     )
@@ -500,7 +500,9 @@ def fetch_episode(config: "Config", fastanime_runtime_state: FastAnimeRuntimeSta
 
 
 def fetch_anime_episode(config, fastanime_runtime_state: FastAnimeRuntimeState):
-    selected_anime: "SearchResult" = fastanime_runtime_state._anime
+    selected_anime: "SearchResult" = (
+        fastanime_runtime_state.provider_anime_search_result
+    )
     anime_provider = config.anime_provider
     with Progress() as progress:
         progress.add_task("Fetching Anime Info...", total=None)
@@ -522,14 +524,25 @@ def fetch_anime_episode(config, fastanime_runtime_state: FastAnimeRuntimeState):
     fetch_episode(config, fastanime_runtime_state)
 
 
-def provide_anime(config: "Config", fastanime_runtime_state: FastAnimeRuntimeState):
+#
+#   ---- ANIME PROVIDER SEARCH RESULTS MENU ----
+#
+def anime_provider_search_results_menu(
+    config: "Config", fastanime_runtime_state: "FastAnimeRuntimeState"
+):
+    """A menu that handles searching and selecting provider results; either manually or through fuzzy matching
+
+    Args:
+        config: [TODO:description]
+        fastanime_runtime_state: [TODO:description]
+    """
     # user config
     translation_type = config.translation_type.lower()
 
-    # internal config
+    # runtime data
     selected_anime_title = fastanime_runtime_state.selected_anime_title_anilist
 
-    anime_data: "AnilistBaseMediaDataSchema" = (
+    selected_anime_anilist: "AnilistBaseMediaDataSchema" = (
         fastanime_runtime_state.selected_anime_anilist
     )
     anime_provider = config.anime_provider
@@ -537,12 +550,12 @@ def provide_anime(config: "Config", fastanime_runtime_state: FastAnimeRuntimeSta
     # search and get the requested title from provider
     with Progress() as progress:
         progress.add_task("Fetching Search Results...", total=None)
-        search_results = anime_provider.search_for_anime(
+        provider_search_results = anime_provider.search_for_anime(
             selected_anime_title,
             translation_type,
-            fastanime_runtime_state.selected_anime_anilist,
+            selected_anime_anilist,
         )
-    if not search_results:
+    if not provider_search_results:
         print(
             "Sth went wrong :cry: while fetching this could mean you have poor internet connection or the provider is down"
         )
@@ -551,10 +564,12 @@ def provide_anime(config: "Config", fastanime_runtime_state: FastAnimeRuntimeSta
         else:
             if not Rofi.confirm("Sth went wrong!!Enter to continue..."):
                 exit(1)
-        provide_anime(config, fastanime_runtime_state)
+        anime_provider_search_results_menu(config, fastanime_runtime_state)
         return
 
-    search_results = {anime["title"]: anime for anime in search_results["results"]}
+    provider_search_results = {
+        anime["title"]: anime for anime in provider_search_results["results"]
+    }
     _title = None
     if _title := next(
         (
@@ -567,34 +582,40 @@ def provide_anime(config: "Config", fastanime_runtime_state: FastAnimeRuntimeSta
         _title = _title
 
     if config.auto_select:
-        anime_title = max(
-            search_results.keys(),
-            key=lambda title: anime_title_percentage_match(title, anime_data),
+        provider_anime_title = max(
+            provider_search_results.keys(),
+            key=lambda title: anime_title_percentage_match(
+                title, selected_anime_anilist
+            ),
         )
-        print(f"[cyan]Auto selecting[/]: {anime_title}")
+        print(f"[cyan]Auto selecting[/]: {provider_anime_title}")
     else:
-        choices = [*search_results.keys(), "Back"]
+        choices = [*provider_search_results.keys(), "Back"]
         if config.use_fzf:
-            anime_title = fzf.run(
+            provider_anime_title = fzf.run(
                 choices,
                 prompt="Select Search Result:",
                 header="Anime Search Results",
             )
 
         elif config.use_rofi:
-            anime_title = Rofi.run(choices, "Select Search Result")
+            provider_anime_title = Rofi.run(choices, "Select Search Result")
         else:
-            anime_title = fuzzy_inquirer(
+            provider_anime_title = fuzzy_inquirer(
                 choices,
                 "Select Search Result",
             )
-        if anime_title == "Back":
+        if provider_anime_title == "Back":
             anilist_media_actions_menu(config, fastanime_runtime_state)
             return
-    fastanime_runtime_state.anime_title = (
-        anime_normalizer.get(anime_title) or anime_title
+
+    # update runtime data
+    fastanime_runtime_state.provider_anime_title = (
+        anime_normalizer.get(provider_anime_title) or provider_anime_title
     )
-    fastanime_runtime_state._anime = search_results[anime_title]
+    fastanime_runtime_state.provider_anime_search_result = provider_search_results[
+        provider_anime_title
+    ]
     fetch_anime_episode(config, fastanime_runtime_state)
 
 
@@ -916,7 +937,7 @@ def anilist_media_actions_menu(
             config: [TODO:description]
             fastanime_runtime_state: [TODO:description]
         """
-        provide_anime(config, fastanime_runtime_state)
+        anime_provider_search_results_menu(config, fastanime_runtime_state)
 
     def _select_episode_to_stream(
         config: "Config", fastanime_runtime_state: "FastAnimeRuntimeState"
@@ -928,7 +949,7 @@ def anilist_media_actions_menu(
             fastanime_runtime_state: [TODO:description]
         """
         config.continue_from_history = False
-        provide_anime(config, fastanime_runtime_state)
+        anime_provider_search_results_menu(config, fastanime_runtime_state)
 
     icons = config.icons
     options = {

@@ -1,4 +1,5 @@
 import logging
+from typing import TYPE_CHECKING
 
 from InquirerPy import inquirer
 from thefuzz import fuzz
@@ -6,7 +7,8 @@ from thefuzz import fuzz
 from ...Utility.data import anime_normalizer
 
 logger = logging.getLogger(__name__)
-
+if TYPE_CHECKING:
+    from ...libs.anime_provider.types import EpisodeStream
 
 # Define ANSI escape codes as constants
 RESET = "\033[0m"
@@ -18,6 +20,12 @@ UNDERLINE = "\033[4m"
 # ESC[38;2;{r};{g};{b}m
 BG_GREEN = "\033[48;2;120;233;12;m"
 GREEN = "\033[38;2;45;24;45;m"
+
+
+def filter_by_quality(quality: str, stream_links: "list[EpisodeStream]"):
+    for stream_link in stream_links:
+        if stream_link["quality"] == quality:
+            return stream_link
 
 
 def sizeof_fmt(num, suffix="B"):

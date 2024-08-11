@@ -138,10 +138,12 @@ class AllAnimeAPI(AnimeProvider):
         variables = {"showId": allanime_show_id}
         try:
             anime = self._fetch_gql(ALLANIME_SHOW_GQL, variables)
-
-            id: str = anime["_id"]
-            title: str = anime["name"]
-            availableEpisodesDetail = anime["availableEpisodesDetail"]
+            
+            print(anime)
+            input()
+            id: str = anime["show"]["_id"]
+            title: str = anime["show"]["name"]
+            availableEpisodesDetail = anime["show"]["availableEpisodesDetail"]
             type = anime.get("__typename")
             normalized_anime = {
                 "id": id,
@@ -151,7 +153,7 @@ class AllAnimeAPI(AnimeProvider):
             }
             return normalized_anime
         except Exception as e:
-            logger.error(f"FA(AllAnime): {e}")
+            logger.error(f"AllAnime(get_anime): {e}")
             return None
 
     def _get_anime_episode(

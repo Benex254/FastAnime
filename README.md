@@ -44,6 +44,7 @@ Heavily inspired by [animdl](https://github.com/justfoolingaround/animdl), [magi
       - [downloads subcommand](#downloads-subcommand)
       - [config subcommand](#config-subcommand)
       - [cache subcommand](#cache-subcommand)
+      - [update subcommand](#update-subcommand)
       - [completions subcommand](#completions-subcommand)
   - [MPV specific commands](#mpv-specific-commands)
     - [Added keybindings](#added-keybindings)
@@ -348,6 +349,9 @@ fastanime config --path
 
 # add a desktop entry
 fastanime config --desktop-entry
+
+# view current contents of your configuration or can be used to get an example config
+fastanime config --view
 ```
 
 > [!Note]
@@ -372,6 +376,20 @@ fastanime cache --size
 
 # open the cache dir and exit
 fastanime cache
+```
+
+#### update subcommand
+
+Easily update fastanime to latest
+
+**Syntax:**
+
+```bash
+# update fastanime to latest
+fastanime update
+
+# check for latest release
+fastanime update --check
 ```
 
 #### completions subcommand

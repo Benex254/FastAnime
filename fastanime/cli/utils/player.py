@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 import mpv
 
 from ...anilist import AniList
+from .utils import filter_by_quality
 
 if TYPE_CHECKING:
     from typing import Literal
@@ -118,11 +119,12 @@ class MpvPlayer(object):
                 return None
         self.current_media_title = selected_server["episode_title"]
         links = selected_server["links"]
-        if quality > len(links) - 1:
-            quality = config.quality = len(links) - 1
-        elif quality < 0:
-            quality = config.quality = 0
-        stream_link = links[quality]["link"]
+
+        stream_link_ = filter_by_quality(quality, links)
+        if not stream_link_:
+            self.mpv_player.show_text("Quality not found")
+            return
+        stream_link = stream_link_["link"]
         return stream_link
 
     def create_player(
@@ -267,6 +269,27 @@ class MpvPlayer(object):
             else:
                 pass
 
+        @mpv_player.message_handler("select-quality")
+        def select_quality(quality_raw: bytes | None = None, *args):
+            if not quality_raw:
+                mpv_player.show_text("No quality was selected")
+                return
+            q = ["360", "720", "1080"]
+            quality = quality_raw.decode()
+            links: list = anilist_config.current_stream_links
+            q = [link["quality"] for link in links]
+            if quality in q:
+                config.quality = quality
+                stream_link_ = filter_by_quality(quality, links)
+                if not stream_link_:
+                    mpv_player.show_text("Quality not found")
+                    return
+                mpv_player.show_text(f"Changing to stream of quality {quality}")
+                stream_link = stream_link_["link"]
+                mpv_player.loadfile(stream_link)
+            else:
+                mpv_player.show_text(f"invalid quality!! Valid quality includes: {q}")
+
         # -- events --
         mpv_player.observe_property("time-pos", handle_time_start_update)
         mpv_player.observe_property("time-remaining", handle_time_remaining_update)
@@ -275,6 +298,7 @@ class MpvPlayer(object):
         # --script-messages --
         mpv_player.register_message_handler("select-episode", select_episode)
         mpv_player.register_message_handler("select-server", select_server)
+        mpv_player.register_message_handler("select-quality", select_quality)
 
         self.mpv_player = mpv_player
         return mpv_player

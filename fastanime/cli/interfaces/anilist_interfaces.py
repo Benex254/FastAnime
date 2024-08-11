@@ -235,7 +235,9 @@ def player_controls(config: "Config", anilist_config: QueryDict):
         f"{'📀 ' if icons else ''}Change Quality": _change_quality,
         f"{'🎧 ' if icons else ''}Change Translation Type": _change_translation_type,
         f"{'💽 ' if icons else ''}Servers": _servers,
-        f"{'📱 ' if icons else ''}Main Menu": lambda: anilist(config, anilist_config),
+        f"{'📱 ' if icons else ''}Main Menu": lambda: anilist_menu(
+            config, anilist_config
+        ),
         f"{'📜 ' if icons else ''}Anime Options Menu": lambda: anilist_options(
             config, anilist_config
         ),
@@ -861,7 +863,7 @@ def select_anime(config: "Config", anilist_config: QueryDict):
         selected_anime_title = fuzzy_inquirer("Select Anime", choices)
     # "bat %s/{}" % SEARCH_RESULTS_CACHE
     if selected_anime_title == "Back":
-        anilist(config, anilist_config)
+        anilist_menu(config, anilist_config)
         return
 
     selected_anime: "AnilistBaseMediaDataSchema" = anime_data[selected_anime_title]
@@ -874,7 +876,20 @@ def select_anime(config: "Config", anilist_config: QueryDict):
     anilist_options(config, anilist_config)
 
 
-def handle_animelist(anilist_config, config: "Config", list_type: str):
+#
+# ---- ANILIST MENU ----
+#
+def handle_animelist(config: "Config", anilist_config: "QueryDict", list_type: str):
+    """A helper function that handles user media lists
+
+    Args:
+        anilist_config ([TODO:parameter]): [TODO:description]
+        config: [TODO:description]
+        list_type: [TODO:description]
+
+    Returns:
+        [TODO:return]
+    """
     if not config.user:
         if not config.use_rofi:
             print("You haven't logged in please run: fastanime anilist login")
@@ -882,8 +897,9 @@ def handle_animelist(anilist_config, config: "Config", list_type: str):
         else:
             if not Rofi.confirm("You haven't logged in!!Enter to continue"):
                 exit(1)
-        anilist(config, anilist_config)
+        anilist_menu(config, anilist_config)
         return
+    # determine the watch list to get
     match list_type:
         case "Watching":
             status = "CURRENT"
@@ -899,7 +915,10 @@ def handle_animelist(anilist_config, config: "Config", list_type: str):
             status = "REPEATING"
         case _:
             return
+
+    # get the media list
     anime_list = AniList.get_anime_list(status)
+    # handle null
     if not anime_list:
         print("Sth went wrong", anime_list)
         if not config.use_rofi:
@@ -907,8 +926,9 @@ def handle_animelist(anilist_config, config: "Config", list_type: str):
         else:
             if not Rofi.confirm("Sth went wrong!!Enter to continue..."):
                 exit(1)
-        anilist(config, anilist_config)
+        anilist_menu(config, anilist_config)
         return
+    # handle failure
     if not anime_list[0] or not anime_list[1]:
         print("Sth went wrong", anime_list)
         if not config.use_rofi:
@@ -916,19 +936,32 @@ def handle_animelist(anilist_config, config: "Config", list_type: str):
         else:
             if not Rofi.confirm("Sth went wrong!!Enter to continue..."):
                 exit(1)
-
-        anilist(config, anilist_config)
+        # recall anilist menu
+        anilist_menu(config, anilist_config)
         return
     media = [
         mediaListItem["media"]
         for mediaListItem in anime_list[1]["data"]["Page"]["mediaList"]
-    ]  # pyright:ignore
+    ]
     anime_list[1]["data"]["Page"]["media"] = media  # pyright:ignore
     return anime_list
 
 
-def anilist(config: "Config", anilist_config: QueryDict):
+def anilist_menu(config: "Config", anilist_config: QueryDict):
+    """The main entry point to the anilist command
+
+    Args:
+        config: An object containing cconfiguration data
+        anilist_config: A query dict used to store data during navigation of the ui # initially this was very messy
+    """
+
     def _anilist_search():
+        """A function that enables seaching of an anime
+
+        Returns:
+            [TODO:return]
+        """
+        # TODO: Add filters and other search features
         if config.use_rofi:
             search_term = str(Rofi.ask("Search for"))
         else:
@@ -937,21 +970,33 @@ def anilist(config: "Config", anilist_config: QueryDict):
         return AniList.search(query=search_term)
 
     def _anilist_random():
+        """A function that generates random anilist ids enabling random discovery of anime
+
+        Returns:
+            [TODO:return]
+        """
         random_anime = range(1, 15000)
         random_anime = random.sample(random_anime, k=50)
 
         return AniList.search(id_in=list(random_anime))
 
     def _watch_history():
+        """Function that lets you see all the anime that has locally been saved to your watch history
+
+        Returns:
+            [TODO:return]
+        """
         watch_history = list(map(int, config.watch_history.keys()))
         return AniList.search(id_in=watch_history, sort="TRENDING_DESC")
 
-    # NOTE: Will probably be depracated
+    # WARNING: Will probably be depracated
     def _anime_list():
         anime_list = config.anime_list
         return AniList.search(id_in=anime_list)
 
-    def edit_config():
+    def _edit_config():
+        """Helper function to edit your config when the ui is still running"""
+
         from click import edit
 
         edit(filename=USER_CONFIG_PATH)
@@ -962,28 +1007,29 @@ def anilist(config: "Config", anilist_config: QueryDict):
         else:
             config.load_config()
 
-        anilist(config, anilist_config)
+        anilist_menu(config, anilist_config)
 
     icons = config.icons
+    # each option maps to anilist data that is described by the option name
     options = {
         f"{'🔥 ' if icons else ''}Trending": AniList.get_trending,
-        f"{'📺 ' if icons else ''}Watching": lambda x="Watching": handle_animelist(
-            anilist_config, config, x
+        f"{'📺 ' if icons else ''}Watching": lambda media_list_type="Watching": handle_animelist(
+            config, anilist_config, media_list_type
         ),
-        f"{'⏸  ' if icons else ''}Paused": lambda x="Paused": handle_animelist(
-            anilist_config, config, x
+        f"{'⏸  ' if icons else ''}Paused": lambda media_list_type="Paused": handle_animelist(
+            config, anilist_config, media_list_type
         ),
-        f"{'🚮 ' if icons else ''}Dropped": lambda x="Dropped": handle_animelist(
-            anilist_config, config, x
+        f"{'🚮 ' if icons else ''}Dropped": lambda media_list_type="Dropped": handle_animelist(
+            config, anilist_config, media_list_type
         ),
-        f"{'📑 ' if icons else ''}Planned": lambda x="Planned": handle_animelist(
-            anilist_config, config, x
+        f"{'📑 ' if icons else ''}Planned": lambda media_list_type="Planned": handle_animelist(
+            config, anilist_config, media_list_type
         ),
-        f"{'✅ ' if icons else ''}Completed": lambda x="Completed": handle_animelist(
-            anilist_config, config, x
+        f"{'✅ ' if icons else ''}Completed": lambda media_list_type="Completed": handle_animelist(
+            config, anilist_config, media_list_type
         ),
-        f"{'🔁 ' if icons else ''}Rewatching": lambda x="Repeating": handle_animelist(
-            anilist_config, config, x
+        f"{'🔁 ' if icons else ''}Rewatching": lambda media_list_type="Repeating": handle_animelist(
+            config, anilist_config, media_list_type
         ),
         f"{'🔔 ' if icons else ''}Recently Updated Anime": AniList.get_most_recently_updated,
         f"{'🔎 ' if icons else ''}Search": _anilist_search,
@@ -994,9 +1040,10 @@ def anilist(config: "Config", anilist_config: QueryDict):
         f"{'💖 ' if icons else ''}Most Favourite Anime": AniList.get_most_favourite,
         f"{'✨ ' if icons else ''}Most Scored Anime": AniList.get_most_scored,
         f"{'🎬 ' if icons else ''}Upcoming Anime": AniList.get_upcoming_anime,
-        f"{'📝 ' if icons else ''}Edit Config": edit_config,
+        f"{'📝 ' if icons else ''}Edit Config": _edit_config,
         f"{'❌ ' if icons else ''}Exit": exit_app,
     }
+    # prompt user to select an action
     if config.use_fzf:
         action = fzf.run(
             list(options.keys()),
@@ -1008,6 +1055,8 @@ def anilist(config: "Config", anilist_config: QueryDict):
     else:
         action = fuzzy_inquirer("Select Action", options.keys())
     anilist_data = options[action]()
+    # anilist data is a (bool,data)
+    # the bool indicated success
     if anilist_data[0]:
         anilist_config.data = anilist_data[1]
         select_anime(config, anilist_config)
@@ -1019,4 +1068,5 @@ def anilist(config: "Config", anilist_config: QueryDict):
         else:
             if not Rofi.confirm("Sth went wrong!!Enter to continue..."):
                 exit(1)
-        anilist(config, anilist_config)
+        # recall the anilist function for the user to reattempt their choice
+        anilist_menu(config, anilist_config)

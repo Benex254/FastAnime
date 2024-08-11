@@ -36,7 +36,10 @@ def downloads(config: "Config", path: bool):
         elif config.use_rofi:
             playlist_name = Rofi.run(playlists, "Enter Playlist Name")
         else:
-            playlist_name = fuzzy_inquirer("Enter Playlist Name: ", playlists)
+            playlist_name = fuzzy_inquirer(
+                playlists,
+                "Enter Playlist Name: ",
+            )
         if playlist_name == "Exit":
             exit_app()
             return

@@ -1,4 +1,5 @@
 import re
+from itertools import cycle
 
 # Dictionary to map hex values to characters
 hex_to_char = {
@@ -32,6 +33,15 @@ hex_to_char = {
     "57": "o",
     "51": "i",
 }
+
+
+def give_random_quality(links: list[dict]):
+    qualities = cycle(["1080", "720", "360"])
+
+    return [
+        {"link": link["link"], "quality": quality}
+        for link, quality in zip(links, qualities)
+    ]
 
 
 def decode_hex_string(hex_string):

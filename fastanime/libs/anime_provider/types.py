@@ -1,8 +1,18 @@
-from typing import TypedDict
+from typing import Literal, TypedDict
 
 
 class PageInfo(TypedDict):
     total: int
+    perPage: int
+    currentPage: int
+
+
+#
+# class EpisodesDetail(TypedDict):
+#     dub: int
+#     sub: int
+#     raw: int
+#
 
 
 # search data
@@ -11,6 +21,10 @@ class SearchResult(TypedDict):
     title: str
     availableEpisodes: list[str]
     type: str
+    score: int
+    status: str
+    season: str
+    poster: str
 
 
 class SearchResults(TypedDict):
@@ -19,30 +33,39 @@ class SearchResults(TypedDict):
 
 
 # anime data
-class EpisodesDetail(TypedDict):
-    dub: int
-    sub: int
-    raw: int
+class AnimeEpisodeDetails(TypedDict):
+    dub: list[str]
+    sub: list[str]
+    raw: list[str]
+
+
+class AnimeEpisode(TypedDict):
+    id: str
+    title: str
 
 
 class Anime(TypedDict):
     id: str
     title: str
-    availableEpisodesDetail: EpisodesDetail
+    availableEpisodesDetail: AnimeEpisodeDetails
     type: str | None
+    episodesInfo: list[AnimeEpisode] | None
+    poster: str
+    year: str
 
 
 class EpisodeStream(TypedDict):
-    resolution: str
+    resolution: str | None
     link: str
     hls: bool | None
-    mp4: bool
-    priority: int
-    headers: dict
-    fromCache: str
+    mp4: bool | None
+    priority: int | None
+    headers: dict | None
+    quality: Literal["360", "720", "1080", "unknown"]
+    translation_type: Literal["dub", "sub"]
 
 
 class Server(TypedDict):
     server: str
     episode_title: str | None
-    links: list
+    links: list[EpisodeStream]

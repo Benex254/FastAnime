@@ -1,4 +1,4 @@
-from ..types import Anime, EpisodesDetail, SearchResults
+from ..types import Anime, AnimeEpisodeDetails, SearchResults
 from .types import AllAnimeEpisode, AllAnimeSearchResults, AllAnimeShow
 
 
@@ -25,7 +25,7 @@ def normalize_search_results(search_results: AllAnimeSearchResults) -> SearchRes
 def normalize_anime(anime: AllAnimeShow) -> Anime:
     id: str = anime["_id"]
     title: str = anime["name"]
-    availableEpisodesDetail: EpisodesDetail = anime["availableEpisodesDetail"]
+    availableEpisodesDetail: AnimeEpisodeDetails = anime["availableEpisodesDetail"]
     type = anime.get("__typename")
     normalized_anime: Anime = {
         "id": id,

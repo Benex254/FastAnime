@@ -11,16 +11,17 @@ from InquirerPy.validator import EmptyInputValidator
 from rich import print
 from rich.progress import Progress
 from rich.prompt import Confirm, Prompt
+from yt_dlp.utils import sanitize_filename
 
 from ...anilist import AniList
 from ...constants import USER_CONFIG_PATH
 from ...libs.fzf import fzf
 from ...libs.rofi import Rofi
 from ...Utility.data import anime_normalizer
-from ...Utility.utils import anime_title_percentage_match, sanitize_filename
+from ...Utility.utils import anime_title_percentage_match
 from ..utils.mpv import run_mpv
 from ..utils.tools import QueryDict, exit_app
-from ..utils.utils import fuzzy_inquirer
+from ..utils.utils import filter_by_quality, fuzzy_inquirer
 from .utils import aniskip
 
 if TYPE_CHECKING:
@@ -191,7 +192,7 @@ def player_controls(config: "Config", anilist_config: QueryDict):
 
     def _change_quality():
         # extract the actual link urls
-        options = [link["link"] for link in links]
+        options = [link["quality"] for link in links]
 
         # prompt for new quality
         if config.use_fzf:
@@ -202,7 +203,7 @@ def player_controls(config: "Config", anilist_config: QueryDict):
             quality = Rofi.run(options, "Select Quality")
         else:
             quality = fuzzy_inquirer("Select Quality", options)
-        config.quality = options.index(quality)  # set quality
+        config.quality = quality  # set quality
         player_controls(config, anilist_config)
 
     def _change_translation_type():
@@ -261,7 +262,7 @@ def player_controls(config: "Config", anilist_config: QueryDict):
 
 def fetch_streams(config: "Config", anilist_config: QueryDict):
     # user config
-    quality: int = config.quality
+    quality: str = config.quality
 
     # internal config
     episode_number: str = anilist_config.episode_number
@@ -331,12 +332,14 @@ def fetch_streams(config: "Config", anilist_config: QueryDict):
             selected_server = episode_streams_dict[server]
 
     links = selected_server["links"]
-    if quality > len(links) - 1:
-        quality = config.quality = len(links) - 1
-    elif quality < 0:
-        quality = config.quality = 0
-    stream_link = links[quality]["link"]
 
+    stream_link_ = filter_by_quality(quality, links)
+    if not stream_link_:
+        print("Quality not found")
+        input("Enter to continue...")
+        anilist_options(config, anilist_config)
+        return
+    stream_link = stream_link_["link"]
     # update internal config
     anilist_config.current_stream_links = links
     anilist_config.current_stream_link = stream_link
@@ -753,7 +756,24 @@ def anilist_options(config, anilist_config: QueryDict):
         anilist_options(config, anilist_config)
 
     def _toggle_auto_next(config, anilist_config):
-        config.auto_select = not config.auto_select
+        config.auto_next = not config.auto_next
+        anilist_options(config, anilist_config)
+
+    def _change_provider(config: "Config", anilist_config):
+        options = ["allanime", "animepahe"]
+        if config.use_fzf:
+            provider = fzf.run(
+                options, prompt="Select Translation Type:", header="Language Options"
+            )
+        elif config.use_rofi:
+            provider = Rofi.run(options, "Select Translation Type")
+        else:
+            provider = fuzzy_inquirer("Select translation type", options)
+
+        config.provider = provider
+        config.anime_provider.provider = provider
+        config.anime_provider.lazyload_provider()
+
         anilist_options(config, anilist_config)
 
     icons = config.icons
@@ -765,6 +785,7 @@ def anilist_options(config, anilist_config: QueryDict):
         f"{'📤 ' if icons else ''}Remove from List": _remove_from_list,
         f"{'📖 ' if icons else ''}View Info": _view_info,
         f"{'🎧 ' if icons else ''}Change Translation Type": _change_translation_type,
+        f"{'💽 ' if icons else ''}Change Provider": _change_provider,
         f"{'🔘 ' if icons else ''}Toggle auto select anime": _toggle_auto_select,  # problematic if you choose an anime that doesnt match id
         f"{'💠 ' if icons else ''}Toggle auto next episode": _toggle_auto_next,
         f"{'🔙 ' if icons else ''}Back": select_anime,

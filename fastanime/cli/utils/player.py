@@ -43,7 +43,7 @@ class MpvPlayer(object):
         )
         quality = config.quality
         total_episodes: list = sorted(
-            fastanime_runtime_state.provider_total_episodes, key=float
+            fastanime_runtime_state.provider_available_episodes, key=float
         )
         anime_id_anilist: int = fastanime_runtime_state.selected_anime_id_anilist
         provider_anime = fastanime_runtime_state.provider_anime
@@ -237,7 +237,7 @@ class MpvPlayer(object):
             if not anime:
                 mpv_player.show_text("Failed to update translation type")
                 return
-            fastanime_runtime_state.provider_total_episodes = anime[
+            fastanime_runtime_state.provider_available_episodes = anime[
                 "availableEpisodesDetail"
             ][translation_type]
             config.translation_type = translation_type
@@ -290,9 +290,7 @@ class MpvPlayer(object):
                 return
             q = ["360", "720", "1080"]
             quality = quality_raw.decode()
-            links: list = (
-                fastanime_runtime_state.provider_server_episode_streams_objects
-            )
+            links: list = fastanime_runtime_state.provider_server_episode_streams
             q = [link["quality"] for link in links]
             if quality in q:
                 config.quality = quality

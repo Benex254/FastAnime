@@ -1,5 +1,6 @@
+# TODO: add typing
 class FastAnimeRuntimeState(dict):
-    """dot.notation access to dictionary attributes"""
+    """A class that manages fastanime runtime during anilist command runtime"""
 
     def __getattr__(self, attr):
         try:
@@ -24,7 +25,8 @@ def exit_app(*args):
         try:
             shutil.get_terminal_size()
             return (
-                sys.stdin.isatty()
+                sys.stdin
+                and sys.stdin.isatty()
                 and sys.stdout.isatty()
                 and os.getenv("TERM") is not None
             )
@@ -45,16 +47,3 @@ def exit_app(*args):
 
         print("Have a good day :smile:", USER_NAME)
     sys.exit(0)
-
-
-def get_formatted_str(string: str, style):
-    from rich.text import Text
-
-    # Create a Text object with desired style
-    text = Text(string, style="bold red")
-
-    # Convert the Text object to an ANSI string
-    ansi_output = text.__rich_console__(None, None)  # pyright:ignore
-
-    # Join the ANSI strings to form the final output
-    "".join(segment.text for segment in ansi_output)

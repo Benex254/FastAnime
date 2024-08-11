@@ -3,8 +3,7 @@ from queue import Queue
 from threading import Thread
 
 import yt_dlp
-
-from ..utils import sanitize_filename
+from yt_dlp.utils import sanitize_filename
 
 logger = logging.getLogger(__name__)
 

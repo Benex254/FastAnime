@@ -56,7 +56,7 @@ Heavily inspired by [animdl](https://github.com/justfoolingaround/animdl), [magi
 
 > [!IMPORTANT]
 >
-> This project currently scrapes allanime and is in no way related to them. The site is in the public domain and can be access by any one with a browser.
+> This project currently scrapes allanime and animepahe and is in no way related to them nor does the project own any content servers. The site is in the public domain and can be access by any one with a browser.
 
 ## Installation
 
@@ -449,6 +449,9 @@ use_mpv_mod=False
 format=best[height<=1080]/bestvideo[height<=1080]+bestaudio/best # default
 
 [general]
+# can be [allanime,animepahe]
+provider = allanime
+
 preferred_language = romaji  # Display language (options: english, romaji)
 downloads_dir = <Default-videos-dir>/FastAnime  # Download directory
 preview=false # whether to show a preview window when using fzf or rofi

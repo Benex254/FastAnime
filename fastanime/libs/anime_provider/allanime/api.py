@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING
 from requests.exceptions import Timeout
 
 from ...anime_provider.base_provider import AnimeProvider
-from ..utils import decode_hex_string
+from ..utils import decode_hex_string, give_random_quality
 from .constants import (
     ALLANIME_API_ENDPOINT,
     ALLANIME_BASE,
@@ -215,7 +215,7 @@ class AllAnimeAPI(AnimeProvider):
                                         allanime_episode["notes"] or f'{anime["title"]}'
                                     )
                                     + f"; Episode {episode_number}",
-                                    "links": resp.json()["links"],
+                                    "links": give_random_quality(resp.json()["links"]),
                                 }  # pyright:ignore
                             case "Kir":
                                 logger.debug("allanime:Found streams from wetransfer")
@@ -225,7 +225,7 @@ class AllAnimeAPI(AnimeProvider):
                                         allanime_episode["notes"] or f'{anime["title"]}'
                                     )
                                     + f"; Episode {episode_number}",
-                                    "links": resp.json()["links"],
+                                    "links": give_random_quality(resp.json()["links"]),
                                 }  # pyright:ignore
                             case "S-mp4":
                                 logger.debug("allanime:Found streams from sharepoint")
@@ -235,7 +235,7 @@ class AllAnimeAPI(AnimeProvider):
                                         allanime_episode["notes"] or f'{anime["title"]}'
                                     )
                                     + f"; Episode {episode_number}",
-                                    "links": resp.json()["links"],
+                                    "links": give_random_quality(resp.json()["links"]),
                                 }  # pyright:ignore
                             case "Sak":
                                 logger.debug("allanime:Found streams from dropbox")
@@ -245,7 +245,7 @@ class AllAnimeAPI(AnimeProvider):
                                         allanime_episode["notes"] or f'{anime["title"]}'
                                     )
                                     + f"; Episode {episode_number}",
-                                    "links": resp.json()["links"],
+                                    "links": give_random_quality(resp.json()["links"]),
                                 }  # pyright:ignore
                             case "Default":
                                 logger.debug("allanime:Found streams from wixmp")
@@ -255,7 +255,7 @@ class AllAnimeAPI(AnimeProvider):
                                         allanime_episode["notes"] or f'{anime["title"]}'
                                     )
                                     + f"; Episode {episode_number}",
-                                    "links": resp.json()["links"],
+                                    "links": give_random_quality(resp.json()["links"]),
                                 }  # pyright:ignore
                 except Timeout:
                     logger.error(

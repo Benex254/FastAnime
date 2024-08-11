@@ -75,6 +75,7 @@ Preferred method of installation since [Pipx](https://github.com/pypa/pipx) crea
 ```bash
 
 pipx install fastanime
+scoop install fzf
 # -- or for the development version --
 pipx install 'fastanime==<latest-pre-release-tag>.dev1'
 # example

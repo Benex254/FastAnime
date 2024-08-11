@@ -2,8 +2,8 @@ import pathlib
 import re
 import shlex
 import shutil
+import subprocess
 import sys
-from subprocess import PIPE, Popen
 
 import requests
 from rich import print
@@ -34,31 +34,28 @@ def check_for_updates():
 
 def is_git_repo(author, repository):
     # Check if the current directory contains a .git folder
-    if not pathlib.Path("./.git").exists():
+    git_dir = pathlib.Path(".git")
+    if not git_dir.exists() or not git_dir.is_dir():
         return False
 
-    repository_qualname = f"{author}/{repository}"
-
-    # Read the .git/config file to find the remote repository URL
-    config_path = pathlib.Path("./.git/config")
+    # Check if the config file exists
+    config_path = git_dir / "config"
     if not config_path.exists():
         return False
-    print("here")
 
-    with open(config_path, "r") as git_config:
-        git_config_content = git_config.read()
-
-    # Use regex to find the repository URL in the config file
-    repo_name_pattern = r"\[remote \"origin\"\]\s+url = .*\/([^/]+\/[^/]+)\.git"
-    match = re.search(repo_name_pattern, git_config_content)
-    print(match)
-
-    if match is None:
+    try:
+        # Read the .git/config file to find the remote repository URL
+        with config_path.open("r") as git_config:
+            git_config_content = git_config.read()
+    except (FileNotFoundError, PermissionError):
         return False
 
-    # Extract the repository name and compare with the expected repository_qualname
-    config_repo_name = match.group(1)
-    return config_repo_name == repository_qualname
+    # Use regex to find the repository URL in the config file
+    repo_name_pattern = r"url\s*=\s*.+/([^/]+/[^/]+)\.git"
+    match = re.search(repo_name_pattern, git_config_content)
+
+    # Return True if match found and repository name matches
+    return bool(match) and match.group(1) == f"{author}/{repository}"
 
 
 def update_app():
@@ -70,35 +67,38 @@ def update_app():
 
     print("[cyan]Updating app to version %s[/]" % tag_name)
     if is_git_repo(AUTHOR, APP_NAME):
-        executable = shutil.which("git")
+        GIT_EXECUTABLE = shutil.which("git")
         args = [
-            executable,
+            GIT_EXECUTABLE,
             "pull",
         ]
 
         print(f"Pulling latest changes from the repository via git: {shlex.join(args)}")
 
-        if not executable:
-            return print("[red]Cannot find git.[/]")
+        if not GIT_EXECUTABLE:
+            return print("[red]Cannot find git please install it.[/]")
 
-        process = Popen(
+        process = subprocess.run(
             args,
-            stdout=PIPE,
-            stderr=PIPE,
         )
 
-        process.communicate()
     else:
-        executable = sys.executable
+        if PIPX_EXECUTABLE := shutil.which("pipx"):
+            process = subprocess.run([PIPX_EXECUTABLE, "upgrade", APP_NAME])
+        else:
+            PYTHON_EXECUTABLE = sys.executable
 
-        args = [
-            executable,
-            "-m",
-            "pip",
-            "install",
-            APP_NAME,
-            "--user",
-            "--no-warn-script-location",
-        ]
-        process = Popen(args)
-        process.communicate()
+            args = [
+                PYTHON_EXECUTABLE,
+                "-m",
+                "pip",
+                "install",
+                APP_NAME,
+                "--user",
+                "--no-warn-script-location",
+            ]
+            process = subprocess.run(args)
+    if process.returncode == 0:
+        return True
+    else:
+        return False

@@ -28,7 +28,7 @@ class Config(object):
             {
                 "server": "top",
                 "continue_from_history": "True",
-                "quality": "0",
+                "quality": "1080",
                 "auto_next": "False",
                 "auto_select": "True",
                 "sort_by": "search match",
@@ -175,7 +175,7 @@ class Config(object):
         return self.configparser.getboolean("stream", "auto_select")
 
     def get_quality(self):
-        return self.configparser.getint("stream", "quality")
+        return self.configparser.get("stream", "quality")
 
     def get_use_mpv_mod(self):
         return self.configparser.getboolean("stream", "use_mpv_mod")

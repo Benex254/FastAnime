@@ -18,7 +18,6 @@ from .constants import (
     USER_AGENT,
 )
 from .gql_queries import ALLANIME_EPISODES_GQL, ALLANIME_SEARCH_GQL, ALLANIME_SHOW_GQL
-from .normalizer import normalize_anime, normalize_search_results
 
 if TYPE_CHECKING:
     from typing import Iterator
@@ -106,7 +105,23 @@ class AllAnimeAPI(AnimeProvider):
         }
         try:
             search_results = self._fetch_gql(ALLANIME_SEARCH_GQL, variables)
-            return normalize_search_results(search_results)  # pyright:ignore
+            page_info = search_results["shows"]["pageInfo"]
+            results = []
+            for result in search_results["shows"]["edges"]:
+                normalized_result = {
+                    "id": result["_id"],
+                    "title": result["name"],
+                    "type": result["__typename"],
+                    "availableEpisodes": result["availableEpisodes"],
+                }
+                results.append(normalized_result)
+
+            normalized_search_results = {
+                "pageInfo": page_info,
+                "results": results,
+            }
+            return normalized_search_results
+
         except Exception as e:
             logger.error(f"FA(AllAnime): {e}")
             return {}
@@ -123,7 +138,18 @@ class AllAnimeAPI(AnimeProvider):
         variables = {"showId": allanime_show_id}
         try:
             anime = self._fetch_gql(ALLANIME_SHOW_GQL, variables)
-            return normalize_anime(anime["show"])
+
+            id: str = anime["_id"]
+            title: str = anime["name"]
+            availableEpisodesDetail = anime["availableEpisodesDetail"]
+            type = anime.get("__typename")
+            normalized_anime = {
+                "id": id,
+                "title": title,
+                "availableEpisodesDetail": availableEpisodesDetail,
+                "type": type,
+            }
+            return normalized_anime
         except Exception as e:
             logger.error(f"FA(AllAnime): {e}")
             return None
@@ -323,7 +349,9 @@ if __name__ == "__main__":
             print("Sth went wrong")
             break
         episode_streams_ = anime_provider.get_episode_streams(
-            anime_data, episode, translation.strip()
+            anime_data,  # pyright: ignore
+            episode,
+            translation.strip(),
         )
         if episode_streams_ is None:
             raise Exception("Episode not found")

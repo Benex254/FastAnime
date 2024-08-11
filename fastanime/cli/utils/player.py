@@ -41,7 +41,7 @@ class MpvPlayer(object):
         episode_number: str = fastanime_runtime_state.episode_number
         quality = config.quality
         episodes: list = sorted(fastanime_runtime_state.episodes, key=float)
-        anime_id: int = fastanime_runtime_state.anime_id
+        anime_id: int = fastanime_runtime_state.selected_anime_id_anilist
         anime = fastanime_runtime_state.anime
         translation_type = config.translation_type
         anime_provider = config.anime_provider

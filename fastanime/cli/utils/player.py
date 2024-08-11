@@ -36,13 +36,13 @@ class MpvPlayer(object):
         ep_no=None,
         server="top",
     ):
-        anilist_config = self.anilist_config
+        fastanime_runtime_state = self.fastanime_runtime_state
         config = self.config
-        episode_number: str = anilist_config.episode_number
+        episode_number: str = fastanime_runtime_state.episode_number
         quality = config.quality
-        episodes: list = sorted(anilist_config.episodes, key=float)
-        anime_id: int = anilist_config.anime_id
-        anime = anilist_config.anime
+        episodes: list = sorted(fastanime_runtime_state.episodes, key=float)
+        anime_id: int = fastanime_runtime_state.anime_id
+        anime = fastanime_runtime_state.anime
         translation_type = config.translation_type
         anime_provider = config.anime_provider
         self.last_stop_time: str = "0"
@@ -56,8 +56,8 @@ class MpvPlayer(object):
             next_episode = episodes.index(episode_number) + 1
             if next_episode >= len(episodes):
                 next_episode = len(episodes) - 1
-            anilist_config.episode_number = episodes[next_episode]
-            episode_number = anilist_config.episode_number
+            fastanime_runtime_state.episode_number = episodes[next_episode]
+            episode_number = fastanime_runtime_state.episode_number
             config.update_watch_history(anime_id, str(episode_number))
         elif type == "reload":
             if episode_number not in episodes:
@@ -75,14 +75,14 @@ class MpvPlayer(object):
             self.mpv_player.show_text(f"Fetching episode {ep_no}")
             episode_number = ep_no
             config.update_watch_history(anime_id, str(ep_no))
-            anilist_config.episode_number = str(ep_no)
+            fastanime_runtime_state.episode_number = str(ep_no)
         else:
             self.mpv_player.show_text("Fetching previous episode...")
             prev_episode = episodes.index(episode_number) - 1
             if prev_episode <= 0:
                 prev_episode = 0
-            anilist_config.episode_number = episodes[prev_episode]
-            episode_number = anilist_config.episode_number
+            fastanime_runtime_state.episode_number = episodes[prev_episode]
+            episode_number = fastanime_runtime_state.episode_number
             config.update_watch_history(anime_id, str(episode_number))
         # update episode progress
         if config.user and episode_number:
@@ -97,7 +97,7 @@ class MpvPlayer(object):
             anime,
             episode_number,
             translation_type,
-            anilist_config.selected_anime_anilist,
+            fastanime_runtime_state.selected_anime_anilist,
         )
         if not episode_streams:
             self.mpv_player.show_text("No streams were found")
@@ -131,12 +131,12 @@ class MpvPlayer(object):
         self,
         stream_link,
         anime_provider: "AnimeProvider",
-        anilist_config,
+        fastanime_runtime_state,
         config: "Config",
         title,
     ):
         self.anime_provider = anime_provider
-        self.anilist_config = anilist_config
+        self.fastanime_runtime_state = fastanime_runtime_state
         self.config = config
         self.last_stop_time: str = "0"
         self.last_total_time: str = "0"
@@ -219,13 +219,15 @@ class MpvPlayer(object):
         def _toggle_translation_type():
             translation_type = "sub" if config.translation_type == "dub" else "dub"
             anime = anime_provider.get_anime(
-                anilist_config._anime["id"],
-                anilist_config.selected_anime_anilist,
+                fastanime_runtime_state._anime["id"],
+                fastanime_runtime_state.selected_anime_anilist,
             )
             if not anime:
                 mpv_player.show_text("Failed to update translation type")
                 return
-            anilist_config.episodes = anime["availableEpisodesDetail"][translation_type]
+            fastanime_runtime_state.episodes = anime["availableEpisodesDetail"][
+                translation_type
+            ]
             config.translation_type = translation_type
 
             if config.translation_type == "dub":
@@ -276,7 +278,7 @@ class MpvPlayer(object):
                 return
             q = ["360", "720", "1080"]
             quality = quality_raw.decode()
-            links: list = anilist_config.current_stream_links
+            links: list = fastanime_runtime_state.current_stream_links
             q = [link["quality"] for link in links]
             if quality in q:
                 config.quality = quality

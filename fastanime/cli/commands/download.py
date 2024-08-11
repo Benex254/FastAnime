@@ -70,7 +70,10 @@ def download(config: "Config", anime_title, episode_range, highest_priority):
         if config.use_fzf:
             search_result = fzf.run(choices, "Please Select title: ", "FastAnime")
         else:
-            search_result = fuzzy_inquirer("Please Select title", choices)
+            search_result = fuzzy_inquirer(
+                choices,
+                "Please Select title",
+            )
 
     # ---- fetch anime ----
     with Progress() as progress:
@@ -125,7 +128,10 @@ def download(config: "Config", anime_title, episode_range, highest_priority):
                 if config.use_fzf:
                     server = fzf.run(servers_names, "Select an link: ")
                 else:
-                    server = fuzzy_inquirer("Select link", servers_names)
+                    server = fuzzy_inquirer(
+                        servers_names,
+                        "Select link",
+                    )
                 stream_link = filter_by_quality(
                     config.quality, servers[server]["links"]
                 )

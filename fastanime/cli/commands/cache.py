@@ -25,14 +25,14 @@ def cache(clean, path, size):
     elif size:
         import os
 
-        from ..utils.utils import sizeof_fmt
+        from ..utils.utils import format_bytes_to_human
 
         total_size = 0
         for dirpath, dirnames, filenames in os.walk(APP_CACHE_DIR):
             for f in filenames:
                 fp = os.path.join(dirpath, f)
                 total_size += os.path.getsize(fp)
-        print("Total Size: ", sizeof_fmt(total_size))
+        print("Total Size: ", format_bytes_to_human(total_size))
     else:
         import click
 

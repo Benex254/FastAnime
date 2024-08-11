@@ -1,4 +1,4 @@
-class QueryDict(dict):
+class FastAnimeRuntimeState(dict):
     """dot.notation access to dictionary attributes"""
 
     def __getattr__(self, attr):

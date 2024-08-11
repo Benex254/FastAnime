@@ -10,8 +10,8 @@ def random_anime(config):
     import random
 
     from ....anilist import AniList
-    from ...interfaces.anilist_interfaces import select_anime
-    from ...utils.tools import QueryDict
+    from ...interfaces.anilist_interfaces import anilist_results_menu
+    from ...utils.tools import FastAnimeRuntimeState
 
     random_anime = range(1, 15000)
 
@@ -20,8 +20,8 @@ def random_anime(config):
     anime_data = AniList.search(id_in=list(random_anime))
 
     if anime_data[0]:
-        anilist_config = QueryDict()
-        anilist_config.data = anime_data[1]
-        select_anime(config, anilist_config)
+        fastanime_runtime_state = FastAnimeRuntimeState()
+        fastanime_runtime_state.anilist_data = anime_data[1]
+        anilist_results_menu(config, fastanime_runtime_state)
     else:
         print(anime_data[1])

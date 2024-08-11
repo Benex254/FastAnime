@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 def paused(config: "Config"):
     from ....anilist import AniList
     from ...interfaces import anilist_interfaces
-    from ...utils.tools import QueryDict, exit_app
+    from ...utils.tools import FastAnimeRuntimeState, exit_app
 
     if not config.user:
         print("Not authenticated")
@@ -27,6 +27,6 @@ def paused(config: "Config"):
         for mediaListItem in anime_list[1]["data"]["Page"]["mediaList"]
     ]  # pyright:ignore
     anime_list[1]["data"]["Page"]["media"] = media  # pyright:ignore
-    anilist_config = QueryDict()
+    anilist_config = FastAnimeRuntimeState()
     anilist_config.data = anime_list[1]
-    anilist_interfaces.select_anime(config, anilist_config)
+    anilist_interfaces.anilist_results_menu(config, anilist_config)

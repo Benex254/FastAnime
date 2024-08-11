@@ -1,6 +1,6 @@
 import click
 
-from ...utils.tools import QueryDict
+from ...utils.tools import FastAnimeRuntimeState
 from .__lazyloader__ import LazyGroup
 
 commands = {
@@ -36,7 +36,9 @@ def anilist(ctx: click.Context):
 
     from ....anilist import AniList
     from ....AnimeProvider import AnimeProvider
-    from ...interfaces.anilist_interfaces import anilist as anilist_interface
+    from ...interfaces.anilist_interfaces import (
+        fastanime_main_menu as anilist_interface,
+    )
 
     if TYPE_CHECKING:
         from ...config import Config
@@ -45,5 +47,5 @@ def anilist(ctx: click.Context):
     if user := ctx.obj.user:
         AniList.update_login_info(user, user["token"])
     if ctx.invoked_subcommand is None:
-        anilist_config = QueryDict()
-        anilist_interface(ctx.obj, anilist_config)
+        fastanime_runtime_state = FastAnimeRuntimeState()
+        anilist_interface(ctx.obj, fastanime_runtime_state)

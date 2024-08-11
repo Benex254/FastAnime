@@ -16,6 +16,8 @@ from ..utils.utils import get_true_fg
 
 logger = logging.getLogger(__name__)
 
+# this script was written by the fzf devs as an example on how to preview images
+# its only here for convinience
 fzf_preview = r"""
 #
 # The purpose of this script is to demonstrate how to preview a file or an
@@ -95,7 +97,16 @@ fzf-preview(){
 
 
 # ---- aniskip intergration ----
-def aniskip(mal_id, episode):
+def aniskip(mal_id: int, episode: str):
+    """helper function to be used for setting and getting skip data
+
+    Args:
+        mal_id: mal id of the anime
+        episode: episode number
+
+    Returns:
+        mpv chapter options
+    """
     ANISKIP = shutil.which("ani-skip")
     if not ANISKIP:
         print("Aniskip not found, please install and try again")
@@ -111,37 +122,61 @@ def aniskip(mal_id, episode):
 # ---- prevew stuff ----
 # import tempfile
 
+# NOTE: May change this to a temp dir but there were issues so later
 WORKING_DIR = APP_CACHE_DIR  # tempfile.gettempdir()
-IMAGES_DIR = os.path.join(WORKING_DIR, "images")
-if not os.path.exists(IMAGES_DIR):
-    os.mkdir(IMAGES_DIR)
-INFO_DIR = os.path.join(WORKING_DIR, "info")
-if not os.path.exists(INFO_DIR):
-    os.mkdir(INFO_DIR)
+
+IMAGES_CACHE_DIR = os.path.join(WORKING_DIR, "images")
+if not os.path.exists(IMAGES_CACHE_DIR):
+    os.mkdir(IMAGES_CACHE_DIR)
+ANIME_INFO_CACHE_DIR = os.path.join(WORKING_DIR, "info")
+if not os.path.exists(ANIME_INFO_CACHE_DIR):
+    os.mkdir(ANIME_INFO_CACHE_DIR)
 
 
 def save_image_from_url(url: str, file_name: str):
+    """Helper function that downloads an image to the FastAnime images cache dir given its url and filename
+
+    Args:
+        url: image url to download
+        file_name: filename to use
+    """
     image = requests.get(url)
-    with open(f"{IMAGES_DIR}/{file_name}", "wb") as f:
+    with open(f"{IMAGES_CACHE_DIR}/{file_name}", "wb") as f:
         f.write(image.content)
 
 
 def save_info_from_str(info: str, file_name: str):
-    with open(f"{INFO_DIR}/{file_name}", "w") as f:
+    """Helper function that writes text (anime details and info) to a file given  its filename
+
+    Args:
+        info: the information anilist has on the anime
+        file_name: the filename to use
+    """
+    with open(f"{ANIME_INFO_CACHE_DIR}/{file_name}", "w") as f:
         f.write(info)
 
 
 def write_search_results(
-    search_results: list[AnilistBaseMediaDataSchema],
-    titles,
-    workers=None,
+    anilist_results: list[AnilistBaseMediaDataSchema],
+    titles: list[str],
+    workers: int | None = None,
 ):
-    H_COLOR = 215, 0, 95
-    S_COLOR = 208, 208, 208
-    S_WIDTH = 45
+    """A helper function used by and run in a background thread by get_fzf_preview function inorder to get the actual preview data to be displayed by fzf
+
+    Args:
+        anilist_results: the anilist results from an anilist action
+        titles: sanitized anime titles
+        workers:number of threads to use defaults to as many as possible
+    """
+    # NOTE: Will probably make this a configuraable option
+    HEADER_COLOR = 215, 0, 95
+    SEPARATOR_COLOR = 208, 208, 208
+    SEPARATOR_WIDTH = 45
+    # use concurency to download and write as fast as possible
     with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:
         future_to_task = {}
-        for anime, title in zip(search_results, titles):
+        for anime, title in zip(anilist_results, titles):
+            # actual image url
             image_url = anime["coverImage"]["large"]
             future_to_task[executor.submit(save_image_from_url, image_url, title)] = (
                 image_url
@@ -149,19 +184,19 @@ def write_search_results(
 
             # handle the text data
             template = f"""
-            {get_true_fg("-"*S_WIDTH,*S_COLOR,bold=False)}
-            {get_true_fg('Title(jp):',*H_COLOR)} {anime['title']['romaji']}
-            {get_true_fg('Title(eng):',*H_COLOR)} {anime['title']['english']}
-            {get_true_fg('Popularity:',*H_COLOR)} {anime['popularity']}
-            {get_true_fg('Favourites:',*H_COLOR)} {anime['favourites']}
-            {get_true_fg('Status:',*H_COLOR)} {anime['status']}
-            {get_true_fg('Episodes:',*H_COLOR)} {anime['episodes']}
-            {get_true_fg('Genres:',*H_COLOR)} {anilist_data_helper.format_list_data_with_comma(anime['genres'])}
-            {get_true_fg('Next Episode:',*H_COLOR)} {anilist_data_helper.extract_next_airing_episode(anime['nextAiringEpisode'])}
-            {get_true_fg('Start Date:',*H_COLOR)} {anilist_data_helper.format_anilist_date_object(anime['startDate'])}
-            {get_true_fg('End Date:',*H_COLOR)} {anilist_data_helper.format_anilist_date_object(anime['endDate'])}
-            {get_true_fg("-"*S_WIDTH,*S_COLOR,bold=False)}
-            {get_true_fg('Description:',*H_COLOR)}
+            {get_true_fg("-"*SEPARATOR_WIDTH,*SEPARATOR_COLOR,bold=False)}
+            {get_true_fg('Title(jp):',*HEADER_COLOR)} {anime['title']['romaji']}
+            {get_true_fg('Title(eng):',*HEADER_COLOR)} {anime['title']['english']}
+            {get_true_fg('Popularity:',*HEADER_COLOR)} {anime['popularity']}
+            {get_true_fg('Favourites:',*HEADER_COLOR)} {anime['favourites']}
+            {get_true_fg('Status:',*HEADER_COLOR)} {anime['status']}
+            {get_true_fg('Episodes:',*HEADER_COLOR)} {anime['episodes']}
+            {get_true_fg('Genres:',*HEADER_COLOR)} {anilist_data_helper.format_list_data_with_comma(anime['genres'])}
+            {get_true_fg('Next Episode:',*HEADER_COLOR)} {anilist_data_helper.extract_next_airing_episode(anime['nextAiringEpisode'])}
+            {get_true_fg('Start Date:',*HEADER_COLOR)} {anilist_data_helper.format_anilist_date_object(anime['startDate'])}
+            {get_true_fg('End Date:',*HEADER_COLOR)} {anilist_data_helper.format_anilist_date_object(anime['endDate'])}
+            {get_true_fg("-"*SEPARATOR_WIDTH,*SEPARATOR_COLOR,bold=False)}
+            {get_true_fg('Description:',*HEADER_COLOR)}
             """
             template = textwrap.dedent(template)
             template = f"""
@@ -181,11 +216,22 @@ def write_search_results(
 
 
 # get rofi icons
-def get_icons(search_results: list[AnilistBaseMediaDataSchema], titles, workers=None):
+def get_rofi_icons(
+    anilist_results: list[AnilistBaseMediaDataSchema], titles, workers=None
+):
+    """A helper function to make sure that the images are downloaded so they can be used as icons
+
+    Args:
+        titles (list[str]): sanitized titles of the anime; NOTE: its important that they are sanitized since they are used as the filenames of the images
+        workers ([TODO:parameter]): Number of threads to use to download the images; defaults to as many as possible
+        anilist_results: the anilist results from an anilist action
+    """
+    # use concurrency to download the images as fast as possible
     with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:
         # load the jobs
         future_to_url = {}
-        for anime, title in zip(search_results, titles):
+        for anime, title in zip(anilist_results, titles):
+            # actual link to download image from
             image_url = anime["coverImage"]["large"]
             future_to_url[executor.submit(save_image_from_url, image_url, title)] = (
                 image_url
@@ -196,19 +242,32 @@ def get_icons(search_results: list[AnilistBaseMediaDataSchema], titles, workers=
             url = future_to_url[future]
             try:
                 future.result()
-            except Exception as exc:
-                logger.error("%r generated an exception: %s" % (url, exc))
+            except Exception as e:
+                logger.error("%r generated an exception: %s" % (url, e))
 
 
-def get_preview(search_results: list[AnilistBaseMediaDataSchema], titles, wait=False):
+def get_fzf_preview(
+    anilist_results: list[AnilistBaseMediaDataSchema], titles, wait=False
+):
+    """A helper function that constructs data to be used for the fzf preview
+
+    Args:
+        titles (list[str]): The sanitized titles to use, NOTE: its important that they are sanitized since thay will be used as filenames
+        wait (bool): whether to block the ui as we wait for preview defaults to false
+        anilist_results: the anilist results got from an anilist action
+
+    Returns:
+        THe fzf preview script to use
+    """
     # ensure images and info exists
     background_worker = Thread(
-        target=write_search_results, args=(search_results, titles)
+        target=write_search_results, args=(anilist_results, titles)
     )
     background_worker.daemon = True
     background_worker.start()
 
-    os.environ["SHELL"] = shutil.which("bash") or "sh"
+    # the preview script is in bash so making sure fzf doesnt use any other shell lang to process the preview script
+    os.environ["SHELL"] = shutil.which("bash") or "bash"
     preview = """
         %s
         if [ -s %s/{} ]; then fzf-preview %s/{}
@@ -219,12 +278,11 @@ def get_preview(search_results: list[AnilistBaseMediaDataSchema], titles, wait=F
         fi
     """ % (
         fzf_preview,
-        IMAGES_DIR,
-        IMAGES_DIR,
-        INFO_DIR,
-        INFO_DIR,
+        IMAGES_CACHE_DIR,
+        IMAGES_CACHE_DIR,
+        ANIME_INFO_CACHE_DIR,
+        ANIME_INFO_CACHE_DIR,
     )
-    # preview.replace("\n", ";")
     if wait:
         background_worker.join()
     return preview

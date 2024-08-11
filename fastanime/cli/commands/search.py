@@ -63,8 +63,8 @@ def search(config: Config, anime_title: str, episode_range: str):
             search_result = Rofi.run(choices, "Please Select Title")
         else:
             search_result = fuzzy_inquirer(
-                "Please Select Title",
                 choices,
+                "Please Select Title",
             )
 
     # ---- fetch selected anime ----
@@ -110,7 +110,10 @@ def search(config: Config, anime_title: str, episode_range: str):
             elif config.use_rofi:
                 episode = Rofi.run(episodes, "Select an episode")
             else:
-                episode = fuzzy_inquirer("Select episode", episodes)
+                episode = fuzzy_inquirer(
+                    episodes,
+                    "Select episode",
+                )
 
         # ---- fetch streams ----
         with Progress() as progress:
@@ -147,7 +150,10 @@ def search(config: Config, anime_title: str, episode_range: str):
                 elif config.use_rofi:
                     server = Rofi.run(servers_names, "Select an link")
                 else:
-                    server = fuzzy_inquirer("Select link", servers_names)
+                    server = fuzzy_inquirer(
+                        servers_names,
+                        "Select link",
+                    )
                 stream_link = filter_by_quality(
                     config.quality, servers[server]["links"]
                 )

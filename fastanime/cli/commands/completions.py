@@ -2,9 +2,9 @@ import click
 
 
 @click.command(help="Helper command to get shell completions")
-@click.option("--fish", is_flag=True)
-@click.option("--zsh", is_flag=True)
-@click.option("--bash", is_flag=True)
+@click.option("--fish", is_flag=True, help="print fish completions")
+@click.option("--zsh", is_flag=True, help="print zsh completions")
+@click.option("--bash", is_flag=True, help="print bash completions")
 def completions(fish, zsh, bash):
     if not fish or not zsh or not bash:
         import os

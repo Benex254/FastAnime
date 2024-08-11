@@ -26,7 +26,7 @@ def search(config: Config, anime_title: str, episode_range: str):
     from ...libs.rofi import Rofi
     from ..utils.mpv import run_mpv
     from ..utils.tools import exit_app
-    from ..utils.utils import fuzzy_inquirer
+    from ..utils.utils import filter_by_quality, fuzzy_inquirer
 
     anime_provider = AnimeProvider(config.provider)
 
@@ -102,6 +102,7 @@ def search(config: Config, anime_title: str, episode_range: str):
                 )
             except StopIteration:
                 print("[green]Completed binge sequence[/]:smile:")
+                input("Enter to continue...")
 
         if not episode or episode not in episodes:
             if config.use_fzf:
@@ -121,25 +122,48 @@ def search(config: Config, anime_title: str, episode_range: str):
                 print("Failed to get streams")
                 return
 
-        # ---- fetch servers ----
-        with Progress() as progress:
+        try:
+            # ---- fetch servers ----
             if config.server == "top":
-                progress.add_task("Fetching top server...", total=None)
-                server = next(streams)
-                link = server["links"][config.quality]["link"]
+                with Progress() as progress:
+                    progress.add_task("Fetching top server...", total=None)
+                    server = next(streams)
+                stream_link = filter_by_quality(config.quality, server["links"])
+                if not stream_link:
+                    print("Quality not found")
+                    input("Enter to continue")
+                    stream_anime()
+                    return
+                link = stream_link["link"]
+                episode_title = server["episode_title"]
             else:
-                progress.add_task("Fetching servers", total=None)
-                links = [link["link"] for server in streams for link in server["links"]]
+                with Progress() as progress:
+                    progress.add_task("Fetching servers", total=None)
+                    # prompt for server selection
+                    servers = {server["server"]: server for server in streams}
+                servers_names = list(servers.keys())
                 if config.use_fzf:
-                    link = fzf.run(links, "Select an link: ", header=search_result)
+                    server = fzf.run(servers_names, "Select an link: ")
                 elif config.use_rofi:
-                    link = Rofi.run(links, "Select an link")
+                    server = Rofi.run(servers_names, "Select an link")
                 else:
-                    link = fuzzy_inquirer("Select link", links)
+                    server = fuzzy_inquirer("Select link", servers_names)
+                stream_link = filter_by_quality(
+                    config.quality, servers[server]["links"]
+                )
+                if not stream_link:
+                    print("Quality not found")
+                    input("Enter to continue")
+                    stream_anime()
+                    return
+                link = stream_link["link"]
+                episode_title = servers[server]["episode_title"]
+            print(f"[purple]Now Playing:[/] {search_result} Episode {episode}")
 
-        print(f"[purple]Now Playing:[/] {search_result} Episode {episode}")
-
-        run_mpv(link, search_result)
+            run_mpv(link, episode_title)
+        except Exception as e:
+            print(e)
+            input("Enter to continue")
         stream_anime()
 
     stream_anime()

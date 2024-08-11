@@ -37,7 +37,7 @@ def download(config: "Config", anime_title, episode_range, highest_priority):
     from ...libs.fzf import fzf
     from ...Utility.downloader.downloader import downloader
     from ..utils.tools import exit_app
-    from ..utils.utils import fuzzy_inquirer
+    from ..utils.utils import filter_by_quality, fuzzy_inquirer
 
     anime_provider = AnimeProvider(config.provider)
 
@@ -104,36 +104,37 @@ def download(config: "Config", anime_title, episode_range, highest_priority):
                 if not streams:
                     print("No streams skipping")
                     continue
-
-            with Progress() as progress:
-                if highest_priority:
-                    progress.add_task("Fetching highest priority stream", total=None)
-                    streams = list(streams)
-                    links = [
-                        (link.get("priority", 0), link["link"])
-                        for server in streams
-                        for link in server["links"]
-                    ]
-                    link = max(links, key=lambda x: x[0])[1]
-                    episode_title = streams[0]["episode_title"]
-                elif config.server == "top":
-                    progress.add_task("Fetching Top Server", total=None)
+            # ---- fetch servers ----
+            if config.server == "top":
+                with Progress() as progress:
+                    progress.add_task("Fetching top server...", total=None)
                     server = next(streams)
-                    link = server["links"][config.quality]["link"]
-                    episode_title = server["episode_title"]
+                stream_link = filter_by_quality(config.quality, server["links"])
+                if not stream_link:
+                    print("Quality not found")
+                    input("Enter to continue")
+                    continue
+                link = stream_link["link"]
+                episode_title = server["episode_title"]
+            else:
+                with Progress() as progress:
+                    progress.add_task("Fetching servers", total=None)
+                    # prompt for server selection
+                    servers = {server["server"]: server for server in streams}
+                servers_names = list(servers.keys())
+                if config.use_fzf:
+                    server = fzf.run(servers_names, "Select an link: ")
                 else:
-                    # TODO: Make this better but no rush whats the point of manual selection
-                    progress.add_task("Fetching links", total=None)
-                    streams = list(streams)
-                    links = [
-                        link["link"] for server in streams for link in server["links"]
-                    ]
-                    episode_title = streams[0]["episode_title"]
-                    if config.use_fzf:
-                        link = fzf.run(links, "Select link", "Links")
-                    else:
-                        link = fuzzy_inquirer("Select link", links)
+                    server = fuzzy_inquirer("Select link", servers_names)
+                stream_link = filter_by_quality(
+                    config.quality, servers[server]["links"]
+                )
+                if not stream_link:
+                    print("Quality not found")
+                    continue
+                link = stream_link["link"]
 
+                episode_title = servers[server]["episode_title"]
             print(f"[purple]Now Downloading:[/] {search_result} Episode {episode}")
 
             downloader._download_file(

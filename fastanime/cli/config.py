@@ -1,39 +1,85 @@
+import json
+import logging
 import os
 from configparser import ConfigParser
 from typing import TYPE_CHECKING
 
 from rich import print
 
-from ..constants import USER_CONFIG_PATH, USER_VIDEOS_DIR
+from ..constants import USER_CONFIG_PATH, USER_DATA_PATH, USER_VIDEOS_DIR
 from ..libs.rofi import Rofi
-from ..Utility.user_data_helper import user_data_helper
 
+logger = logging.getLogger(__name__)
 if TYPE_CHECKING:
     from ..AnimeProvider import AnimeProvider
 
 
 class Config(object):
+    """class that handles and manages configuration and user data throughout the clis lifespan
+
+    Attributes:
+        anime_list: [TODO:attribute]
+        watch_history: [TODO:attribute]
+        fastanime_anilist_app_login_url: [TODO:attribute]
+        anime_provider: [TODO:attribute]
+        user_data: [TODO:attribute]
+        configparser: [TODO:attribute]
+        downloads_dir: [TODO:attribute]
+        provider: [TODO:attribute]
+        use_fzf: [TODO:attribute]
+        use_rofi: [TODO:attribute]
+        skip: [TODO:attribute]
+        icons: [TODO:attribute]
+        preview: [TODO:attribute]
+        translation_type: [TODO:attribute]
+        sort_by: [TODO:attribute]
+        continue_from_history: [TODO:attribute]
+        auto_next: [TODO:attribute]
+        auto_select: [TODO:attribute]
+        use_mpv_mod: [TODO:attribute]
+        quality: [TODO:attribute]
+        notification_duration: [TODO:attribute]
+        error: [TODO:attribute]
+        server: [TODO:attribute]
+        format: [TODO:attribute]
+        force_window: [TODO:attribute]
+        preferred_language: [TODO:attribute]
+        rofi_theme: [TODO:attribute]
+        rofi_theme: [TODO:attribute]
+        rofi_theme_input: [TODO:attribute]
+        rofi_theme_input: [TODO:attribute]
+        rofi_theme_confirm: [TODO:attribute]
+        rofi_theme_confirm: [TODO:attribute]
+        watch_history: [TODO:attribute]
+        anime_list: [TODO:attribute]
+        user: [TODO:attribute]
+    """
+
     anime_list: list
     watch_history: dict
     fastanime_anilist_app_login_url = (
         "https://anilist.co/api/v2/oauth/authorize?client_id=20148&response_type=token"
     )
     anime_provider: "AnimeProvider"
+    user_data = {"watch_history": {}, "animelist": [], "user": {}}
 
     def __init__(self) -> None:
+        self.initialize_user_data()
         self.load_config()
 
     def load_config(self):
         self.configparser = ConfigParser(
             {
-                "server": "top",
-                "continue_from_history": "True",
                 "quality": "1080",
                 "auto_next": "False",
                 "auto_select": "True",
                 "sort_by": "search match",
                 "downloads_dir": USER_VIDEOS_DIR,
                 "translation_type": "sub",
+                "server": "top",
+                "continue_from_history": "True",
+                "use_mpv_mod": "false",
+                "force_window": "immediate",
                 "preferred_language": "english",
                 "use_fzf": "False",
                 "preview": "False",
@@ -47,8 +93,6 @@ class Config(object):
                 "rofi_theme": "",
                 "rofi_theme_input": "",
                 "rofi_theme_confirm": "",
-                "use_mpv_mod": "false",
-                "force_window": "immediate",
             }
         )
         self.configparser.add_section("stream")
@@ -60,7 +104,7 @@ class Config(object):
 
         self.configparser.read(USER_CONFIG_PATH)
 
-        # --- set defaults ---
+        # --- set config values from file or using defaults ---
         self.downloads_dir = self.get_downloads_dir()
         self.provider = self.get_provider()
         self.use_fzf = self.get_use_fzf()
@@ -88,13 +132,14 @@ class Config(object):
         self.rofi_theme_confirm = self.get_rofi_theme_confirm()
         Rofi.rofi_theme_confirm = self.rofi_theme_confirm
         # ---- setup user data ------
-        self.watch_history: dict = user_data_helper.user_data.get("watch_history", {})
-        self.anime_list: list = user_data_helper.user_data.get("animelist", [])
-        self.user: dict = user_data_helper.user_data.get("user", {})
+        self.watch_history: dict = self.user_data.get("watch_history", {})
+        self.anime_list: list = self.user_data.get("animelist", [])
+        self.user: dict = self.user_data.get("user", {})
 
     def update_user(self, user):
         self.user = user
-        user_data_helper.update_user_info(user)
+        self.user_data["user"] = user
+        self._update_user_data()
 
     def update_watch_history(
         self, anime_id: int, episode: str | None, start_time="0", total_time="0"
@@ -108,23 +153,47 @@ class Config(object):
                 }
             }
         )
-        user_data_helper.update_watch_history(self.watch_history)
+        self.user_data["watch_history"] = self.watch_history
+        self._update_user_data()
 
-    def update_anime_list(self, anime_id: int, remove=False):
-        if remove:
-            try:
-                self.anime_list.remove(anime_id)
-                print("Succesfully removed :cry:")
-            except Exception:
-                print(anime_id, "Nothing to remove :confused:")
-        else:
-            self.anime_list.append(anime_id)
-            user_data_helper.update_animelist(self.anime_list)
-            print("Succesfully added :smile:")
-        input("Enter to continue...")
+    def initialize_user_data(self):
+        try:
+            if os.path.isfile(USER_DATA_PATH):
+                with open(USER_DATA_PATH, "r") as f:
+                    user_data = json.load(f)
+                    self.user_data.update(user_data)
+        except Exception as e:
+            logger.error(e)
 
+    def _update_user_data(self):
+        """method that updates the actual user data file"""
+        with open(USER_DATA_PATH, "w") as f:
+            json.dump(self.user_data, f)
+
+    # getters for user configuration
+
+    # --- general section ---
     def get_provider(self):
         return self.configparser.get("general", "provider")
+
+    def get_preferred_language(self):
+        return self.configparser.get("general", "preferred_language")
+
+    def get_downloads_dir(self):
+        return self.configparser.get("general", "downloads_dir")
+
+    def get_icons(self):
+        return self.configparser.getboolean("general", "icons")
+
+    def get_preview(self):
+        return self.configparser.getboolean("general", "preview")
+
+    def get_use_fzf(self):
+        return self.configparser.getboolean("general", "use_fzf")
+
+    # rofi conifiguration
+    def get_use_rofi(self):
+        return self.configparser.getboolean("general", "use_rofi")
 
     def get_rofi_theme(self):
         return self.configparser.get("general", "rofi_theme")
@@ -135,38 +204,9 @@ class Config(object):
     def get_rofi_theme_confirm(self):
         return self.configparser.get("general", "rofi_theme_confirm")
 
-    def get_downloads_dir(self):
-        return self.configparser.get("general", "downloads_dir")
-
-    def get_use_fzf(self):
-        return self.configparser.getboolean("general", "use_fzf")
-
-    def get_use_rofi(self):
-        return self.configparser.getboolean("general", "use_rofi")
-
+    # --- stream section ---
     def get_skip(self):
         return self.configparser.getboolean("stream", "skip")
-
-    def get_force_window(self):
-        return self.configparser.get("stream", "force_window")
-
-    def get_icons(self):
-        return self.configparser.getboolean("general", "icons")
-
-    def get_preview(self):
-        return self.configparser.getboolean("general", "preview")
-
-    def get_preferred_language(self):
-        return self.configparser.get("general", "preferred_language")
-
-    def get_sort_by(self):
-        return self.configparser.get("anilist", "sort_by")
-
-    def get_continue_from_history(self):
-        return self.configparser.getboolean("stream", "continue_from_history")
-
-    def get_translation_type(self):
-        return self.configparser.get("stream", "translation_type")
 
     def get_auto_next(self):
         return self.configparser.getboolean("stream", "auto_next")
@@ -174,8 +214,8 @@ class Config(object):
     def get_auto_select(self):
         return self.configparser.getboolean("stream", "auto_select")
 
-    def get_quality(self):
-        return self.configparser.get("stream", "quality")
+    def get_continue_from_history(self):
+        return self.configparser.getboolean("stream", "continue_from_history")
 
     def get_use_mpv_mod(self):
         return self.configparser.getboolean("stream", "use_mpv_mod")
@@ -186,19 +226,47 @@ class Config(object):
     def get_error(self):
         return self.configparser.getint("stream", "error")
 
+    def get_force_window(self):
+        return self.configparser.get("stream", "force_window")
+
+    def get_translation_type(self):
+        return self.configparser.get("stream", "translation_type")
+
+    def get_quality(self):
+        return self.configparser.get("stream", "quality")
+
     def get_server(self):
         return self.configparser.get("stream", "server")
 
     def get_format(self):
         return self.configparser.get("stream", "format")
 
+    def get_sort_by(self):
+        return self.configparser.get("anilist", "sort_by")
+
     def update_config(self, section: str, key: str, value: str):
         self.configparser.set(section, key, value)
         with open(USER_CONFIG_PATH, "w") as config:
             self.configparser.write(config)
 
+    # TODO: update this
     def __repr__(self):
         return f"Config(server:{self.get_server()},quality:{self.get_quality()},auto_next:{self.get_auto_next()},continue_from_history:{self.get_continue_from_history()},sort_by:{self.get_sort_by()},downloads_dir:{self.get_downloads_dir()})"
 
     def __str__(self):
         return self.__repr__()
+
+    # WARNING: depracated and will probably be removed
+    def update_anime_list(self, anime_id: int, remove=False):
+        if remove:
+            try:
+                self.anime_list.remove(anime_id)
+                print("Succesfully removed :cry:")
+            except Exception:
+                print(anime_id, "Nothing to remove :confused:")
+        else:
+            self.anime_list.append(anime_id)
+            self.user_data["animelist"] = list(set(self.anime_list))
+            self._update_user_data()
+            print("Succesfully added :smile:")
+            input("Enter to continue...")

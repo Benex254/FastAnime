@@ -121,9 +121,10 @@ class AnimePaheApi(AnimeProvider):
             for episode in self.anime["data"]
             if float(episode["episode"]) == float(episode_number)
         ]
+        
         if not episode:
             logger.error(f"AnimePahe(streams): episode {episode_number} doesn't exist")
-            raise Exception("Episode not found")
+            return []
         episode = episode[0]
 
         anime_id = anime["id"]
@@ -157,7 +158,7 @@ class AnimePaheApi(AnimeProvider):
                 logger.warn(
                     "AnimePahe: embed url not found please report to the developers"
                 )
-                raise Exception("Episode not found")
+                return []
             # get embed page
             embed_response = self.session.get(embed_url, headers=SERVER_HEADERS)
             embed = embed_response.text
@@ -174,14 +175,14 @@ class AnimePaheApi(AnimeProvider):
                 logger.warn(
                     "AnimePahe: Encoded js not found please report to the developers"
                 )
-                raise Exception("Episode not found")
+                return []
             # execute the encoded js with node for now or maybe forever in odrder to get a more workable info
             NODE = shutil.which("node")
             if not NODE:
                 logger.warn(
                     "AnimePahe: animepahe currently requires node js to extract them juicy streams"
                 )
-                raise Exception("Episode not found")
+                return []
             result = subprocess.run(
                 [NODE, "-e", encoded_js],
                 text=True,
@@ -193,14 +194,14 @@ class AnimePaheApi(AnimeProvider):
                 logger.warn(
                     "AnimePahe: could not decode encoded js using node please report to developers"
                 )
-                raise Exception("Episode not found")
+                return []
             # get that juicy stream
             match = JUICY_STREAM_REGEX.search(evaluted_js)
             if not match:
                 logger.warn(
                     "AnimePahe: could not find the juicy stream please report to developers"
                 )
-                raise Exception("Episode not found")
+                return []
             # get the actual hls stream link
             juicy_stream = match.group(1)
             # add the link

@@ -138,9 +138,6 @@ class AllAnimeAPI(AnimeProvider):
         variables = {"showId": allanime_show_id}
         try:
             anime = self._fetch_gql(ALLANIME_SHOW_GQL, variables)
-            
-            print(anime)
-            input()
             id: str = anime["show"]["_id"]
             title: str = anime["show"]["name"]
             availableEpisodesDetail = anime["show"]["availableEpisodesDetail"]

@@ -364,8 +364,20 @@ def provider_anime_episode_servers_menu(
         # no need to get all servers if top just works
         with Progress() as progress:
             progress.add_task("Fetching top server...", total=None)
-            selected_server = next(episode_streams_generator)
-            server_name = "top"
+            try:
+                selected_server = next(episode_streams_generator)
+                server_name = "top"
+            except Exception as e:
+                print("Failed to get streams. Reason:",e)
+                if not config.use_rofi:
+                    input("Enter to coninue...")
+                else:
+                    if not Rofi.confirm(f"!!Sth went wrong!!: {e} Enter to continue"):
+                        exit_app(1)
+                server_name=None
+                selected_server=""
+                media_actions_menu(config,fastanime_runtime_state)
+                return
     else:
         with Progress() as progress:
             progress.add_task("Fetching servers...", total=None)
@@ -400,9 +412,21 @@ def provider_anime_episode_servers_menu(
 
             provider_anime_episodes_menu(config, fastanime_runtime_state)
             return
-        elif server_name == "top":
+        elif server_name == "top" and episode_streams_dict.keys():
             selected_server = episode_streams_dict[list(episode_streams_dict.keys())[0]]
         else:
+            if server_name=="top" or server_name=="back":
+                if config.use_rofi:
+                    if not Rofi.confirm("No severs available..."):
+                        exit_app()
+                    else:
+                        media_actions_menu(config,fastanime_runtime_state)
+                        return
+                else:
+                    print("Failed to set server")
+                    input("Enter to continue")
+                    media_actions_menu(config,fastanime_runtime_state)
+                    return
             selected_server = episode_streams_dict[server_name]
 
     # get the stream of the preferred quality

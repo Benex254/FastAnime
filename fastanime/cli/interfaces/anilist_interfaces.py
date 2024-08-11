@@ -855,6 +855,18 @@ def anilist_media_actions_menu(
         config.auto_select = not config.auto_select
         anilist_media_actions_menu(config, fastanime_runtime_state)
 
+    def _toggle_continue_from_history(
+        config: "Config", fastanime_runtime_state: "FastAnimeRuntimeState"
+    ):
+        """helper function to toggle continue from history
+
+        Args:
+            config: [TODO:description]
+            fastanime_runtime_state: [TODO:description]
+        """
+        config.continue_from_history = not config.continue_from_history
+        anilist_media_actions_menu(config, fastanime_runtime_state)
+
     def _toggle_auto_next(
         config: "Config", fastanime_runtime_state: "FastAnimeRuntimeState"
     ):
@@ -895,9 +907,33 @@ def anilist_media_actions_menu(
 
         anilist_media_actions_menu(config, fastanime_runtime_state)
 
+    def _stream_anime(
+        config: "Config", fastanime_runtime_state: "FastAnimeRuntimeState"
+    ):
+        """helper function to go to the next menu respecting your config
+
+        Args:
+            config: [TODO:description]
+            fastanime_runtime_state: [TODO:description]
+        """
+        provide_anime(config, fastanime_runtime_state)
+
+    def _select_episode_to_stream(
+        config: "Config", fastanime_runtime_state: "FastAnimeRuntimeState"
+    ):
+        """Convinience function to disable continue from history and show the episodes menu
+
+        Args:
+            config: [TODO:description]
+            fastanime_runtime_state: [TODO:description]
+        """
+        config.continue_from_history = False
+        provide_anime(config, fastanime_runtime_state)
+
     icons = config.icons
     options = {
-        f"{'📽️ ' if icons else ''}Stream ({progress}/{episodes_total})": provide_anime,
+        f"{'📽️ ' if icons else ''}Stream ({progress}/{episodes_total})": _stream_anime,
+        f"{'📽️ ' if icons else ''}Episodes": _select_episode_to_stream,
         f"{'📼 ' if icons else ''}Watch Trailer": _watch_trailer,
         f"{'✨ ' if icons else ''}Score Anime": _score_anime,
         f"{'📥 ' if icons else ''}Add to List": _add_to_list,
@@ -907,6 +943,7 @@ def anilist_media_actions_menu(
         f"{'💽 ' if icons else ''}Change Provider": _change_provider,
         f"{'🔘 ' if icons else ''}Toggle auto select anime": _toggle_auto_select,  #  WARN: problematic if you choose an anime that doesnt match id
         f"{'💠 ' if icons else ''}Toggle auto next episode": _toggle_auto_next,
+        f"{'🔘 ' if icons else ''}Toggle continue from history": _toggle_continue_from_history,
         f"{'🔙 ' if icons else ''}Back": anilist_results_menu,
         f"{'❌ ' if icons else ''}Exit": exit_app,
     }

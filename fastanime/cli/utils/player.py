@@ -95,14 +95,7 @@ class MpvPlayer(object):
             current_episode_number = (
                 fastanime_runtime_state.provider_current_episode_number
             )
-
-            # update local progress
-            config.update_watch_history(
-                anime_id_anilist,
-                str(current_episode_number),
-                start_time=self.last_stop_time,
-                total_time=self.last_total_time,
-            )
+            config.update_watch_history(anime_id_anilist, str(current_episode_number))
         # update episode progress
         if config.user and current_episode_number:
             AniList.update_anime_list(

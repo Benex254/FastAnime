@@ -164,7 +164,8 @@ The only required external dependency, unless you won't be streaming, is [MPV](h
 
 **Other external dependencies that will just make your experience better:**
 
-- [fzf](https://github.com/junegunn/fzf) :fire: which is used as a better alternative to the ui.
+- [fzf](https://github.com/junegunn/fzf) 🔥 which is used as a better alternative to the ui.
+- [rofi](https://github.com/davatorium/rofi) 🔥 which is used as another alternative ui + the the desktop entry ui
 - [chafa](https://github.com/hpjansson/chafa) currently the best cross platform and cross terminal image viewer for the terminal.
 - [icat](https://sw.kovidgoyal.net/kitty/kittens/icat/) an image viewer that only works in [kitty terminal](https://sw.kovidgoyal.net/kitty/), which is currently the best terminal in my opinion, and by far the best image renderer for the terminal thanks to kitty's terminal graphics protocol. Its terminal graphics is so op that you can [run a browser on it](https://github.com/chase/awrit?tab=readme-ov-file)!!
 - [bash](https://www.gnu.org/software/bash/) is used as the preview script language.

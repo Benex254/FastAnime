@@ -22,34 +22,71 @@ if TYPE_CHECKING:
 )
 @click.pass_obj
 def config(config: "Config", path, view, desktop_entry):
-    from pyshortcuts import make_shortcut
+    import sys
+
     from rich import print
 
-    from ...constants import APP_NAME, ICON_PATH, USER_CONFIG_PATH
+    from ... import __version__
+    from ...constants import APP_NAME, ICON_PATH, S_PLATFORM, USER_CONFIG_PATH
 
     if path:
         print(USER_CONFIG_PATH)
     elif view:
         print(config)
     elif desktop_entry:
+        import os
         import shutil
+        from pathlib import Path
+        from textwrap import dedent
+
+        from rich import print
+        from rich.prompt import Confirm
+
+        from ..utils.tools import exit_app
 
         FASTANIME_EXECUTABLE = shutil.which("fastanime")
         if FASTANIME_EXECUTABLE:
             cmds = f"{FASTANIME_EXECUTABLE} --rofi anilist"
         else:
-            cmds = "_ -m fastanime --rofi anilist"
-        shortcut = make_shortcut(
-            name=APP_NAME,
-            description="Watch Anime from the terminal",
-            icon=ICON_PATH,
-            script=cmds,
-            terminal=False,
-        )
-        if shortcut:
-            print("Success", shortcut)
+            cmds = f"{sys.executable} -m fastanime --rofi anilist"
+
+        # TODO: Get funs of the other platforms to complete this lol
+        if S_PLATFORM == "win32":
+            print(
+                "Not implemented; the author thinks its not straight forward so welcomes lovers of windows to try and implement it themselves or to switch to a proper os like arch linux or pray the author gets bored 😜"
+            )
+        elif S_PLATFORM == "darwin":
+            print(
+                "Not implemented; the author thinks its not straight forward so welcomes lovers of mac to try and implement it themselves  or to switch to a proper os like arch linux or pray the author gets bored 😜"
+            )
         else:
-            print("Failed")
+            desktop_entry = dedent(
+                f"""
+                [Desktop Entry]
+                Name={APP_NAME}
+                Type=Application
+                version={__version__}
+                Path={Path().home()}
+                Comment=Watch anime from your terminal 
+                Terminal=false
+                Icon={ICON_PATH}
+                Exec={cmds}
+                Categories=Entertainment
+            """
+            )
+            base = os.path.expanduser("~/.local/share/applications")
+            desktop_entry_path = os.path.join(base, f"{APP_NAME}.desktop")
+            if os.path.exists(desktop_entry_path):
+                if not Confirm.ask(
+                    f"The file already exists {desktop_entry_path}; or would you like to rewrite it",
+                    default=False,
+                ):
+                    exit_app(1)
+            with open(desktop_entry_path, "w") as f:
+                f.write(desktop_entry)
+            with open(desktop_entry_path) as f:
+                print(f"Successfully wrote \n{f.read()}")
+                exit_app(0)
     else:
         import click
 

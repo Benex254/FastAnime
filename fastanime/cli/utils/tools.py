@@ -14,7 +14,7 @@ class FastAnimeRuntimeState(dict):
         self.__setitem__(attr, value)
 
 
-def exit_app(*args):
+def exit_app(exit_code=0, *args):
     import os
     import shutil
     import sys
@@ -46,4 +46,4 @@ def exit_app(*args):
         from rich import print
 
         print("Have a good day :smile:", USER_NAME)
-    sys.exit(0)
+    sys.exit(exit_code)

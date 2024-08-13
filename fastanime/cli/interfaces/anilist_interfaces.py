@@ -20,7 +20,7 @@ from ...libs.rofi import Rofi
 from ...Utility.data import anime_normalizer
 from ...Utility.utils import anime_title_percentage_match
 from ..utils.mpv import run_mpv
-from ..utils.tools import FastAnimeRuntimeState, exit_app
+from ..utils.tools import exit_app
 from ..utils.utils import filter_by_quality, fuzzy_inquirer
 from .utils import aniskip
 
@@ -28,6 +28,7 @@ if TYPE_CHECKING:
     from ...libs.anilist.types import AnilistBaseMediaDataSchema
     from ...libs.anime_provider.types import Anime, SearchResult, Server
     from ..config import Config
+    from ..utils.tools import FastAnimeRuntimeState
 
 
 def calculate_time_delta(start_time, end_time):
@@ -316,7 +317,7 @@ def media_player_controls(
 
 
 def provider_anime_episode_servers_menu(
-    config: "Config", fastanime_runtime_state: FastAnimeRuntimeState
+    config: "Config", fastanime_runtime_state: "FastAnimeRuntimeState"
 ):
     """Menu that enables selection of a server either manually or automatically based on user config then plays the stream link of the quality the user prefers
 
@@ -502,7 +503,7 @@ def provider_anime_episode_servers_menu(
         mpv.terminate()
         stop_time = player.last_stop_time
         total_time = player.last_total_time
-
+        current_episode_number = fastanime_runtime_state.provider_current_episode_number
     else:
         stop_time, total_time = run_mpv(
             current_stream_link,
@@ -530,7 +531,10 @@ def provider_anime_episode_servers_menu(
             total_time = "0"
 
     config.update_watch_history(
-        anime_id_anilist, episode, start_time=stop_time, total_time=total_time
+        anime_id_anilist,
+        episode,
+        start_time=stop_time,
+        total_time=total_time,
     )
 
     # switch to controls
@@ -759,7 +763,7 @@ def anime_provider_search_results_menu(
 #  ---- ANILIST MEDIA ACTIONS MENU ----
 #
 def media_actions_menu(
-    config: "Config", fastanime_runtime_state: FastAnimeRuntimeState
+    config: "Config", fastanime_runtime_state: "FastAnimeRuntimeState"
 ):
     """The menu responsible for handling all media actions such as watching a trailer or streaming it
 
@@ -781,7 +785,7 @@ def media_actions_menu(
     episodes_total = selected_anime_anilist["episodes"] or "Inf"
 
     def _watch_trailer(
-        config: "Config", fastanime_runtime_state: FastAnimeRuntimeState
+        config: "Config", fastanime_runtime_state: "FastAnimeRuntimeState"
     ):
         """Helper function to watch trailers with
 
@@ -806,7 +810,9 @@ def media_actions_menu(
                     exit(0)
             media_actions_menu(config, fastanime_runtime_state)
 
-    def _add_to_list(config: "Config", fastanime_runtime_state: FastAnimeRuntimeState):
+    def _add_to_list(
+        config: "Config", fastanime_runtime_state: "FastAnimeRuntimeState"
+    ):
         """Helper function to update an anime's media_list_type
 
         Args:
@@ -848,7 +854,9 @@ def media_actions_menu(
             input("Enter to continue...")
         media_actions_menu(config, fastanime_runtime_state)
 
-    def _score_anime(config: "Config", fastanime_runtime_state: FastAnimeRuntimeState):
+    def _score_anime(
+        config: "Config", fastanime_runtime_state: "FastAnimeRuntimeState"
+    ):
         """Helper function to score anime on anilist from terminal or rofi
 
         Args:
@@ -879,7 +887,7 @@ def media_actions_menu(
 
     # FIX: For some reason this fails to delete
     def _remove_from_list(
-        config: "Config", fastanime_runtime_state: FastAnimeRuntimeState
+        config: "Config", fastanime_runtime_state: "FastAnimeRuntimeState"
     ):
         """Remove an anime from  your media list
 
@@ -1121,7 +1129,7 @@ def media_actions_menu(
 #   ---- ANILIST RESULTS MENU ----
 #
 def anilist_results_menu(
-    config: "Config", fastanime_runtime_state: FastAnimeRuntimeState
+    config: "Config", fastanime_runtime_state: "FastAnimeRuntimeState"
 ):
     """The menu that handles and displays the results of an anilist action enabling using to select anime of choice
 
@@ -1288,7 +1296,7 @@ def handle_animelist(
 
 
 def fastanime_main_menu(
-    config: "Config", fastanime_runtime_state: FastAnimeRuntimeState
+    config: "Config", fastanime_runtime_state: "FastAnimeRuntimeState"
 ):
     """The main entry point to the anilist command
 

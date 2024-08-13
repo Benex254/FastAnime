@@ -136,6 +136,7 @@ class MpvPlayer(object):
         if not stream_link_:
             self.mpv_player.show_text("Quality not found")
             return
+        self.mpv_player._set_property("start", "0")
         stream_link = stream_link_["link"]
         return stream_link
 

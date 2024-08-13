@@ -310,15 +310,15 @@ Powerful command mainly aimed at binging anime. Since it doesn't require interac
 **Syntax:**
 
 ```bash
-# basic form where you will still be promted for the episode number
+# basic form where you will still be prompted for the episode number
 fastanime search <anime-title>
 
 # binge all episodes with this command
-fastanime search <anime-title> -
+fastanime search <anime-title> -r -
 
 # binge a specific episode range with this command
 # be sure to observe the range Syntax
-fastanime search <anime-title> <episodes-start>-<episodes-end>
+fastanime search <anime-title> -r <episodes-start>-<episodes-end>
 ```
 
 #### downloads subcommand

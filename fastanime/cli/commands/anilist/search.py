@@ -1,13 +1,13 @@
 import click
 
+from ...utils.completion_types import anime_titles_shell_complete
+
 
 @click.command(
     help="Search for anime using anilists api and get top ~50 results",
     short_help="Search for anime",
 )
-@click.argument(
-    "title",
-)
+@click.argument("title", shell_complete=anime_titles_shell_complete)
 @click.pass_obj
 def search(config, title):
     from ....anilist import AniList

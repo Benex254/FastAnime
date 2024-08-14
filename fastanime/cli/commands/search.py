@@ -1,6 +1,7 @@
 import click
 
 from ...cli.config import Config
+from ..utils.completion_types import anime_titles_shell_complete
 
 
 @click.command(
@@ -12,7 +13,9 @@ from ...cli.config import Config
     "-r",
     help="A range of episodes to binge",
 )
-@click.argument("anime_title", required=True, type=str)
+@click.argument(
+    "anime_title", required=True, shell_complete=anime_titles_shell_complete
+)
 @click.pass_obj
 def search(config: Config, anime_title: str, episode_range: str):
     from click import clear

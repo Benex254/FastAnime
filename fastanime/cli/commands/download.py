@@ -3,6 +3,8 @@ from typing import TYPE_CHECKING
 
 import click
 
+from ..utils.completion_types import anime_titles_shell_complete
+
 if TYPE_CHECKING:
     from ..config import Config
 
@@ -12,8 +14,7 @@ if TYPE_CHECKING:
     short_help="Download anime",
 )
 @click.argument(
-    "anime-title",
-    required=True,
+    "anime-title", required=True, shell_complete=anime_titles_shell_complete
 )
 @click.option(
     "--episode-range",

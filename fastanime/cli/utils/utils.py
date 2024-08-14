@@ -19,7 +19,7 @@ BG_GREEN = "\033[48;2;120;233;12;m"
 GREEN = "\033[38;2;45;24;45;m"
 
 
-def filter_by_quality(quality: str, stream_links: "list[EpisodeStream]"):
+def filter_by_quality(quality: str, stream_links: "list[EpisodeStream]", default=True):
     """Helper function used to filter a list of EpisodeStream objects to one that has a corresponding quality
 
     Args:
@@ -30,8 +30,20 @@ def filter_by_quality(quality: str, stream_links: "list[EpisodeStream]"):
         an EpisodeStream object or None incase the quality was not found
     """
     for stream_link in stream_links:
-        if stream_link["quality"] == quality:
+        q = float(quality)
+        Q = float(stream_link["quality"])
+        # some providers have inaccurate eg qualities 718 instead of 720
+        if Q < q + 80 and Q > q - 80:
             return stream_link
+    else:
+        if stream_links and default:
+            try:
+                print("Qualities were: ", stream_links)
+                print("Using default of quality: ", stream_links[0]["quality"])
+                return stream_links[0]
+            except Exception as e:
+                print(e)
+                return
 
 
 def format_bytes_to_human(num_of_bytes: float, suffix: str = "B"):

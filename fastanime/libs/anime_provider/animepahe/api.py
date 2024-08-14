@@ -89,27 +89,28 @@ class AnimePaheApi(AnimeProvider):
                 if response.status_code == 200:
                     if not data:
                         data.update(response.json())
-                    if ep_data := response.json().get("data"):
-                        data["data"].extend(ep_data)
-                        if data["next_page_url"]:
-                            # TODO: Refine this
-                            time.sleep(
-                                random.choice(
-                                    [
-                                        0.25,
-                                        0.1,
-                                        0.5,
-                                        0.75,
-                                        1,
-                                    ]
-                                )
+                    else:
+                        if ep_data := response.json().get("data"):
+                            data["data"].extend(ep_data)
+                    if response.json()["next_page_url"]:
+                        # TODO: Refine this
+                        time.sleep(
+                            random.choice(
+                                [
+                                    0.25,
+                                    0.1,
+                                    0.5,
+                                    0.75,
+                                    1,
+                                ]
                             )
-                            page += 1
-                            url = f"{ANIMEPAHE_ENDPOINT}m=release&id={session_id}&sort=episode_asc&page={page}"
-                            _pages_loader(
-                                url,
-                                page,
-                            )
+                        )
+                        page += 1
+                        url = f"{ANIMEPAHE_ENDPOINT}m=release&id={session_id}&sort=episode_asc&page={page}"
+                        _pages_loader(
+                            url,
+                            page,
+                        )
 
             _pages_loader(
                 url,
@@ -119,7 +120,7 @@ class AnimePaheApi(AnimeProvider):
             if not data:
                 return {}
             self.anime = data  # pyright:ignore
-            episodes = list(map(str, range(data["total"])))
+            episodes = list(map(str, [episode["episode"] for episode in data["data"]]))
             title = ""
             return {
                 "id": session_id,

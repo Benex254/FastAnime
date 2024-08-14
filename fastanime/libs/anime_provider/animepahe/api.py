@@ -2,6 +2,7 @@ import logging
 import re
 import shutil
 import subprocess
+import time
 from typing import TYPE_CHECKING
 
 from yt_dlp.utils import (
@@ -68,20 +69,44 @@ class AnimePaheApi(AnimeProvider):
             return {}
 
     def get_anime(self, session_id: str, *args):
+        page = 1
         try:
             anime_result: "AnimeSearchResult" = [
                 anime
                 for anime in self.search_page["data"]
                 if anime["session"] == session_id
             ][0]
-            url = (
-                f"{ANIMEPAHE_ENDPOINT}m=release&id={session_id}&sort=episode_asc&page=1"
+            data: "AnimePaheAnimePage" = {}  # pyright:ignore
+
+            url = f"{ANIMEPAHE_ENDPOINT}m=release&id={session_id}&sort=episode_asc&page={page}"
+
+            def _pages_loader(
+                url,
+                page,
+            ):
+                response = self.session.get(url, headers=REQUEST_HEADERS)
+                if response.status_code == 200:
+                    if not data:
+                        data.update(response.json())
+                    if ep_data := response.json().get("data"):
+                        data["data"].extend(ep_data)
+                        if data["next_page_url"]:
+                            time.sleep(0.25)
+                            page += 1
+                            url = f"{ANIMEPAHE_ENDPOINT}m=release&id={session_id}&sort=episode_asc&page={page}"
+                            _pages_loader(
+                                url,
+                                page,
+                            )
+
+            _pages_loader(
+                url,
+                page,
             )
-            response = self.session.get(url, headers=REQUEST_HEADERS)
-            if not response.status_code == 200:
+
+            if not data:
                 return {}
-            data: "AnimePaheAnimePage" = response.json()
-            self.anime = data
+            self.anime = data  # pyright:ignore
             episodes = list(map(str, range(data["total"])))
             title = ""
             return {

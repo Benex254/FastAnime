@@ -234,6 +234,7 @@ class MpvPlayer(object):
         @mpv_player.on_key_press("shift+t")
         def _toggle_translation_type():
             translation_type = "sub" if config.translation_type == "dub" else "dub"
+            mpv_player.show_text("Changing translation type...")
             anime = anime_provider.get_anime(
                 fastanime_runtime_state.provider_anime_search_result["id"],
                 fastanime_runtime_state.selected_anime_anilist,

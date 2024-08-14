@@ -117,7 +117,10 @@ class MpvPlayer(object):
 
         # always select the first
         if server == "top":
-            selected_server = next(episode_streams)
+            selected_server = next(episode_streams, None)
+            if not selected_server:
+                self.mpv_player.show_text("Sth went wrong when loading the episode")
+                return
         else:
             episode_streams_dict = {
                 episode_stream["server"]: episode_stream

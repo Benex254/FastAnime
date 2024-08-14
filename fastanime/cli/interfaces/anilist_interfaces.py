@@ -366,7 +366,22 @@ def provider_anime_episode_servers_menu(
         with Progress() as progress:
             progress.add_task("Fetching top server...", total=None)
             try:
-                selected_server = next(episode_streams_generator)
+                selected_server = next(episode_streams_generator, None)
+                if not selected_server:
+                    if config.use_rofi:
+                        if Rofi.confirm("Sth went wrong enter to continue"):
+                            provider_anime_episode_servers_menu(
+                                config, fastanime_runtime_state
+                            )
+                        else:
+                            exit_app(1)
+                    else:
+                        print("Sth went wrong")
+                        input("Enter to continue...")
+                        provider_anime_episode_servers_menu(
+                            config, fastanime_runtime_state
+                        )
+                    return
                 server_name = "top"
             except Exception as e:
                 print("Failed to get streams. Reason:", e)

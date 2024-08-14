@@ -130,7 +130,12 @@ def search(config: Config, anime_title: str, episode_range: str):
             if config.server == "top":
                 with Progress() as progress:
                     progress.add_task("Fetching top server...", total=None)
-                    server = next(streams)
+                    server = next(streams, None)
+                    if not server:
+                        print("Sth went wrong when fetching the episode")
+                        input("Enter to continue")
+                        stream_anime()
+                        return
                 stream_link = filter_by_quality(config.quality, server["links"])
                 if not stream_link:
                     print("Quality not found")

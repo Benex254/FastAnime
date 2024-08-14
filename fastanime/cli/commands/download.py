@@ -112,7 +112,10 @@ def download(config: "Config", anime_title, episode_range, highest_priority):
             if config.server == "top":
                 with Progress() as progress:
                     progress.add_task("Fetching top server...", total=None)
-                    server = next(streams)
+                    server = next(streams, None)
+                    if not server:
+                        print("Sth went wrong when fetching the server")
+                        continue
                 stream_link = filter_by_quality(config.quality, server["links"])
                 if not stream_link:
                     print("Quality not found")

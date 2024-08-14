@@ -532,16 +532,26 @@ def provider_anime_episode_servers_menu(
     # this will try to update the episode to be the next episode if delta has reached a specific threshhold
     # this update will only apply locally
     # the remote(anilist) is only updated when its certain you are going to open the player
+    available_episodes: list = sorted(
+        fastanime_runtime_state.provider_available_episodes, key=float
+    )
     if stop_time == "0" or total_time == "0":
-        # increment the episode
-        episode = str(int(current_episode_number) + 1)
+        # increment the episodes
+        next_episode = available_episodes.index(current_episode_number) + 1
+        if next_episode >= len(available_episodes):
+            next_episode = len(available_episodes) - 1
+        episode = available_episodes[next_episode]
     else:
         error = config.error * 60
         delta = calculate_time_delta(stop_time, total_time)
         if delta.total_seconds() > error:
             episode = current_episode_number
         else:
-            episode = str(int(current_episode_number) + 1)
+            # increment the episodes
+            next_episode = available_episodes.index(current_episode_number) + 1
+            if next_episode >= len(available_episodes):
+                next_episode = len(available_episodes) - 1
+            episode = available_episodes[next_episode]
             stop_time = "0"
             total_time = "0"
 
@@ -1174,6 +1184,7 @@ def anilist_results_menu(
             anime["status"] == "RELEASING"
             and anime["nextAiringEpisode"]
             and progress > 0
+            and anime["mediaListEntry"]
         ):
             last_aired_episode = anime["nextAiringEpisode"]["episode"] - 1
             if last_aired_episode - progress > 0:

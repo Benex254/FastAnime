@@ -231,7 +231,7 @@ $type:MediaType\
 search_query = (
     """
 query($query:String,%s){
-  Page(perPage:30,page:$page){
+  Page(perPage:50,page:$page){
     pageInfo{
       total
       currentPage

@@ -672,8 +672,7 @@ def fetch_anime_episode(config, fastanime_runtime_state: "FastAnimeRuntimeState"
         else:
             if not Rofi.confirm("Sth went wrong!!Enter to continue..."):
                 exit(1)
-        fetch_anime_episode(config, fastanime_runtime_state)
-        return
+        return fetch_anime_episode(config, fastanime_runtime_state)
 
     fastanime_runtime_state.provider_anime = provider_anime
     provider_anime_episodes_menu(config, fastanime_runtime_state)
@@ -719,8 +718,7 @@ def anime_provider_search_results_menu(
         else:
             if not Rofi.confirm("Sth went wrong!!Enter to continue..."):
                 exit(1)
-        anime_provider_search_results_menu(config, fastanime_runtime_state)
-        return
+        return anime_provider_search_results_menu(config, fastanime_runtime_state)
 
     provider_search_results = {
         anime["title"]: anime for anime in provider_search_results["results"]

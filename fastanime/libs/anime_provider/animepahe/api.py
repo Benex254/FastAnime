@@ -92,6 +92,7 @@ class AnimePaheApi(AnimeProvider):
                     if ep_data := response.json().get("data"):
                         data["data"].extend(ep_data)
                         if data["next_page_url"]:
+                            # TODO: Refine this
                             time.sleep(
                                 random.choice(
                                     [

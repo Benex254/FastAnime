@@ -1,4 +1,5 @@
 import logging
+import random
 import re
 import shutil
 import subprocess
@@ -91,7 +92,17 @@ class AnimePaheApi(AnimeProvider):
                     if ep_data := response.json().get("data"):
                         data["data"].extend(ep_data)
                         if data["next_page_url"]:
-                            time.sleep(0.25)
+                            time.sleep(
+                                random.choice(
+                                    [
+                                        0.25,
+                                        0.1,
+                                        0.5,
+                                        0.75,
+                                        1,
+                                    ]
+                                )
+                            )
                             page += 1
                             url = f"{ANIMEPAHE_ENDPOINT}m=release&id={session_id}&sort=episode_asc&page={page}"
                             _pages_loader(

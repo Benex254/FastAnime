@@ -3,8 +3,6 @@ import sys
 from pathlib import Path
 from platform import system
 
-from plyer import storagepath
-
 from . import APP_NAME, AUTHOR, __version__
 
 PLATFORM = system()
@@ -25,18 +23,9 @@ PREVIEW_IMAGE = os.path.join(ASSETS_DIR, "preview")
 # ----- user configs and data -----
 
 S_PLATFORM = sys.platform
-try:
-    app_data_dir_base = None
-    video_dir_base = storagepath.get_videos_dir()  # pyright:ignore
-    cache_dir_base = None
-except Exception:
-    video_dir_base = None
-    cache_dir_base = None
-    app_data_dir_base = None
 if S_PLATFORM == "win32":
     # app data
-    if not app_data_dir_base:
-        app_data_dir_base = os.getenv("LOCALAPPDATA")
+    app_data_dir_base = os.getenv("LOCALAPPDATA")
     if not app_data_dir_base:
         raise RuntimeError("Could not determine app data dir please report to devs")
     APP_DATA_DIR = os.path.join(app_data_dir_base, AUTHOR, APP_NAME)
@@ -45,45 +34,38 @@ if S_PLATFORM == "win32":
     APP_CACHE_DIR = os.path.join(APP_DATA_DIR, "cache")
 
     # videos dir
-    if not video_dir_base:
-        video_dir_base = os.path.expanduser("~/Videos")
+    video_dir_base = os.path.expanduser("~/Videos")
     USER_VIDEOS_DIR = os.path.join(video_dir_base, APP_NAME)
 
 elif S_PLATFORM == "darwin":
     # app data
-    if not app_data_dir_base:
-        app_data_dir_base = os.path.expanduser("~/Library/Application Support")
+    app_data_dir_base = os.path.expanduser("~/Library/Application Support")
     APP_DATA_DIR = os.path.join(app_data_dir_base, APP_NAME, __version__)
 
     # cache dir
-    if not cache_dir_base:
-        cache_dir_base = os.path.expanduser("~/Library/Caches")
+    cache_dir_base = os.path.expanduser("~/Library/Caches")
     APP_CACHE_DIR = os.path.join(cache_dir_base, APP_NAME, __version__)
 
     # videos dir
-    if not video_dir_base:
-        video_dir_base = os.path.expanduser("~/Movies")
+    video_dir_base = os.path.expanduser("~/Movies")
     USER_VIDEOS_DIR = os.path.join(video_dir_base, APP_NAME)
 else:
     # app data
-    if not app_data_dir_base:
-        app_data_dir_base = os.environ.get("XDG_CONFIG_HOME", "")
-        if not app_data_dir_base.strip():
-            app_data_dir_base = os.path.expanduser("~/.config")
+    app_data_dir_base = os.environ.get("XDG_CONFIG_HOME", "")
+    if not app_data_dir_base.strip():
+        app_data_dir_base = os.path.expanduser("~/.config")
     APP_DATA_DIR = os.path.join(app_data_dir_base, APP_NAME)
 
     # cache dir
-    if not cache_dir_base:
-        cache_dir_base = os.environ.get("XDG_CACHE_HOME", "")
-        if not cache_dir_base.strip():
-            cache_dir_base = os.path.expanduser("~/.cache")
+    cache_dir_base = os.environ.get("XDG_CACHE_HOME", "")
+    if not cache_dir_base.strip():
+        cache_dir_base = os.path.expanduser("~/.cache")
     APP_CACHE_DIR = os.path.join(cache_dir_base, APP_NAME)
 
     # videos dir
-    if not video_dir_base:
-        video_dir_base = os.environ.get("XDG_VIDEOS_DIR", "")
-        if not video_dir_base.strip():
-            video_dir_base = os.path.expanduser("~/Videos")
+    video_dir_base = os.environ.get("XDG_VIDEOS_DIR", "")
+    if not video_dir_base.strip():
+        video_dir_base = os.path.expanduser("~/Videos")
     USER_VIDEOS_DIR = os.path.join(video_dir_base, APP_NAME)
 
 # ensure paths exist

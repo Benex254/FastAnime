@@ -196,7 +196,7 @@ Overview of main commands:
 
 Configuration is directly passed into this command at run time to override your config.
 
-Available options include:
+Available options for the fastanime command include:
 
 - `--server <server>` or `-s <server>` set the default server to auto select
 - `--continue/--no-continue` or `-c/-no-c` whether to continue from the last episode you were watching
@@ -223,6 +223,18 @@ Available options include:
 - `--rich-traceback` allow rich traceback
 - `--use-mpv-mod/--use-default-player` whether to use python-mpv
 - `--provider <allanime/animepahe>` anime site of choice to scrape from **NOTE:** animepahe is still experimental and requires node to decode one line of js thats hard to decode manually
+
+Example usage of the above options
+
+```bash
+# downloading dubbed anime
+fastanime --dub download <anime>
+# use  icons and fzf for a more elegant ui with preview
+# only for anilist
+fastanime --icons --preview --fzf anilist
+# use icons with default ui
+fastanime --icons --default anilist
+```
 
 #### The anilist command :fire: :fire: :fire:
 

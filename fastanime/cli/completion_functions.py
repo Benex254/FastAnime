@@ -1,10 +1,3 @@
-from typing import TYPE_CHECKING
-
-import requests
-
-if TYPE_CHECKING:
-    from ...libs.anilist.types import AnilistDataSchema
-
 import logging
 
 logger = logging.getLogger(__name__)
@@ -43,13 +36,15 @@ def get_anime_titles(query: str, variables: dict = {}):
     Returns:
         a boolean indicating success and none or an anilist object depending on success
     """
+    from requests import post
+
     try:
-        response = requests.post(
+        response = post(
             ANILIST_ENDPOINT,
             json={"query": query, "variables": variables},
             timeout=10,
         )
-        anilist_data: AnilistDataSchema = response.json()
+        anilist_data = response.json()
 
         # ensuring you dont get blocked
         if (
@@ -78,20 +73,10 @@ def get_anime_titles(query: str, variables: dict = {}):
             ]
             return [*eng_titles, *romaji_titles]
         else:
-            return ["non 200 status code"]
-    except requests.exceptions.Timeout:
-        logger.warning(
-            "Timeout has been exceeded this could mean anilist is down or you have lost internet connection"
-        )
-        return ["timeout exceeded"]
-    except requests.exceptions.ConnectionError:
-        logger.warning(
-            "ConnectionError this could mean anilist is down or you have lost internet connection"
-        )
-        return ["connection error"]
+            return []
     except Exception as e:
         logger.error(f"Something unexpected occured {e}")
-        return ["unexpected error"]
+        return []
 
 
 def anime_titles_shell_complete(ctx, param, incomplete):

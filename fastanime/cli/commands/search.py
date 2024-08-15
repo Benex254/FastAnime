@@ -1,7 +1,7 @@
 import click
 
 from ...cli.config import Config
-from ..utils.completion_types import anime_titles_shell_complete
+from ..completion_functions import anime_titles_shell_complete
 
 
 @click.command(

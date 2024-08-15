@@ -10,13 +10,7 @@ from . import APP_NAME, AUTHOR, __version__
 PLATFORM = system()
 
 # ---- app deps ----
-try:
-    APP_DIR = storagepath.get_application_dir()  # pyright:ignore
-except Exception:
-    APP_DIR = None
-if not APP_DIR:
-    APP_DIR = os.path.abspath(os.path.dirname(__file__))
-CONFIGS_DIR = os.path.join(APP_DIR, "configs")
+APP_DIR = os.path.abspath(os.path.dirname(__file__))
 ASSETS_DIR = os.path.join(APP_DIR, "assets")
 
 

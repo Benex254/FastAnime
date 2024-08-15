@@ -198,18 +198,20 @@ Configuration is directly passed into this command at run time to override your 
 
 Available options include:
 
-- `--server;-s <server>` set the default server to auto select
-- `--continue;-c/--no-continue;-no-c` whether to continue from the last episode you were watching
-- `--quality;-q <0|1|2|3>` the link to choose from server
-- `--translation-type;- <dub|sub` what language for anime
-- `--auto-select;-a/--no-auto-select;-no-a` auto select title from provider results
-- `--auto-next;-A;/--no-auto-next;-no-A` auto select next episode
-- `-downloads-dir;-d <path>` set the folder to download anime into
+- `--server <server>` or `-s <server>` set the default server to auto select
+- `--continue/--no-continue` or `-c/-no-c` whether to continue from the last episode you were watching
+- `--quality <1080/720/480/360>` or `-q <1080/720/480/360>` the link to choose from server
+- `--translation-type <dub/sub>` or `-t <dub/sub>` what language for anime
+- `--dub` dubbed anime
+- `--sub` subbed anime
+- `--auto-select/--no-auto-select` or `-a/-no-a` auto select title from provider results
+- `--auto-next/--no-auto-next` or `-A/-no-A` auto select next episode
+- `-downloads-dir <path>` or `-d <path>` set the folder to download anime into
 - `--fzf` use fzf for the ui
 - `--default` use the default ui
 - `--preview` show a preview when using fzf
 - `--no-preview` dont show a preview when using fzf
-- `--format <yt-dlp format string>` set the format of anime downloaded and streamed based on yt-dlp format. Works when `--server gogoanime`
+- `--format <yt-dlp format string>` or `-f <yt-dlp format string>` set the format of anime downloaded and streamed based on yt-dlp format. Works when `--server gogoanime`
 - `--icons/--no-icons` toggle the visibility of the icons
 - `--skip/--no-skip` whether to skip the opening and ending theme songs.
 - `--rofi` use rofi for the ui
@@ -220,6 +222,7 @@ Available options include:
 - `--log-file` allow logging to a file
 - `--rich-traceback` allow rich traceback
 - `--use-mpv-mod/--use-default-player` whether to use python-mpv
+- `--provider <allanime/animepahe>` anime site of choice to scrape from **NOTE:** animepahe is still experimental and requires node to decode one line of js thats hard to decode manually
 
 #### The anilist command :fire: :fire: :fire:
 

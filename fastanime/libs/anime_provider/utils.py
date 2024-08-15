@@ -36,7 +36,7 @@ hex_to_char = {
 
 
 def give_random_quality(links: list[dict]):
-    qualities = cycle(["1080", "720", "360"])
+    qualities = cycle(["1080", "720", "480", "360"])
 
     return [
         {"link": link["link"], "quality": quality}

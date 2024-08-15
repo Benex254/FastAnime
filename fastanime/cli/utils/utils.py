@@ -37,9 +37,14 @@ def filter_by_quality(quality: str, stream_links: "list[EpisodeStream]", default
             return stream_link
     else:
         if stream_links and default:
+            from rich import print
+
             try:
-                print("Qualities were: ", stream_links)
-                print("Using default of quality: ", stream_links[0]["quality"])
+                print("[yellow bold]WARNING Qualities were:[/] ", stream_links)
+                print(
+                    "[cyan bold]Using default of quality:[/] ",
+                    stream_links[0]["quality"],
+                )
                 return stream_links[0]
             except Exception as e:
                 print(e)

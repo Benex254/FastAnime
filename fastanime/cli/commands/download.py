@@ -92,10 +92,12 @@ def download(config: "Config", anime_title, episode_range, highest_priority):
     episodes = anime["availableEpisodesDetail"][config.translation_type]
     if episode_range:
         episodes_start, episodes_end = episode_range.split("-")
+        episodes_range = range(round(float(episodes_start)), round(float(episodes_end)))
 
     else:
-        episodes_start, episodes_end = 0, len(episodes)
-    for episode in range(round(float(episodes_start)), round(float(episodes_end))):
+        episodes_range = sorted(episodes, key=float)
+
+    for episode in episodes_range:
         try:
             episode = str(episode)
             if episode not in episodes:

@@ -76,7 +76,14 @@ signal.signal(signal.SIGINT, handle_exit)
 @click.option(
     "-q",
     "--quality",
-    type=click.Choice(["360", "480", "720", "1080", "unknown"]),
+    type=click.Choice(
+        [
+            "360",
+            "480",
+            "720",
+            "1080",
+        ]
+    ),
     help="set the quality of the stream",
 )
 @click.option(

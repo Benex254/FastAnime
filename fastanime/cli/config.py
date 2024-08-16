@@ -94,6 +94,7 @@ class Config(object):
                 "rofi_theme": "",
                 "rofi_theme_input": "",
                 "rofi_theme_confirm": "",
+                "ffmpegthumnailer_seek_time": "-1",
             }
         )
         self.configparser.add_section("stream")
@@ -133,6 +134,7 @@ class Config(object):
         Rofi.rofi_theme_input = self.rofi_theme_input
         self.rofi_theme_confirm = self.get_rofi_theme_confirm()
         Rofi.rofi_theme_confirm = self.rofi_theme_confirm
+        self.ffmpegthumbnailer_seek_time = self.get_ffmpegthumnailer_seek_time()
         # ---- setup user data ------
         self.watch_history: dict = self.user_data.get("watch_history", {})
         self.anime_list: list = self.user_data.get("animelist", [])
@@ -177,6 +179,9 @@ class Config(object):
     # --- general section ---
     def get_provider(self):
         return self.configparser.get("general", "provider")
+
+    def get_ffmpegthumnailer_seek_time(self):
+        return self.configparser.getint("general", "ffmpegthumnailer_seek_time")
 
     def get_preferred_language(self):
         return self.configparser.get("general", "preferred_language")

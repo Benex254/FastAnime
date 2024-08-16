@@ -107,10 +107,12 @@ def search(config: Config, anime_titles: str, episode_range: str):
                     episodes_range = episodes[int(episodes_start) : int(episodes_end)]
                 else:
                     episodes_start, episodes_end = ep_range_tuple
-                    if episodes_start:
+                    if episodes_start.strip():
                         episodes_range = episodes[int(episodes_start) :]
-                    else:
+                    elif episodes_end.strip():
                         episodes_range = episodes[: int(episodes_end)]
+                    else:
+                        episodes_range = episodes
             else:
                 episodes_range = episodes[int(episode_range) :]
 

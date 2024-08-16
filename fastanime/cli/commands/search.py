@@ -11,7 +11,7 @@ from ..completion_functions import anime_titles_shell_complete
 @click.option(
     "--episode-range",
     "-r",
-    help="A range of episodes to binge",
+    help="A range of episodes to binge (start-end)",
 )
 @click.argument(
     "anime_title", required=True, shell_complete=anime_titles_shell_complete

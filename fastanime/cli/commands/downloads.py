@@ -27,6 +27,7 @@ def downloads(config: "Config", path: bool, view_episodes, ffmpegthumbnailer_see
     from ...cli.utils.mpv import run_mpv
     from ...libs.fzf import fzf
     from ...libs.rofi import Rofi
+    from ...Utility.utils import sort_by_episode_number
     from ..utils.tools import exit_app
     from ..utils.utils import fuzzy_inquirer
 
@@ -39,7 +40,9 @@ def downloads(config: "Config", path: bool, view_episodes, ffmpegthumbnailer_see
     if not os.path.exists(USER_VIDEOS_DIR):
         print("Downloads directory specified does not exist")
         return
-    anime_downloads = sorted(os.listdir(USER_VIDEOS_DIR))
+    anime_downloads = sorted(
+        os.listdir(USER_VIDEOS_DIR),
+    )
     anime_downloads.append("Exit")
 
     def create_thumbnails(video_path, anime_title, downloads_thumbnail_cache_dir):
@@ -99,7 +102,9 @@ def downloads(config: "Config", path: bool, view_episodes, ffmpegthumbnailer_see
                     anime_path = os.path.join(USER_VIDEOS_DIR, anime_title)
                     if not os.path.isdir(anime_path):
                         continue
-                    playlist = sorted(os.listdir(anime_path))
+                    playlist = sorted(
+                        os.listdir(anime_path),
+                    )
                     if playlist:
                         # actual link to download image from
                         video_path = os.path.join(anime_path, playlist[0])
@@ -166,7 +171,9 @@ def downloads(config: "Config", path: bool, view_episodes, ffmpegthumbnailer_see
             # anime_playlist_path = os.path.join(USER_VIDEOS_DIR, anime_playlist_path)
             if not os.path.isdir(anime_playlist_path):
                 return
-            anime_episodes = sorted(os.listdir(anime_playlist_path))
+            anime_episodes = sorted(
+                os.listdir(anime_playlist_path), key=sort_by_episode_number
+            )
             with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:
                 # load the jobs
                 future_to_url = {}
@@ -223,7 +230,9 @@ def downloads(config: "Config", path: bool, view_episodes, ffmpegthumbnailer_see
                 print(anime_playlist_path, "is not dir")
                 exit_app(1)
                 return
-            episodes = sorted(os.listdir(anime_playlist_path))
+            episodes = sorted(
+                os.listdir(anime_playlist_path), key=sort_by_episode_number
+            )
             downloaded_episodes = [*episodes, "Back"]
             if config.use_fzf:
                 if not config.preview:

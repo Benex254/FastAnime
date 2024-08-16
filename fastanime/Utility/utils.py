@@ -11,6 +11,13 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
+def sort_by_episode_number(filename: str):
+    import re
+
+    match = re.search(r"\d+", filename)
+    return int(match.group()) if match else 0
+
+
 def anime_title_percentage_match(
     possible_user_requested_anime_title: str, anime: "AnilistBaseMediaDataSchema"
 ) -> float:

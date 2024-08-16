@@ -224,10 +224,19 @@ Available options for the fastanime command include:
 - `--rich-traceback` allow rich traceback
 - `--use-mpv-mod/--use-default-player` whether to use python-mpv
 - `--provider <allanime>` anime site of choice to scrape from
+- `--sync-play` or `-sp` use syncplay for streaming anime so you can watch with your friends
 
 Example usage of the above options
 
 ```bash
+# example of syncplay intergration
+fastanime --sync-play search -t <anime-title>
+
+# --- or ---
+
+# to watch with anilist intergration
+fastanime --sync-play anilist
+
 # downloading dubbed anime
 fastanime --dub download <anime>
 

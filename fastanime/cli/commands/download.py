@@ -13,8 +13,13 @@ if TYPE_CHECKING:
     help="Download anime using the anime provider for a specified range",
     short_help="Download anime",
 )
-@click.argument(
-    "anime-titles", required=True, shell_complete=anime_titles_shell_complete, nargs=-1
+@click.option(
+    "--anime-titles",
+    "--anime_title",
+    "-t",
+    required=True,
+    shell_complete=anime_titles_shell_complete,
+    multiple=True,
 )
 @click.option(
     "--episode-range",

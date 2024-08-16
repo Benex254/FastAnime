@@ -8,8 +8,13 @@ from ..completion_functions import anime_titles_shell_complete
     help="This subcommand directly interacts with the provider to enable basic streaming. Useful for binging anime.",
     short_help="Binge anime",
 )
-@click.argument(
-    "anime_titles", required=True, shell_complete=anime_titles_shell_complete, nargs=-1
+@click.option(
+    "--anime-titles",
+    "--anime_title",
+    "-t",
+    required=True,
+    shell_complete=anime_titles_shell_complete,
+    multiple=True,
 )
 @click.option(
     "--episode-range",

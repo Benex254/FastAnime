@@ -303,8 +303,9 @@ end
 #### download subcommand
 
 Download anime to watch later dub or sub with this one command.
-Its optimized for scripting due to fuzzy matching.
+Its optimized for scripting due to fuzzy matching; basically you don't have to manually select search results.
 So every step of the way has been and can be automated.
+Uses a list slicing syntax similar to that of python as the value for the `-r` option.
 
 > [!NOTE]
 >
@@ -315,29 +316,57 @@ So every step of the way has been and can be automated.
 
 ```bash
 # Download all available episodes
-fastanime download <anime-title>
+# multiple titles can be specified with -t option
+fastanime download -t <anime-title> -t <anime-title>
+# -- or --
+fastanime download -t <anime-title> -t <anime-title> -r ':'
+
+# download latest episode for the two anime titles
+# the number can be any no of latest episodes but a minus sign
+# must be present
+fastanime download -t <anime-title> -t <anime-title> -r '-1'
+
+# latest 5
+fastanime download -t <anime-title> -t <anime-title> -r '-5'
 
 # Download specific episode range
 # be sure to observe the range Syntax
-fastanime download <anime-title> -r <episodes-start>-<episodes-end>
+fastanime download <anime-title> -r '<episodes-start>:<episodes-end>:<step>'
+
+fastanime download <anime-title> -r '<episodes-start>:<episodes-end>'
+
+fastanime download <anime-title> -r '<episodes-start>:'
+
+fastanime download <anime-title> -r ':<episodes-end>'
 ```
 
 #### search subcommand
 
 Powerful command mainly aimed at binging anime. Since it doesn't require interaction with the interfaces.
+Uses a list slicing syntax similar to that of python as the value of the `-r` option.
 
 **Syntax:**
 
 ```bash
 # basic form where you will still be prompted for the episode number
-fastanime search <anime-title>
+# multiple titles can be specified with the -t option
+fastanime search -t <anime-title> -t <anime-title>
 
 # binge all episodes with this command
-fastanime search <anime-title> -r -
+fastanime search -t <anime-title> -r ':'
+
+# watch latest episode
+fastanime search -t <anime-title> -r '-1'
 
 # binge a specific episode range with this command
 # be sure to observe the range Syntax
-fastanime search <anime-title> -r <episodes-start>-<episodes-end>
+fastanime search -t <anime-title> -r '<start>:<stop>'
+
+fastanime search -t <anime-title> -r '<start>:<stop>:<step>'
+
+fastanime search -t <anime-title> -r '<start>:'
+
+fastanime search -t <anime-title> -r ':<end>'
 ```
 
 #### downloads subcommand

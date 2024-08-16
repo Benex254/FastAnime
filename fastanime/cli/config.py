@@ -296,6 +296,10 @@ error = {self.error}
 # adding more options to it
 use_mpv_mod = {self.use_mpv_mod}
 
+# force mpv window
+# passed directly to mpv so values are same
+force_window = immediate
+
 # the format of downloaded anime and trailer
 # based on yt-dlp format and passed directly to it
 # learn more by looking it up on their site

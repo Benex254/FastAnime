@@ -521,6 +521,10 @@ continue_from_history = True  # Auto continue from watch history
 # which history to use [local/remote]
 preferred_history = local
 
+# force mpv window
+# passed directly to mpv so values are same
+force_window = immediate
+
 translation_type = sub  # Preferred language for anime (options: dub, sub)
 
 server = top  # Default server (options: dropbox, sharepoint, wetransfer.gogoanime, top, wixmp)

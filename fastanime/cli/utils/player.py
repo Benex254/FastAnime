@@ -141,6 +141,7 @@ class MpvPlayer(object):
             return
         self.mpv_player._set_property("start", "0")
         stream_link = stream_link_["link"]
+        fastanime_runtime_state.provider_current_episode_stream_link = stream_link
         return stream_link
 
     def create_player(

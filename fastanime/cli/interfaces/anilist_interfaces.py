@@ -98,8 +98,14 @@ def media_player_controls(
             current_episode_number,
         )
 
-        start_time = config.watch_history[str(anime_id_anilist)]["start_time"]
-        print("[green]Continuing from:[/] ", start_time)
+        if (
+            config.watch_history[str(anime_id_anilist)]["episode"]
+            == current_episode_number
+        ):
+            start_time = config.watch_history[str(anime_id_anilist)]["start_time"]
+            print("[green]Continuing from:[/] ", start_time)
+        else:
+            start_time = "0"
         custom_args = []
         if config.skip:
             if args := aniskip(
@@ -1142,7 +1148,7 @@ def media_actions_menu(
         f"{'💠 ' if icons else ''}Toggle auto next episode": _toggle_auto_next,
         f"{'🔘 ' if icons else ''}Toggle continue from history": _toggle_continue_from_history,
         f"{'🔙 ' if icons else ''}Back": anilist_results_menu,
-        f"{'❌ ' if icons else ''}Exit": exit_app,
+        f"{'❌ ' if icons else ''}Exit": lambda *_: exit_app(),
     }
     choices = list(options.keys())
     if config.use_fzf:

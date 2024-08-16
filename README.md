@@ -223,7 +223,7 @@ Available options for the fastanime command include:
 - `--log-file` allow logging to a file
 - `--rich-traceback` allow rich traceback
 - `--use-mpv-mod/--use-default-player` whether to use python-mpv
-- `--provider <allanime/animepahe>` anime site of choice to scrape from **NOTE:** animepahe is still experimental and requires node to decode one line of js thats hard to decode manually
+- `--provider <allanime>` anime site of choice to scrape from
 
 Example usage of the above options
 
@@ -348,9 +348,21 @@ View and stream the anime you downloaded using MPV.
 ```bash
 fastanime downloads
 
+# view individual episodes
+fastanime downloads --view-episodes
+# --- or ---
+fastanime downloads -v
+
+# to set seek time when using ffmpegthumbnailer for local previews
+# -1 means random and is the default
+fastanime downloads --time-to-seek <intRange(-1,100)>
+# --- or ---
+fastanime downloads --t <intRange(-1,100)>
+
 # to get the path to the downloads folder set
 fastanime downloads --path
 # useful when you want to use the value for other programs
+
 ```
 
 #### config subcommand

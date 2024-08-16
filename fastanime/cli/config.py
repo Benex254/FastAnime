@@ -317,6 +317,10 @@ downloads_dir = {self.downloads_dir}
 # whether to show a preview window when using fzf or rofi
 preview = {self.preview} 
 
+# the time to seek when using ffmpegthumbnailer [-1 to 100]
+# -1 means random and is the default
+ffmpegthumbnailer_seek_time = {self.ffmpegthumbnailer_seek_time}
+
 # whether to use fzf as the interface for the anilist command and others.
 use_fzf = {self.use_fzf} 
 

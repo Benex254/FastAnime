@@ -200,6 +200,7 @@ Available options for the fastanime command include:
 
 - `--server <server>` or `-s <server>` set the default server to auto select
 - `--continue/--no-continue` or `-c/-no-c` whether to continue from the last episode you were watching
+- `--local-history/--remote-history` whether to use remote or local history defaults to local
 - `--quality <1080/720/480/360>` or `-q <1080/720/480/360>` the link to choose from server
 - `--translation-type <dub/sub>` or `-t <dub/sub>` what language for anime
 - `--dub` dubbed anime
@@ -229,9 +230,10 @@ Example usage of the above options
 ```bash
 # downloading dubbed anime
 fastanime --dub download <anime>
+
 # use  icons and fzf for a more elegant ui with preview
-# only for anilist
 fastanime --icons --preview --fzf anilist
+
 # use icons with default ui
 fastanime --icons --default anilist
 ```
@@ -449,29 +451,43 @@ Examples:
 ```bash
 # to select episode from mpv without window closing
 script-message select-episode <episode-number>
+
 # to select server from mpv without window closing
 script-message select-server <server-name>
+
+# to select quality
+script-message select-quality <1080/720/480/360>
 ```
 
-## Configuration
+## configuration
 
-The app includes sensible defaults but can be customized extensively. Configuration is stored in `.ini` format at `~/.config/FastAnime/config.ini` on Linux and mac or somewhere on windows; you can check by running `fastanime config --path`.
+The app includes sensible defaults but can be customized extensively. Configuration is stored in `.ini` format at `~/.config/FastAnime/config.ini` on arch linux; for the other operating systems you can check by running `fastanime config --path`.
 
 ```ini
 [stream]
 continue_from_history = True  # Auto continue from watch history
+
+# which history to use [local/remote]
+preferred_history = local
+
 translation_type = sub  # Preferred language for anime (options: dub, sub)
+
 server = top  # Default server (options: dropbox, sharepoint, wetransfer.gogoanime, top, wixmp)
+
 auto_next = False  # Auto-select next episode
+
 # Auto select the anime provider results with fuzzy find.
 # Note this wont always be correct.But 99% of the time will be.
 auto_select=True
+
 # whether to skip the opening and ending theme songs
 # note requires ani-skip to be in path
 skip=false
+
 # the maximum delta time in minutes after which the episode should be considered as completed
 # used in the continue from time stamp
 error=3
+
 use_mpv_mod=False
 
 # the format of downloaded anime and trailer
@@ -487,14 +503,19 @@ format=best[height<=1080]/bestvideo[height<=1080]+bestaudio/best # default
 provider = allanime
 
 preferred_language = romaji  # Display language (options: english, romaji)
+
 downloads_dir = <Default-videos-dir>/FastAnime  # Download directory
+
 preview=false # whether to show a preview window when using fzf or rofi
 
 use_fzf=False # whether to use fzf as the interface for the anilist command and others.
 
 use_rofi=false # whether to use rofi for the ui
+
 rofi_theme=<path-to-rofi-theme-file>
+
 rofi_theme_input=<path-to-rofi-theme-file>
+
 rofi_theme_confirm=<path-to-rofi-theme-file>
 
 

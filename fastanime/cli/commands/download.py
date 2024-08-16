@@ -138,13 +138,16 @@ def download(
                     # prompt for server selection
                     servers = {server["server"]: server for server in streams}
                 servers_names = list(servers.keys())
-                if config.use_fzf:
-                    server = fzf.run(servers_names, "Select an link: ")
+                if config.server in servers_names:
+                    server = config.server
                 else:
-                    server = fuzzy_inquirer(
-                        servers_names,
-                        "Select link",
-                    )
+                    if config.use_fzf:
+                        server = fzf.run(servers_names, "Select an link: ")
+                    else:
+                        server = fuzzy_inquirer(
+                            servers_names,
+                            "Select link",
+                        )
                 stream_link = filter_by_quality(
                     config.quality, servers[server]["links"]
                 )

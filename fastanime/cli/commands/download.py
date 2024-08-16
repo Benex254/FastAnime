@@ -19,16 +19,14 @@ if TYPE_CHECKING:
 @click.option(
     "--episode-range",
     "-r",
-    help="A range of episodes to download",
-)
-@click.option(
-    "--highest_priority",
-    "-h",
-    help="Choose stream indicated as highest priority",
-    is_flag=True,
+    help="A range of episodes to download (start-end)",
 )
 @click.pass_obj
-def download(config: "Config", anime_title, episode_range, highest_priority):
+def download(
+    config: "Config",
+    anime_title,
+    episode_range,
+):
     from click import clear
     from rich import print
     from rich.progress import Progress
@@ -55,7 +53,11 @@ def download(config: "Config", anime_title, episode_range, highest_priority):
     if not search_results:
         print("Search results failed")
         input("Enter to retry")
-        download(config, anime_title, episode_range, highest_priority)
+        download(
+            config,
+            anime_title,
+            episode_range,
+        )
         return
     search_results = search_results["results"]
     search_results_ = {
@@ -86,7 +88,11 @@ def download(config: "Config", anime_title, episode_range, highest_priority):
     if not anime:
         print("Sth went wring anime no found")
         input("Enter to continue...")
-        download(config, anime_title, episode_range, highest_priority)
+        download(
+            config,
+            anime_title,
+            episode_range,
+        )
         return
 
     episodes = anime["availableEpisodesDetail"][config.translation_type]

@@ -298,6 +298,7 @@ end
 > [!NOTE]
 > To sign in just run `fastanime anilist login` and follow the instructions.
 > To view your login status `fastanime anilist login --status`
+> To erase login data `fastanime anilist login --erase`
 
 #### download subcommand
 
@@ -357,7 +358,7 @@ fastanime downloads -v
 # -1 means random and is the default
 fastanime downloads --time-to-seek <intRange(-1,100)>
 # --- or ---
-fastanime downloads --t <intRange(-1,100)>
+fastanime downloads -t <intRange(-1,100)>
 
 # to get the path to the downloads folder set
 fastanime downloads --path

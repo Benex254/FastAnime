@@ -857,6 +857,12 @@ def media_actions_menu(
             config: [TODO:description]
             fastanime_runtime_state: [TODO:description]
         """
+        if not config.user:
+            print("You aint logged in")
+            input("Enter to continue")
+            media_actions_menu(config, fastanime_runtime_state)
+            return
+
         anime_lists = {
             "Watching": "CURRENT",
             "Paused": "PAUSED",
@@ -901,6 +907,11 @@ def media_actions_menu(
             config: [TODO:description]
             fastanime_runtime_state: [TODO:description]
         """
+        if not config.user:
+            print("You aint logged in")
+            input("Enter to continue")
+            media_actions_menu(config, fastanime_runtime_state)
+            return
         if config.use_rofi:
             score = Rofi.ask("Enter Score", is_int=True)
             score = max(100, min(0, score))
@@ -1199,7 +1210,7 @@ def anilist_results_menu(
             anime["status"] == "RELEASING"
             and anime["nextAiringEpisode"]
             and progress > 0
-            and anime["mediaListEntry"]
+            and (anime["mediaListEntry"] or {}).get("status", "") == "CURRENT"
         ):
             last_aired_episode = anime["nextAiringEpisode"]["episode"] - 1
             if last_aired_episode - progress > 0:

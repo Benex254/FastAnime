@@ -31,6 +31,7 @@ if TYPE_CHECKING:
     from ..utils.tools import FastAnimeRuntimeState
 
 
+# TODO: make the error handling more sane
 def calculate_time_delta(start_time, end_time):
     """helper function used to calculate the difference between two timestamps in seconds
 

@@ -230,12 +230,12 @@ Example usage of the above options
 
 ```bash
 # example of syncplay intergration
-fastanime --sync-play search -t <anime-title>
+fastanime --sync-play --server sharepoint search -t <anime-title>
 
 # --- or ---
 
 # to watch with anilist intergration
-fastanime --sync-play anilist
+fastanime --sync-play --server sharepoint anilist
 
 # downloading dubbed anime
 fastanime --dub download <anime>

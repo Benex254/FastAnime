@@ -173,6 +173,7 @@ query ($userId: Int, $status: MediaListStatus,$type:MediaType) {
         status
         description
         mediaListEntry{
+        status
         id
         progress
         }
@@ -275,6 +276,7 @@ query($query:String,%s){
         
       }
         mediaListEntry{
+    status
         id
         progress
         }
@@ -356,6 +358,7 @@ query($type:MediaType){
         day
       }
         mediaListEntry{
+        status
         id
         progress
         }
@@ -396,6 +399,7 @@ query($type:MediaType){
         
       }
         mediaListEntry{
+        status
         id
         progress
         }
@@ -455,6 +459,7 @@ query($type:MediaType){
         
       }
         mediaListEntry{
+        status
         id
         progress
         }
@@ -520,6 +525,7 @@ query($type:MediaType){
       episodes
       genres
         mediaListEntry{
+        status
         id
         progress
         }
@@ -572,6 +578,7 @@ query($type:MediaType){
         id     
       }
         mediaListEntry{
+        status
         id
         progress
         }
@@ -630,6 +637,7 @@ query($type:MediaType){
               large
             }
             mediaListEntry{
+            status
                 id
                 progress
             }
@@ -724,6 +732,7 @@ query ($id: Int,$type:MediaType) {
             large
           }
         mediaListEntry{
+        status
         id
         progress
         }
@@ -805,6 +814,7 @@ query ($page: Int,$type:MediaType) {
         id
       }
               mediaListEntry{
+              status
         id
         progress
         }
@@ -855,6 +865,7 @@ query($id:Int){
         english
       }
               mediaListEntry{
+              status
         id
         progress
         }

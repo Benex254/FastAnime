@@ -101,7 +101,7 @@ class MpvPlayer(object):
             AniList.update_anime_list(
                 {
                     "mediaId": anime_id_anilist,
-                    "progress": current_episode_number,
+                    "progress": int(float(current_episode_number)),
                 }
             )
         # get them juicy streams

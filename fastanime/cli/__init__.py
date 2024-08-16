@@ -69,6 +69,11 @@ signal.signal(signal.SIGINT, handle_exit)
     help="Continue from last episode?",
 )
 @click.option(
+    "--local-history/--remote-history",
+    type=bool,
+    help="Whether to continue from local history or remote history",
+)
+@click.option(
     "--skip/--no-skip",
     type=bool,
     help="Skip opening and ending theme songs?",
@@ -146,6 +151,7 @@ def run_cli(
     server,
     format,
     continue_,
+    local_history,
     skip,
     translation_type,
     quality,
@@ -216,6 +222,11 @@ def run_cli(
         ctx.obj.auto_next = auto_next
     if ctx.get_parameter_source("icons") == click.core.ParameterSource.COMMANDLINE:
         ctx.obj.icons = icons
+    if (
+        ctx.get_parameter_source("local_history")
+        == click.core.ParameterSource.COMMANDLINE
+    ):
+        ctx.obj.preferred_history = "local" if local_history else "remote"
     if (
         ctx.get_parameter_source("auto_select")
         == click.core.ParameterSource.COMMANDLINE

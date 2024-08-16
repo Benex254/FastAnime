@@ -78,6 +78,7 @@ class Config(object):
                 "translation_type": "sub",
                 "server": "top",
                 "continue_from_history": "True",
+                "preferred_history": "local",
                 "use_mpv_mod": "false",
                 "force_window": "immediate",
                 "preferred_language": "english",
@@ -125,6 +126,7 @@ class Config(object):
         self.format = self.get_format()
         self.force_window = self.get_force_window()
         self.preferred_language = self.get_preferred_language()
+        self.preferred_history = self.get_preferred_history()
         self.rofi_theme = self.get_rofi_theme()
         Rofi.rofi_theme = self.rofi_theme
         self.rofi_theme_input = self.get_rofi_theme_input()
@@ -231,6 +233,9 @@ class Config(object):
 
     def get_translation_type(self):
         return self.configparser.get("stream", "translation_type")
+
+    def get_preferred_history(self):
+        return self.configparser.get("stream", "preferred_history")
 
     def get_quality(self):
         return self.configparser.get("stream", "quality")

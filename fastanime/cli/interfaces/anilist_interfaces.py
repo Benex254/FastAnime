@@ -365,35 +365,18 @@ def provider_anime_episode_servers_menu(
         # no need to get all servers if top just works
         with Progress() as progress:
             progress.add_task("Fetching top server...", total=None)
-            try:
-                selected_server = next(episode_streams_generator, None)
-                if not selected_server:
-                    if config.use_rofi:
-                        if Rofi.confirm("Sth went wrong enter to continue"):
-                            provider_anime_episode_servers_menu(
-                                config, fastanime_runtime_state
-                            )
-                        else:
-                            exit_app(1)
-                    else:
-                        print("Sth went wrong")
-                        input("Enter to continue...")
-                        provider_anime_episode_servers_menu(
-                            config, fastanime_runtime_state
-                        )
-                    return
-                server_name = "top"
-            except Exception as e:
-                print("Failed to get streams. Reason:", e)
-                if not config.use_rofi:
-                    input("Enter to coninue...")
+            selected_server = next(episode_streams_generator, None)
+        if not selected_server:
+            if config.use_rofi:
+                if Rofi.confirm("Sth went wrong enter to continue"):
+                    media_actions_menu(config, fastanime_runtime_state)
                 else:
-                    if not Rofi.confirm(f"!!Sth went wrong!!: {e} Enter to continue"):
-                        exit_app(1)
-                server_name = None
-                selected_server = ""
+                    exit_app(1)
+            else:
+                print("Sth went wrong")
+                input("Enter to continue...")
                 media_actions_menu(config, fastanime_runtime_state)
-                return
+            return
     else:
         with Progress() as progress:
             progress.add_task("Fetching servers...", total=None)
@@ -402,6 +385,17 @@ def provider_anime_episode_servers_menu(
                 for episode_stream in episode_streams_generator
             }
 
+        if not episode_streams_dict:
+            if config.use_rofi:
+                if Rofi.confirm("Sth went wrong enter to continue"):
+                    media_actions_menu(config, fastanime_runtime_state)
+                else:
+                    exit_app(1)
+            else:
+                print("Sth went wrong")
+                input("Enter to continue...")
+                media_actions_menu(config, fastanime_runtime_state)
+            return
         # check if user server exists and is actually a valid serrver then sets it
         if config.server and config.server in episode_streams_dict.keys():
             server_name = config.server
@@ -478,7 +472,7 @@ def provider_anime_episode_servers_menu(
         AniList.update_anime_list(
             {
                 "mediaId": anime_id_anilist,
-                "progress": current_episode_number,
+                "progress": int(float(current_episode_number)),
             }
         )
 
@@ -486,7 +480,10 @@ def provider_anime_episode_servers_menu(
     start_time = config.watch_history.get(str(anime_id_anilist), {}).get(
         "start_time", "0"
     )
-    if start_time != "0":
+    episode_in_history = config.watch_history.get(str(anime_id_anilist), {}).get(
+        "episode", ""
+    )
+    if start_time != "0" and episode_in_history == current_episode_number:
         print("[green]Continuing from:[/] ", start_time)
     custom_args = []
     if config.skip:
@@ -512,7 +509,7 @@ def provider_anime_episode_servers_menu(
             script_opts = custom_args[1].split("=", 1)
             mpv._set_property("chapters-file", chapters_file[1])
             mpv._set_property("script-opts", script_opts[1])
-        if not start_time == "0":
+        if not start_time == "0" and episode_in_history == current_episode_number:
             mpv.start = start_time
         mpv.wait_for_shutdown()
         mpv.terminate()
@@ -520,6 +517,8 @@ def provider_anime_episode_servers_menu(
         total_time = player.last_total_time
         current_episode_number = fastanime_runtime_state.provider_current_episode_number
     else:
+        if not episode_in_history == current_episode_number:
+            start_time = "0"
         stop_time, total_time = run_mpv(
             current_stream_link,
             selected_server["episode_title"],
@@ -602,9 +601,19 @@ def provider_anime_episodes_menu(
             user_watch_history.get(str(anime_id_anilist), {}).get("episode")
             in total_episodes
         ):
-            current_episode_number = user_watch_history[str(anime_id_anilist)][
-                "episode"
-            ]
+            if (
+                config.preferred_history == "local"
+                or not selected_anime_anilist["mediaListEntry"]
+            ):
+                current_episode_number = user_watch_history[str(anime_id_anilist)][
+                    "episode"
+                ]
+            else:
+                current_episode_number = str(
+                    (selected_anime_anilist["mediaListEntry"] or {"progress": 0}).get(
+                        "progress"
+                    )
+                )
             print(
                 f"[bold cyan]Continuing from Episode:[/] [bold]{current_episode_number}[/]"
             )
@@ -626,7 +635,7 @@ def provider_anime_episodes_menu(
             current_episode_number = ""
 
     # prompt for episode number if not set
-    if not current_episode_number:
+    if not current_episode_number or current_episode_number not in total_episodes:
         choices = [*total_episodes, "Back"]
         if config.use_fzf:
             current_episode_number = fzf.run(
@@ -662,7 +671,6 @@ def provider_anime_episodes_menu(
     provider_anime_episode_servers_menu(config, fastanime_runtime_state)
 
 
-# WARNING: Marked for deletion, the function is quite useless and function calls in python are expensive
 def fetch_anime_episode(config, fastanime_runtime_state: "FastAnimeRuntimeState"):
     selected_anime: "SearchResult" = (
         fastanime_runtime_state.provider_anime_search_result

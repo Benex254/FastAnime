@@ -79,6 +79,7 @@ def downloads(config: "Config", path: bool, view_episodes, ffmpegthumbnailer_see
 
     def get_previews_anime(workers=None, bg=True):
         import concurrent.futures
+        import random
         import shutil
         from pathlib import Path
 
@@ -102,12 +103,16 @@ def downloads(config: "Config", path: bool, view_episodes, ffmpegthumbnailer_see
                     anime_path = os.path.join(USER_VIDEOS_DIR, anime_title)
                     if not os.path.isdir(anime_path):
                         continue
-                    playlist = sorted(
-                        os.listdir(anime_path),
-                    )
+                    playlist = [
+                        anime
+                        for anime in sorted(
+                            os.listdir(anime_path),
+                        )
+                        if "mp4" in anime
+                    ]
                     if playlist:
                         # actual link to download image from
-                        video_path = os.path.join(anime_path, playlist[0])
+                        video_path = os.path.join(anime_path, random.choice(playlist))
                         future_to_url[
                             executor.submit(
                                 create_thumbnails,

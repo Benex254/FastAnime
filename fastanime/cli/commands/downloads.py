@@ -258,7 +258,12 @@ def downloads(config: "Config", path: bool, view_episodes, ffmpegthumbnailer_see
                 stream_anime()
                 return
             episode_path = os.path.join(anime_playlist_path, episode_title)
-            run_mpv(episode_path)
+            if config.sync_play:
+                from ..utils.syncplay import SyncPlayer
+
+                SyncPlayer(episode_path)
+            else:
+                run_mpv(episode_path)
             stream_episode(anime_playlist_path)
 
     def stream_anime():
@@ -291,7 +296,12 @@ def downloads(config: "Config", path: bool, view_episodes, ffmpegthumbnailer_see
                 playlist,
             )
         else:
-            run_mpv(playlist)
+            if config.sync_play:
+                from ..utils.syncplay import SyncPlayer
+
+                SyncPlayer(playlist)
+            else:
+                run_mpv(playlist)
         stream_anime()
 
     stream_anime()

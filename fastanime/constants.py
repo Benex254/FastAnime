@@ -34,7 +34,7 @@ if S_PLATFORM == "win32":
     APP_CACHE_DIR = os.path.join(APP_DATA_DIR, "cache")
 
     # videos dir
-    video_dir_base = os.path.expanduser("~/Videos")
+    video_dir_base = os.path.join(Path().home(), "Videos")
     USER_VIDEOS_DIR = os.path.join(video_dir_base, APP_NAME)
 
 elif S_PLATFORM == "darwin":

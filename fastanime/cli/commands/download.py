@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     short_help="Download anime",
 )
 @click.argument(
-    "anime-title", required=True, shell_complete=anime_titles_shell_complete
+    "anime-titles", required=True, shell_complete=anime_titles_shell_complete, nargs=-1
 )
 @click.option(
     "--episode-range",
@@ -24,10 +24,9 @@ if TYPE_CHECKING:
 @click.pass_obj
 def download(
     config: "Config",
-    anime_title,
+    anime_titles: list,
     episode_range,
 ):
-    from click import clear
     from rich import print
     from rich.progress import Progress
     from thefuzz import fuzz
@@ -44,133 +43,154 @@ def download(
     translation_type = config.translation_type
     download_dir = config.downloads_dir
 
-    # ---- search for anime ----
-    with Progress() as progress:
-        progress.add_task("Fetching Search Results...", total=None)
-        search_results = anime_provider.search_for_anime(
-            anime_title, translation_type=translation_type
-        )
-    if not search_results:
-        print("Search results failed")
-        input("Enter to retry")
-        download(
-            config,
-            anime_title,
-            episode_range,
-        )
-        return
-    search_results = search_results["results"]
-    search_results_ = {
-        search_result["title"]: search_result for search_result in search_results
-    }
+    print(f"[green bold]Queued:[/] {anime_titles}")
+    for anime_title in anime_titles:
+        print(f"[green bold]Now Downloading: [/] {anime_title}")
+        # ---- search for anime ----
+        with Progress() as progress:
+            progress.add_task("Fetching Search Results...", total=None)
+            search_results = anime_provider.search_for_anime(
+                anime_title, translation_type=translation_type
+            )
+        if not search_results:
+            print("Search results failed")
+            input("Enter to retry")
+            download(
+                config,
+                anime_title,
+                episode_range,
+            )
+            return
+        search_results = search_results["results"]
+        search_results_ = {
+            search_result["title"]: search_result for search_result in search_results
+        }
 
-    if config.auto_select:
-        search_result = max(
-            search_results_.keys(), key=lambda title: fuzz.ratio(title, anime_title)
-        )
-        print("[cyan]Auto selecting:[/] ", search_result)
-    else:
-        choices = list(search_results_.keys())
-        if config.use_fzf:
-            search_result = fzf.run(choices, "Please Select title: ", "FastAnime")
+        if config.auto_select:
+            search_result = max(
+                search_results_.keys(), key=lambda title: fuzz.ratio(title, anime_title)
+            )
+            print("[cyan]Auto selecting:[/] ", search_result)
         else:
-            search_result = fuzzy_inquirer(
-                choices,
-                "Please Select title",
-            )
-
-    # ---- fetch anime ----
-    with Progress() as progress:
-        progress.add_task("Fetching Anime...", total=None)
-        anime: Anime | None = anime_provider.get_anime(
-            search_results_[search_result]["id"]
-        )
-    if not anime:
-        print("Sth went wring anime no found")
-        input("Enter to continue...")
-        download(
-            config,
-            anime_title,
-            episode_range,
-        )
-        return
-
-    episodes = anime["availableEpisodesDetail"][config.translation_type]
-    if episode_range:
-        episodes_start, episodes_end = episode_range.split("-")
-        episodes_range = range(round(float(episodes_start)), round(float(episodes_end)))
-
-    else:
-        episodes_range = sorted(episodes, key=float)
-
-    for episode in episodes_range:
-        try:
-            episode = str(episode)
-            if episode not in episodes:
-                print(f"[cyan]Warning[/]: Episode {episode} not found, skipping")
-                continue
-            with Progress() as progress:
-                progress.add_task("Fetching Episode Streams...", total=None)
-                streams = anime_provider.get_episode_streams(
-                    anime, episode, config.translation_type
-                )
-                if not streams:
-                    print("No streams skipping")
-                    continue
-            # ---- fetch servers ----
-            if config.server == "top":
-                with Progress() as progress:
-                    progress.add_task("Fetching top server...", total=None)
-                    server = next(streams, None)
-                    if not server:
-                        print("Sth went wrong when fetching the server")
-                        continue
-                stream_link = filter_by_quality(config.quality, server["links"])
-                if not stream_link:
-                    print("Quality not found")
-                    input("Enter to continue")
-                    continue
-                link = stream_link["link"]
-                episode_title = server["episode_title"]
+            choices = list(search_results_.keys())
+            if config.use_fzf:
+                search_result = fzf.run(choices, "Please Select title: ", "FastAnime")
             else:
-                with Progress() as progress:
-                    progress.add_task("Fetching servers", total=None)
-                    # prompt for server selection
-                    servers = {server["server"]: server for server in streams}
-                servers_names = list(servers.keys())
-                if config.server in servers_names:
-                    server = config.server
-                else:
-                    if config.use_fzf:
-                        server = fzf.run(servers_names, "Select an link: ")
-                    else:
-                        server = fuzzy_inquirer(
-                            servers_names,
-                            "Select link",
-                        )
-                stream_link = filter_by_quality(
-                    config.quality, servers[server]["links"]
+                search_result = fuzzy_inquirer(
+                    choices,
+                    "Please Select title",
                 )
-                if not stream_link:
-                    print("Quality not found")
-                    continue
-                link = stream_link["link"]
 
-                episode_title = servers[server]["episode_title"]
-            print(f"[purple]Now Downloading:[/] {search_result} Episode {episode}")
-
-            downloader._download_file(
-                link,
-                anime["title"],
-                episode_title,
-                download_dir,
-                True,
-                config.format,
+        # ---- fetch anime ----
+        with Progress() as progress:
+            progress.add_task("Fetching Anime...", total=None)
+            anime: Anime | None = anime_provider.get_anime(
+                search_results_[search_result]["id"]
             )
-        except Exception as e:
-            print(e)
-            time.sleep(1)
-            print("Continuing")
-            clear()
+        if not anime:
+            print("Sth went wring anime no found")
+            input("Enter to continue...")
+            download(
+                config,
+                anime_title,
+                episode_range,
+            )
+            return
+
+        episodes = sorted(
+            anime["availableEpisodesDetail"][config.translation_type], key=float
+        )
+        if episode_range:
+            if ":" in episode_range:
+                ep_range_tuple = episode_range.split(":")
+                if len(ep_range_tuple) == 2 and all(ep_range_tuple):
+                    episodes_start, episodes_end = ep_range_tuple
+                    episodes_range = episodes[int(episodes_start) : int(episodes_end)]
+                elif len(ep_range_tuple) == 3 and all(ep_range_tuple):
+                    episodes_start, episodes_end, step = ep_range_tuple
+                    episodes_range = episodes[
+                        int(episodes_start) : int(episodes_end) : int(step)
+                    ]
+                else:
+                    episodes_start, episodes_end = ep_range_tuple
+                    if episodes_start.strip():
+                        episodes_range = episodes[int(episodes_start) :]
+                    else:
+                        episodes_range = episodes[: int(episodes_end)]
+            else:
+                episodes_range = episodes[int(episode_range) :]
+            print(f"[green bold]Downloading: [/] {episodes_range}")
+
+        else:
+            episodes_range = sorted(episodes, key=float)
+
+        for episode in episodes_range:
+            try:
+                episode = str(episode)
+                if episode not in episodes:
+                    print(f"[cyan]Warning[/]: Episode {episode} not found, skipping")
+                    continue
+                with Progress() as progress:
+                    progress.add_task("Fetching Episode Streams...", total=None)
+                    streams = anime_provider.get_episode_streams(
+                        anime, episode, config.translation_type
+                    )
+                    if not streams:
+                        print("No streams skipping")
+                        continue
+                # ---- fetch servers ----
+                if config.server == "top":
+                    with Progress() as progress:
+                        progress.add_task("Fetching top server...", total=None)
+                        server = next(streams, None)
+                        if not server:
+                            print("Sth went wrong when fetching the server")
+                            continue
+                    stream_link = filter_by_quality(config.quality, server["links"])
+                    if not stream_link:
+                        print("Quality not found")
+                        input("Enter to continue")
+                        continue
+                    link = stream_link["link"]
+                    episode_title = server["episode_title"]
+                else:
+                    with Progress() as progress:
+                        progress.add_task("Fetching servers", total=None)
+                        # prompt for server selection
+                        servers = {server["server"]: server for server in streams}
+                    servers_names = list(servers.keys())
+                    if config.server in servers_names:
+                        server = config.server
+                    else:
+                        if config.use_fzf:
+                            server = fzf.run(servers_names, "Select an link: ")
+                        else:
+                            server = fuzzy_inquirer(
+                                servers_names,
+                                "Select link",
+                            )
+                    stream_link = filter_by_quality(
+                        config.quality, servers[server]["links"]
+                    )
+                    if not stream_link:
+                        print("Quality not found")
+                        continue
+                    link = stream_link["link"]
+
+                    episode_title = servers[server]["episode_title"]
+                print(f"[purple]Now Downloading:[/] {search_result} Episode {episode}")
+
+                downloader._download_file(
+                    link,
+                    anime["title"],
+                    episode_title,
+                    download_dir,
+                    True,
+                    config.format,
+                )
+            except Exception as e:
+                print(e)
+                time.sleep(1)
+                print("Continuing")
     print("Done Downloading")
     exit_app()

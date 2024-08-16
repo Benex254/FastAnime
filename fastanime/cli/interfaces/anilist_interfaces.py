@@ -113,7 +113,13 @@ def media_player_controls(
                 current_episode_number,
             ):
                 custom_args.extend(args)
-        if config.use_mpv_mod:
+        if config.sync_play:
+            from ..utils.syncplay import SyncPlayer
+
+            stop_time, total_time = SyncPlayer(
+                current_episode_stream_link, selected_server["episode_title"]
+            )
+        elif config.use_mpv_mod:
             from ..utils.player import player
 
             mpv = player.create_player(
@@ -499,7 +505,13 @@ def provider_anime_episode_servers_menu(
             current_episode_number,
         ):
             custom_args.extend(args)
-    if config.use_mpv_mod:
+    if config.sync_play:
+        from ..utils.syncplay import SyncPlayer
+
+        stop_time, total_time = SyncPlayer(
+            current_stream_link, selected_server["episode_title"]
+        )
+    elif config.use_mpv_mod:
         from ..utils.player import player
 
         mpv = player.create_player(

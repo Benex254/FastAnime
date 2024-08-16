@@ -207,7 +207,12 @@ def search(config: Config, anime_titles: str, episode_range: str):
                     episode_title = servers[server]["episode_title"]
                 print(f"[purple]Now Playing:[/] {search_result} Episode {episode}")
 
-                run_mpv(link, episode_title)
+                if config.sync_play:
+                    from ..utils.syncplay import SyncPlayer
+
+                    SyncPlayer(link, episode_title)
+                else:
+                    run_mpv(link, episode_title)
             except Exception as e:
                 print(e)
                 input("Enter to continue")

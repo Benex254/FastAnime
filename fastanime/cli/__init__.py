@@ -141,6 +141,7 @@ signal.signal(signal.SIGINT, handle_exit)
 @click.option(
     "--use-mpv-mod/--use-default-player", help="Whether to use python-mpv", type=bool
 )
+@click.option("--sync-play", "-sp", help="Use sync play", is_flag=True)
 @click.pass_context
 def run_cli(
     ctx: click.Context,
@@ -171,6 +172,7 @@ def run_cli(
     rofi_theme_confirm,
     rofi_theme_input,
     use_mpv_mod,
+    sync_play,
 ):
     from .config import Config
 
@@ -205,6 +207,8 @@ def run_cli(
 
         install()
 
+    if sync_play:
+        ctx.obj.sync_play = sync_play
     if provider:
         ctx.obj.provider = provider
     if server:

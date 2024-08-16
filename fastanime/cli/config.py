@@ -55,6 +55,7 @@ class Config(object):
         user: [TODO:attribute]
     """
 
+    sync_play = False
     anime_list: list
     watch_history: dict
     fastanime_anilist_app_login_url = (

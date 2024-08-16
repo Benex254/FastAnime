@@ -144,7 +144,7 @@ class Config(object):
         self._update_user_data()
 
     def update_watch_history(
-        self, anime_id: int, episode: str | None, start_time="0", total_time="0"
+        self, anime_id: int, episode: str, start_time="0", total_time="0"
     ):
         self.watch_history.update(
             {
@@ -260,6 +260,10 @@ class Config(object):
 # Auto continue from watch history
 continue_from_history = {self.continue_from_history}  
 
+# which hostory to use [local/remote]
+preferred_history = {self.preferred_history}
+
+
 # Preferred language for anime (options: dub, sub)
 translation_type = {self.translation_type}
 
@@ -316,8 +320,11 @@ use_rofi = {self.use_rofi}
 
 # rofi theme to use
 rofi_theme = {self.rofi_theme}
+
 rofi_theme_input = {self.rofi_theme_input}
+
 rofi_theme_confirm = {self.rofi_theme_confirm}
+
 
 # whether to show the icons
 icons = {self.icons}

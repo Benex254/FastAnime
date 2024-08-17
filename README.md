@@ -57,7 +57,7 @@ Heavily inspired by [animdl](https://github.com/justfoolingaround/animdl), [magi
 
 > [!IMPORTANT]
 >
-> This project currently scrapes allanime and animepahe and is in no way related to them nor does the project own any content servers. The site is in the public domain and can be access by any one with a browser.
+> This project currently scrapes allanime and animepahe. The site is in the public domain and can be accessed by any one with a browser.
 
 ## Installation
 
@@ -170,6 +170,7 @@ The only required external dependency, unless you won't be streaming, is [MPV](h
 - [icat](https://sw.kovidgoyal.net/kitty/kittens/icat/) an image viewer that only works in [kitty terminal](https://sw.kovidgoyal.net/kitty/), which is currently the best terminal in my opinion, and by far the best image renderer for the terminal thanks to kitty's terminal graphics protocol. Its terminal graphics is so op that you can [run a browser on it](https://github.com/chase/awrit?tab=readme-ov-file)!!
 - [bash](https://www.gnu.org/software/bash/) is used as the preview script language.
 - [ani-skip](https://github.com/synacktraa/ani-skip) used for skipping the opening and ending theme songs
+- [ffmpegthumbnailer]() used for local previews of downloaded anime
 
 ## Usage
 
@@ -223,7 +224,7 @@ Available options for the fastanime command include:
 - `--log-file` allow logging to a file
 - `--rich-traceback` allow rich traceback
 - `--use-mpv-mod/--use-default-player` whether to use python-mpv
-- `--provider <allanime>` anime site of choice to scrape from
+- `--provider <allanime/animepahe>` anime site of choice to scrape from
 - `--sync-play` or `-sp` use syncplay for streaming anime so you can watch with your friends
 
 Example usage of the above options

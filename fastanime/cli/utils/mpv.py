@@ -2,6 +2,8 @@ import re
 import shutil
 import subprocess
 
+from fastanime.constants import S_PLATFORM
+
 
 def stream_video(MPV, url, mpv_args, custom_args):
     process = subprocess.Popen(
@@ -52,6 +54,7 @@ def run_mpv(
     start_time: str = "0",
     ytdl_format="",
     custom_args=[],
+    headers={},
 ):
     # Determine if mpv is available
     MPV = shutil.which("mpv")
@@ -61,7 +64,7 @@ def run_mpv(
     # Regex to check if the link is a YouTube URL
     youtube_regex = r"(https?://)?(www\.)?(youtube|youtu|youtube-nocookie)\.(com|be)/.+"
 
-    if not MPV:
+    if not MPV and not S_PLATFORM == "win32":
         # Determine if the link is a YouTube URL
         if re.match(youtube_regex, link):
             # Android specific commands to launch mpv with a YouTube URL
@@ -100,6 +103,11 @@ def run_mpv(
     else:
         # General mpv command with custom arguments
         mpv_args = []
+        if headers:
+            mpv_headers = "--http-header-fields="
+            for header_name, header_value in headers.items():
+                mpv_headers += f"{header_name}:{header_value},"
+            mpv_args.append(mpv_headers)
         if start_time != "0":
             mpv_args.append(f"--start={start_time}")
         if title:

@@ -60,12 +60,12 @@ class EpisodeStream(TypedDict):
     hls: bool | None
     mp4: bool | None
     priority: int | None
-    headers: dict | None
     quality: Literal["360", "720", "1080", "unknown"]
     translation_type: Literal["dub", "sub"]
 
 
 class Server(TypedDict):
+    headers: dict
     server: str
     episode_title: str
     links: list[EpisodeStream]

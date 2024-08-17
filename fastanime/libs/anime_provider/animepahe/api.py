@@ -183,7 +183,12 @@ class AnimePaheApi(AnimeProvider):
             episode["title"] or f"{anime['title']}; Episode {episode['episode']}"
         )
         # get all links
-        streams = {"server": "kwik", "links": [], "episode_title": episode_title}
+        streams = {
+            "server": "kwik",
+            "links": [],
+            "episode_title": episode_title,
+            "headers": {},
+        }
         for res_dict in res_dicts:
             # get embed url
             embed_url = res_dict["data-src"]

@@ -117,7 +117,9 @@ def media_player_controls(
             from ..utils.syncplay import SyncPlayer
 
             stop_time, total_time = SyncPlayer(
-                current_episode_stream_link, selected_server["episode_title"]
+                current_episode_stream_link,
+                selected_server["episode_title"],
+                headers=selected_server["headers"],
             )
         elif config.use_mpv_mod:
             from ..utils.player import player
@@ -128,6 +130,7 @@ def media_player_controls(
                 fastanime_runtime_state,
                 config,
                 selected_server["episode_title"],
+                headers=selected_server["headers"],
             )
 
             # TODO: implement custom aniskip
@@ -148,6 +151,7 @@ def media_player_controls(
                 selected_server["episode_title"],
                 start_time=start_time,
                 custom_args=custom_args,
+                headers=selected_server["headers"],
             )
 
         # either update the watch history to the next episode or current depending on progress
@@ -509,7 +513,9 @@ def provider_anime_episode_servers_menu(
         from ..utils.syncplay import SyncPlayer
 
         stop_time, total_time = SyncPlayer(
-            current_stream_link, selected_server["episode_title"]
+            current_stream_link,
+            selected_server["episode_title"],
+            headers=selected_server["headers"],
         )
     elif config.use_mpv_mod:
         from ..utils.player import player
@@ -520,6 +526,7 @@ def provider_anime_episode_servers_menu(
             fastanime_runtime_state,
             config,
             selected_server["episode_title"],
+            headers=selected_server["headers"],
         )
 
         # TODO: implement custom aniskip intergration
@@ -543,6 +550,7 @@ def provider_anime_episode_servers_menu(
             selected_server["episode_title"],
             start_time=start_time,
             custom_args=custom_args,
+            headers=selected_server["headers"],
         )
     print("Finished at: ", stop_time)
 

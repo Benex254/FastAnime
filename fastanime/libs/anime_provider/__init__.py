@@ -9,4 +9,5 @@ SERVERS_AVAILABLE = [
     "weTransfer",
     "wixmp",
     "kwik",
+    "Yt",
 ]

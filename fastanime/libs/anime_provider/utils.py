@@ -44,6 +44,14 @@ def give_random_quality(links: list[dict]):
     ]
 
 
+def one_digit_symmetric_xor(password: int, target: str):
+    def genexp():
+        for segment in bytearray.fromhex(target):
+            yield segment ^ password
+
+    return bytes(genexp()).decode("utf-8")
+
+
 def decode_hex_string(hex_string):
     """some of the sources encrypt the urls into hex codes this function decrypts the urls
 

@@ -4,7 +4,7 @@ import subprocess
 from .tools import exit_app
 
 
-def SyncPlayer(url: str, anime_title=None, *args):
+def SyncPlayer(url: str, anime_title=None, headers={}, *args):
     # TODO: handle m3u8 multi quality streams
     #
     # check for SyncPlay
@@ -14,6 +14,12 @@ def SyncPlayer(url: str, anime_title=None, *args):
         exit_app(1)
         return "0", "0"
     # start SyncPlayer
+    mpv_args = []
+    if headers:
+        mpv_headers = "--http-header-fields="
+        for header_name, header_value in headers.items():
+            mpv_headers += f"{header_name}:{header_value},"
+        mpv_args.append(mpv_headers)
     if not anime_title:
         subprocess.run(
             [
@@ -23,7 +29,13 @@ def SyncPlayer(url: str, anime_title=None, *args):
         )
     else:
         subprocess.run(
-            [SYNCPLAY_EXECUTABLE, url, "--", f"--force-media-title={anime_title}"]
+            [
+                SYNCPLAY_EXECUTABLE,
+                url,
+                "--",
+                f"--force-media-title={anime_title}",
+                *mpv_args,
+            ]
         )
 
     # for compatability

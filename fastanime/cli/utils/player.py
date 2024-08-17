@@ -151,6 +151,7 @@ class MpvPlayer(object):
         fastanime_runtime_state,
         config: "Config",
         title,
+        headers={},
     ):
         self.anime_provider = anime_provider
         self.fastanime_runtime_state = fastanime_runtime_state
@@ -174,6 +175,11 @@ class MpvPlayer(object):
         # mpv_player.cache = "yes"
         # mpv_player.cache_pause = "no"
         mpv_player.title = title
+        mpv_headers = ""
+        if headers:
+            for header_name, header_value in headers.items():
+                mpv_headers += f"{header_name}:{header_value},"
+        mpv_player.http_header_fields = mpv_headers
 
         mpv_player.play(stream_link)
 

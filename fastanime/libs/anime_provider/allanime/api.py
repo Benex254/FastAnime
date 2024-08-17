@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING
 from requests.exceptions import Timeout
 
 from ...anime_provider.base_provider import AnimeProvider
-from ..utils import decode_hex_string, give_random_quality
+from ..utils import give_random_quality, one_digit_symmetric_xor
 from .constants import (
     ALLANIME_API_ENDPOINT,
     ALLANIME_BASE,
@@ -205,23 +205,45 @@ class AllAnimeAPI(AnimeProvider):
                     # filter the working streams no need to get all since the others are mostly hsl
                     # TODO: should i just get all the servers and handle the hsl??
                     if embed.get("sourceName", "") not in (
-                        "Sak",
-                        "Kir",
-                        "S-mp4",
-                        "Luf-mp4",
-                        "Default",
+                        # priorities based on death note
+                        "Sak",  #  7
+                        "S-mp4",  # 7.9
+                        "Luf-mp4",  # 7.7
+                        "Default",  # 8.5
+                        "Yt-mp4",  # 7.9
+                        "Kir",  # NA
+                        # "Vid-mp4"  # 4
+                        # "Ok",  # 3.5
+                        # "Ss-Hls",  #  5.5
+                        # "Mp4",  # 4
                     ):
                         continue
                     url = embed.get("sourceUrl")
-
+                    #
                     if not url:
                         continue
                     if url.startswith("--"):
                         url = url[2:]
+                        url = one_digit_symmetric_xor(56, url)
+
+                    if "tools.fast4speed.rsvp" in url:
+                        yield {
+                            "server": "Yt",
+                            "episode_title": f'{anime["title"]}; Episode {episode_number}',
+                            "headers": {"Referer": f"https://{ALLANIME_BASE}/"},
+                            "links": [
+                                {
+                                    "link": url,
+                                    "quality": "1080",
+                                }
+                            ],
+                        }  # pyright:ignore
+                        continue
 
                     # get the stream url for an episode of the defined source names
-                    parsed_url = decode_hex_string(url)
-                    embed_url = f"https://{ALLANIME_BASE}{parsed_url.replace('clock', 'clock.json')}"
+                    embed_url = (
+                        f"https://{ALLANIME_BASE}{url.replace('clock', 'clock.json')}"
+                    )
                     resp = self.session.get(
                         embed_url,
                         headers={
@@ -230,12 +252,14 @@ class AllAnimeAPI(AnimeProvider):
                         },
                         timeout=10,
                     )
+
                     if resp.status_code == 200:
                         match embed["sourceName"]:
                             case "Luf-mp4":
                                 logger.debug("allanime:Found streams from gogoanime")
                                 yield {
                                     "server": "gogoanime",
+                                    "headers": {},
                                     "episode_title": (
                                         allanime_episode["notes"] or f'{anime["title"]}'
                                     )
@@ -246,6 +270,7 @@ class AllAnimeAPI(AnimeProvider):
                                 logger.debug("allanime:Found streams from wetransfer")
                                 yield {
                                     "server": "wetransfer",
+                                    "headers": {},
                                     "episode_title": (
                                         allanime_episode["notes"] or f'{anime["title"]}'
                                     )
@@ -256,6 +281,7 @@ class AllAnimeAPI(AnimeProvider):
                                 logger.debug("allanime:Found streams from sharepoint")
                                 yield {
                                     "server": "sharepoint",
+                                    "headers": {},
                                     "episode_title": (
                                         allanime_episode["notes"] or f'{anime["title"]}'
                                     )
@@ -266,6 +292,7 @@ class AllAnimeAPI(AnimeProvider):
                                 logger.debug("allanime:Found streams from dropbox")
                                 yield {
                                     "server": "dropbox",
+                                    "headers": {},
                                     "episode_title": (
                                         allanime_episode["notes"] or f'{anime["title"]}'
                                     )
@@ -276,20 +303,22 @@ class AllAnimeAPI(AnimeProvider):
                                 logger.debug("allanime:Found streams from wixmp")
                                 yield {
                                     "server": "wixmp",
+                                    "headers": {},
                                     "episode_title": (
                                         allanime_episode["notes"] or f'{anime["title"]}'
                                     )
                                     + f"; Episode {episode_number}",
                                     "links": give_random_quality(resp.json()["links"]),
                                 }  # pyright:ignore
+
                 except Timeout:
                     logger.error(
                         "Timeout has been exceeded this could mean allanime is down or you have lost internet connection"
                     )
-                    return []
+
                 except Exception as e:
                     logger.error(f"FA(Allanime): {e}")
-                    return []
+
         except Exception as e:
             logger.error(f"FA(Allanime): {e}")
             return []
@@ -301,7 +330,7 @@ if __name__ == "__main__":
     import subprocess
     import sys
 
-    from InquirerPy import inquirer, validator
+    from InquirerPy import inquirer, validator  # pyright:ignore
 
     anime = input("Enter the anime name: ")
     translation = input("Enter the translation type: ")

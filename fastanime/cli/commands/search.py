@@ -176,6 +176,7 @@ def search(config: Config, anime_titles: str, episode_range: str):
                         stream_anime()
                         return
                     link = stream_link["link"]
+                    stream_headers = server["headers"]
                     episode_title = server["episode_title"]
                 else:
                     with Progress() as progress:
@@ -204,16 +205,17 @@ def search(config: Config, anime_titles: str, episode_range: str):
                         stream_anime()
                         return
                     link = stream_link["link"]
+                    stream_headers = servers[server]["headers"]
                     episode_title = servers[server]["episode_title"]
                 print(f"[purple]Now Playing:[/] {search_result} Episode {episode}")
 
                 if config.sync_play:
                     from ..utils.syncplay import SyncPlayer
 
-                    SyncPlayer(link, episode_title)
+                    SyncPlayer(link, episode_title, headers=stream_headers)
                 else:
-                    run_mpv(link, episode_title)
-            except Exception as e:
+                    run_mpv(link, episode_title, headers=stream_headers)
+            except IndexError as e:
                 print(e)
                 input("Enter to continue")
             stream_anime()

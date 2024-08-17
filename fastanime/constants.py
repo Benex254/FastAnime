@@ -76,7 +76,7 @@ Path(USER_VIDEOS_DIR).mkdir(parents=True, exist_ok=True)
 # useful paths
 USER_DATA_PATH = os.path.join(APP_DATA_DIR, "user_data.json")
 USER_CONFIG_PATH = os.path.join(APP_DATA_DIR, "config.ini")
-NOTIFIER_LOG_FILE_PATH = os.path.join(APP_DATA_DIR, "notifier.log")
+LOG_FILE_PATH = os.path.join(APP_DATA_DIR, "fastanime.log")
 
 
 USER_NAME = os.environ.get("USERNAME", "Anime fun")

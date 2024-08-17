@@ -192,12 +192,12 @@ def run_cli(
     elif log_file:
         import logging
 
-        from ..constants import NOTIFIER_LOG_FILE_PATH
+        from ..constants import LOG_FILE_PATH
 
         format = "%(asctime)s%(levelname)s: %(message)s"
         logging.basicConfig(
             level=logging.DEBUG,
-            filename=NOTIFIER_LOG_FILE_PATH,
+            filename=LOG_FILE_PATH,
             format=format,
             datefmt="[%d/%m/%Y@%H:%M:%S]",
             filemode="w",

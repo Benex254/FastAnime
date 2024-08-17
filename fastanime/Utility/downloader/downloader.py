@@ -35,6 +35,8 @@ class YtDLPDownloader:
         download_dir: str,
         silent: bool,
         vid_format: str = "best",
+        force_unknown_ext=False,
+        verbose=False,
     ):
         """Helper function that downloads anime given url and path details
 
@@ -52,8 +54,9 @@ class YtDLPDownloader:
             # Specify the output path and template
             "outtmpl": f"{download_dir}/{anime_title}/{episode_title}.%(ext)s",
             "silent": silent,
-            "verbose": False,
+            "verbose": verbose,
             "format": vid_format,
+            "compat_opts": ("allow-unsafe-ext",) if force_unknown_ext else tuple(),
         }
 
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:

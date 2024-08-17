@@ -26,11 +26,28 @@ if TYPE_CHECKING:
     "-r",
     help="A range of episodes to download (start-end)",
 )
+@click.option(
+    "--force-unknown-ext",
+    "-f",
+    help="This option forces yt-dlp to download extensions its not aware of",
+    is_flag=True,
+)
+@click.option(
+    "--silent/--no-silent",
+    "-q/-V",
+    type=bool,
+    help="Download silently (during download)",
+    default=True,
+)
+@click.option("--verbose", "-v", is_flag=True, help="Download verbosely (everywhere)")
 @click.pass_obj
 def download(
     config: "Config",
     anime_titles: list,
     episode_range,
+    force_unknown_ext,
+    silent,
+    verbose,
 ):
     from rich import print
     from rich.progress import Progress
@@ -61,9 +78,7 @@ def download(
             print("Search results failed")
             input("Enter to retry")
             download(
-                config,
-                anime_title,
-                episode_range,
+                config, anime_title, episode_range, force_unknown_ext, silent, verbose
             )
             return
         search_results = search_results["results"]
@@ -96,15 +111,14 @@ def download(
             print("Sth went wring anime no found")
             input("Enter to continue...")
             download(
-                config,
-                anime_title,
-                episode_range,
+                config, anime_title, episode_range, force_unknown_ext, silent, verbose
             )
             return
 
         episodes = sorted(
             anime["availableEpisodesDetail"][config.translation_type], key=float
         )
+        # where the magic happens
         if episode_range:
             if ":" in episode_range:
                 ep_range_tuple = episode_range.split(":")
@@ -131,6 +145,7 @@ def download(
         else:
             episodes_range = sorted(episodes, key=float)
 
+        # lets download em
         for episode in episodes_range:
             try:
                 episode = str(episode)
@@ -192,8 +207,10 @@ def download(
                     anime["title"],
                     episode_title,
                     download_dir,
-                    True,
+                    silent,
                     config.format,
+                    force_unknown_ext,
+                    verbose,
                 )
             except Exception as e:
                 print(e)

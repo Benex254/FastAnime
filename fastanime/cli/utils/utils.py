@@ -32,8 +32,8 @@ def filter_by_quality(quality: str, stream_links: "list[EpisodeStream]", default
     for stream_link in stream_links:
         q = float(quality)
         Q = float(stream_link["quality"])
-        # some providers have inaccurate eg qualities 718 instead of 720
-        if Q < q + 80 and Q > q - 80:
+        # some providers have inaccurate/weird/non-standard eg qualities 718 instead of 720
+        if Q <= q + 80 and Q >= q - 80:
             return stream_link
     else:
         if stream_links and default:

@@ -174,6 +174,7 @@ def download(
                         input("Enter to continue")
                         continue
                     link = stream_link["link"]
+                    provider_headers = server["headers"]
                     episode_title = server["episode_title"]
                 else:
                     with Progress() as progress:
@@ -198,6 +199,7 @@ def download(
                         print("Quality not found")
                         continue
                     link = stream_link["link"]
+                    provider_headers = servers[server]["headers"]
 
                     episode_title = servers[server]["episode_title"]
                 print(f"[purple]Now Downloading:[/] {search_result} Episode {episode}")
@@ -211,6 +213,7 @@ def download(
                     config.format,
                     force_unknown_ext,
                     verbose,
+                    headers=provider_headers,
                 )
             except Exception as e:
                 print(e)

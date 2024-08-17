@@ -37,6 +37,7 @@ class YtDLPDownloader:
         vid_format: str = "best",
         force_unknown_ext=False,
         verbose=False,
+        headers={},
     ):
         """Helper function that downloads anime given url and path details
 
@@ -52,6 +53,7 @@ class YtDLPDownloader:
         episode_title = sanitize_filename(episode_title)
         ydl_opts = {
             # Specify the output path and template
+            "http_headers": headers,
             "outtmpl": f"{download_dir}/{anime_title}/{episode_title}.%(ext)s",
             "silent": silent,
             "verbose": verbose,

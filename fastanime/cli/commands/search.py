@@ -15,6 +15,7 @@ from ..completion_functions import anime_titles_shell_complete
     required=True,
     shell_complete=anime_titles_shell_complete,
     multiple=True,
+    help="Specify which anime to download",
 )
 @click.option(
     "--episode-range",

@@ -20,6 +20,7 @@ if TYPE_CHECKING:
     required=True,
     shell_complete=anime_titles_shell_complete,
     multiple=True,
+    help="Specify which anime to download",
 )
 @click.option(
     "--episode-range",

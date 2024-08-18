@@ -60,6 +60,11 @@ def test_update_help(runner: CliRunner):
     assert result.exit_code == 0
 
 
+def test_grab_help(runner: CliRunner):
+    result = runner.invoke(run_cli, ["grab", "--help"])
+    assert result.exit_code == 0
+
+
 def test_anilist_help(runner: CliRunner):
     result = runner.invoke(run_cli, ["anilist", "--help"])
     assert result.exit_code == 0

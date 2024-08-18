@@ -113,6 +113,7 @@ def media_player_controls(
                 current_episode_number,
             ):
                 custom_args.extend(args)
+        subtitles = selected_server["subtitles"]
         if config.sync_play:
             from ..utils.syncplay import SyncPlayer
 
@@ -120,6 +121,7 @@ def media_player_controls(
                 current_episode_stream_link,
                 selected_server["episode_title"],
                 headers=selected_server["headers"],
+                subtitles=subtitles,
             )
         elif config.use_mpv_mod:
             from ..utils.player import player
@@ -141,6 +143,11 @@ def media_player_controls(
                 mpv._set_property("script-opts", script_opts[1])
             if not start_time == "0":
                 mpv.start = start_time
+            mpv.wait_until_playing()
+            if subtitles:
+                mpv.sub_add(
+                    subtitles[0]["url"], "select", None, subtitles[0]["language"]
+                )
             mpv.wait_for_shutdown()
             mpv.terminate()
             stop_time = player.last_stop_time
@@ -152,6 +159,7 @@ def media_player_controls(
                 start_time=start_time,
                 custom_args=custom_args,
                 headers=selected_server["headers"],
+                subtitles=subtitles,
             )
 
         # either update the watch history to the next episode or current depending on progress
@@ -509,6 +517,7 @@ def provider_anime_episode_servers_menu(
             current_episode_number,
         ):
             custom_args.extend(args)
+    subtitles = selected_server["subtitles"]
     if config.sync_play:
         from ..utils.syncplay import SyncPlayer
 
@@ -516,6 +525,7 @@ def provider_anime_episode_servers_menu(
             current_stream_link,
             selected_server["episode_title"],
             headers=selected_server["headers"],
+            subtitles=subtitles,
         )
     elif config.use_mpv_mod:
         from ..utils.player import player
@@ -537,6 +547,13 @@ def provider_anime_episode_servers_menu(
             mpv._set_property("script-opts", script_opts[1])
         if not start_time == "0" and episode_in_history == current_episode_number:
             mpv.start = start_time
+        mpv.wait_until_playing()
+        if subtitles:
+            # subs = ""
+            # for subtitle in subtitles:
+            # subs += f"{subtitle['url']},"
+            mpv.sub_add(subtitles[0]["url"], "select", None, subtitles[0]["language"])
+            # mpv.sub_files = subs
         mpv.wait_for_shutdown()
         mpv.terminate()
         stop_time = player.last_stop_time
@@ -551,6 +568,7 @@ def provider_anime_episode_servers_menu(
             start_time=start_time,
             custom_args=custom_args,
             headers=selected_server["headers"],
+            subtitles=subtitles,
         )
     print("Finished at: ", stop_time)
 

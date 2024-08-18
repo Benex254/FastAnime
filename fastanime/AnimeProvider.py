@@ -73,7 +73,7 @@ class AnimeProvider:
                 user_query, translation_type, nsfw, unknown
             )
         except Exception as e:
-            logging.error(e)
+            logger.error(e)
             results = None
         return results
 
@@ -95,7 +95,7 @@ class AnimeProvider:
         try:
             results = anime_provider.get_anime(anime_id)
         except Exception as e:
-            logging.error(e)
+            logger.error(e)
             results = None
         return results
 
@@ -123,6 +123,6 @@ class AnimeProvider:
                 anime, episode, translation_type
             )
         except Exception as e:
-            logging.error(e)
+            logger.error(e)
             results = None
         return results  # pyright:ignore

@@ -171,8 +171,9 @@ def download(
                             continue
                     stream_link = filter_by_quality(config.quality, server["links"])
                     if not stream_link:
-                        print("Quality not found")
-                        input("Enter to continue")
+                        print("[yellow bold]WARNING:[/] No streams found")
+                        time.sleep(1)
+                        print("Continuing...")
                         continue
                     link = stream_link["link"]
                     provider_headers = server["headers"]
@@ -197,7 +198,9 @@ def download(
                         config.quality, servers[server]["links"]
                     )
                     if not stream_link:
-                        print("Quality not found")
+                        print("[yellow bold]WARNING:[/] No streams found")
+                        time.sleep(1)
+                        print("Continuing...")
                         continue
                     link = stream_link["link"]
                     provider_headers = servers[server]["headers"]
@@ -219,6 +222,6 @@ def download(
             except Exception as e:
                 print(e)
                 time.sleep(1)
-                print("Continuing")
+                print("Continuing...")
     print("Done Downloading")
     exit_app()

@@ -26,7 +26,24 @@ def check_for_updates():
 
     if request.status_code == 200:
         release_json = request.json()
-        return (release_json["tag_name"] == __version__, release_json)
+        remote_tag = list(
+            map(int, release_json["tag_name"].replace("v", "").split("."))
+        )
+        local_tag = list(map(int, __version__.replace("v", "").split(".")))
+        if (
+            (remote_tag[0] > local_tag[0])
+            or (remote_tag[1] > local_tag[1] and remote_tag[0] == local_tag[0])
+            or (
+                remote_tag[2] > local_tag[2]
+                and remote_tag[0] == local_tag[0]
+                and remote_tag[1] == local_tag[1]
+            )
+        ):
+            is_update = True
+        else:
+            is_update = False
+
+        return (is_update, release_json)
     else:
         print(request.text)
         return (False, {})

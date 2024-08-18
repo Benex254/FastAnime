@@ -9,6 +9,7 @@ def update(
     from rich.console import Console
     from rich.markdown import Markdown
 
+    from ... import __version__
     from ..app_updater import check_for_updates, update_app
 
     def _print_release(release_data):
@@ -26,11 +27,11 @@ def update(
         is_update, github_release_data = check_for_updates()
         if is_update:
             print(
-                "You are running an older version of fastanime please update to get the latest features"
+                f"You are running an older version ({__version__}) of fastanime please update to get the latest features"
             )
             _print_release(github_release_data)
         else:
-            print("You are running the latest version of fastanime")
+            print(f"You are running the latest version ({__version__}) of fastanime")
             _print_release(github_release_data)
     else:
         success, github_release_data = update_app()

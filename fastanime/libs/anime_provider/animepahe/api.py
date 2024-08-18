@@ -183,7 +183,7 @@ class AnimePaheApi(AnimeProvider):
 
             # get the episode title
             episode_title = (
-                f"{episode["title"] or anime['title']}; Episode {episode['episode']}"
+                f"{episode['title'] or anime['title']}; Episode {episode['episode']}"
             )
             # get all links
             streams = {

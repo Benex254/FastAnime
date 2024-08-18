@@ -41,15 +41,17 @@ Heavily inspired by [animdl](https://github.com/justfoolingaround/animdl), [magi
         - [Subcommands](#subcommands)
       - [download subcommand](#download-subcommand)
       - [search subcommand](#search-subcommand)
+      - [grab subcommand](#grab-subcommand)
       - [downloads subcommand](#downloads-subcommand)
       - [config subcommand](#config-subcommand)
       - [cache subcommand](#cache-subcommand)
       - [update subcommand](#update-subcommand)
       - [completions subcommand](#completions-subcommand)
-  - [MPV specific commands](#mpv-specific-commands)
-    - [Added keybindings](#added-keybindings)
-    - [Added script messages](#added-script-messages)
+    - [MPV specific commands](#mpv-specific-commands)
+      - [Key Bindings](#key-bindings)
+      - [Script Messages](#script-messages)
   - [Configuration](#configuration)
+  - [The python api](#the-python-api)
   - [Contributing](#contributing)
   - [Receiving Support](#receiving-support)
   - [Supporting the Project](#supporting-the-project)
@@ -120,7 +122,7 @@ Requirements:
 
 To build from the source, follow these steps:
 
-1. Clone the repository: `git clone https://github.com/Benex254/FastAnime.git`
+1. Clone the repository: `git clone https://github.com/Benex254/FastAnime.git --depth 1`
 2. Navigate into the folder: `cd FastAnime`
 3. Then build and Install the app:
 
@@ -164,29 +166,25 @@ The only required external dependency, unless you won't be streaming, is [MPV](h
 
 **Other external dependencies that will just make your experience better:**
 
+- [ffmpeg](https://www.ffmpeg.org/) is required to be in your path environment variables to properly download [hls](https://www.cloudflare.com/en-gb/learning/video/what-is-http-live-streaming/) streams.
 - [fzf](https://github.com/junegunn/fzf) 🔥 which is used as a better alternative to the ui.
 - [rofi](https://github.com/davatorium/rofi) 🔥 which is used as another alternative ui + the the desktop entry ui
 - [chafa](https://github.com/hpjansson/chafa) currently the best cross platform and cross terminal image viewer for the terminal.
 - [icat](https://sw.kovidgoyal.net/kitty/kittens/icat/) an image viewer that only works in [kitty terminal](https://sw.kovidgoyal.net/kitty/), which is currently the best terminal in my opinion, and by far the best image renderer for the terminal thanks to kitty's terminal graphics protocol. Its terminal graphics is so op that you can [run a browser on it](https://github.com/chase/awrit?tab=readme-ov-file)!!
 - [bash](https://www.gnu.org/software/bash/) is used as the preview script language.
 - [ani-skip](https://github.com/synacktraa/ani-skip) used for skipping the opening and ending theme songs
-- [ffmpegthumbnailer]() used for local previews of downloaded anime
+- [ffmpegthumbnailer](https://github.com/dirkvdb/ffmpegthumbnailer) used for local previews of downloaded anime
+- [syncplay](https://syncplay.pl/) to enable watch together.
 
 ## Usage
 
-The app offers both a graphical interface (under development) and a robust command-line interface.
-
-> [!NOTE]
->
-> The GUI is mostly in hiatus; use the CLI for now.
-> However, you can try it out before i decided to change my objective by checking out this [release](https://github.com/Benex254/FastAnime/tree/v0.20.0).
-> But be reassured for those who aren't terminal chads, i will still complete the GUI for the fun of it
+The project offers a featureful command-line interface and MPV interface through the use of python-mpv.
 
 ### The Commandline interface :fire:
 
-Designed for power users who prefer efficiency over browser-based streaming and still want the experience in their terminal.
+Designed for efficiency and automation. Plus has a beautiful pseudo-TUI in some of the commands.
 
-Overview of main commands:
+**Overview of main commands:**
 
 - `fastanime anilist`: Powerful command for browsing and exploring anime due to AniList integration.
 - `fastanime download`: Download anime.
@@ -194,10 +192,20 @@ Overview of main commands:
 - `fastanime downloads`: View downloaded anime and watch with MPV.
 - `fastanime config`: Quickly edit configuration settings.
 - `fastanime cache`: Quickly manage the cache fastanime uses
+- `fastanime update`: Quickly update fastanime
+- `fastanime grab`: print streams to stdout to use in non python application.
 
-Configuration is directly passed into this command at run time to override your config.
+**Overview of options**
 
-Available options for the fastanime command include:
+Most options are directly passed into fastanime directly and are shared by multiple subcommands.
+
+Most of the options override your config file.
+
+This is a convention to make the dev time faster since it reduces redundancy and also makes switching of subcommands with the same options easier to the end user.
+
+In general `fastanime --<option-name>`
+
+Available options for the fastanime include:
 
 - `--server <server>` or `-s <server>` set the default server to auto select
 - `--continue/--no-continue` or `-c/-no-c` whether to continue from the last episode you were watching
@@ -290,7 +298,7 @@ fastanime --log anilist notifier
 fastanime --log-file anilist notifier
 ```
 
-The above commands will start a loop that checks every 2 minutes if any of the anime in your watch list that are aireing has just released a new episode.
+The above commands will start a loop that checks every 2 minutes if any of the anime in your watch list that are airing has just released a new episode.
 
 The notification will consist of a cover image of the anime in none windows systems.
 
@@ -314,6 +322,7 @@ end
 
 Download anime to watch later dub or sub with this one command.
 Its optimized for scripting due to fuzzy matching; basically you don't have to manually select search results.
+
 So every step of the way has been and can be automated.
 Uses a list slicing syntax similar to that of python as the value for the `-r` option.
 
@@ -353,6 +362,7 @@ fastanime download <anime-title> -r ':<episodes-end>'
 #### search subcommand
 
 Powerful command mainly aimed at binging anime. Since it doesn't require interaction with the interfaces.
+
 Uses a list slicing syntax similar to that of python as the value of the `-r` option.
 
 **Syntax:**
@@ -377,6 +387,44 @@ fastanime search -t <anime-title> -r '<start>:<stop>:<step>'
 fastanime search -t <anime-title> -r '<start>:'
 
 fastanime search -t <anime-title> -r ':<end>'
+```
+
+#### grab subcommand
+
+Helper command to print streams to stdout so it can be used by non-python applications.
+
+The format of the printed out data is json and can be either an array or object depending on how many anime titles have been specified in the command-line or through a subprocess.
+
+> [!TIP]
+> For python applications just use its python api, for even greater and easier control.
+> So just add fastanime as one of your dependencies.
+
+Uses a list slicing syntax similar to that of python as the value of the `-r` option.
+
+**Syntax:**
+
+```bash
+# print all available episodes
+# multiple titles can be specified with the -t option
+fastanime grab -t <anime-title> -t <anime-title>
+
+# -- or --
+
+# print all available episodes
+fastanime grab -t <anime-title> -r ':'
+
+# print the latest episode
+fastanime grab -t <anime-title> -r '-1'
+
+# print a specific episode range
+# be sure to observe the range Syntax
+fastanime grab -t <anime-title> -r '<start>:<stop>'
+
+fastanime grab -t <anime-title> -r '<start>:<stop>:<step>'
+
+fastanime grab -t <anime-title> -r '<start>:'
+
+fastanime grab -t <anime-title> -r ':<end>'
 ```
 
 #### downloads subcommand
@@ -479,12 +527,12 @@ fastanime completions --bash
 fastanime completions --zsh
 ```
 
-## MPV specific commands
+### MPV specific commands
 
 The project now allows on the fly media controls directly from mpv. This means you can go to the next or previous episode without the window ever closing thus offering a seamless experience.
 This is all powered with [python-mpv]() which enables writing mpv scripts with python just like how it would be done in lua.
 
-### Added keybindings
+#### Key Bindings
 
 `<shift>+n` fetch the next episode
 
@@ -496,7 +544,9 @@ This is all powered with [python-mpv]() which enables writing mpv scripts with p
 
 `<shit>+r` reload episode
 
-### Added script messages
+#### Script Messages
+
+Commands issued in the MPV console.
 
 Examples:
 
@@ -511,7 +561,7 @@ script-message select-server <server-name>
 script-message select-quality <1080/720/480/360>
 ```
 
-## configuration
+## Configuration
 
 The app includes sensible defaults but can be customized extensively. Configuration is stored in `.ini` format at `~/.config/FastAnime/config.ini` on arch linux; for the other operating systems you can check by running `fastanime config --path`.
 
@@ -586,6 +636,28 @@ notification_duration=2
 # Not implemented yet
 ```
 
+## The python api
+
+The project offers a python api that can be used in other python programs.
+
+```python
+from fastanime.AnimeProvider import AnimeProvider
+
+# all output is typed, so will be easy to work with
+
+# providers include [allanime, animepahe]
+provider = AnimeProvider(provider="allanime")
+
+# to search for anime
+provider.search_for_anime()
+
+# to get anime info
+provider.get_anime()
+
+# to get streams of an episode
+provider.get_episode_streams()
+```
+
 ## Contributing
 
 We welcome your issues and feature requests. However, due to time constraints, we currently do not plan to add another provider.
@@ -594,7 +666,7 @@ If you wish to contribute directly, please first open an issue describing your p
 
 ## Receiving Support
 
-For inquiries, join our [Discord Server](https://discord.gg/4NUTj5Pt).
+For inquiries, join our [Discord Server](https://discord.gg/C4rhMA4mmK).
 
 <p align="center">
 <a href="https://discord.gg/C4rhMA4mmK">

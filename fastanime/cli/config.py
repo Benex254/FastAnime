@@ -96,6 +96,7 @@ class Config(object):
                 "rofi_theme_input": "",
                 "rofi_theme_confirm": "",
                 "ffmpegthumnailer_seek_time": "-1",
+                "sub_lang": "eng",
             }
         )
         self.configparser.add_section("stream")
@@ -109,6 +110,7 @@ class Config(object):
 
         # --- set config values from file or using defaults ---
         self.downloads_dir = self.get_downloads_dir()
+        self.sub_lang = self.get_sub_lang()
         self.provider = self.get_provider()
         self.use_fzf = self.get_use_fzf()
         self.use_rofi = self.get_use_rofi()
@@ -186,6 +188,9 @@ class Config(object):
 
     def get_preferred_language(self):
         return self.configparser.get("general", "preferred_language")
+
+    def get_sub_lang(self):
+        return self.configparser.get("general", "sub_lang")
 
     def get_downloads_dir(self):
         return self.configparser.get("general", "downloads_dir")

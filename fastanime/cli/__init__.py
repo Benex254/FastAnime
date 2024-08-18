@@ -99,6 +99,11 @@ signal.signal(signal.SIGINT, handle_exit)
     help="Anime language[dub/sub]",
 )
 @click.option(
+    "-sl",
+    "--sub-lang",
+    help="Set the preferred language for subs",
+)
+@click.option(
     "-A/-no-A",
     "--auto-next/--no-auto-next",
     type=bool,
@@ -156,6 +161,7 @@ def run_cli(
     local_history,
     skip,
     translation_type,
+    sub_lang,
     quality,
     auto_next,
     auto_select,
@@ -216,6 +222,8 @@ def run_cli(
         ctx.obj.server = server
     if format:
         ctx.obj.format = format
+    if sub_lang:
+        ctx.obj.sub_lang = sub_lang
     if ctx.get_parameter_source("continue_") == click.core.ParameterSource.COMMANDLINE:
         ctx.obj.continue_from_history = continue_
     if ctx.get_parameter_source("skip") == click.core.ParameterSource.COMMANDLINE:

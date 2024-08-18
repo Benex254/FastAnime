@@ -136,7 +136,7 @@ class AnimePaheApi(AnimeProvider):
                 },
                 "episodesInfo": [
                     {
-                        "title": episode["title"] or f"{title};{episode['episode']}",
+                        "title": f"{episode['title'] or title};{episode['episode']}",
                         "episode": episode["episode"],
                         "id": episode["session"],
                         "translation_type": episode["audio"],
@@ -190,6 +190,7 @@ class AnimePaheApi(AnimeProvider):
                 "server": "kwik",
                 "links": [],
                 "episode_title": episode_title,
+                "subtitles": [],
                 "headers": {},
             }
             for res_dict in res_dicts:

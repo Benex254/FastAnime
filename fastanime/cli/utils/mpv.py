@@ -55,6 +55,7 @@ def run_mpv(
     ytdl_format="",
     custom_args=[],
     headers={},
+    subtitles=[],
 ):
     # Determine if mpv is available
     MPV = shutil.which("mpv")
@@ -108,6 +109,8 @@ def run_mpv(
             for header_name, header_value in headers.items():
                 mpv_headers += f"{header_name}:{header_value},"
             mpv_args.append(mpv_headers)
+        for subtitle in subtitles:
+            mpv_args.append(f"--sub-file={subtitle['url']}")
         if start_time != "0":
             mpv_args.append(f"--start={start_time}")
         if title:

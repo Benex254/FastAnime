@@ -19,6 +19,25 @@ BG_GREEN = "\033[48;2;120;233;12;m"
 GREEN = "\033[38;2;45;24;45;m"
 
 
+def move_preferred_subtitle_lang_to_top(sub_list, lang_str):
+    """Moves the dictionary with the given ID to the front of the list.
+
+    Args:
+      sub_list: list of subs
+      lang_str: the sub lang pref
+
+    Returns:
+      The modified list.
+    """
+    import re
+
+    for i, d in enumerate(sub_list):
+        if re.search(lang_str, d["language"], re.IGNORECASE):
+            sub_list.insert(0, sub_list.pop(i))
+            break
+    return sub_list
+
+
 def filter_by_quality(quality: str, stream_links: "list[EpisodeStream]", default=True):
     """Helper function used to filter a list of EpisodeStream objects to one that has a corresponding quality
 

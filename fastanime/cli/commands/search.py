@@ -35,7 +35,11 @@ def search(config: Config, anime_titles: str, episode_range: str):
     from ...libs.rofi import Rofi
     from ..utils.mpv import run_mpv
     from ..utils.tools import exit_app
-    from ..utils.utils import filter_by_quality, fuzzy_inquirer
+    from ..utils.utils import (
+        filter_by_quality,
+        fuzzy_inquirer,
+        move_preferred_subtitle_lang_to_top,
+    )
 
     anime_provider = AnimeProvider(config.provider)
 
@@ -177,6 +181,7 @@ def search(config: Config, anime_titles: str, episode_range: str):
                         stream_anime()
                         return
                     link = stream_link["link"]
+                    subtitles = server["subtitles"]
                     stream_headers = server["headers"]
                     episode_title = server["episode_title"]
                 else:
@@ -207,15 +212,23 @@ def search(config: Config, anime_titles: str, episode_range: str):
                         return
                     link = stream_link["link"]
                     stream_headers = servers[server]["headers"]
+                    subtitles = servers[server]["subtitles"]
                     episode_title = servers[server]["episode_title"]
                 print(f"[purple]Now Playing:[/] {search_result} Episode {episode}")
 
+                subtitles = move_preferred_subtitle_lang_to_top(
+                    subtitles, config.sub_lang
+                )
                 if config.sync_play:
                     from ..utils.syncplay import SyncPlayer
 
-                    SyncPlayer(link, episode_title, headers=stream_headers)
+                    SyncPlayer(
+                        link, episode_title, headers=stream_headers, subtitles=subtitles
+                    )
                 else:
-                    run_mpv(link, episode_title, headers=stream_headers)
+                    run_mpv(
+                        link, episode_title, headers=stream_headers, subtitles=subtitles
+                    )
             except IndexError as e:
                 print(e)
                 input("Enter to continue")

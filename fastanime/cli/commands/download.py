@@ -59,7 +59,11 @@ def download(
     from ...libs.fzf import fzf
     from ...Utility.downloader.downloader import downloader
     from ..utils.tools import exit_app
-    from ..utils.utils import filter_by_quality, fuzzy_inquirer
+    from ..utils.utils import (
+        filter_by_quality,
+        fuzzy_inquirer,
+        move_preferred_subtitle_lang_to_top,
+    )
 
     anime_provider = AnimeProvider(config.provider)
 
@@ -168,37 +172,12 @@ def download(
                 if config.server == "top":
                     with Progress() as progress:
                         progress.add_task("Fetching top server...", total=None)
-                        server = next(streams, None)
-                        if not server:
+                        server_name = next(streams, None)
+                        if not server_name:
                             print("Sth went wrong when fetching the server")
                             continue
-                    stream_link = filter_by_quality(config.quality, server["links"])
-                    if not stream_link:
-                        print("[yellow bold]WARNING:[/] No streams found")
-                        time.sleep(1)
-                        print("Continuing...")
-                        continue
-                    link = stream_link["link"]
-                    provider_headers = server["headers"]
-                    episode_title = server["episode_title"]
-                else:
-                    with Progress() as progress:
-                        progress.add_task("Fetching servers", total=None)
-                        # prompt for server selection
-                        servers = {server["server"]: server for server in streams}
-                    servers_names = list(servers.keys())
-                    if config.server in servers_names:
-                        server = config.server
-                    else:
-                        if config.use_fzf:
-                            server = fzf.run(servers_names, "Select an link: ")
-                        else:
-                            server = fuzzy_inquirer(
-                                servers_names,
-                                "Select link",
-                            )
                     stream_link = filter_by_quality(
-                        config.quality, servers[server]["links"]
+                        config.quality, server_name["links"]
                     )
                     if not stream_link:
                         print("[yellow bold]WARNING:[/] No streams found")
@@ -206,11 +185,42 @@ def download(
                         print("Continuing...")
                         continue
                     link = stream_link["link"]
-                    provider_headers = servers[server]["headers"]
+                    provider_headers = server_name["headers"]
+                    episode_title = server_name["episode_title"]
+                    subtitles = server_name["subtitles"]
+                else:
+                    with Progress() as progress:
+                        progress.add_task("Fetching servers", total=None)
+                        # prompt for server selection
+                        servers = {server["server"]: server for server in streams}
+                    servers_names = list(servers.keys())
+                    if config.server in servers_names:
+                        server_name = config.server
+                    else:
+                        if config.use_fzf:
+                            server_name = fzf.run(servers_names, "Select an link: ")
+                        else:
+                            server_name = fuzzy_inquirer(
+                                servers_names,
+                                "Select link",
+                            )
+                    stream_link = filter_by_quality(
+                        config.quality, servers[server_name]["links"]
+                    )
+                    if not stream_link:
+                        print("[yellow bold]WARNING:[/] No streams found")
+                        time.sleep(1)
+                        print("Continuing...")
+                        continue
+                    link = stream_link["link"]
+                    provider_headers = servers[server_name]["headers"]
 
-                    episode_title = servers[server]["episode_title"]
+                    subtitles = servers[server_name]["subtitles"]
+                    episode_title = servers[server_name]["episode_title"]
                 print(f"[purple]Now Downloading:[/] {search_result} Episode {episode}")
-
+                subtitles = move_preferred_subtitle_lang_to_top(
+                    subtitles, config.sub_lang
+                )
                 downloader._download_file(
                     link,
                     anime["title"],
@@ -221,6 +231,7 @@ def download(
                     force_unknown_ext,
                     verbose,
                     headers=provider_headers,
+                    sub=subtitles[0]["url"] if subtitles else "",
                 )
             except Exception as e:
                 print(e)

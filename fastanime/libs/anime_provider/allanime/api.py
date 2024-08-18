@@ -231,6 +231,7 @@ class AllAnimeAPI(AnimeProvider):
                             "server": "Yt",
                             "episode_title": f'{anime["title"]}; Episode {episode_number}',
                             "headers": {"Referer": f"https://{ALLANIME_BASE}/"},
+                            "subtitles": [],
                             "links": [
                                 {
                                     "link": url,
@@ -260,6 +261,7 @@ class AllAnimeAPI(AnimeProvider):
                                 yield {
                                     "server": "gogoanime",
                                     "headers": {},
+                                    "subtitles": [],
                                     "episode_title": (
                                         allanime_episode["notes"] or f'{anime["title"]}'
                                     )
@@ -271,6 +273,7 @@ class AllAnimeAPI(AnimeProvider):
                                 yield {
                                     "server": "wetransfer",
                                     "headers": {},
+                                    "subtitles": [],
                                     "episode_title": (
                                         allanime_episode["notes"] or f'{anime["title"]}'
                                     )
@@ -282,6 +285,7 @@ class AllAnimeAPI(AnimeProvider):
                                 yield {
                                     "server": "sharepoint",
                                     "headers": {},
+                                    "subtitles": [],
                                     "episode_title": (
                                         allanime_episode["notes"] or f'{anime["title"]}'
                                     )
@@ -293,6 +297,7 @@ class AllAnimeAPI(AnimeProvider):
                                 yield {
                                     "server": "dropbox",
                                     "headers": {},
+                                    "subtitles": [],
                                     "episode_title": (
                                         allanime_episode["notes"] or f'{anime["title"]}'
                                     )
@@ -304,6 +309,7 @@ class AllAnimeAPI(AnimeProvider):
                                 yield {
                                     "server": "wixmp",
                                     "headers": {},
+                                    "subtitles": [],
                                     "episode_title": (
                                         allanime_episode["notes"] or f'{anime["title"]}'
                                     )

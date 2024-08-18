@@ -35,12 +35,12 @@ hex_to_char = {
 }
 
 
-def give_random_quality(links: list[dict]):
+def give_random_quality(links):
     qualities = cycle(["1080", "720", "480", "360"])
 
     return [
-        {"link": link["link"], "quality": quality}
-        for link, quality in zip(links, qualities)
+        {**episode_stream, "quality": quality}
+        for episode_stream, quality in zip(links, qualities)
     ]
 
 

@@ -39,9 +39,20 @@ class AnimeEpisodeDetails(TypedDict):
     raw: list[str]
 
 
-class AnimeEpisode(TypedDict):
+#
+# class AnimeEpisode(TypedDict):
+#     id: str
+#     title: str
+#
+
+
+class AnimeEpisodeInfo(TypedDict):
     id: str
     title: str
+    episode: str
+    poster: str | None
+    duration: str | None
+    translation_type: str | None
 
 
 class Anime(TypedDict):
@@ -49,7 +60,7 @@ class Anime(TypedDict):
     title: str
     availableEpisodesDetail: AnimeEpisodeDetails
     type: str | None
-    episodesInfo: list[AnimeEpisode] | None
+    episodesInfo: list[AnimeEpisodeInfo] | None
     poster: str
     year: str
 
@@ -64,8 +75,15 @@ class EpisodeStream(TypedDict):
     translation_type: Literal["dub", "sub"]
 
 
+class Subtitle(TypedDict):
+    url: str
+    language: str
+
+
 class Server(TypedDict):
     headers: dict
+    subtitles: list[Subtitle]
+    audio: list
     server: str
     episode_title: str
     links: list[EpisodeStream]

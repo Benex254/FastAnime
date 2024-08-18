@@ -16,6 +16,7 @@ commands = {
     "cache": "cache.cache",
     "completions": "completions.completions",
     "update": "update.update",
+    "grab": "grab.grab",
 }
 
 

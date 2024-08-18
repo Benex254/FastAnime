@@ -96,6 +96,7 @@ def grab(
 
         grabbed_anime = dict(anime)
         grabbed_anime["requested_episodes"] = episodes_range
+        grabbed_anime["translation_type"] = config.translation_type
         grabbed_anime["episodes_streams"] = {}
         # lets download em
         for episode in episodes_range:

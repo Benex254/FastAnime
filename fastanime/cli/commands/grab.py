@@ -26,11 +26,29 @@ if TYPE_CHECKING:
     "-r",
     help="A range of episodes to download (start-end)",
 )
+@click.option(
+    "--search-results-only",
+    "-s",
+    help="print only the search results to stdout",
+    is_flag=True,
+)
+@click.option(
+    "--anime-info-only", "-i", help="print only selected anime title info", is_flag=True
+)
+@click.option(
+    "--episode-streams-only",
+    "-e",
+    help="print only selected anime episodes streams of given range",
+    is_flag=True,
+)
 @click.pass_obj
 def grab(
     config: "Config",
     anime_titles: tuple,
     episode_range,
+    search_results_only,
+    anime_info_only,
+    episode_streams_only,
 ):
     import json
     from logging import getLogger
@@ -52,6 +70,11 @@ def grab(
         )
         if not search_results:
             exit(1)
+        if search_results_only:
+            # grab only search results skipping all lines after this
+            grabbed_animes.append(search_results)
+            continue
+
         search_results = search_results["results"]
         search_results_ = {
             search_result["title"]: search_result for search_result in search_results
@@ -68,6 +91,11 @@ def grab(
         episodes = sorted(
             anime["availableEpisodesDetail"][config.translation_type], key=float
         )
+        if anime_info_only:
+            # grab only the anime data skipping all lines after this
+            grabbed_animes.append(anime)
+            continue
+
         # where the magic happens
         if episode_range:
             if ":" in episode_range:
@@ -94,10 +122,14 @@ def grab(
         else:
             episodes_range = sorted(episodes, key=float)
 
-        grabbed_anime = dict(anime)
-        grabbed_anime["requested_episodes"] = episodes_range
-        grabbed_anime["translation_type"] = config.translation_type
-        grabbed_anime["episodes_streams"] = {}
+        if not episode_streams_only:
+            grabbed_anime = dict(anime)
+            grabbed_anime["requested_episodes"] = episodes_range
+            grabbed_anime["translation_type"] = config.translation_type
+            grabbed_anime["episodes_streams"] = {}
+        else:
+            grabbed_anime = {}
+
         # lets download em
         for episode in episodes_range:
             try:
@@ -108,14 +140,23 @@ def grab(
                 )
                 if not streams:
                     continue
-                grabbed_anime["episodes_streams"][episode] = {
-                    server["server"]: server for server in streams
-                }
+                episode_streams = {server["server"]: server for server in streams}
+
+                if episode_streams_only:
+                    grabbed_anime[episode] = episode_streams
+                else:
+                    grabbed_anime["episodes_streams"][
+                        episode
+                    ] = episode_streams  # pyright:ignore
 
             except Exception as e:
                 logger.error(e)
+
+        # grab the full data for single title and appen to final result or episode streams
         grabbed_animes.append(grabbed_anime)
-        if len(grabbed_animes) == 1:
-            print(json.dumps(grabbed_animes[0]))
-        else:
-            print(json.dumps(grabbed_animes))
+
+    # print out the final result either {} or [] depending if more than one title os requested
+    if len(grabbed_animes) == 1:
+        print(json.dumps(grabbed_animes[0]))
+    else:
+        print(json.dumps(grabbed_animes))

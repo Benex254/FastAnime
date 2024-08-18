@@ -1140,7 +1140,9 @@ def media_actions_menu(
             config: [TODO:description]
             fastanime_runtime_state: [TODO:description]
         """
-        options = ["allanime", "animepahe"]
+        from ...libs.anime_provider import anime_sources
+
+        options = list(anime_sources.keys())
         if config.use_fzf:
             provider = fzf.run(
                 options, prompt="Select Translation Type:", header="Language Options"

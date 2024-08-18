@@ -91,13 +91,13 @@ def grab(
         anime = anime_provider.get_anime(search_results_[search_result]["id"])
         if not anime:
             exit(1)
-        episodes = sorted(
-            anime["availableEpisodesDetail"][config.translation_type], key=float
-        )
         if anime_info_only:
             # grab only the anime data skipping all lines after this
             grabbed_animes.append(anime)
             continue
+        episodes = sorted(
+            anime["availableEpisodesDetail"][config.translation_type], key=float
+        )
 
         # where the magic happens
         if episode_range:

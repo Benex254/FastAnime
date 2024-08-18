@@ -39,11 +39,11 @@ def check_for_updates():
                 and remote_tag[1] == local_tag[1]
             )
         ):
-            is_update = True
+            is_latest = False
         else:
-            is_update = False
+            is_latest = True
 
-        return (is_update, release_json)
+        return (is_latest, release_json)
     else:
         print(request.text)
         return (False, {})

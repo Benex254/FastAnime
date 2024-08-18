@@ -24,8 +24,8 @@ def update(
         console.print(body)
 
     if check:
-        is_update, github_release_data = check_for_updates()
-        if is_update:
+        is_latest, github_release_data = check_for_updates()
+        if not is_latest:
             print(
                 f"You are running an older version ({__version__}) of fastanime please update to get the latest features"
             )
@@ -36,3 +36,7 @@ def update(
     else:
         success, github_release_data = update_app()
         _print_release(github_release_data)
+        if success:
+            print("Successfully updated")
+        else:
+            print("failed to update")

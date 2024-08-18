@@ -38,6 +38,7 @@ class YtDLPDownloader:
         force_unknown_ext=False,
         verbose=False,
         headers={},
+        sub="",
     ):
         """Helper function that downloads anime given url and path details
 
@@ -60,9 +61,11 @@ class YtDLPDownloader:
             "format": vid_format,
             "compat_opts": ("allow-unsafe-ext",) if force_unknown_ext else tuple(),
         }
-
+        urls = [url]
+        if sub:
+            urls.append(sub)
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            ydl.download([url])
+            ydl.download(urls)
 
     # WARN: May remove this legacy functionality
     def download_file(self, url: str, title, silent=True):

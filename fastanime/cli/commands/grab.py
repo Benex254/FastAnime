@@ -145,9 +145,9 @@ def grab(
                 if episode_streams_only:
                     grabbed_anime[episode] = episode_streams
                 else:
-                    grabbed_anime["episodes_streams"][
+                    grabbed_anime["episodes_streams"][  # pyright:ignore
                         episode
-                    ] = episode_streams  # pyright:ignore
+                    ] = episode_streams
 
             except Exception as e:
                 logger.error(e)

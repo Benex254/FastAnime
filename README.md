@@ -350,13 +350,18 @@ fastanime download -t <anime-title> -t <anime-title> -r '-5'
 
 # Download specific episode range
 # be sure to observe the range Syntax
-fastanime download <anime-title> -r '<episodes-start>:<episodes-end>:<step>'
+fastanime download -t <anime-title> -r '<episodes-start>:<episodes-end>:<step>'
 
-fastanime download <anime-title> -r '<episodes-start>:<episodes-end>'
+fastanime download -t <anime-title> -r '<episodes-start>:<episodes-end>'
 
-fastanime download <anime-title> -r '<episodes-start>:'
+fastanime download -t <anime-title> -r '<episodes-start>:'
 
-fastanime download <anime-title> -r ':<episodes-end>'
+fastanime download -t <anime-title> -r ':<episodes-end>'
+
+# download specific episode
+# remember python indexing starts at 0
+fastanime download -t <anime-title> -r '<episode-1>:<episode>'
+
 ```
 
 #### search subcommand
@@ -404,7 +409,8 @@ Uses a list slicing syntax similar to that of python as the value of the `-r` op
 **Syntax:**
 
 ```bash
-# print all available episodes
+# --- print anime info + episode streams ---
+
 # multiple titles can be specified with the -t option
 fastanime grab -t <anime-title> -t <anime-title>
 
@@ -425,6 +431,18 @@ fastanime grab -t <anime-title> -r '<start>:<stop>:<step>'
 fastanime grab -t <anime-title> -r '<start>:'
 
 fastanime grab -t <anime-title> -r ':<end>'
+
+# --- grab options ---
+
+# print search results only
+fastanime grab -t <anime-title> -r <range> --search-results-only
+
+# print anime info only
+fastanime grab -t <anime-title> -r <range> --anime-info-only
+
+# print episode streams only
+fastanime grab -t <anime-title> -r <range> --episode-streams-only
+
 ```
 
 #### downloads subcommand

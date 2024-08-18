@@ -51,7 +51,6 @@ Heavily inspired by [animdl](https://github.com/justfoolingaround/animdl), [magi
       - [Key Bindings](#key-bindings)
       - [Script Messages](#script-messages)
   - [Configuration](#configuration)
-  - [The python api](#the-python-api)
   - [Contributing](#contributing)
   - [Receiving Support](#receiving-support)
   - [Supporting the Project](#supporting-the-project)
@@ -59,7 +58,7 @@ Heavily inspired by [animdl](https://github.com/justfoolingaround/animdl), [magi
 
 > [!IMPORTANT]
 >
-> This project currently scrapes allanime and animepahe. The site is in the public domain and can be accessed by any one with a browser.
+> This project currently scrapes allanime, aniwatch and animepahe. The site is in the public domain and can be accessed by any one with a browser.
 
 ## Installation
 
@@ -234,6 +233,7 @@ Available options for the fastanime include:
 - `--use-mpv-mod/--use-default-player` whether to use python-mpv
 - `--provider <allanime/animepahe>` anime site of choice to scrape from
 - `--sync-play` or `-sp` use syncplay for streaming anime so you can watch with your friends
+- `--sub_lang <en/or any other common shortform for country>` regex is used to determine the appropriate. Only works when provider is aniwatch.
 
 Example usage of the above options
 
@@ -652,28 +652,6 @@ notification_duration=2
 
 [anilist]
 # Not implemented yet
-```
-
-## The python api
-
-The project offers a python api that can be used in other python programs.
-
-```python
-from fastanime.AnimeProvider import AnimeProvider
-
-# all output is typed, so will be easy to work with
-
-# providers include [allanime, animepahe]
-provider = AnimeProvider(provider="allanime")
-
-# to search for anime
-provider.search_for_anime()
-
-# to get anime info
-provider.get_anime()
-
-# to get streams of an episode
-provider.get_episode_streams()
 ```
 
 ## Contributing

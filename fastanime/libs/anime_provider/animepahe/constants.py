@@ -1,6 +1,5 @@
 from yt_dlp.utils.networking import random_user_agent
 
-SERVERS_AVAILABLE = ["kwik"]
 USER_AGENT = random_user_agent()
 ANIMEPAHE = "animepahe.ru"
 ANIMEPAHE_BASE = f"https://{ANIMEPAHE}"

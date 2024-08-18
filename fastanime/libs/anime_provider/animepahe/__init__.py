@@ -1,0 +1,1 @@
+SERVERS_AVAILABLE = ["kwik"]

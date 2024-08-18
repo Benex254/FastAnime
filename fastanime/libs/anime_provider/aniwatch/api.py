@@ -12,7 +12,7 @@ from ..base_provider import AnimeProvider
 from ..common import fetch_anime_info_from_bal
 from ..mini_anilist import search_for_anime_with_anilist
 from ..utils import give_random_quality
-from .constants import SERVERS_AVAILABLE
+from . import SERVERS_AVAILABLE
 from .types import AniWatchStream
 
 logger = logging.getLogger(__name__)

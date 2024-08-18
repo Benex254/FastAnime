@@ -76,6 +76,9 @@ def grab(
             continue
 
         search_results = search_results["results"]
+        if not search_results:
+            logger.error("no results for your search")
+            exit(1)
         search_results_ = {
             search_result["title"]: search_result for search_result in search_results
         }

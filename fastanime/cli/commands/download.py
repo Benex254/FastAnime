@@ -83,6 +83,9 @@ def download(
             )
             return
         search_results = search_results["results"]
+        if not search_results:
+            print("Nothing muches your search term")
+            exit_app(1)
         search_results_ = {
             search_result["title"]: search_result for search_result in search_results
         }

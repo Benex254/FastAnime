@@ -71,7 +71,7 @@ class MpvPlayer(object):
         elif type == "reload":
             if current_episode_number not in total_episodes:
                 self.mpv_player.show_text("Episode not available")
-                return None, None
+                return
             self.mpv_player.show_text("Replaying Episode...")
         elif type == "custom":
             if not ep_no or ep_no not in total_episodes:
@@ -79,7 +79,7 @@ class MpvPlayer(object):
                 self.mpv_player.show_text(
                     f"Acceptable episodes are:  {total_episodes}",
                 )
-                return None, None
+                return
 
             self.mpv_player.show_text(f"Fetching episode {ep_no}")
             current_episode_number = ep_no
@@ -114,14 +114,14 @@ class MpvPlayer(object):
         )
         if not episode_streams:
             self.mpv_player.show_text("No streams were found")
-            return None, None
+            return
 
         # always select the first
         if server == "top":
             selected_server = next(episode_streams, None)
             if not selected_server:
                 self.mpv_player.show_text("Sth went wrong when loading the episode")
-                return None, None
+                return
         else:
             episode_streams_dict = {
                 episode_stream["server"]: episode_stream
@@ -132,14 +132,14 @@ class MpvPlayer(object):
                 self.mpv_player.show_text(
                     f"Invalid server!!; servers available are: {episode_streams_dict.keys()}",
                 )
-                return None, None
+                return
         self.current_media_title = selected_server["episode_title"]
         links = selected_server["links"]
 
         stream_link_ = filter_by_quality(quality, links)
         if not stream_link_:
             self.mpv_player.show_text("Quality not found")
-            return None, None
+            return
         self.mpv_player._set_property("start", "0")
         stream_link = stream_link_["link"]
         fastanime_runtime_state.provider_current_episode_stream_link = stream_link

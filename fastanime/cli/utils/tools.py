@@ -15,25 +15,14 @@ class FastAnimeRuntimeState(dict):
 
 
 def exit_app(exit_code=0, *args):
-    import os
-    import shutil
     import sys
+
+    from rich.console import Console
 
     from ...constants import APP_NAME, ICON_PATH, USER_NAME
 
-    def is_running_in_terminal():
-        try:
-            shutil.get_terminal_size()
-            return (
-                sys.stdin
-                and sys.stdin.isatty()
-                and sys.stdout.isatty()
-                and os.getenv("TERM") is not None
-            )
-        except OSError:
-            return False
-
-    if not is_running_in_terminal():
+    console = Console()
+    if not console.is_terminal:
         from plyer import notification
 
         notification.notify(
@@ -43,7 +32,6 @@ def exit_app(exit_code=0, *args):
             title="Shutting down",
         )  # pyright:ignore
     else:
-        from rich import print
-
-        print("Have a good day :smile:", USER_NAME)
+        console.clear()
+        console.print("Have a good day :smile:", USER_NAME)
     sys.exit(exit_code)

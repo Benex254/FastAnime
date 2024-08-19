@@ -192,7 +192,7 @@ def run_cli(
         FORMAT = "%(message)s"
 
         logging.basicConfig(
-            level="NOTSET", format=FORMAT, datefmt="[%X]", handlers=[RichHandler()]
+            level="debug", format=FORMAT, datefmt="[%X]", handlers=[RichHandler()]
         )
         logger = logging.getLogger(__name__)
         logger.info("logging has been initialized")
@@ -209,6 +209,10 @@ def run_cli(
             datefmt="[%d/%m/%Y@%H:%M:%S]",
             filemode="w",
         )
+    else:
+        import logging
+
+        logging.basicConfig(level=logging.CRITICAL)
     if rich_traceback:
         from rich.traceback import install
 

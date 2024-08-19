@@ -21,7 +21,11 @@ from ...Utility.data import anime_normalizer
 from ...Utility.utils import anime_title_percentage_match
 from ..utils.mpv import run_mpv
 from ..utils.tools import exit_app
-from ..utils.utils import filter_by_quality, fuzzy_inquirer
+from ..utils.utils import (
+    filter_by_quality,
+    fuzzy_inquirer,
+    move_preferred_subtitle_lang_to_top,
+)
 from .utils import aniskip
 
 if TYPE_CHECKING:
@@ -113,7 +117,9 @@ def media_player_controls(
                 current_episode_number,
             ):
                 custom_args.extend(args)
-        subtitles = selected_server["subtitles"]
+        subtitles = move_preferred_subtitle_lang_to_top(
+            selected_server["subtitles"], config.sub_lang
+        )
         if config.sync_play:
             from ..utils.syncplay import SyncPlayer
 
@@ -126,30 +132,16 @@ def media_player_controls(
         elif config.use_mpv_mod:
             from ..utils.player import player
 
-            mpv = player.create_player(
+            player.create_player(
                 current_episode_stream_link,
                 config.anime_provider,
                 fastanime_runtime_state,
                 config,
                 selected_server["episode_title"],
+                start_time,
                 headers=selected_server["headers"],
+                subtitles=subtitles,
             )
-
-            # TODO: implement custom aniskip
-            if custom_args and None:
-                chapters_file = custom_args[0].split("=", 1)
-                script_opts = custom_args[1].split("=", 1)
-                mpv._set_property("chapters-file", chapters_file[1])
-                mpv._set_property("script-opts", script_opts[1])
-            if not start_time == "0":
-                mpv.start = start_time
-            mpv.wait_until_playing()
-            if subtitles:
-                mpv.sub_add(
-                    subtitles[0]["url"], "select", None, subtitles[0]["language"]
-                )
-            mpv.wait_for_shutdown()
-            mpv.terminate()
             stop_time = player.last_stop_time
             total_time = player.last_total_time
         else:
@@ -517,7 +509,9 @@ def provider_anime_episode_servers_menu(
             current_episode_number,
         ):
             custom_args.extend(args)
-    subtitles = selected_server["subtitles"]
+    subtitles = move_preferred_subtitle_lang_to_top(
+        selected_server["subtitles"], config.sub_lang
+    )
     if config.sync_play:
         from ..utils.syncplay import SyncPlayer
 
@@ -530,32 +524,19 @@ def provider_anime_episode_servers_menu(
     elif config.use_mpv_mod:
         from ..utils.player import player
 
-        mpv = player.create_player(
+        if start_time == "0" and episode_in_history != current_episode_number:
+            start_time = "0"
+        player.create_player(
             current_stream_link,
             anime_provider,
             fastanime_runtime_state,
             config,
             selected_server["episode_title"],
+            start_time,
             headers=selected_server["headers"],
+            subtitles=subtitles,
         )
 
-        # TODO: implement custom aniskip intergration
-        if custom_args and None:
-            chapters_file = custom_args[0].split("=", 1)
-            script_opts = custom_args[1].split("=", 1)
-            mpv._set_property("chapters-file", chapters_file[1])
-            mpv._set_property("script-opts", script_opts[1])
-        if not start_time == "0" and episode_in_history == current_episode_number:
-            mpv.start = start_time
-        mpv.wait_until_playing()
-        if subtitles:
-            # subs = ""
-            # for subtitle in subtitles:
-            # subs += f"{subtitle['url']},"
-            mpv.sub_add(subtitles[0]["url"], "select", None, subtitles[0]["language"])
-            # mpv.sub_files = subs
-        mpv.wait_for_shutdown()
-        mpv.terminate()
         stop_time = player.last_stop_time
         total_time = player.last_total_time
         current_episode_number = fastanime_runtime_state.provider_current_episode_number

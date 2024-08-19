@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 import mpv
 
 from ...anilist import AniList
-from .utils import filter_by_quality
+from .utils import filter_by_quality, move_preferred_subtitle_lang_to_top
 
 if TYPE_CHECKING:
     from typing import Literal
@@ -22,6 +22,7 @@ def format_time(duration_in_secs: float):
 class MpvPlayer(object):
     anime_provider: "AnimeProvider"
     config: "Config"
+    subs = []
     mpv_player: "mpv.MPV"
     last_stop_time: str = "0"
     last_total_time: str = "0"
@@ -70,7 +71,7 @@ class MpvPlayer(object):
         elif type == "reload":
             if current_episode_number not in total_episodes:
                 self.mpv_player.show_text("Episode not available")
-                return
+                return None, None
             self.mpv_player.show_text("Replaying Episode...")
         elif type == "custom":
             if not ep_no or ep_no not in total_episodes:
@@ -78,7 +79,7 @@ class MpvPlayer(object):
                 self.mpv_player.show_text(
                     f"Acceptable episodes are:  {total_episodes}",
                 )
-                return
+                return None, None
 
             self.mpv_player.show_text(f"Fetching episode {ep_no}")
             current_episode_number = ep_no
@@ -113,14 +114,14 @@ class MpvPlayer(object):
         )
         if not episode_streams:
             self.mpv_player.show_text("No streams were found")
-            return None
+            return None, None
 
         # always select the first
         if server == "top":
             selected_server = next(episode_streams, None)
             if not selected_server:
                 self.mpv_player.show_text("Sth went wrong when loading the episode")
-                return
+                return None, None
         else:
             episode_streams_dict = {
                 episode_stream["server"]: episode_stream
@@ -131,17 +132,20 @@ class MpvPlayer(object):
                 self.mpv_player.show_text(
                     f"Invalid server!!; servers available are: {episode_streams_dict.keys()}",
                 )
-                return None
+                return None, None
         self.current_media_title = selected_server["episode_title"]
         links = selected_server["links"]
 
         stream_link_ = filter_by_quality(quality, links)
         if not stream_link_:
             self.mpv_player.show_text("Quality not found")
-            return
+            return None, None
         self.mpv_player._set_property("start", "0")
         stream_link = stream_link_["link"]
         fastanime_runtime_state.provider_current_episode_stream_link = stream_link
+        self.subs = move_preferred_subtitle_lang_to_top(
+            selected_server["subtitles"], config.sub_lang
+        )
         return stream_link
 
     def create_player(
@@ -151,8 +155,11 @@ class MpvPlayer(object):
         fastanime_runtime_state,
         config: "Config",
         title,
+        start_time,
         headers={},
+        subtitles=[],
     ):
+        self.subs = subtitles
         self.anime_provider = anime_provider
         self.fastanime_runtime_state = fastanime_runtime_state
         self.config = config
@@ -171,17 +178,6 @@ class MpvPlayer(object):
             osc=True,
             ytdl=True,
         )
-        mpv_player.force_window = config.force_window
-        # mpv_player.cache = "yes"
-        # mpv_player.cache_pause = "no"
-        mpv_player.title = title
-        mpv_headers = ""
-        if headers:
-            for header_name, header_value in headers.items():
-                mpv_headers += f"{header_name}:{header_value},"
-        mpv_player.http_header_fields = mpv_headers
-
-        mpv_player.play(stream_link)
 
         # -- events --
         @mpv_player.event_callback("file-loaded")
@@ -190,6 +186,20 @@ class MpvPlayer(object):
             self.player_fetching = False
             if isinstance(d, float):
                 self.last_total_time = format_time(d)
+            try:
+                if not mpv_player.core_shutdown:
+                    if self.subs:
+                        for i, subtitle in enumerate(self.subs):
+                            if i == 0:
+                                flag = "select"
+                            else:
+                                flag = "auto"
+                            mpv_player.sub_add(
+                                subtitle["url"], flag, None, subtitle["language"]
+                            )
+                        self.subs = []
+            except mpv.ShutdownError:
+                pass
 
         @mpv_player.property_observer("time-pos")
         def handle_time_start_update(*args):
@@ -218,7 +228,9 @@ class MpvPlayer(object):
         def _next_episode():
             url = self.get_episode("next")
             if url:
-                mpv_player.loadfile(url, options=f"title={self.current_media_title}")
+                mpv_player.loadfile(
+                    url,
+                )
                 mpv_player.title = self.current_media_title
 
         @mpv_player.on_key_press("shift+p")
@@ -327,7 +339,23 @@ class MpvPlayer(object):
         mpv_player.register_message_handler("select-quality", select_quality)
 
         self.mpv_player = mpv_player
-        return mpv_player
+        mpv_player.force_window = config.force_window
+        # mpv_player.cache = "yes"
+        # mpv_player.cache_pause = "no"
+        mpv_player.title = title
+        mpv_headers = ""
+        if headers:
+            for header_name, header_value in headers.items():
+                mpv_headers += f"{header_name}:{header_value},"
+        mpv_player.http_header_fields = mpv_headers
+
+        mpv_player.play(stream_link)
+
+        if not start_time == "0":
+            mpv_player.start = start_time
+
+        mpv_player.wait_for_shutdown()
+        mpv_player.terminate()
 
 
 player = MpvPlayer()

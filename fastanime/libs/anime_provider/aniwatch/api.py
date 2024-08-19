@@ -54,7 +54,13 @@ class AniWatchApi(AnimeProvider):
                 self.episodes_info = [
                     {
                         "id": episode["data-id"],
-                        "title": f"{episode['title'] or ZORO['title']}; Episode {episode['data-number']}",
+                        "title": (
+                            (episode["title"] or "").replace(
+                                f"Episode {episode['data-number']}", ""
+                            )
+                            or ZORO[aniwatch_id]["title"]
+                        )
+                        + f"; Episode {episode['data-number']}",
                         "episode": episode["data-number"],
                     }
                     for episode in episodes_info_dicts

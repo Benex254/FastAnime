@@ -362,6 +362,17 @@ fastanime download -t <anime-title> -r ':<episodes-end>'
 # remember python indexing starts at 0
 fastanime download -t <anime-title> -r '<episode-1>:<episode>'
 
+# merge subtitles with ffmpeg to mkv format; aniwatch tends to give subs as separate files
+# and dont prompt for anything
+# eg existing file in destination instead remove
+# and clean
+# ie remove original files (sub file and vid file)
+# only keep merged files
+fastanime download -t <anime-title> --merge --clean --no-prompt
+
+
+
+
 ```
 
 #### search subcommand

@@ -1010,6 +1010,42 @@ def media_actions_menu(
 
         media_actions_menu(config, fastanime_runtime_state)
 
+    def _change_player(
+        config: "Config", fastanime_runtime_state: "FastAnimeRuntimeState"
+    ):
+        """Change the translation type to use
+
+        Args:
+            config: [TODO:description]
+            fastanime_runtime_state: [TODO:description]
+        """
+        # prompt for new translation type
+        options = ["syncplay", "mpv-mod", "default"]
+        if config.use_fzf:
+            player = fzf.run(
+                options,
+                prompt="Select Player:",
+            )
+        elif config.use_rofi:
+            player = Rofi.run(options, "Select Player: ")
+        else:
+            player = fuzzy_inquirer(
+                options,
+                "Select Player",
+            )
+
+        # update internal config
+        if player == "syncplay":
+            config.sync_play = True
+            config.use_mpv_mod = False
+        else:
+            config.sync_play = False
+            if player == "mpv-mod":
+                config.use_mpv_mod = True
+            else:
+                config.use_mpv_mod = False
+        media_actions_menu(config, fastanime_runtime_state)
+
     def _view_info(config: "Config", fastanime_runtime_state: "FastAnimeRuntimeState"):
         """helper function to view info of an anime from terminal
 
@@ -1178,6 +1214,7 @@ def media_actions_menu(
         f"{'📖 ' if icons else ''}View Info": _view_info,
         f"{'🎧 ' if icons else ''}Change Translation Type": _change_translation_type,
         f"{'💽 ' if icons else ''}Change Provider": _change_provider,
+        f"{'💽 ' if icons else ''}Change Player": _change_player,
         f"{'🔘 ' if icons else ''}Toggle auto select anime": _toggle_auto_select,  #  WARN: problematic if you choose an anime that doesnt match id
         f"{'💠 ' if icons else ''}Toggle auto next episode": _toggle_auto_next,
         f"{'🔘 ' if icons else ''}Toggle continue from history": _toggle_continue_from_history,

@@ -19,6 +19,27 @@ BG_GREEN = "\033[48;2;120;233;12;m"
 GREEN = "\033[38;2;45;24;45;m"
 
 
+def get_requested_quality_or_default_to_first(url, quality):
+    import yt_dlp
+
+    with yt_dlp.YoutubeDL({"quiet": True, "silent": True, "no_warnings": True}) as ydl:
+        m3u8_info = ydl.extract_info(url, False)
+        if not m3u8_info:
+            return
+
+    m3u8_formats = m3u8_info["formats"]
+    quality = int(quality)
+    quality_u = quality - 80
+    quality_l = quality + 80
+    for m3u8_format in m3u8_formats:
+        if m3u8_format["height"] == quality or (
+            m3u8_format["height"] < quality_u and m3u8_format["height"] > quality_l
+        ):
+            return m3u8_format["url"]
+    else:
+        return m3u8_formats[0]["url"]
+
+
 def move_preferred_subtitle_lang_to_top(sub_list, lang_str):
     """Moves the dictionary with the given ID to the front of the list.
 

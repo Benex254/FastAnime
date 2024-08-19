@@ -502,6 +502,8 @@ def provider_anime_episode_servers_menu(
     )
     if start_time != "0" and episode_in_history == current_episode_number:
         print("[green]Continuing from:[/] ", start_time)
+    else:
+        start_time = "0"
     custom_args = []
     if config.skip:
         if args := aniskip(
@@ -680,14 +682,14 @@ def provider_anime_episodes_menu(
     if current_episode_number == "Back":
         media_actions_menu(config, fastanime_runtime_state)
         return
-
-    # try to get the start time and if not found default to "0"
-    start_time = user_watch_history.get(str(anime_id_anilist), {}).get(
-        "start_time", "0"
-    )
-    config.update_watch_history(
-        anime_id_anilist, current_episode_number, start_time=start_time
-    )
+    #
+    # # try to get the start time and if not found default to "0"
+    # start_time = user_watch_history.get(str(anime_id_anilist), {}).get(
+    #     "start_time", "0"
+    # )
+    # config.update_watch_history(
+    #     anime_id_anilist, current_episode_number, start_time=start_time
+    # )
 
     # update runtime data
     fastanime_runtime_state.provider_available_episodes = total_episodes
@@ -1138,7 +1140,7 @@ def media_actions_menu(
 
         config.provider = provider
         config.anime_provider.provider = provider
-        config.anime_provider.lazyload_provider()
+        config.anime_provider.lazyload_provider(provider)
 
         media_actions_menu(config, fastanime_runtime_state)
 
@@ -1427,6 +1429,9 @@ def fastanime_main_menu(
             config.use_fzf = False
         else:
             config.load_config()
+
+        config.anime_provider.provider = config.provider
+        config.anime_provider.lazyload_provider(config.provider)
 
         fastanime_main_menu(config, fastanime_runtime_state)
 

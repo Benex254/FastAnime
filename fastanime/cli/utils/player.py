@@ -200,6 +200,8 @@ class MpvPlayer(object):
                         self.subs = []
             except mpv.ShutdownError:
                 pass
+            except Exception:
+                pass
 
         @mpv_player.property_observer("time-pos")
         def handle_time_start_update(*args):

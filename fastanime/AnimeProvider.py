@@ -37,12 +37,12 @@ class AnimeProvider:
         self.provider = provider
         self.dynamic = dynamic
         self.retries = retries
-        self.lazyload_provider()
+        self.lazyload_provider(self.provider)
 
-    def lazyload_provider(self):
+    def lazyload_provider(self, provider):
         """updates the current provider being used"""
-        _, anime_provider_cls_name = anime_sources[self.provider].split(".", 1)
-        package = f"fastanime.libs.anime_provider.{self.provider}"
+        _, anime_provider_cls_name = anime_sources[provider].split(".", 1)
+        package = f"fastanime.libs.anime_provider.{provider}"
         provider_api = importlib.import_module(".api", package)
         anime_provider = getattr(provider_api, anime_provider_cls_name)
         self.anime_provider = anime_provider()

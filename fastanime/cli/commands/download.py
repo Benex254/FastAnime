@@ -1,4 +1,3 @@
-import time
 from typing import TYPE_CHECKING
 
 import click
@@ -41,6 +40,28 @@ if TYPE_CHECKING:
     default=True,
 )
 @click.option("--verbose", "-v", is_flag=True, help="Download verbosely (everywhere)")
+@click.option(
+    "--merge", "-m", is_flag=True, help="Merge the subfile with video using ffmpeg"
+)
+@click.option(
+    "--clean/--no-clean",
+    "-c/-C",
+    type=bool,
+    help="After merging delete the original files",
+    default=True,
+)
+@click.option(
+    "--wait-time",
+    "-w",
+    type=int,
+    help="The amount of time to wait after downloading is complete before the screen is completely cleared",
+    default=10,
+)
+@click.option(
+    "--prompt/--no-prompt",
+    help="Dont prompt for anything instead just do the best thing",
+    default=False,
+)
 @click.pass_obj
 def download(
     config: "Config",
@@ -49,7 +70,13 @@ def download(
     force_unknown_ext,
     silent,
     verbose,
+    merge,
+    clean,
+    wait_time,
+    prompt,
 ):
+    import time
+
     from rich import print
     from rich.progress import Progress
     from thefuzz import fuzz
@@ -83,7 +110,16 @@ def download(
             print("Search results failed")
             input("Enter to retry")
             download(
-                config, anime_title, episode_range, force_unknown_ext, silent, verbose
+                config,
+                anime_title,
+                episode_range,
+                force_unknown_ext,
+                silent,
+                verbose,
+                merge,
+                clean,
+                wait_time,
+                prompt,
             )
             return
         search_results = search_results["results"]
@@ -119,7 +155,16 @@ def download(
             print("Sth went wring anime no found")
             input("Enter to continue...")
             download(
-                config, anime_title, episode_range, force_unknown_ext, silent, verbose
+                config,
+                anime_title,
+                episode_range,
+                force_unknown_ext,
+                silent,
+                verbose,
+                merge,
+                clean,
+                wait_time,
+                prompt,
             )
             return
 
@@ -223,7 +268,7 @@ def download(
                 )
                 downloader._download_file(
                     link,
-                    anime["title"],
+                    search_result,
                     episode_title,
                     download_dir,
                     silent,
@@ -232,10 +277,14 @@ def download(
                     verbose,
                     headers=provider_headers,
                     sub=subtitles[0]["url"] if subtitles else "",
+                    merge=merge,
+                    clean=clean,
+                    prompt=prompt,
                 )
             except Exception as e:
                 print(e)
                 time.sleep(1)
                 print("Continuing...")
     print("Done Downloading")
+    time.sleep(wait_time)
     exit_app()

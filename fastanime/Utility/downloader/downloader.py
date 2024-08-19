@@ -1,8 +1,14 @@
 import logging
+import os
+import shutil
+import subprocess
+import tempfile
 from queue import Queue
 from threading import Thread
 
 import yt_dlp
+from rich import print
+from rich.prompt import Confirm
 from yt_dlp.utils import sanitize_filename
 
 logger = logging.getLogger(__name__)
@@ -39,6 +45,9 @@ class YtDLPDownloader:
         verbose=False,
         headers={},
         sub="",
+        merge=False,
+        clean=True,
+        prompt=True,
     ):
         """Helper function that downloads anime given url and path details
 
@@ -64,8 +73,82 @@ class YtDLPDownloader:
         urls = [url]
         if sub:
             urls.append(sub)
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            ydl.download(urls)
+        vid_path = ""
+        sub_path = ""
+        for i, url in enumerate(urls):
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                info = ydl.extract_info(url, download=True)
+            if not info:
+                continue
+            if i == 0:
+                vid_path = info["requested_downloads"][0]["filepath"]
+            else:
+                sub_path = info["requested_downloads"][0]["filepath"]
+        if sub_path and vid_path and merge:
+            self.merge_subtitles(vid_path, sub_path, clean, prompt)
+
+    def merge_subtitles(self, video_path, sub_path, clean, prompt):
+        # Extract the directory and filename
+        video_dir = os.path.dirname(video_path)
+        video_name = os.path.basename(video_path)
+        video_name, _ = os.path.splitext(video_name)
+        video_name += ".mkv"
+
+        FFMPEG_EXECUTABLE = shutil.which("ffmpeg")
+        if not FFMPEG_EXECUTABLE:
+            print("[yellow bold]WARNING: [/]FFmpeg not found")
+            return
+        # Create a temporary directory
+        with tempfile.TemporaryDirectory() as temp_dir:
+            # Temporary output path in the temporary directory
+            temp_output_path = os.path.join(temp_dir, video_name)
+            # FFmpeg command to merge subtitles
+            command = [
+                FFMPEG_EXECUTABLE,
+                "-hide_banner",
+                "-i",
+                video_path,
+                "-i",
+                sub_path,
+                "-c",
+                "copy",
+                "-map",
+                "0",
+                "-map",
+                "1",
+                temp_output_path,
+            ]
+
+            # Run the command
+            try:
+                subprocess.run(command, check=True)
+
+                # Move the file back to the original directory with the original name
+                final_output_path = os.path.join(video_dir, video_name)
+
+                if os.path.exists(final_output_path):
+                    if not prompt or Confirm.ask(
+                        f"File exists({final_output_path}) would you like to overwrite it",
+                        default=True,
+                    ):
+                        # move file to dest
+                        os.remove(final_output_path)
+                        shutil.move(temp_output_path, final_output_path)
+                else:
+                    shutil.move(temp_output_path, final_output_path)
+                # clean up
+                if clean:
+                    print("[cyan]Cleaning original files...[/]")
+                    os.remove(video_path)
+                    os.remove(sub_path)
+
+                print(
+                    f"[green bold]Subtitles merged successfully.[/] Output file: {final_output_path}"
+                )
+            except subprocess.CalledProcessError as e:
+                print(f"[red bold]Error[/] during merging subtitles: {e}")
+            except Exception as e:
+                print(f"[red bold]An error[/] occurred: {e}")
 
     # WARN: May remove this legacy functionality
     def download_file(self, url: str, title, silent=True):

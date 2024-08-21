@@ -11,12 +11,7 @@ from requests.exceptions import Timeout
 
 from ...anime_provider.base_provider import AnimeProvider
 from ..utils import give_random_quality, one_digit_symmetric_xor
-from .constants import (
-    ALLANIME_API_ENDPOINT,
-    ALLANIME_BASE,
-    ALLANIME_REFERER,
-    USER_AGENT,
-)
+from .constants import ALLANIME_API_ENDPOINT, ALLANIME_BASE, ALLANIME_REFERER
 from .gql_queries import ALLANIME_EPISODES_GQL, ALLANIME_SEARCH_GQL, ALLANIME_SHOW_GQL
 
 if TYPE_CHECKING:
@@ -36,6 +31,9 @@ class AllAnimeAPI(AnimeProvider):
     """
 
     api_endpoint = ALLANIME_API_ENDPOINT
+    HEADERS = {
+        "Referer": ALLANIME_REFERER,
+    }
 
     def _fetch_gql(self, query: str, variables: dict):
         """main abstraction over all requests to the allanime api
@@ -54,7 +52,6 @@ class AllAnimeAPI(AnimeProvider):
                     "variables": json.dumps(variables),
                     "query": query,
                 },
-                headers={"Referer": ALLANIME_REFERER, "User-Agent": USER_AGENT},
                 timeout=10,
             )
             if response.status_code == 200:
@@ -247,10 +244,6 @@ class AllAnimeAPI(AnimeProvider):
                     )
                     resp = self.session.get(
                         embed_url,
-                        headers={
-                            "Referer": ALLANIME_REFERER,
-                            "User-Agent": USER_AGENT,
-                        },
                         timeout=10,
                     )
 
@@ -328,85 +321,3 @@ class AllAnimeAPI(AnimeProvider):
         except Exception as e:
             logger.error(f"FA(Allanime): {e}")
             return []
-
-
-if __name__ == "__main__":
-    anime_provider = AllAnimeAPI()
-    # lets see if it works :)
-    import subprocess
-    import sys
-
-    from InquirerPy import inquirer, validator  # pyright:ignore
-
-    anime = input("Enter the anime name: ")
-    translation = input("Enter the translation type: ")
-
-    search_results = anime_provider.search_for_anime(
-        anime, translation_type=translation.strip()
-    )
-
-    if not search_results:
-        raise Exception("No results found")
-
-    search_results = search_results["results"]
-    options = {show["title"]: show for show in search_results}
-    anime = inquirer.fuzzy(
-        "Enter the anime title",
-        list(options.keys()),
-        validate=validator.EmptyInputValidator(),
-    ).execute()
-    if anime is None:
-        print("No anime was selected")
-        sys.exit(1)
-
-    anime_result = options[anime]
-    anime_data = anime_provider.get_anime(anime_result["id"])
-    if not anime_data:
-        raise Exception("Anime not found")
-    availableEpisodesDetail = anime_data["availableEpisodesDetail"]
-    if not availableEpisodesDetail.get(translation.strip()):
-        raise Exception("No episodes found")
-
-    stream_link = True
-    while stream_link != "quit":
-        print("select episode")
-        episode = inquirer.fuzzy(
-            "Choose an episode",
-            availableEpisodesDetail[translation.strip()],
-            validate=validator.EmptyInputValidator(),
-        ).execute()
-        if episode is None:
-            print("No episode was selected")
-            sys.exit(1)
-
-        if not anime_data:
-            print("Sth went wrong")
-            break
-        episode_streams_ = anime_provider.get_episode_streams(
-            anime_data,  # pyright: ignore
-            episode,
-            translation.strip(),
-        )
-        if episode_streams_ is None:
-            raise Exception("Episode not found")
-
-        episode_streams = list(episode_streams_)
-        stream_links = []
-        for server in episode_streams:
-            stream_links.extend([link["link"] for link in server["links"]])
-        stream_links.append("back")
-        stream_link = inquirer.fuzzy(
-            "Choose a link to stream",
-            stream_links,
-            validate=validator.EmptyInputValidator(),
-        ).execute()
-        if stream_link == "quit":
-            print("Have a nice day")
-            sys.exit()
-        if not stream_link:
-            raise Exception("No stream was selected")
-
-        title = episode_streams[0].get(
-            "episode_title", "%s: Episode %s" % (anime_data["title"], episode)
-        )
-        subprocess.run(["mpv", f"--title={title}", stream_link])

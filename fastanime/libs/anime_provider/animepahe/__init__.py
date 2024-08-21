@@ -1,1 +1,0 @@
-SERVERS_AVAILABLE = ["kwik"]

@@ -1,6 +1,6 @@
-from .allanime import SERVERS_AVAILABLE as ALLANIME_SERVERS
-from .animepahe import SERVERS_AVAILABLE as ANIMEPAHESERVERS
-from .aniwatch import SERVERS_AVAILABLE as ANIWATCHSERVERS
+from .allanime.constants import SERVERS_AVAILABLE as ALLANIME_SERVERS
+from .animepahe.constants import SERVERS_AVAILABLE as ANIMEPAHESERVERS
+from .aniwatch.constants import SERVERS_AVAILABLE as ANIWATCHSERVERS
 
 anime_sources = {
     "allanime": "api.AllAnimeAPI",

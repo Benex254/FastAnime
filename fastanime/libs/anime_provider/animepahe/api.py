@@ -32,12 +32,14 @@ KWIK_RE = re.compile(r"Player\|(.+?)'")
 class AnimePaheApi(AnimeProvider):
     search_page: "AnimePaheSearchPage"
     anime: "AnimePaheAnimePage"
+    HEADERS = REQUEST_HEADERS
 
     def search_for_anime(self, user_query: str, *args):
         try:
             url = f"{ANIMEPAHE_ENDPOINT}m=search&q={user_query}"
-            headers = {**REQUEST_HEADERS}
-            response = self.session.get(url, headers=headers)
+            response = self.session.get(
+                url,
+            )
             if not response.status_code == 200:
                 return
             data: "AnimePaheSearchPage" = response.json()
@@ -85,7 +87,9 @@ class AnimePaheApi(AnimeProvider):
                 url,
                 page,
             ):
-                response = self.session.get(url, headers=REQUEST_HEADERS)
+                response = self.session.get(
+                    url,
+                )
                 if response.status_code == 200:
                     if not data:
                         data.update(response.json())
@@ -171,7 +175,7 @@ class AnimePaheApi(AnimeProvider):
             anime_id = anime["id"]
             # fetch the episode page
             url = f"{ANIMEPAHE_BASE}/play/{anime_id}/{episode['session']}"
-            response = self.session.get(url, headers=REQUEST_HEADERS)
+            response = self.session.get(url)
             # get the element containing links to juicy streams
             c = get_element_by_id("resolutionMenu", response.text)
             resolutionMenuItems = get_elements_html_by_class("dropdown-item", c)
@@ -207,7 +211,13 @@ class AnimePaheApi(AnimeProvider):
                     )
                     return []
                 # get embed page
-                embed_response = self.session.get(embed_url, headers=SERVER_HEADERS)
+                print(self.session.headers)
+                input()
+                embed_response = self.session.get(
+                    embed_url, headers={"User-Agent": self.USER_AGENT, **SERVER_HEADERS}
+                )
+                if not response.status_code == 200:
+                    continue
                 embed_page = embed_response.text
 
                 decoded_js = process_animepahe_embed_page(embed_page)

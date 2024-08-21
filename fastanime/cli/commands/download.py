@@ -60,7 +60,7 @@ if TYPE_CHECKING:
     "-w",
     type=int,
     help="The amount of time to wait after downloading is complete before the screen is completely cleared",
-    default=10,
+    default=60,
 )
 @click.option(
     "--prompt/--no-prompt",
@@ -141,7 +141,7 @@ def download(
         search_results = search_results["results"]
         if not search_results:
             print("Nothing muches your search term")
-            exit_app(1)
+            continue
         search_results_ = {
             search_result["title"]: search_result for search_result in search_results
         }

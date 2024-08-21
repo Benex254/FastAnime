@@ -267,6 +267,7 @@ Run `fastanime anilist` to access the main interface.
 ##### Subcommands
 
 The subcommands are mainly their as convenience. Since all the features already exist in the main interface.
+Most of the subcommands share the common option `--dump-json` or `-d` which will print only the json data and supress the ui.
 
 - `fastanime anilist trending`: Top 15 trending anime.
 - `fastanime anilist recent`: Top 15 recently updated anime.
@@ -275,6 +276,28 @@ The subcommands are mainly their as convenience. Since all the features already 
 - `fastanime anilist popular`: Top 15 popular anime.
 - `fastanime anilist favourites`: Top 15 favorite anime.
 - `fastanime anilist random`: get random anime
+
+**FastAnime Anilist Search subcommand**
+
+It is by far one of the most powerful commands.
+It offers the following options:
+
+- `--sort <MediaSort>` or `-s <MediaSort>`
+- `--title <anime-title>` or `-t <anime-title>`
+- `--tags <tag>` or `-t <tag>` can be specified multiple times for different tags to filter by.
+- `--year <year>` or `-y <year>`
+- `--status <MediaStatus>` or `-S <MediaStatus>`
+- `--media-format <MediaFormat>` or `-f <MediaFormat>`
+- `--season <MediaSeason>`
+- `--genres <genre>` or `-g <genre>` can be specified multiple times.
+
+Example:
+
+```bash
+fastanime anilist search -t isekai
+```
+
+For more details visit the anilist docs or just get the completions which will improve the experience.
 
 The following are commands you can only run if you are signed in to your AniList account:
 

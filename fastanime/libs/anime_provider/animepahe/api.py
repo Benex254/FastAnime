@@ -211,8 +211,6 @@ class AnimePaheApi(AnimeProvider):
                     )
                     return []
                 # get embed page
-                print(self.session.headers)
-                input()
                 embed_response = self.session.get(
                     embed_url, headers={"User-Agent": self.USER_AGENT, **SERVER_HEADERS}
                 )

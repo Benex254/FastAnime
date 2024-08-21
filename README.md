@@ -370,7 +370,14 @@ fastanime download -t <anime-title> -r '<episode-1>:<episode>'
 # only keep merged files
 fastanime download -t <anime-title> --merge --clean --no-prompt
 
+# EOF is used since -t always expects a title
+# you can supply anime titles from file or -t at the same time
+#
+# from stdin
+echo -e "<anime-title>\n<anime-title>\n<anime-title>" | fastanime download -t "EOF" -r <range> -f -
 
+# from file
+fastanime download -t "EOF" -r <range> -f <file-path>
 
 
 ```

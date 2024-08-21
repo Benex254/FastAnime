@@ -221,11 +221,15 @@ $popularity_greater:Int,\
 $popularity_lesser:Int,\
 $averageScore_greater:Int,\
 $averageScore_lesser:Int,\
+$seasonYear:Int,\
 $startDate_greater:FuzzyDateInt,\
 $startDate_lesser:FuzzyDateInt,\
+$startDate:FuzzyDateInt,\
 $endDate_greater:FuzzyDateInt,\
 $endDate_lesser:FuzzyDateInt,\
+$format_in:[MediaFormat],\
 $type:MediaType\
+$season:MediaSeason\
 "
 # FuzzyDateInt = (yyyymmdd)
 # MediaStatus = (FINISHED,RELEASING,NOT_YET_RELEASED,CANCELLED,HIATUS)
@@ -247,6 +251,7 @@ query($query:String,%s){
       tag_not_in:$tag_not_in,
       status_in:$status_in,
       status:$status,
+    startDate:$startDate,
       status_not_in:$status_not_in,
       popularity_greater:$popularity_greater,
       popularity_lesser:$popularity_lesser,
@@ -256,7 +261,10 @@ query($query:String,%s){
       startDate_lesser:$startDate_lesser,
       endDate_greater:$endDate_greater,
       endDate_lesser:$endDate_lesser,
+    format_in:$format_in,
       sort:$sort,
+    season:$season,
+    seasonYear:$seasonYear,
       type:$type
       )
     {

@@ -309,9 +309,13 @@ class AniListApi:
         status_not_in: list[str] | None = None,
         endDate_greater: int | None = None,
         endDate_lesser: int | None = None,
-        start_greater: int | None = None,
-        start_lesser: int | None = None,
+        startDate_greater: int | None = None,
+        startDate_lesser: int | None = None,
+        startDate: str | None = None,
+        seasonYear: str | None = None,
         page: int | None = None,
+        season: str | None = None,
+        format_in: list[str] | None = None,
         type="ANIME",
         **kwargs,
     ):
@@ -320,7 +324,7 @@ class AniListApi:
         """
         variables = {}
         for key, val in list(locals().items())[1:]:
-            if val is not None and key not in ["variables"]:
+            if val and key not in ["variables"]:
                 variables[key] = val
         search_results = self.get_data(search_query, variables=variables)
         return search_results

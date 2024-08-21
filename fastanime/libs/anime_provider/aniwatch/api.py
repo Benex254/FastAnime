@@ -1,39 +1,102 @@
 import logging
 import re
+from html.parser import HTMLParser
 from itertools import cycle
+from urllib.parse import quote_plus
 
 from yt_dlp.utils import (
+    clean_html,
     extract_attributes,
+    get_element_by_class,
     get_element_html_by_class,
+    get_elements_by_class,
     get_elements_html_by_class,
 )
 
 from ..base_provider import AnimeProvider
-from ..common import fetch_anime_info_from_bal
-from ..mini_anilist import search_for_anime_with_anilist
 from ..utils import give_random_quality
-from . import SERVERS_AVAILABLE
+from .constants import SERVERS_AVAILABLE
 from .types import AniWatchStream
 
 logger = logging.getLogger(__name__)
 
 LINK_TO_STREAMS_REGEX = re.compile(r".*://(.*)/embed-(2|4|6)/e-([0-9])/(.*)\?.*")
+IMAGE_HTML_ELEMENT_REGEX = re.compile(r"<img.*?>")
+
+
+class ParseAnchorAndImgTag(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.img_tag = None
+        self.a_tag = None
+
+    def handle_starttag(self, tag, attrs):
+        if tag == "img":
+            self.img_tag = {attr[0]: attr[1] for attr in attrs}
+        if tag == "a":
+            self.a_tag = {attr[0]: attr[1] for attr in attrs}
 
 
 class AniWatchApi(AnimeProvider):
+    # HEADERS = {"Referer": "https://hianime.to/home"}
+
     def search_for_anime(self, anime_title: str, *args):
         try:
-            return search_for_anime_with_anilist(anime_title)
+            query = quote_plus(anime_title)
+            url = f"https://hianime.to/search?keyword={query}"
+            response = self.session.get(url)
+            if response.status_code != 200:
+                return
+            search_page = response.text
+            search_results_html_items = get_elements_by_class("flw-item", search_page)
+            results = []
+            for search_results_html_item in search_results_html_items:
+                film_poster_html = get_element_by_class(
+                    "film-poster", search_results_html_item
+                )
+
+                if not film_poster_html:
+                    continue
+                # get availableEpisodes
+                episodes_html = get_element_html_by_class("tick-sub", film_poster_html)
+                episodes = clean_html(episodes_html) or 12
+
+                # get anime id and poster image url
+                parser = ParseAnchorAndImgTag()
+                parser.feed(film_poster_html)
+                image_data = parser.img_tag
+                anime_link_data = parser.a_tag
+                if not image_data or not anime_link_data:
+                    continue
+
+                episodes = int(episodes)
+
+                # finally!!
+                image_link = image_data["data-src"]
+                anime_id = anime_link_data["data-id"]
+                title = anime_link_data["title"]
+
+                results.append(
+                    {
+                        "availableEpisodes": list(range(1, episodes)),
+                        "id": anime_id,
+                        "title": title,
+                        "poster": image_link,
+                    }
+                )
+            self.search_results = results
+            return {"pageInfo": {}, "results": results}
+
         except Exception as e:
             logger.error(e)
 
-    def get_anime(self, anilist_id, *args):
+    def get_anime(self, aniwatch_id, *args):
         try:
-            bal_results = fetch_anime_info_from_bal(anilist_id)
-            if not bal_results:
-                return
-            ZORO = bal_results["Sites"]["Zoro"]
-            aniwatch_id = list(ZORO.keys())[0]
+            anime_result = {}
+            for anime in self.search_results:
+                if anime["id"] == aniwatch_id:
+                    anime_result = anime
+                    break
             anime_url = f"https://hianime.to/ajax/v2/episode/list/{aniwatch_id}"
             response = self.session.get(anime_url, timeout=10)
             if response.status_code == 200:
@@ -58,7 +121,7 @@ class AniWatchApi(AnimeProvider):
                             (episode["title"] or "").replace(
                                 f"Episode {episode['data-number']}", ""
                             )
-                            or ZORO[aniwatch_id]["title"]
+                            or anime_result["title"]
                         )
                         + f"; Episode {episode['data-number']}",
                         "episode": episode["data-number"],
@@ -72,8 +135,8 @@ class AniWatchApi(AnimeProvider):
                         "sub": episodes,
                         "raw": episodes,
                     },
-                    "poster": ZORO[aniwatch_id]["image"],
-                    "title": ZORO[aniwatch_id]["title"],
+                    "poster": anime_result["poster"],
+                    "title": anime_result["title"],
                     "episodes_info": self.episodes_info,
                 }
         except Exception as e:

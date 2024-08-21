@@ -146,7 +146,7 @@ def fuzzy_inquirer(choices: list, prompt: str, **kwargs):
     from click import clear
 
     clear()
-    action = inquirer.fuzzy(
+    action = inquirer.fuzzy(  # pyright:ignore
         prompt,
         choices,
         height="100%",

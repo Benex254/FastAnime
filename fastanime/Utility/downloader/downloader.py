@@ -46,7 +46,7 @@ class YtDLPDownloader:
         headers={},
         sub="",
         merge=False,
-        clean=True,
+        clean=False,
         prompt=True,
     ):
         """Helper function that downloads anime given url and path details

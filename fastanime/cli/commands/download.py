@@ -44,11 +44,10 @@ if TYPE_CHECKING:
     "--merge", "-m", is_flag=True, help="Merge the subfile with video using ffmpeg"
 )
 @click.option(
-    "--clean/--no-clean",
-    "-c/-C",
-    type=bool,
+    "--clean",
+    "-c",
+    is_flag=True,
     help="After merging delete the original files",
-    default=True,
 )
 @click.option(
     "--wait-time",
@@ -60,7 +59,7 @@ if TYPE_CHECKING:
 @click.option(
     "--prompt/--no-prompt",
     help="Dont prompt for anything instead just do the best thing",
-    default=False,
+    default=True,
 )
 @click.pass_obj
 def download(

@@ -27,8 +27,14 @@ if TYPE_CHECKING:
     help="A range of episodes to download (start-end)",
 )
 @click.option(
-    "--force-unknown-ext",
+    "--file",
     "-f",
+    type=click.File(),
+    help="A file to read from all anime to download",
+)
+@click.option(
+    "--force-unknown-ext",
+    "-F",
     help="This option forces yt-dlp to download extensions its not aware of",
     is_flag=True,
 )
@@ -64,8 +70,9 @@ if TYPE_CHECKING:
 @click.pass_obj
 def download(
     config: "Config",
-    anime_titles: list,
+    anime_titles: tuple,
     episode_range,
+    file,
     force_unknown_ext,
     silent,
     verbose,
@@ -95,9 +102,18 @@ def download(
 
     translation_type = config.translation_type
     download_dir = config.downloads_dir
+    if file:
+        contents = file.read()
+        anime_titles_from_file = tuple(
+            [title for title in contents.split("\n") if title]
+        )
+        file.close()
 
+        anime_titles = (*anime_titles_from_file, *anime_titles)
     print(f"[green bold]Queued:[/] {anime_titles}")
     for anime_title in anime_titles:
+        if anime_title == "EOF":
+            break
         print(f"[green bold]Now Downloading: [/] {anime_title}")
         # ---- search for anime ----
         with Progress() as progress:
@@ -112,6 +128,7 @@ def download(
                 config,
                 anime_title,
                 episode_range,
+                file,
                 force_unknown_ext,
                 silent,
                 verbose,
@@ -157,6 +174,7 @@ def download(
                 config,
                 anime_title,
                 episode_range,
+                file,
                 force_unknown_ext,
                 silent,
                 verbose,

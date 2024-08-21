@@ -10,8 +10,6 @@ query($query:String){
     Page(perPage:50){
         pageInfo{
             total
-            currentPage
-            hasNextPage
         }
         media(search:$query,type:ANIME){
             id
@@ -46,20 +44,6 @@ def get_anime_titles(query: str, variables: dict = {}):
         )
         anilist_data = response.json()
 
-        # ensuring you dont get blocked
-        if (
-            int(response.headers.get("X-RateLimit-Remaining", 0)) < 30
-            and not response.status_code == 500
-        ):
-            print("Warning you are exceeding the allowed number of calls per minute")
-            logger.warning(
-                "You are exceeding the allowed number of calls per minute for the AniList api enforcing timeout"
-            )
-            print("Forced timeout will now be initiated")
-            import time
-
-            print("sleeping...")
-            time.sleep(1 * 60)
         if response.status_code == 200:
             eng_titles = [
                 anime["title"]["english"]
@@ -80,4 +64,16 @@ def get_anime_titles(query: str, variables: dict = {}):
 
 
 def anime_titles_shell_complete(ctx, param, incomplete):
-    return [name for name in get_anime_titles(anime_title_query, {"query": incomplete})]
+    incomplete = incomplete.strip()
+    if not incomplete:
+        incomplete = None
+        variables = {}
+    else:
+        variables = {"query": incomplete}
+    return get_anime_titles(anime_title_query, variables)
+
+
+if __name__ == "__main__":
+    t = input("Enter title")
+    results = get_anime_titles(anime_title_query, {"query": t})
+    print(results)

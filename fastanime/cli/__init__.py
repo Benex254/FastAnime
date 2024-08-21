@@ -192,7 +192,7 @@ def run_cli(
         FORMAT = "%(message)s"
 
         logging.basicConfig(
-            level="debug", format=FORMAT, datefmt="[%X]", handlers=[RichHandler()]
+            level=logging.DEBUG, format=FORMAT, datefmt="[%X]", handlers=[RichHandler()]
         )
         logger = logging.getLogger(__name__)
         logger.info("logging has been initialized")

@@ -937,7 +937,7 @@ def media_actions_menu(
             score = Rofi.ask("Enter Score", is_int=True)
             score = max(100, min(0, score))
         else:
-            score = inquirer.number(
+            score = inquirer.number(  # pyright:ignore
                 message="Enter the score:",
                 min_allowed=0,
                 max_allowed=100,

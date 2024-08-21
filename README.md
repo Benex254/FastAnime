@@ -620,6 +620,10 @@ script-message select-server <server-name>
 script-message select-quality <1080/720/480/360>
 ```
 
+## styling the default interface
+
+The default interface uses inquirerPy which is customizable. Read here to findout more https://inquirerpy.readthedocs.io/en/latest/pages/env.html
+
 ## Configuration
 
 The app includes sensible defaults but can be customized extensively. Configuration is stored in `.ini` format at `~/.config/FastAnime/config.ini` on arch linux; for the other operating systems you can check by running `fastanime config --path`.

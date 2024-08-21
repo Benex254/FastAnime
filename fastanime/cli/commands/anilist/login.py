@@ -11,10 +11,10 @@ if TYPE_CHECKING:
 @click.option("--erase", "-e", help="Erase your login details", is_flag=True)
 @click.pass_obj
 def login(config: "Config", status, erase):
+    from sys import exit
+
     from rich import print
     from rich.prompt import Confirm, Prompt
-
-    from ...utils.tools import exit_app
 
     if status:
         is_logged_in = True if config.user else False
@@ -23,16 +23,16 @@ def login(config: "Config", status, erase):
         )
         print(message)
         print(config.user)
-        exit_app()
+        exit(0)
     elif erase:
         if Confirm.ask(
             "Are you sure you want to erase your login status", default=False
         ):
             config.update_user({})
             print("Success")
-            exit_app(0)
+            exit(0)
         else:
-            exit_app(1)
+            exit(1)
     else:
         from click import launch
 
@@ -41,7 +41,7 @@ def login(config: "Config", status, erase):
         if config.user:
             print("Already logged in :confused:")
             if not Confirm.ask("or would you like to reloggin", default=True):
-                exit_app()
+                exit(0)
         # ---- new loggin -----
         print(
             f"A browser session will be opened ( [link]{config.fastanime_anilist_app_login_url}[/link] )",
@@ -52,10 +52,10 @@ def login(config: "Config", status, erase):
         user = AniList.login_user(token)
         if not user:
             print("Sth went wrong", user)
-            exit_app()
+            exit(1)
             return
         user["token"] = token
         config.update_user(user)
         print("Successfully saved credentials")
         print(user)
-        exit_app()
+        exit(0)

@@ -13,6 +13,7 @@ def notifier(config: "Config"):
     import logging
     import os
     import time
+    from sys import exit
 
     import requests
     from plyer import notification
@@ -30,7 +31,7 @@ def notifier(config: "Config"):
     if not config.user:
         print("Not Authenticated")
         print("Run the following to get started: fastanime anilist loggin")
-        return
+        exit(1)
     run = True
     # WARNING: Mess around with this value at your own risk
     timeout = 2  # time is in minutes

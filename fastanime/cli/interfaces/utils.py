@@ -168,7 +168,89 @@ def get_rofi_icons(
                 logger.error("%r generated an exception: %s" % (url, e))
 
 
-def get_fzf_preview(
+# get rofi icons
+def get_fzf_episode_preview(
+    anilist_result: AnilistBaseMediaDataSchema, episodes, workers=None, wait=False
+):
+    """A helper function to make sure that the images are downloaded so they can be used as icons
+
+    Args:
+        titles (list[str]): sanitized titles of the anime; NOTE: its important that they are sanitized since they are used as the filenames of the images
+        workers ([TODO:parameter]): Number of threads to use to download the images; defaults to as many as possible
+        anilist_results: the anilist results from an anilist action
+    """
+
+    HEADER_COLOR = 215, 0, 95
+    import re
+
+    def _worker():
+        # use concurrency to download the images as fast as possible
+        with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:
+            # load the jobs
+            future_to_url = {}
+            for episode in episodes:
+                episode_title = ""
+                image_url = ""
+                for episode_detail in anilist_result["streamingEpisodes"]:
+                    if re.match(f"Episode {episode}", episode_detail["title"]):
+                        episode_title = episode_detail["title"]
+                        image_url = episode_detail["thumbnail"]
+
+                if episode_title and image_url:
+                    # actual link to download image from
+                    if not image_url:
+                        continue
+                    future_to_url[
+                        executor.submit(save_image_from_url, image_url, episode)
+                    ] = image_url
+                    template = textwrap.dedent(
+                        f"""
+                    {get_true_fg('Anime Title:',*HEADER_COLOR)} {anilist_result['title']['romaji'] or anilist_result['title']['english']}
+                    {get_true_fg('Episode Title:',*HEADER_COLOR)} {episode_title}
+                    """
+                    )
+                    future_to_url[
+                        executor.submit(save_info_from_str, template, episode)
+                    ] = episode_title
+
+            # execute the jobs
+            for future in concurrent.futures.as_completed(future_to_url):
+                url = future_to_url[future]
+                try:
+                    future.result()
+                except Exception as e:
+                    logger.error("%r generated an exception: %s" % (url, e))
+
+    background_worker = Thread(
+        target=_worker,
+    )
+    # ensure images and info exists
+    background_worker.daemon = True
+    background_worker.start()
+
+    # the preview script is in bash so making sure fzf doesnt use any other shell lang to process the preview script
+    os.environ["SHELL"] = shutil.which("bash") or "bash"
+    preview = """
+        %s
+        if [ -s %s/{} ]; then fzf-preview %s/{}
+        else echo Loading...
+        fi
+        if [ -s %s/{} ]; then cat %s/{}
+        else echo Loading...
+        fi
+    """ % (
+        fzf_preview,
+        IMAGES_CACHE_DIR,
+        IMAGES_CACHE_DIR,
+        ANIME_INFO_CACHE_DIR,
+        ANIME_INFO_CACHE_DIR,
+    )
+    if wait:
+        background_worker.join()
+    return preview
+
+
+def get_fzf_anime_preview(
     anilist_results: list[AnilistBaseMediaDataSchema], titles, wait=False
 ):
     """A helper function that constructs data to be used for the fzf preview

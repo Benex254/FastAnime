@@ -688,11 +688,21 @@ def provider_anime_episodes_menu(
     # prompt for episode number if not set
     if not current_episode_number or current_episode_number not in total_episodes:
         choices = [*total_episodes, "Back"]
+        preview = None
+        if config.preview:
+            from .utils import get_fzf_episode_preview
+
+            e = fastanime_runtime_state.selected_anime_anilist["episodes"]
+            if e:
+                eps = range(1, e)
+            else:
+                eps = total_episodes
+            preview = get_fzf_episode_preview(
+                fastanime_runtime_state.selected_anime_anilist, eps
+            )
         if config.use_fzf:
             current_episode_number = fzf.run(
-                choices,
-                prompt="Select Episode:",
-                header=anime_title,
+                choices, prompt="Select Episode:", header=anime_title, preview=preview
             )
         elif config.use_rofi:
             current_episode_number = Rofi.run(choices, "Select Episode")

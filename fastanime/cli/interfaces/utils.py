@@ -192,7 +192,7 @@ def get_fzf_episode_preview(
                 episode_title = ""
                 image_url = ""
                 for episode_detail in anilist_result["streamingEpisodes"]:
-                    if re.match(f"Episode {episode}", episode_detail["title"]):
+                    if re.match(f"Episode {episode} ", episode_detail["title"]):
                         episode_title = episode_detail["title"]
                         image_url = episode_detail["thumbnail"]
 

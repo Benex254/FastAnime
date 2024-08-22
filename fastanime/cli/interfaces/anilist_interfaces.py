@@ -128,7 +128,7 @@ def media_player_controls(
                 "streamingEpisodes"
             ]:
                 if re.match(
-                    f"Episode {current_episode_number}", episode_detail["title"]
+                    f"Episode {current_episode_number} ", episode_detail["title"]
                 ):
                     episode_title = episode_detail["title"]
                     break
@@ -533,7 +533,7 @@ def provider_anime_episode_servers_menu(
         for episode_detail in fastanime_runtime_state.selected_anime_anilist[
             "streamingEpisodes"
         ]:
-            if re.match(f"Episode {current_episode_number}", episode_detail["title"]):
+            if re.match(f"Episode {current_episode_number} ", episode_detail["title"]):
                 episode_title = episode_detail["title"]
                 break
 
@@ -694,7 +694,7 @@ def provider_anime_episodes_menu(
 
             e = fastanime_runtime_state.selected_anime_anilist["episodes"]
             if e:
-                eps = range(1, e)
+                eps = range(0, e + 1)
             else:
                 eps = total_episodes
             preview = get_fzf_episode_preview(

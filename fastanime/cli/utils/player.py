@@ -141,7 +141,7 @@ class MpvPlayer(object):
                 "streamingEpisodes"
             ]:
                 if re.match(
-                    f"Episode {current_episode_number}", episode_detail["title"]
+                    f"Episode {current_episode_number} ", episode_detail["title"]
                 ):
                     self.current_media_title = episode_detail["title"]
                     break

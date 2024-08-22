@@ -231,7 +231,7 @@ def search(config: Config, anime_titles: str, episode_range: str):
                     import re
 
                     for episode_detail in anilist_anime_info["episodes"]:
-                        if re.match(f"Episode {episode}", episode_detail["title"]):
+                        if re.match(f"Episode {episode} ", episode_detail["title"]):
                             episode_title = episode_detail["title"]
                             break
                 print(

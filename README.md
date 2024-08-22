@@ -178,6 +178,7 @@ The only required external dependency, unless you won't be streaming, is [MPV](h
 ## Usage
 
 The project offers a featureful command-line interface and MPV interface through the use of python-mpv.
+The project also offers subs in different languages thanks to aniwatch provider.
 
 ### The Commandline interface :fire:
 
@@ -220,7 +221,7 @@ Available options for the fastanime include:
 - `--default` use the default ui
 - `--preview` show a preview when using fzf
 - `--no-preview` dont show a preview when using fzf
-- `--format <yt-dlp format string>` or `-f <yt-dlp format string>` set the format of anime downloaded and streamed based on [yt-dlp format](https://github.com/yt-dlp/yt-dlp#format-selection). Works when `--server gogoanime`
+- `--format <yt-dlp format string>` or `-f <yt-dlp format string>` set the format of anime downloaded and streamed based on [yt-dlp format](https://github.com/yt-dlp/yt-dlp#format-selection). Works when `--server gogoanime` or on providers that provide multi quality streams eg aniwatch
 - `--icons/--no-icons` toggle the visibility of the icons
 - `--skip/--no-skip` whether to skip the opening and ending theme songs.
 - `--rofi` use rofi for the ui
@@ -315,7 +316,7 @@ fastanime anilist search -f MOVIE -s FAVOURITES_DESC
 
 For more details visit the anilist docs or just get the completions which will improve the experience.
 
-Like seriously **[get the completions](https://github.com/Benex254/FastAnime#completions-subcommand) and the experience will be a 💯 💯 better.
+Like seriously **[get the completions](https://github.com/Benex254/FastAnime#completions-subcommand)** and the experience will be a 💯 💯 better.
 
 The following are commands you can only run if you are signed in to your AniList account:
 

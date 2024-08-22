@@ -2,7 +2,7 @@
 
 Welcome to **FastAnime**, anime site experience from the terminal.
 
-![fastanime-demo](https://github.com/user-attachments/assets/3699220b-5609-4aa9-8b45-5d88a0efd852)
+![fastanime-demo](https://github.com/user-attachments/assets/16e29f54-e9fa-48c7-b944-bfacb31ae1b5)
 
 <details>
 <summary><b>fzf mode</b></summary>

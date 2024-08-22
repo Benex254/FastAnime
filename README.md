@@ -2,11 +2,14 @@
 
 Welcome to **FastAnime**, anime site experience from the terminal.
 
-**fzf mode**
+![fastanime-demo](https://github.com/user-attachments/assets/3699220b-5609-4aa9-8b45-5d88a0efd852)
 
+<details>
+<summary><b>fzf mode</b></summary>
+  
 [fa_fzf_demo.webm](https://github.com/user-attachments/assets/b1fecf25-e358-4e8b-a144-bcb7947210cf)
 
-**other modes:**
+</details>
 
 <details>
 <summary><b>rofi mode</b></summary>

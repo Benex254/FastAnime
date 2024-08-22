@@ -30,10 +30,9 @@ def anime_title_percentage_match(
     Returns:
         int: the percentage match
     """
-    if normalized_anime_title := anime_normalizer.get(
-        possible_user_requested_anime_title
-    ):
-        possible_user_requested_anime_title = normalized_anime_title
+    possible_user_requested_anime_title = anime_normalizer.get(
+        possible_user_requested_anime_title, possible_user_requested_anime_title
+    )
     # compares both the romaji and english names and gets highest Score
     title_a = str(anime["title"]["romaji"])
     title_b = str(anime["title"]["english"])

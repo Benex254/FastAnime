@@ -33,6 +33,7 @@ def search(config: Config, anime_titles: str, episode_range: str):
     from ...libs.anime_provider.types import Anime
     from ...libs.fzf import fzf
     from ...libs.rofi import Rofi
+    from ...Utility.data import anime_normalizer
     from ..utils.mpv import run_mpv
     from ..utils.tools import exit_app
     from ..utils.utils import (
@@ -67,7 +68,10 @@ def search(config: Config, anime_titles: str, episode_range: str):
 
         if config.auto_select:
             search_result = max(
-                search_results_.keys(), key=lambda title: fuzz.ratio(title, anime_title)
+                search_results_.keys(),
+                key=lambda title: fuzz.ratio(
+                    anime_normalizer.get(title, title), anime_title
+                ),
             )
             print("[cyan]Auto Selecting:[/] ", search_result)
 

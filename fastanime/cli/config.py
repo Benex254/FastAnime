@@ -145,6 +145,8 @@ class Config(object):
         self.anime_list: list = self.user_data.get("animelist", [])
         self.user: dict = self.user_data.get("user", {})
 
+        os.environ["CURRENT_FASTANIME_PROVIDER"] = self.provider
+
     def update_user(self, user):
         self.user = user
         self.user_data["user"] = user

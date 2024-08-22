@@ -201,13 +201,17 @@ def get_basic_anime_info_by_title(anime_title: str):
                 anilist_data["data"]["Page"]["media"],
                 key=lambda anime: max(
                     (
-                        fuzz.ratio(anime_title, str(anime["title"]["romaji"])),
-                        fuzz.ratio(anime_title, str(anime["title"]["english"])),
+                        fuzz.ratio(
+                            anime_title.lower(), str(anime["title"]["romaji"]).lower()
+                        ),
+                        fuzz.ratio(
+                            anime_title.lower(), str(anime["title"]["english"]).lower()
+                        ),
                     )
                 ),
             )
             return {
-                "idAilist": anime["id"],
+                "idAnilist": anime["id"],
                 "idMal": anime["idMal"],
                 "title": {
                     "english": anime["title"]["english"],

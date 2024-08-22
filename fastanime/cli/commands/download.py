@@ -90,6 +90,7 @@ def download(
     from ...AnimeProvider import AnimeProvider
     from ...libs.anime_provider.types import Anime
     from ...libs.fzf import fzf
+    from ...Utility.data import anime_normalizer
     from ...Utility.downloader.downloader import downloader
     from ..utils.tools import exit_app
     from ..utils.utils import (
@@ -149,7 +150,10 @@ def download(
 
         if config.auto_select:
             selected_anime_title = max(
-                search_results_.keys(), key=lambda title: fuzz.ratio(title, anime_title)
+                search_results_.keys(),
+                key=lambda title: fuzz.ratio(
+                    anime_normalizer.get(title, title), anime_title
+                ),
             )
             print("[cyan]Auto selecting:[/] ", selected_anime_title)
         else:

@@ -220,7 +220,7 @@ Available options for the fastanime include:
 - `--default` use the default ui
 - `--preview` show a preview when using fzf
 - `--no-preview` dont show a preview when using fzf
-- `--format <yt-dlp format string>` or `-f <yt-dlp format string>` set the format of anime downloaded and streamed based on yt-dlp format. Works when `--server gogoanime`
+- `--format <yt-dlp format string>` or `-f <yt-dlp format string>` set the format of anime downloaded and streamed based on [yt-dlp format](https://github.com/yt-dlp/yt-dlp#format-selection). Works when `--server gogoanime`
 - `--icons/--no-icons` toggle the visibility of the icons
 - `--skip/--no-skip` whether to skip the opening and ending theme songs.
 - `--rofi` use rofi for the ui
@@ -233,7 +233,7 @@ Available options for the fastanime include:
 - `--use-mpv-mod/--use-default-player` whether to use python-mpv
 - `--provider <allanime/animepahe>` anime site of choice to scrape from
 - `--sync-play` or `-sp` use syncplay for streaming anime so you can watch with your friends
-- `--sub_lang <en/or any other common shortform for country>` regex is used to determine the appropriate. Only works when provider is aniwatch.
+- `--sub-lang <en/or any other common shortform for country>` regex is used to determine the appropriate. Only works when provider is aniwatch.
 
 Example usage of the above options
 
@@ -267,7 +267,7 @@ Run `fastanime anilist` to access the main interface.
 ##### Subcommands
 
 The subcommands are mainly their as convenience. Since all the features already exist in the main interface.
-Most of the subcommands share the common option `--dump-json` or `-d` which will print only the json data and supress the ui.
+Most of the subcommands share the common option `--dump-json` or `-d` which will print only the json data and suppress the ui.
 
 - `fastanime anilist trending`: Top 15 trending anime.
 - `fastanime anilist recent`: Top 15 recently updated anime.
@@ -277,14 +277,14 @@ Most of the subcommands share the common option `--dump-json` or `-d` which will
 - `fastanime anilist favourites`: Top 15 favorite anime.
 - `fastanime anilist random`: get random anime
 
-**FastAnime Anilist Search subcommand**
+**FastAnime Anilist Search subcommand** 🔥 🔥 🔥
 
 It is by far one of the most powerful commands.
 It offers the following options:
 
 - `--sort <MediaSort>` or `-s <MediaSort>`
 - `--title <anime-title>` or `-t <anime-title>`
-- `--tags <tag>` or `-t <tag>` can be specified multiple times for different tags to filter by.
+- `--tags <tag>` or `-T <tag>` can be specified multiple times for different tags to filter by.
 - `--year <year>` or `-y <year>`
 - `--status <MediaStatus>` or `-S <MediaStatus>`
 - `--media-format <MediaFormat>` or `-f <MediaFormat>`
@@ -294,10 +294,28 @@ It offers the following options:
 Example:
 
 ```bash
-fastanime anilist search -t isekai
+# get anime with the tag of isekai
+fastanime anilist search -T isekai
+
+# get anime of 2024 and sort by popularity
+fastanime anilist search -y 2024 -s POPULARITY_DESC
+
+# get anime of 2024 season WINTER
+fastanime anilist search -y 2024 --season WINTER
+
+# get anime genre action and tag isekai,magic
+ fastanime anilist search -g Action -T Isekai -T Magic
+
+# get anime of 2024 thats finished airing
+fastanime anilist search -y 2024 -S FINISHED
+
+# get the most favourite anime movies
+fastanime anilist search -f MOVIE -s FAVOURITES_DESC
 ```
 
 For more details visit the anilist docs or just get the completions which will improve the experience.
+
+Like seriously **[get the completions](https://github.com/Benex254/FastAnime#completions-subcommand) and the experience will be a 💯 💯 better.
 
 The following are commands you can only run if you are signed in to your AniList account:
 
@@ -308,7 +326,7 @@ The following are commands you can only run if you are signed in to your AniList
 - `fastanime anilist paused`
 - `fastanime anilist completed`
 
-Plus: `fastanime anilist notifier` :fire:
+Plus: `fastanime anilist notifier` 🔥
 
 ```bash
 # basic form

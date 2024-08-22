@@ -320,6 +320,9 @@ format = {self.format}
 
 [general]
 
+# whether to normalize provider titles
+normalize_titles = {self.normalize_titles}
+
 # can be [allanime,animepahe]
 provider = {self.provider}
 

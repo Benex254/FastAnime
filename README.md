@@ -731,6 +731,8 @@ We welcome your issues and feature requests. However, due to time constraints, w
 
 If you wish to contribute directly, please first open an issue describing your proposed changes so it can be discussed or if you are in a rush for the feature to be merged just open a pr.
 
+If you find an anime title that does not correspond with a provider or is just weird just [edit the data file](https://github.com/Benex254/FastAnime/blob/master/fastanime/Utility/data.py) and open a pr or if you don't want to do that open an issue.
+
 ## Receiving Support
 
 For inquiries, join our [Discord Server](https://discord.gg/C4rhMA4mmK).

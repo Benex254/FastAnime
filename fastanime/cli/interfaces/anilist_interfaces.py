@@ -120,12 +120,24 @@ def media_player_controls(
         subtitles = move_preferred_subtitle_lang_to_top(
             selected_server["subtitles"], config.sub_lang
         )
+        episode_title = selected_server["episode_title"]
+        if config.normalize_titles:
+            import re
+
+            for episode_detail in fastanime_runtime_state.selected_anime_anilist[
+                "streamingEpisodes"
+            ]:
+                if re.match(
+                    f"Episode {current_episode_number}", episode_detail["title"]
+                ):
+                    episode_title = episode_detail["title"]
+                    break
         if config.sync_play:
             from ..utils.syncplay import SyncPlayer
 
             stop_time, total_time = SyncPlayer(
                 current_episode_stream_link,
-                selected_server["episode_title"],
+                episode_title,
                 headers=selected_server["headers"],
                 subtitles=subtitles,
             )
@@ -137,7 +149,7 @@ def media_player_controls(
                 config.anime_provider,
                 fastanime_runtime_state,
                 config,
-                selected_server["episode_title"],
+                episode_title,
                 start_time,
                 headers=selected_server["headers"],
                 subtitles=subtitles,
@@ -147,7 +159,7 @@ def media_player_controls(
         else:
             stop_time, total_time = run_mpv(
                 current_episode_stream_link,
-                selected_server["episode_title"],
+                episode_title,
                 start_time=start_time,
                 custom_args=custom_args,
                 headers=selected_server["headers"],
@@ -514,12 +526,23 @@ def provider_anime_episode_servers_menu(
     subtitles = move_preferred_subtitle_lang_to_top(
         selected_server["subtitles"], config.sub_lang
     )
+    episode_title = selected_server["episode_title"]
+    if config.normalize_titles:
+        import re
+
+        for episode_detail in fastanime_runtime_state.selected_anime_anilist[
+            "streamingEpisodes"
+        ]:
+            if re.match(f"Episode {current_episode_number}", episode_detail["title"]):
+                episode_title = episode_detail["title"]
+                break
+
     if config.sync_play:
         from ..utils.syncplay import SyncPlayer
 
         stop_time, total_time = SyncPlayer(
             current_stream_link,
-            selected_server["episode_title"],
+            episode_title,
             headers=selected_server["headers"],
             subtitles=subtitles,
         )
@@ -533,7 +556,7 @@ def provider_anime_episode_servers_menu(
             anime_provider,
             fastanime_runtime_state,
             config,
-            selected_server["episode_title"],
+            episode_title,
             start_time,
             headers=selected_server["headers"],
             subtitles=subtitles,
@@ -547,7 +570,7 @@ def provider_anime_episode_servers_menu(
             start_time = "0"
         stop_time, total_time = run_mpv(
             current_stream_link,
-            selected_server["episode_title"],
+            episode_title,
             start_time=start_time,
             custom_args=custom_args,
             headers=selected_server["headers"],
@@ -1284,9 +1307,9 @@ def anilist_results_menu(
     choices = [*anime_data.keys(), "Back"]
     if config.use_fzf:
         if config.preview:
-            from .utils import get_fzf_preview
+            from .utils import get_fzf_anime_preview
 
-            preview = get_fzf_preview(search_results, anime_data.keys())
+            preview = get_fzf_anime_preview(search_results, anime_data.keys())
             selected_anime_title = fzf.run(
                 choices,
                 prompt="Select Anime: ",

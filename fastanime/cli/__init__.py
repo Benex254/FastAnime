@@ -4,7 +4,6 @@ import click
 
 from .. import __version__
 from ..libs.anime_provider import SERVERS_AVAILABLE, anime_sources
-from ..Utility.data import anilist_sort_normalizer
 from .commands import LazyGroup
 
 commands = {
@@ -116,9 +115,9 @@ signal.signal(signal.SIGINT, handle_exit)
     help="Auto select anime title?",
 )
 @click.option(
-    "-S",
-    "--sort-by",
-    type=click.Choice(anilist_sort_normalizer.keys()),  # pyright: ignore
+    "--normalize-titles/--no-normalize-titles",
+    type=bool,
+    help="whether to normalize anime and episode titls given by providers",
 )
 @click.option("-d", "--downloads-dir", type=click.Path(), help="Downloads location")
 @click.option("--fzf", is_flag=True, help="Use fzf for the ui")
@@ -165,7 +164,7 @@ def run_cli(
     quality,
     auto_next,
     auto_select,
-    sort_by,
+    normalize_titles,
     downloads_dir,
     fzf,
     default,
@@ -232,6 +231,11 @@ def run_cli(
         ctx.obj.continue_from_history = continue_
     if ctx.get_parameter_source("skip") == click.core.ParameterSource.COMMANDLINE:
         ctx.obj.skip = skip
+    if (
+        ctx.get_parameter_source("normalize_titles")
+        == click.core.ParameterSource.COMMANDLINE
+    ):
+        ctx.obj.normalize_titles = normalize_titles
 
     if quality:
         ctx.obj.quality = quality
@@ -254,8 +258,6 @@ def run_cli(
         == click.core.ParameterSource.COMMANDLINE
     ):
         ctx.obj.use_mpv_mod = use_mpv_mod
-    if sort_by:
-        ctx.obj.sort_by = sort_by
     if downloads_dir:
         ctx.obj.downloads_dir = downloads_dir
     if translation_type:

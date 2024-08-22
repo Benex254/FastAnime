@@ -147,6 +147,11 @@ query ($userId: Int, $status: MediaListStatus,$type:MediaType) {
           id
         }
         popularity
+            streamingEpisodes{
+        title
+        thumbnail
+    }
+
         favourites
         averageScore
         episodes
@@ -289,6 +294,11 @@ query($query:String,%s){
         progress
         }
       popularity
+        streamingEpisodes{
+        title
+        thumbnail
+    }
+
       favourites
       averageScore
       episodes
@@ -346,6 +356,11 @@ query($type:MediaType){
         id
       }
       popularity
+          streamingEpisodes{
+        title
+        thumbnail
+    }
+
       favourites
       averageScore
       genres
@@ -412,6 +427,15 @@ query($type:MediaType){
         progress
         }
       popularity
+          streamingEpisodes{
+        title
+        thumbnail
+    }
+
+    streamingEpisodes{
+        title
+        thumbnail
+    }
       favourites
       averageScore
       episodes
@@ -472,6 +496,11 @@ query($type:MediaType){
         progress
         }
       popularity
+          streamingEpisodes{
+        title
+        thumbnail
+    }
+
       episodes
       favourites
       averageScore
@@ -527,6 +556,11 @@ query($type:MediaType){
         
       }
       popularity
+          streamingEpisodes{
+        title
+        thumbnail
+    }
+
       favourites
       averageScore
       description
@@ -591,6 +625,11 @@ query($type:MediaType){
         progress
         }
       popularity
+          streamingEpisodes{
+        title
+        thumbnail
+    }
+
       favourites
       averageScore
       description
@@ -659,6 +698,11 @@ query($type:MediaType){
             genres
             averageScore
             popularity
+                streamingEpisodes{
+        title
+        thumbnail
+    }
+
             favourites
             tags {
               name
@@ -753,6 +797,11 @@ query ($id: Int,$type:MediaType) {
           genres
           averageScore
           popularity
+              streamingEpisodes{
+        title
+        thumbnail
+    }
+
           favourites
           tags {
             name
@@ -827,6 +876,11 @@ query ($page: Int,$type:MediaType) {
         progress
         }
       popularity
+          streamingEpisodes{
+        title
+        thumbnail
+    }
+
       favourites
       averageScore
       genres
@@ -943,6 +997,11 @@ query($id:Int){
       countryOfOrigin
       averageScore
       popularity
+          streamingEpisodes{
+        title
+        thumbnail
+    }
+
       favourites
       source
       hashtag

@@ -97,6 +97,7 @@ class Config(object):
                 "rofi_theme_confirm": "",
                 "ffmpegthumnailer_seek_time": "-1",
                 "sub_lang": "eng",
+                "normalize_titles": "true",
             }
         )
         self.configparser.add_section("stream")
@@ -121,6 +122,7 @@ class Config(object):
         self.sort_by = self.get_sort_by()
         self.continue_from_history = self.get_continue_from_history()
         self.auto_next = self.get_auto_next()
+        self.normalize_titles = self.get_normalize_titles()
         self.auto_select = self.get_auto_select()
         self.use_mpv_mod = self.get_use_mpv_mod()
         self.quality = self.get_quality()
@@ -216,6 +218,9 @@ class Config(object):
 
     def get_rofi_theme_confirm(self):
         return self.configparser.get("general", "rofi_theme_confirm")
+
+    def get_normalize_titles(self):
+        return self.configparser.getboolean("general", "normalize_titles")
 
     # --- stream section ---
     def get_skip(self):

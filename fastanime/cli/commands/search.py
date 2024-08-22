@@ -42,6 +42,7 @@ def search(config: Config, anime_titles: str, episode_range: str):
     )
 
     anime_provider = AnimeProvider(config.provider)
+    anilist_anime_info = None
 
     print(f"[green bold]Streaming:[/] {anime_titles}")
     for anime_title in anime_titles:
@@ -122,6 +123,11 @@ def search(config: Config, anime_titles: str, episode_range: str):
                 episodes_range = episodes[int(episode_range) :]
 
             episodes_range = iter(episodes_range)
+
+        if config.normalize_titles:
+            from ...libs.common.mini_anilist import get_basic_anime_info_by_title
+
+            anilist_anime_info = get_basic_anime_info_by_title(anime["title"])
 
         def stream_anime():
             clear()
@@ -214,8 +220,23 @@ def search(config: Config, anime_titles: str, episode_range: str):
                     stream_headers = servers[server]["headers"]
                     subtitles = servers[server]["subtitles"]
                     episode_title = servers[server]["episode_title"]
-                print(f"[purple]Now Playing:[/] {search_result} Episode {episode}")
 
+                selected_anime_title = search_result
+                if anilist_anime_info:
+                    selected_anime_title = (
+                        anilist_anime_info["title"][config.preferred_language]
+                        or anilist_anime_info["title"]["romaji"]
+                        or anilist_anime_info["title"]["english"]
+                    )
+                    import re
+
+                    for episode_detail in anilist_anime_info["episodes"]:
+                        if re.match(f"Episode {episode}", episode_detail["title"]):
+                            episode_title = episode_detail["title"]
+                            break
+                print(
+                    f"[purple]Now Playing:[/] {selected_anime_title} Episode {episode}"
+                )
                 subtitles = move_preferred_subtitle_lang_to_top(
                     subtitles, config.sub_lang
                 )

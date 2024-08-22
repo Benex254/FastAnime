@@ -64,7 +64,7 @@ if TYPE_CHECKING:
 )
 @click.option(
     "--prompt/--no-prompt",
-    help="Dont prompt for anything instead just do the best thing",
+    help="Whether to prompt for anything instead just do the best thing",
     default=True,
 )
 @click.pass_obj
@@ -99,6 +99,7 @@ def download(
     )
 
     anime_provider = AnimeProvider(config.provider)
+    anilist_anime_info = None
 
     translation_type = config.translation_type
     download_dir = config.downloads_dir
@@ -147,16 +148,18 @@ def download(
         }
 
         if config.auto_select:
-            search_result = max(
+            selected_anime_title = max(
                 search_results_.keys(), key=lambda title: fuzz.ratio(title, anime_title)
             )
-            print("[cyan]Auto selecting:[/] ", search_result)
+            print("[cyan]Auto selecting:[/] ", selected_anime_title)
         else:
             choices = list(search_results_.keys())
             if config.use_fzf:
-                search_result = fzf.run(choices, "Please Select title: ", "FastAnime")
+                selected_anime_title = fzf.run(
+                    choices, "Please Select title: ", "FastAnime"
+                )
             else:
-                search_result = fuzzy_inquirer(
+                selected_anime_title = fuzzy_inquirer(
                     choices,
                     "Please Select title",
                 )
@@ -165,7 +168,7 @@ def download(
         with Progress() as progress:
             progress.add_task("Fetching Anime...", total=None)
             anime: Anime | None = anime_provider.get_anime(
-                search_results_[search_result]["id"]
+                search_results_[selected_anime_title]["id"]
             )
         if not anime:
             print("Sth went wring anime no found")
@@ -214,6 +217,11 @@ def download(
 
         else:
             episodes_range = sorted(episodes, key=float)
+
+        if config.normalize_titles:
+            from ...libs.common.mini_anilist import get_basic_anime_info_by_title
+
+            anilist_anime_info = get_basic_anime_info_by_title(anime["title"])
 
         # lets download em
         for episode in episodes_range:
@@ -279,13 +287,26 @@ def download(
 
                     subtitles = servers[server_name]["subtitles"]
                     episode_title = servers[server_name]["episode_title"]
-                print(f"[purple]Now Downloading:[/] {search_result} Episode {episode}")
+
+                if anilist_anime_info:
+                    selected_anime_title = (
+                        anilist_anime_info["title"][config.preferred_language]
+                        or anilist_anime_info["title"]["romaji"]
+                        or anilist_anime_info["title"]["english"]
+                    )
+                    import re
+
+                    for episode_detail in anilist_anime_info["episodes"]:
+                        if re.match(f"Episode {episode}", episode_detail["title"]):
+                            episode_title = episode_detail["title"]
+                            break
+                print(f"[purple]Now Downloading:[/] {episode_title}")
                 subtitles = move_preferred_subtitle_lang_to_top(
                     subtitles, config.sub_lang
                 )
                 downloader._download_file(
                     link,
-                    search_result,
+                    selected_anime_title,
                     episode_title,
                     download_dir,
                     silent,

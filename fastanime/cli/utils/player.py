@@ -134,6 +134,18 @@ class MpvPlayer(object):
                 )
                 return
         self.current_media_title = selected_server["episode_title"]
+        if config.normalize_titles:
+            import re
+
+            for episode_detail in fastanime_runtime_state.selected_anime_anilist[
+                "streamingEpisodes"
+            ]:
+                if re.match(
+                    f"Episode {current_episode_number}", episode_detail["title"]
+                ):
+                    self.current_media_title = episode_detail["title"]
+                    break
+
         links = selected_server["links"]
 
         stream_link_ = filter_by_quality(quality, links)

@@ -136,6 +136,11 @@ class AnilistMediaListProperties(TypedDict):
     hiddenFromStatusLists: bool
 
 
+class StreamingEpisode(TypedDict):
+    title: str
+    thumbnail: str
+
+
 class AnilistBaseMediaDataSchema(TypedDict):
     """
     This a convenience class is used to type the received Anilist data to enhance dev experience
@@ -159,6 +164,7 @@ class AnilistBaseMediaDataSchema(TypedDict):
     status: str
     nextAiringEpisode: AnilistMediaNextAiringEpisode
     season: str
+    streamingEpisodes: list[StreamingEpisode]
     seasonYear: int
     duration: int
     synonyms: list[str]

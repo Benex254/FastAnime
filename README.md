@@ -238,6 +238,7 @@ Available options for the fastanime include:
 - `--provider <allanime/animepahe>` anime site of choice to scrape from
 - `--sync-play` or `-sp` use syncplay for streaming anime so you can watch with your friends
 - `--sub-lang <en/or any other common shortform for country>` regex is used to determine the appropriate. Only works when provider is aniwatch.
+- `--normalize-titles/--no-normalize-titles` whether to normalize provider titles
 
 Example usage of the above options
 
@@ -644,7 +645,7 @@ script-message select-quality <1080/720/480/360>
 
 ## styling the default interface
 
-The default interface uses inquirerPy which is customizable. Read here to findout more https://inquirerpy.readthedocs.io/en/latest/pages/env.html
+The default interface uses inquirerPy which is customizable. Read here to findout more <https://inquirerpy.readthedocs.io/en/latest/pages/env.html>
 
 ## Configuration
 
@@ -679,6 +680,7 @@ skip=false
 # used in the continue from time stamp
 error=3
 
+# whether to use python mpv for enhanced experience
 use_mpv_mod=False
 
 # the format of downloaded anime and trailer
@@ -694,6 +696,8 @@ format=best[height<=1080]/bestvideo[height<=1080]+bestaudio/best # default
 provider = allanime
 
 preferred_language = romaji  # Display language (options: english, romaji)
+
+normalize_titles = true
 
 downloads_dir = <Default-videos-dir>/FastAnime  # Download directory
 

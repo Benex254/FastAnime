@@ -93,6 +93,70 @@ query{
 }
 """
 
+get_user_info = """
+query ($userId: Int) {
+  User(id: $userId) {
+    name
+    about
+    avatar {
+      large
+      medium
+    }
+    bannerImage
+    statistics {
+      anime {
+        count
+        minutesWatched
+        episodesWatched
+        genres {
+          count
+          meanScore
+          genre
+        }
+        tags {
+          tag {
+            id
+          }
+          count
+          meanScore
+        }
+      }
+      manga {
+        count
+        meanScore
+        chaptersRead
+        volumesRead
+        tags {
+          count
+          meanScore
+        }
+        genres {
+          count
+          meanScore
+        }
+      }
+    }
+    favourites {
+      anime {
+        nodes {
+          title {
+            romaji
+            english
+          }
+        }
+      }
+      manga {
+        nodes {
+          title {
+            romaji
+            english
+          }
+        }
+      }
+    }
+  }
+}
+"""
 media_list_mutation = """
 mutation (
   $mediaId: Int

@@ -15,6 +15,7 @@ from .queries_graphql import (
     delete_list_entry_query,
     get_logged_in_user_query,
     get_medialist_item_query,
+    get_user_info,
     media_list_mutation,
     media_list_query,
     most_favourite_query,
@@ -34,8 +35,9 @@ if TYPE_CHECKING:
         AnilistMediaLists,
         AnilistMediaListStatus,
         AnilistNotifications,
-        AnilistUser,
+        AnilistUser_,
         AnilistUserData,
+        AnilistViewerData,
     )
 logger = logging.getLogger(__name__)
 ANILIST_ENDPOINT = "https://graphql.anilist.co"
@@ -77,7 +79,7 @@ class AniListApi:
             return
         if not success or not user:
             return
-        user_info: AnilistUser = user["data"]["Viewer"]
+        user_info: "AnilistUser_" = user["data"]["Viewer"]
         self.user_id = user_info["id"]
         return user_info
 
@@ -91,7 +93,7 @@ class AniListApi:
         """
         return self._make_authenticated_request(notification_query)
 
-    def update_login_info(self, user: "AnilistUser", token: str):
+    def update_login_info(self, user: "AnilistUser_", token: str):
         """method used to login a user enabling authenticated requests
 
         Args:
@@ -103,7 +105,18 @@ class AniListApi:
         self.session.headers.update(self.headers)
         self.user_id = user["id"]
 
-    def get_logged_in_user(self) -> tuple[bool, "AnilistUserData"] | tuple[bool, None]:
+    def get_user_info(self) -> tuple[bool, "AnilistUserData"] | tuple[bool, None]:
+        """get the details of the user who is currently logged in
+
+        Returns:
+            an anilist user
+        """
+
+        return self._make_authenticated_request(get_user_info, {"userId": self.user_id})
+
+    def get_logged_in_user(
+        self,
+    ) -> tuple[bool, "AnilistViewerData"] | tuple[bool, None]:
         """get the details of the user who is currently logged in
 
         Returns:

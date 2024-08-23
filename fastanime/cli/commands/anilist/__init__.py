@@ -20,6 +20,7 @@ commands = {
     "completed": "completed.completed",
     "planning": "planning.planning",
     "notifier": "notifier.notifier",
+    "stats": "stats.stats",
 }
 
 

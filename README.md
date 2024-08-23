@@ -53,6 +53,7 @@ Heavily inspired by [animdl](https://github.com/justfoolingaround/animdl), [magi
     - [MPV specific commands](#mpv-specific-commands)
       - [Key Bindings](#key-bindings)
       - [Script Messages](#script-messages)
+  - [styling the default interface](#styling-the-default-interface)
   - [Configuration](#configuration)
   - [Contributing](#contributing)
   - [Receiving Support](#receiving-support)
@@ -296,7 +297,7 @@ It offers the following options:
 - `--title <anime-title>` or `-t <anime-title>`
 - `--tags <tag>` or `-T <tag>` can be specified multiple times for different tags to filter by.
 - `--year <year>` or `-y <year>`
-- `--status <MediaStatus>` or `-S <MediaStatus>`
+- `--status <MediaStatus>` or `-S <MediaStatus>` can be specified multiple times
 - `--media-format <MediaFormat>` or `-f <MediaFormat>`
 - `--season <MediaSeason>`
 - `--genres <genre>` or `-g <genre>` can be specified multiple times.
@@ -308,7 +309,8 @@ Example:
 fastanime anilist search -T isekai
 
 # get anime of 2024 and sort by popularity
-fastanime anilist search -y 2024 -s POPULARITY_DESC
+# that has already finished airing or is releasing
+fastanime anilist search -y 2024 -s POPULARITY_DESC --status RELEASING --status FINISHED
 
 # get anime of 2024 season WINTER
 fastanime anilist search -y 2024 --season WINTER

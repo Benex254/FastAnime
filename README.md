@@ -177,6 +177,7 @@ The only required external dependency, unless you won't be streaming, is [MPV](h
 - [ani-skip](https://github.com/synacktraa/ani-skip) used for skipping the opening and ending theme songs
 - [ffmpegthumbnailer](https://github.com/dirkvdb/ffmpegthumbnailer) used for local previews of downloaded anime
 - [syncplay](https://syncplay.pl/) to enable watch together.
+- [feh]() used in manga mode
 
 ## Usage
 
@@ -239,6 +240,7 @@ Available options for the fastanime include:
 - `--sync-play` or `-sp` use syncplay for streaming anime so you can watch with your friends
 - `--sub-lang <en/or any other common shortform for country>` regex is used to determine the appropriate. Only works when provider is aniwatch.
 - `--normalize-titles/--no-normalize-titles` whether to normalize provider titles
+- `--manga` toggle experimental manga mode
 
 Example usage of the above options
 
@@ -259,6 +261,9 @@ fastanime --icons --preview --fzf anilist
 
 # use icons with default ui
 fastanime --icons --default anilist
+
+# viewing manga
+fastanime --manga search -t <manga-title>
 ```
 
 #### The anilist command :fire: :fire: :fire:

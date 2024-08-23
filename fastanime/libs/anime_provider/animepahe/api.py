@@ -20,7 +20,6 @@ from .constants import (
 from .utils import process_animepahe_embed_page
 
 if TYPE_CHECKING:
-    from ..types import Anime
     from .types import AnimePaheAnimePage, AnimePaheSearchPage, AnimeSearchResult
 JUICY_STREAM_REGEX = re.compile(r"source='(.*)';")
 logger = logging.getLogger(__name__)
@@ -40,7 +39,7 @@ class AnimePaheApi(AnimeProvider):
             response = self.session.get(
                 url,
             )
-            if not response.status_code == 200:
+            if not response.ok:
                 return
             data: "AnimePaheSearchPage" = response.json()
             self.search_page = data
@@ -68,7 +67,7 @@ class AnimePaheApi(AnimeProvider):
             }
 
         except Exception as e:
-            logger.error(f"AnimePahe(search): {e}")
+            logger.error(f"[ANIMEPAHE-ERROR]: {e}")
             return {}
 
     def get_anime(self, session_id: str, *args):
@@ -90,7 +89,7 @@ class AnimePaheApi(AnimeProvider):
                 response = self.session.get(
                     url,
                 )
-                if response.status_code == 200:
+                if response.ok:
                     if not data:
                         data.update(response.json())
                     else:
@@ -151,12 +150,10 @@ class AnimePaheApi(AnimeProvider):
                 ],
             }
         except Exception as e:
-            logger.error(f"AnimePahe(anime): {e}")
+            logger.error(f"[ANIMEPAHE-ERROR]: {e}")
             return {}
 
-    def get_episode_streams(
-        self, anime: "Anime", episode_number: str, translation_type, *args
-    ):
+    def get_episode_streams(self, anime, episode_number: str, translation_type, *args):
         try:
             # extract episode details from memory
             episode = [
@@ -167,7 +164,7 @@ class AnimePaheApi(AnimeProvider):
 
             if not episode:
                 logger.error(
-                    f"AnimePahe(streams): episode {episode_number} doesn't exist"
+                    f"[ANIMEPAHE-ERROR]: episode {episode_number} doesn't exist"
                 )
                 return []
             episode = episode[0]
@@ -207,24 +204,24 @@ class AnimePaheApi(AnimeProvider):
 
                 if not embed_url:
                     logger.warn(
-                        "AnimePahe: embed url not found please report to the developers"
+                        "[ANIMEPAHE-WARN]: embed url not found please report to the developers"
                     )
                     return []
                 # get embed page
                 embed_response = self.session.get(
                     embed_url, headers={"User-Agent": self.USER_AGENT, **SERVER_HEADERS}
                 )
-                if not response.status_code == 200:
+                if not response.ok:
                     continue
                 embed_page = embed_response.text
 
                 decoded_js = process_animepahe_embed_page(embed_page)
                 if not decoded_js:
-                    logger.error("Animepahe: failed to decode embed page")
+                    logger.error("[ANIMEPAHE-ERROR]: failed to decode embed page")
                     return
                 juicy_stream = JUICY_STREAM_REGEX.search(decoded_js)
                 if not juicy_stream:
-                    logger.error("Animepahe: failed to find juicy stream")
+                    logger.error("[ANIMEPAHE-ERROR]: failed to find juicy stream")
                     return
                 juicy_stream = juicy_stream.group(1)
                 # add the link
@@ -237,4 +234,4 @@ class AnimePaheApi(AnimeProvider):
                 )
             yield streams
         except Exception as e:
-            logger.error(f"Animepahe: {e}")
+            logger.error(f"[ANIMEPAHE-ERROR]: {e}")

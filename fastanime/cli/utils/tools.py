@@ -1,17 +1,30 @@
-# TODO: add typing
-class FastAnimeRuntimeState(dict):
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from typing import Any
+
+    from ...libs.anilist.types import AnilistBaseMediaDataSchema
+    from ...libs.anime_provider.types import Anime, EpisodeStream, SearchResult, Server
+
+
+class FastAnimeRuntimeState(object):
     """A class that manages fastanime runtime during anilist command runtime"""
 
-    def __getattr__(self, attr):
-        try:
-            return self.__getitem__(attr)
-        except KeyError:
-            raise AttributeError(
-                "%r object has no attribute %r" % (self.__class__.__name__, attr)
-            )
+    provider_current_episode_stream_link: str
+    provider_current_server: "Server"
+    provider_current_server_name: str
+    provider_available_episodes: list[str]
+    provider_current_episode_number: str
+    provider_server_episode_streams: list["EpisodeStream"]
+    provider_anime_title: str
+    provider_anime: "Anime"
+    provider_anime_search_result: "SearchResult"
 
-    def __setattr__(self, attr, value):
-        self.__setitem__(attr, value)
+    selected_anime_anilist: "AnilistBaseMediaDataSchema"
+    selected_anime_id_anilist: int
+    selected_anime_title_anilist: str
+    # current_anilist_data: "AnilistDataSchema | AnilistMediaList"
+    current_anilist_data: "Any"
 
 
 def exit_app(exit_code=0, *args):

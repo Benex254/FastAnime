@@ -370,7 +370,7 @@ def provider_anime_episode_servers_menu(
     anime_id_anilist: int = fastanime_runtime_state.selected_anime_id_anilist
     provider_anime: "Anime" = fastanime_runtime_state.provider_anime
 
-    server_name = None
+    server_name = ""
     # get streams for episode from provider
     with Progress() as progress:
         progress.add_task("Fetching Episode Streams...", total=None)
@@ -378,7 +378,6 @@ def provider_anime_episode_servers_menu(
             provider_anime,
             current_episode_number,
             translation_type,
-            fastanime_runtime_state.selected_anime_anilist,
         )
     if not episode_streams_generator:
         if not config.use_rofi:
@@ -582,7 +581,7 @@ def provider_anime_episode_servers_menu(
     # this will try to update the episode to be the next episode if delta has reached a specific threshhold
     # this update will only apply locally
     # the remote(anilist) is only updated when its certain you are going to open the player
-    available_episodes: list = sorted(
+    available_episodes: list[str] = sorted(
         fastanime_runtime_state.provider_available_episodes, key=float
     )
     if stop_time == "0" or total_time == "0":
@@ -786,7 +785,6 @@ def anime_provider_search_results_menu(
         provider_search_results = anime_provider.search_for_anime(
             selected_anime_title,
             translation_type,
-            selected_anime_anilist,
         )
     if not provider_search_results:
         print(
@@ -1279,7 +1277,9 @@ def anilist_results_menu(
         config: [TODO:description]
         fastanime_runtime_state: [TODO:description]
     """
-    search_results = fastanime_runtime_state.anilist_data["data"]["Page"]["media"]
+    search_results = fastanime_runtime_state.current_anilist_data["data"]["Page"][
+        "media"
+    ]
 
     anime_data = {}
     for anime in search_results:
@@ -1558,7 +1558,7 @@ def fastanime_main_menu(
     # anilist data is a (bool,data)
     # the bool indicated success
     if anilist_data[0]:
-        fastanime_runtime_state.anilist_data = anilist_data[1]
+        fastanime_runtime_state.current_anilist_data = anilist_data[1]
         anilist_results_menu(config, fastanime_runtime_state)
 
     else:

@@ -6,20 +6,20 @@ ANILIST_ENDPOINT = "https://graphql.anilist.co"
 
 
 anime_title_query = """
-query($query:String){
-    Page(perPage:50){
-        pageInfo{
-            total
-        }
-        media(search:$query,type:ANIME){
-            id
-                idMal
-            title{
-                romaji
-                english
-            }
-        }
+query ($query: String) {
+  Page(perPage: 50) {
+    pageInfo {
+      total
     }
+    media(search: $query, type: ANIME) {
+      id
+      idMal
+      title {
+        romaji
+        english
+      }
+    }
+  }
 }
 """
 

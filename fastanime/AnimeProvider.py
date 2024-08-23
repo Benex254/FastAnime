@@ -12,7 +12,6 @@ from .libs.anime_provider import anime_sources
 if TYPE_CHECKING:
     from typing import Iterator
 
-    from .libs.anilist.types import AnilistBaseMediaDataSchema
     from .libs.anime_provider.types import Anime, SearchResults, Server
 
 logger = logging.getLogger(__name__)
@@ -51,7 +50,6 @@ class AnimeProvider:
         self,
         user_query,
         translation_type,
-        anilist_obj: "AnilistBaseMediaDataSchema | None" = None,
         nsfw=True,
         unknown=True,
     ) -> "SearchResults | None":
@@ -73,14 +71,14 @@ class AnimeProvider:
                 user_query, translation_type, nsfw, unknown
             )
         except Exception as e:
-            logger.error(e)
+            logger.error(f"[ANIMEPROVIDER-ERROR]: {e}")
             results = None
+
         return results
 
     def get_anime(
         self,
         anime_id: str,
-        anilist_obj: "AnilistBaseMediaDataSchema | None" = None,
     ) -> "Anime | None":
         """core abstraction over getting info of an anime from all providers
 
@@ -95,7 +93,8 @@ class AnimeProvider:
         try:
             results = anime_provider.get_anime(anime_id)
         except Exception as e:
-            logger.error(e)
+            logger.error(f"[ANIMEPROVIDER-ERROR]: {e}")
+
             results = None
         return results
 
@@ -104,7 +103,6 @@ class AnimeProvider:
         anime,
         episode: str,
         translation_type: str,
-        anilist_obj: "AnilistBaseMediaDataSchema|None" = None,
     ) -> "Iterator[Server] | None":
         """core abstractions for getting juicy streams from all providers
 
@@ -123,6 +121,7 @@ class AnimeProvider:
                 anime, episode, translation_type
             )
         except Exception as e:
-            logger.error(e)
+            logger.error(f"[ANIMEPROVIDER-ERROR]: {e}")
+
             results = None
-        return results  # pyright:ignore
+        return results

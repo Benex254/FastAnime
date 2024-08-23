@@ -548,7 +548,7 @@ def search(
             from ...utils.tools import FastAnimeRuntimeState
 
             fastanime_runtime_state = FastAnimeRuntimeState()
-            fastanime_runtime_state.anilist_data = search_results
+            fastanime_runtime_state.current_anilist_data = search_results
             anilist_results_menu(config, fastanime_runtime_state)
     else:
         from sys import exit

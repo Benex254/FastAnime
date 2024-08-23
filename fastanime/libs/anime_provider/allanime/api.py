@@ -15,10 +15,7 @@ from .constants import ALLANIME_API_ENDPOINT, ALLANIME_BASE, ALLANIME_REFERER
 from .gql_queries import ALLANIME_EPISODES_GQL, ALLANIME_SEARCH_GQL, ALLANIME_SHOW_GQL
 
 if TYPE_CHECKING:
-    from typing import Iterator
-
-    from ....libs.anime_provider.allanime.types import AllAnimeEpisode
-    from ....libs.anime_provider.types import Anime, Server
+    from .types import AllAnimeEpisode
 logger = logging.getLogger(__name__)
 
 
@@ -54,18 +51,18 @@ class AllAnimeAPI(AnimeProvider):
                 },
                 timeout=10,
             )
-            if response.status_code == 200:
+            if response.ok:
                 return response.json()["data"]
             else:
-                logger.error("allanime(ERROR): ", response.text)
+                logger.error("[ALLANIME-ERROR]: ", response.text)
                 return {}
         except Timeout:
             logger.error(
-                "allanime(Error):Timeout exceeded this could mean allanime is down or you have lost internet connection"
+                "[ALLANIME-ERROR]: Timeout exceeded this could mean allanime is down or you have lost internet connection"
             )
             return {}
         except Exception as e:
-            logger.error(f"allanime:Error: {e}")
+            logger.error(f"[ALLANIME-ERROR]: {e}")
             return {}
 
     def search_for_anime(
@@ -120,7 +117,7 @@ class AllAnimeAPI(AnimeProvider):
             return normalized_search_results
 
         except Exception as e:
-            logger.error(f"FA(AllAnime): {e}")
+            logger.error(f"[ALLANIME-ERROR]: {e}")
             return {}
 
     def get_anime(self, allanime_show_id: str):
@@ -147,8 +144,8 @@ class AllAnimeAPI(AnimeProvider):
             }
             return normalized_anime
         except Exception as e:
-            logger.error(f"AllAnime(get_anime): {e}")
-            return None
+            logger.error(f"[ALLANIME-ERROR]: {e}")
+            return {}
 
     def _get_anime_episode(
         self, allanime_show_id: str, episode_string: str, translation_type: str = "sub"
@@ -172,12 +169,10 @@ class AllAnimeAPI(AnimeProvider):
             episode = self._fetch_gql(ALLANIME_EPISODES_GQL, variables)
             return episode["episode"]
         except Exception as e:
-            logger.error(f"FA(AllAnime): {e}")
+            logger.error(f"[ALLANIME-ERROR]: {e}")
             return {}
 
-    def get_episode_streams(
-        self, anime: "Anime", episode_number: str, translation_type="sub"
-    ) -> "Iterator[Server] | None":
+    def get_episode_streams(self, anime, episode_number: str, translation_type="sub"):
         """get the streams of an episode
 
         Args:
@@ -235,7 +230,7 @@ class AllAnimeAPI(AnimeProvider):
                                     "quality": "1080",
                                 }
                             ],
-                        }  # pyright:ignore
+                        }
                         continue
 
                     # get the stream url for an episode of the defined source names
@@ -247,7 +242,7 @@ class AllAnimeAPI(AnimeProvider):
                         timeout=10,
                     )
 
-                    if resp.status_code == 200:
+                    if resp.ok:
                         match embed["sourceName"]:
                             case "Luf-mp4":
                                 logger.debug("allanime:Found streams from gogoanime")
@@ -260,7 +255,7 @@ class AllAnimeAPI(AnimeProvider):
                                     )
                                     + f"; Episode {episode_number}",
                                     "links": give_random_quality(resp.json()["links"]),
-                                }  # pyright:ignore
+                                }
                             case "Kir":
                                 logger.debug("allanime:Found streams from wetransfer")
                                 yield {
@@ -272,7 +267,7 @@ class AllAnimeAPI(AnimeProvider):
                                     )
                                     + f"; Episode {episode_number}",
                                     "links": give_random_quality(resp.json()["links"]),
-                                }  # pyright:ignore
+                                }
                             case "S-mp4":
                                 logger.debug("allanime:Found streams from sharepoint")
                                 yield {
@@ -284,7 +279,7 @@ class AllAnimeAPI(AnimeProvider):
                                     )
                                     + f"; Episode {episode_number}",
                                     "links": give_random_quality(resp.json()["links"]),
-                                }  # pyright:ignore
+                                }
                             case "Sak":
                                 logger.debug("allanime:Found streams from dropbox")
                                 yield {
@@ -296,7 +291,7 @@ class AllAnimeAPI(AnimeProvider):
                                     )
                                     + f"; Episode {episode_number}",
                                     "links": give_random_quality(resp.json()["links"]),
-                                }  # pyright:ignore
+                                }
                             case "Default":
                                 logger.debug("allanime:Found streams from wixmp")
                                 yield {
@@ -308,16 +303,13 @@ class AllAnimeAPI(AnimeProvider):
                                     )
                                     + f"; Episode {episode_number}",
                                     "links": give_random_quality(resp.json()["links"]),
-                                }  # pyright:ignore
-
+                                }
                 except Timeout:
                     logger.error(
-                        "Timeout has been exceeded this could mean allanime is down or you have lost internet connection"
+                        "[ALLANIME-ERROR]: Timeout has been exceeded this could mean allanime is down or you have lost internet connection"
                     )
-
                 except Exception as e:
-                    logger.error(f"FA(Allanime): {e}")
-
+                    logger.error(f"[ALLANIME-ERROR]: {e}")
         except Exception as e:
-            logger.error(f"FA(Allanime): {e}")
+            logger.error(f"[ALLANIME-ERROR]: {e}")
             return []

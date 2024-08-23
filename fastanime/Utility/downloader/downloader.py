@@ -31,8 +31,6 @@ class YtDLPDownloader:
         self._thread.daemon = True
         self._thread.start()
 
-    # Function to download the file
-    # TODO: untpack the title to its actual values episode_title and anime_title
     def _download_file(
         self,
         url: str,

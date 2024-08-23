@@ -42,5 +42,5 @@ def completed(config: "Config", dump_json):
         from ...interfaces import anilist_interfaces
 
         fastanime_runtime_state = FastAnimeRuntimeState()
-        fastanime_runtime_state.anilist_data = anime_list[1]
+        fastanime_runtime_state.current_anilist_data = anime_list[1]
         anilist_interfaces.anilist_results_menu(config, fastanime_runtime_state)

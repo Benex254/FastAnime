@@ -3,7 +3,6 @@ This module contains all the preset queries for the sake of neatness and convini
 Mostly for internal usage
 """
 
-# TODO: Format the queries
 mark_as_read_mutation = """
 mutation{
   UpdateUser{
@@ -17,7 +16,6 @@ query($id:Int){
     pageInfo{
       total
     }
-    
     reviews(mediaId:$id){
       summary
       user{
@@ -35,50 +33,48 @@ query($id:Int){
 
 """
 notification_query = """
-query{
-    Page(perPage:5){
-        pageInfo {
-            total
-        }
-        notifications(resetNotificationCount:true,type:AIRING) {
-            ... on AiringNotification {
-                id
-                type
-                episode
-                contexts
-                createdAt
-                media {
-                    id
-                    idMal
-                    title {
-                        romaji
-                        english
-                    }
-                    coverImage{
-                        medium
-                    }
-                }
-            }
-        }
+query {
+  Page(perPage: 5) {
+    pageInfo {
+      total
     }
+    notifications(resetNotificationCount: true, type: AIRING) {
+      ... on AiringNotification {
+        id
+        type
+        episode
+        contexts
+        createdAt
+        media {
+          id
+          idMal
+          title {
+            romaji
+            english
+          }
+          coverImage {
+            medium
+          }
+        }
+      }
+    }
+  }
 }
-
 """
 
 get_medialist_item_query = """
-query($mediaId:Int){
-    MediaList(mediaId:$mediaId){
-        id
-    }
+query ($mediaId: Int) {
+  MediaList(mediaId: $mediaId) {
+    id
+  }
 }
 """
 
 delete_list_entry_query = """
-mutation($id:Int){
-    DeleteMediaListEntry(id:$id){
-        deleted
-
-    }
+mutation ($id: Int) {
+  DeleteMediaListEntry(id: $id) {
+    deleted
+  }
 }
 """
 
@@ -98,8 +94,20 @@ query{
 """
 
 media_list_mutation = """
-mutation($mediaId:Int,$scoreRaw:Int,$repeat:Int,$progress:Int,$status:MediaListStatus){
-  SaveMediaListEntry(mediaId:$mediaId,scoreRaw:$scoreRaw,progress:$progress,repeat:$repeat,status:$status){
+mutation (
+  $mediaId: Int
+  $scoreRaw: Int
+  $repeat: Int
+  $progress: Int
+  $status: MediaListStatus
+) {
+  SaveMediaListEntry(
+    mediaId: $mediaId
+    scoreRaw: $scoreRaw
+    progress: $progress
+    repeat: $repeat
+    status: $status
+  ) {
     id
     status
     mediaId
@@ -116,21 +124,19 @@ mutation($mediaId:Int,$scoreRaw:Int,$repeat:Int,$progress:Int,$status:MediaListS
       month
       day
     }
-
   }
 }
 """
 
 media_list_query = """
-query ($userId: Int, $status: MediaListStatus,$type:MediaType) {
+query ($userId: Int, $status: MediaListStatus, $type: MediaType) {
   Page {
     pageInfo {
-        currentPage
-        total
+      currentPage
+      total
     }
     mediaList(userId: $userId, status: $status, type: $type) {
       mediaId
-      
       media {
         id
         idMal
@@ -147,11 +153,10 @@ query ($userId: Int, $status: MediaListStatus,$type:MediaType) {
           id
         }
         popularity
-            streamingEpisodes{
-        title
-        thumbnail
-    }
-
+        streamingEpisodes {
+          title
+          thumbnail
+        }
         favourites
         averageScore
         episodes
@@ -177,10 +182,10 @@ query ($userId: Int, $status: MediaListStatus,$type:MediaType) {
         }
         status
         description
-        mediaListEntry{
-        status
-        id
-        progress
+        mediaListEntry {
+          status
+          id
+          progress
         }
         nextAiringEpisode {
           timeUntilAiring
@@ -204,7 +209,6 @@ query ($userId: Int, $status: MediaListStatus,$type:MediaType) {
         day
       }
       createdAt
-      
     }
   }
 }
@@ -236,75 +240,71 @@ $format_in:[MediaFormat],\
 $type:MediaType\
 $season:MediaSeason\
 "
-# FuzzyDateInt = (yyyymmdd)
-# MediaStatus = (FINISHED,RELEASING,NOT_YET_RELEASED,CANCELLED,HIATUS)
+
 search_query = (
     """
 query($query:String,%s){
-  Page(perPage:50,page:$page){
-    pageInfo{
+  Page(perPage: 50, page: $page) {
+    pageInfo {
       total
       currentPage
       hasNextPage
     }
     media(
-      search:$query,
-      id_in:$id_in,
-      genre_in:$genre_in,
-      genre_not_in:$genre_not_in,
-      tag_in:$tag_in,
-      tag_not_in:$tag_not_in,
-      status_in:$status_in,
-      status:$status,
-    startDate:$startDate,
-      status_not_in:$status_not_in,
-      popularity_greater:$popularity_greater,
-      popularity_lesser:$popularity_lesser,
-      averageScore_greater:$averageScore_greater,
-      averageScore_lesser:$averageScore_lesser,
-      startDate_greater:$startDate_greater,
-      startDate_lesser:$startDate_lesser,
-      endDate_greater:$endDate_greater,
-      endDate_lesser:$endDate_lesser,
-    format_in:$format_in,
-      sort:$sort,
-    season:$season,
-    seasonYear:$seasonYear,
-      type:$type
-      )
-    {
+      search: $query
+      id_in: $id_in
+      genre_in: $genre_in
+      genre_not_in: $genre_not_in
+      tag_in: $tag_in
+      tag_not_in: $tag_not_in
+      status_in: $status_in
+      status: $status
+      startDate: $startDate
+      status_not_in: $status_not_in
+      popularity_greater: $popularity_greater
+      popularity_lesser: $popularity_lesser
+      averageScore_greater: $averageScore_greater
+      averageScore_lesser: $averageScore_lesser
+      startDate_greater: $startDate_greater
+      startDate_lesser: $startDate_lesser
+      endDate_greater: $endDate_greater
+      endDate_lesser: $endDate_lesser
+      format_in: $format_in
+      sort: $sort
+      season: $season
+      seasonYear: $seasonYear
+      type: $type
+    ) {
       id
-        idMal
-      title{
+      idMal
+      title {
         romaji
         english
       }
-      coverImage{
+      coverImage {
         medium
         large
       }
       trailer {
         site
         id
-        
       }
-        mediaListEntry{
-    status
+      mediaListEntry {
+        status
         id
         progress
-        }
+      }
       popularity
-        streamingEpisodes{
+      streamingEpisodes {
         title
         thumbnail
-    }
-
+      }
       favourites
       averageScore
       episodes
       genres
-      studios{
-        nodes{
+      studios {
+        nodes {
           name
           isAnimationStudio
         }
@@ -337,17 +337,16 @@ query($query:String,%s){
 )
 
 trending_query = """
-query($type:MediaType){  
-  Page(perPage:15){
-    
-    media(sort:TRENDING_DESC,type:$type,genre_not_in:["hentai"]){
+query ($type: MediaType) {
+  Page(perPage: 15) {
+    media(sort: TRENDING_DESC, type: $type, genre_not_in: ["hentai"]) {
       id
-        idMal
-      title{
+      idMal
+      title {
         romaji
         english
       }
-      coverImage{
+      coverImage {
         medium
         large
       }
@@ -356,11 +355,10 @@ query($type:MediaType){
         id
       }
       popularity
-          streamingEpisodes{
+      streamingEpisodes {
         title
         thumbnail
-    }
-
+      }
       favourites
       averageScore
       genres
@@ -373,18 +371,18 @@ query($type:MediaType){
         }
       }
       tags {
-        name              
+        name
       }
       startDate {
         year
         month
         day
       }
-        mediaListEntry{
+      mediaListEntry {
         status
         id
         progress
-        }
+      }
       endDate {
         year
         month
@@ -403,39 +401,37 @@ query($type:MediaType){
 
 # mosts
 most_favourite_query = """
-query($type:MediaType){
-  Page(perPage:15){    
-    media(sort:FAVOURITES_DESC,type:$type,genre_not_in:["hentai"]){
+query ($type: MediaType) {
+  Page(perPage: 15) {
+    media(sort: FAVOURITES_DESC, type: $type, genre_not_in: ["hentai"]) {
       id
-        idMal
-      title{
+      idMal
+      title {
         romaji
         english
       }
-      coverImage{
+      coverImage {
         medium
         large
       }
       trailer {
         site
         id
-        
       }
-        mediaListEntry{
+      mediaListEntry {
         status
         id
         progress
-        }
+      }
       popularity
-          streamingEpisodes{
+      streamingEpisodes {
         title
         thumbnail
-    }
-
-    streamingEpisodes{
+      }
+      streamingEpisodes {
         title
         thumbnail
-    }
+      }
       favourites
       averageScore
       episodes
@@ -448,7 +444,7 @@ query($type:MediaType){
         }
       }
       tags {
-        name              
+        name
       }
       startDate {
         year
@@ -472,35 +468,33 @@ query($type:MediaType){
 """
 
 most_scored_query = """
-query($type:MediaType){
-  Page(perPage:15){
-    media(sort:SCORE_DESC,type:$type,genre_not_in:["hentai"]){
+query ($type: MediaType) {
+  Page(perPage: 15) {
+    media(sort: SCORE_DESC, type: $type, genre_not_in: ["hentai"]) {
       id
-        idMal
-      title{
+      idMal
+      title {
         romaji
         english
       }
-      coverImage{
+      coverImage {
         medium
         large
       }
       trailer {
         site
         id
-        
       }
-        mediaListEntry{
+      mediaListEntry {
         status
         id
         progress
-        }
+      }
       popularity
-          streamingEpisodes{
+      streamingEpisodes {
         title
         thumbnail
-    }
-
+      }
       episodes
       favourites
       averageScore
@@ -513,7 +507,7 @@ query($type:MediaType){
         }
       }
       tags {
-        name              
+        name
       }
       startDate {
         year
@@ -537,40 +531,38 @@ query($type:MediaType){
 """
 
 most_popular_query = """
-query($type:MediaType){  
-  Page(perPage:15){
-    media(sort:POPULARITY_DESC,type:$type,genre_not_in:["hentai"]){
+query ($type: MediaType) {
+  Page(perPage: 15) {
+    media(sort: POPULARITY_DESC, type: $type, genre_not_in: ["hentai"]) {
       id
-        idMal
-      title{
+      idMal
+      title {
         romaji
         english
       }
-      coverImage{
+      coverImage {
         medium
         large
       }
       trailer {
         site
         id
-        
       }
       popularity
-          streamingEpisodes{
+      streamingEpisodes {
         title
         thumbnail
-    }
-
+      }
       favourites
       averageScore
       description
       episodes
       genres
-        mediaListEntry{
+      mediaListEntry {
         status
         id
         progress
-        }
+      }
       studios {
         nodes {
           name
@@ -578,8 +570,8 @@ query($type:MediaType){
         }
       }
       tags {
-        name              
-      }      
+        name
+      }
       startDate {
         year
         month
@@ -595,40 +587,46 @@ query($type:MediaType){
         timeUntilAiring
         airingAt
         episode
-      }  
+      }
     }
   }
 }
 """
 
 most_recently_updated_query = """
-query($type:MediaType){
-  Page(perPage:15){
-    media(sort:UPDATED_AT_DESC,type:$type,averageScore_greater:50,genre_not_in:["hentai"],status:RELEASING){
+query ($type: MediaType) {
+  Page(perPage: 15) {
+    media(
+      sort: UPDATED_AT_DESC
+      type: $type
+      averageScore_greater: 50
+      genre_not_in: ["hentai"]
+      status: RELEASING
+    ) {
       id
-        idMal
-      title{
+      idMal
+      title {
         romaji
         english
       }
-      coverImage{
+      coverImage {
         medium
         large
       }
       trailer {
         site
-        id     
+        id
       }
-        mediaListEntry{
+      mediaListEntry {
         status
         id
         progress
-        }
+      }
       popularity
-          streamingEpisodes{
+      streamingEpisodes {
         title
         thumbnail
-    }
+      }
 
       favourites
       averageScore
@@ -642,7 +640,7 @@ query($type:MediaType){
         }
       }
       tags {
-        name              
+        name
       }
       startDate {
         year
@@ -666,43 +664,41 @@ query($type:MediaType){
 """
 
 recommended_query = """
-query($type:MediaType){
-  Page(perPage:15) {
-    media( type: $type,genre_not_in:["hentai"]) {
-      recommendations(sort:RATING_DESC){
-        nodes{
-          media{
+query ($type: MediaType) {
+  Page(perPage: 15) {
+    media(type: $type, genre_not_in: ["hentai"]) {
+      recommendations(sort: RATING_DESC) {
+        nodes {
+          media {
             id
-        idMal
-            title{
+            idMal
+            title {
               english
               romaji
               native
             }
-            coverImage{
+            coverImage {
               medium
               large
             }
-            mediaListEntry{
-            status
-                id
-                progress
+            mediaListEntry {
+              status
+              id
+              progress
             }
             description
             episodes
-            trailer{
+            trailer {
               site
               id
             }
-            
             genres
             averageScore
             popularity
-                streamingEpisodes{
-        title
-        thumbnail
-    }
-
+            streamingEpisodes {
+              title
+              thumbnail
+            }
             favourites
             tags {
               name
@@ -732,9 +728,9 @@ query($type:MediaType){
 """
 
 anime_characters_query = """
-query($id:Int,$type:MediaType){
+query ($id: Int, $type: MediaType) {
   Page {
-    media(id:$id, type: $type) {
+    media(id: $id, type: $type) {
       characters {
         nodes {
           name {
@@ -767,13 +763,18 @@ query($id:Int,$type:MediaType){
 
 
 anime_relations_query = """
-query ($id: Int,$type:MediaType) {
+query ($id: Int, $type: MediaType) {
   Page(perPage: 20) {
-    media(id: $id, sort: POPULARITY_DESC, type: $type,genre_not_in:["hentai"]) {
+    media(
+      id: $id
+      sort: POPULARITY_DESC
+      type: $type
+      genre_not_in: ["hentai"]
+    ) {
       relations {
         nodes {
           id
-        idMal
+          idMal
           title {
             english
             romaji
@@ -783,11 +784,11 @@ query ($id: Int,$type:MediaType) {
             medium
             large
           }
-        mediaListEntry{
-        status
-        id
-        progress
-        }
+          mediaListEntry {
+            status
+            id
+            progress
+          }
           description
           episodes
           trailer {
@@ -797,31 +798,30 @@ query ($id: Int,$type:MediaType) {
           genres
           averageScore
           popularity
-              streamingEpisodes{
-        title
-        thumbnail
-    }
-
+          streamingEpisodes {
+            title
+            thumbnail
+          }
           favourites
           tags {
             name
           }
           startDate {
-              year
-              month
-              day
-            }
-            endDate {
-              year
-              month
-              day
-            }
-            status
-            nextAiringEpisode {
-              timeUntilAiring
-              airingAt
-              episode
-            }
+            year
+            month
+            day
+          }
+          endDate {
+            year
+            month
+            day
+          }
+          status
+          nextAiringEpisode {
+            timeUntilAiring
+            airingAt
+            episode
+          }
         }
       }
     }
@@ -847,7 +847,7 @@ query ($id: Int,$type:MediaType) {
 """
 
 upcoming_anime_query = """
-query ($page: Int,$type:MediaType) {
+query ($page: Int, $type: MediaType) {
   Page(page: $page) {
     pageInfo {
       total
@@ -855,9 +855,14 @@ query ($page: Int,$type:MediaType) {
       currentPage
       hasNextPage
     }
-    media(type: $type, status: NOT_YET_RELEASED,sort:POPULARITY_DESC,genre_not_in:["hentai"]) {
+    media(
+      type: $type
+      status: NOT_YET_RELEASED
+      sort: POPULARITY_DESC
+      genre_not_in: ["hentai"]
+    ) {
       id
-        idMal
+      idMal
       title {
         romaji
         english
@@ -870,17 +875,16 @@ query ($page: Int,$type:MediaType) {
         site
         id
       }
-              mediaListEntry{
-              status
+      mediaListEntry {
+        status
         id
         progress
-        }
+      }
       popularity
-          streamingEpisodes{
+      streamingEpisodes {
         title
         thumbnail
-    }
-
+      }
       favourites
       averageScore
       genres
@@ -917,20 +921,20 @@ query ($page: Int,$type:MediaType) {
 """
 
 anime_query = """
-query($id:Int){
-  Page{
-    media(id:$id) {
+query ($id: Int) {
+  Page {
+    media(id: $id) {
       id
-        idMal
+      idMal
       title {
         romaji
         english
       }
-              mediaListEntry{
-              status
+      mediaListEntry {
+        status
         id
         progress
-        }
+      }
       nextAiringEpisode {
         timeUntilAiring
         airingAt
@@ -944,7 +948,6 @@ query($id:Int){
           node {
             name {
               full
-              
             }
             gender
             dateOfBirth {
@@ -997,10 +1000,10 @@ query($id:Int){
       countryOfOrigin
       averageScore
       popularity
-          streamingEpisodes{
+      streamingEpisodes {
         title
         thumbnail
-    }
+      }
 
       favourites
       source

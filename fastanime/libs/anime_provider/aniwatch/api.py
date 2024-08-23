@@ -45,7 +45,7 @@ class AniWatchApi(AnimeProvider):
             query = quote_plus(anime_title)
             url = f"https://hianime.to/search?keyword={query}"
             response = self.session.get(url)
-            if response.status_code != 200:
+            if not response.ok:
                 return
             search_page = response.text
             search_results_html_items = get_elements_by_class("flw-item", search_page)
@@ -88,7 +88,7 @@ class AniWatchApi(AnimeProvider):
             return {"pageInfo": {}, "results": results}
 
         except Exception as e:
-            logger.error(e)
+            logger.error(f"[ANIWATCH-ERROR]: {e}")
 
     def get_anime(self, aniwatch_id, *args):
         try:
@@ -99,7 +99,7 @@ class AniWatchApi(AnimeProvider):
                     break
             anime_url = f"https://hianime.to/ajax/v2/episode/list/{aniwatch_id}"
             response = self.session.get(anime_url, timeout=10)
-            if response.status_code == 200:
+            if response.ok:
                 response_json = response.json()
                 aniwatch_anime_page = response_json["html"]
                 episodes_info_container_html = get_element_html_by_class(
@@ -140,7 +140,7 @@ class AniWatchApi(AnimeProvider):
                     "episodes_info": self.episodes_info,
                 }
         except Exception as e:
-            logger.error(e)
+            logger.error(f"[ANIWACTCH-ERROR]: {e}")
 
     def get_episode_streams(self, anime, episode, translation_type, *args):
         try:
@@ -154,7 +154,7 @@ class AniWatchApi(AnimeProvider):
             episode_details = episode_details[0]
             episode_url = f"https://hianime.to/ajax/v2/episode/servers?episodeId={episode_details['id']}"
             response = self.session.get(episode_url)
-            if response.status_code == 200:
+            if response.ok:
                 response_json = response.json()
                 episode_page_html = response_json["html"]
                 servers_containers_html = get_elements_html_by_class(
@@ -194,7 +194,7 @@ class AniWatchApi(AnimeProvider):
                         servers_info = extract_attributes(server_html)
                         embed_url = f"https://hianime.to/ajax/v2/episode/sources?id={servers_info['data-id']}"
                         embed_response = self.session.get(embed_url)
-                        if embed_response.status_code == 200:
+                        if embed_response.ok:
                             embed_json = embed_response.json()
                             raw_link_to_streams = embed_json["link"]
                             match = LINK_TO_STREAMS_REGEX.match(raw_link_to_streams)
@@ -207,7 +207,7 @@ class AniWatchApi(AnimeProvider):
 
                             link_to_streams = f"https://{provider_domain}/embed-{embed_type}/ajax/e-{episode_number}/getSources?id={source_id}"
                             link_to_streams_response = self.session.get(link_to_streams)
-                            if link_to_streams_response.status_code == 200:
+                            if link_to_streams_response.ok:
                                 juicy_streams_json: "AniWatchStream" = (
                                     link_to_streams_response.json()
                                 )
@@ -231,6 +231,6 @@ class AniWatchApi(AnimeProvider):
                                     ),
                                 }
                     except Exception as e:
-                        logger.error(e)
+                        logger.error(f"[ANIWATCH_ERROR]: {e}")
         except Exception as e:
-            logger.error(e)
+            logger.error(f"[ANIWATCH_ERROR]: {e}")

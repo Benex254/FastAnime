@@ -1,4 +1,3 @@
-# TODO: Write tests to make sure all click commands work
 import pytest
 from click.testing import CliRunner
 

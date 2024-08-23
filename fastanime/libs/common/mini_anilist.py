@@ -10,27 +10,27 @@ logger = logging.getLogger(__name__)
 
 ANILIST_ENDPOINT = "https://graphql.anilist.co"
 """
-query($query:String){
-    Page(perPage:50){
-        pageInfo{
-            total
-            currentPage
-            hasNextPage
-        }
-        media(search:$query,type:ANIME){
-        id
-        idMal
-        title{
-            romaji
-            english
-        }
-        episodes
-        status
-        nextAiringEpisode {
-            timeUntilAiring
-            airingAt
-            episode
-        }
+query ($query: String) {
+  Page(perPage: 50) {
+    pageInfo {
+      total
+      currentPage
+      hasNextPage
+    }
+    media(search: $query, type: ANIME) {
+      id
+      idMal
+      title {
+        romaji
+        english
+      }
+      episodes
+      status
+      nextAiringEpisode {
+        timeUntilAiring
+        airingAt
+        episode
+      }
     }
   }
 }
@@ -39,27 +39,27 @@ query($query:String){
 
 def search_for_manga_with_anilist(manga_title: str):
     query = """
-    query($query:String){
-        Page(perPage:50){
-            pageInfo{
-                currentPage
+        query ($query: String) {
+        Page(perPage: 50) {
+            pageInfo {
+            currentPage
             }
-            media(search:$query,type:MANGA){
-                id
-                idMal
-                title{
-                    romaji
-                    english
-                }
-                chapters
-                status
-                coverImage{
+            media(search: $query, type: MANGA) {
+            id
+            idMal
+            title {
+                romaji
+                english
+            }
+            chapters
+            status
+            coverImage {
                 medium
                 large
-                }
+            }
             }
         }
-    }
+        }
     """
     response = post(
         ANILIST_ENDPOINT,
@@ -98,30 +98,30 @@ def search_for_manga_with_anilist(manga_title: str):
 
 def search_for_anime_with_anilist(anime_title: str):
     query = """
-    query($query:String){
-        Page(perPage:50){
-            pageInfo{
-                total
-                currentPage
-                hasNextPage
+        query ($query: String) {
+        Page(perPage: 50) {
+            pageInfo {
+            total
+            currentPage
+            hasNextPage
             }
-            media(search:$query,type:ANIME){
-                id
-                idMal
-                title{
-                    romaji
-                    english
-                }
-                episodes
-                status
-                nextAiringEpisode {
-                    timeUntilAiring
-                    airingAt
-                    episode
-                }
+            media(search: $query, type: ANIME) {
+            id
+            idMal
+            title {
+                romaji
+                english
+            }
+            episodes
+            status
+            nextAiringEpisode {
+                timeUntilAiring
+                airingAt
+                episode
+            }
             }
         }
-    }
+        }
     """
     response = post(
         ANILIST_ENDPOINT,
@@ -170,23 +170,23 @@ def get_mal_id_and_anilist_id(anime_title: str) -> "dict[str,int] | None":
         a boolean indicating success and none or an anilist object depending on success
     """
     query = """
-    query($query:String){
-        Page(perPage:50){
-            pageInfo{
-                total
-                currentPage
-                hasNextPage
+        query ($query: String) {
+        Page(perPage: 50) {
+            pageInfo {
+            total
+            currentPage
+            hasNextPage
             }
-            media(search:$query,type:ANIME){
-                    id
-                    idMal
-                title{
-                    romaji
-                    english
-                }
+            media(search: $query, type: ANIME) {
+            id
+            idMal
+            title {
+                romaji
+                english
+            }
             }
         }
-    }
+        }
     """
 
     try:
@@ -223,24 +223,24 @@ def get_basic_anime_info_by_title(anime_title: str):
         a boolean indicating success and none or an anilist object depending on success
     """
     query = """
-    query($query:String){
-        Page(perPage:50){
-            pageInfo{
-                total
+        query ($query: String) {
+        Page(perPage: 50) {
+            pageInfo {
+            total
             }
-            media(search:$query,type:ANIME){
-                    id
-                    idMal
-                title{
-                    romaji
-                    english
-                }
-                streamingEpisodes{
+            media(search: $query, type: ANIME) {
+            id
+            idMal
+            title {
+                romaji
+                english
+            }
+            streamingEpisodes {
                 title
-                }
+            }
             }
         }
-    }
+        }
     """
 
     from ...Utility.data import anime_normalizer

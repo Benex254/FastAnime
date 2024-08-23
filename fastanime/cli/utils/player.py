@@ -10,6 +10,7 @@ if TYPE_CHECKING:
 
     from ...AnimeProvider import AnimeProvider
     from ..config import Config
+    from .tools import FastAnimeRuntimeState
 
 
 def format_time(duration_in_secs: float):
@@ -164,7 +165,7 @@ class MpvPlayer(object):
         self,
         stream_link,
         anime_provider: "AnimeProvider",
-        fastanime_runtime_state,
+        fastanime_runtime_state: "FastAnimeRuntimeState",
         config: "Config",
         title,
         start_time,

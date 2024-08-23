@@ -24,7 +24,7 @@ class FastAnimeRuntimeState(object):
     selected_anime_id_anilist: int
     selected_anime_title_anilist: str
     # current_anilist_data: "AnilistDataSchema | AnilistMediaList"
-    current_anilist_data: "Any"
+    anilist_results_data: "Any"
 
 
 def exit_app(exit_code=0, *args):

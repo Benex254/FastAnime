@@ -221,7 +221,7 @@ def media_player_controls(
                     "Are you sure you wish to continue to the next episode, your progress for the current episodes will be erased?",
                     default=True,
                 ):
-                    media_player_controls(config, fastanime_runtime_state)
+                    media_actions_menu(config, fastanime_runtime_state)
                     return
 
         # all checks have passed lets go to the next episode
@@ -386,7 +386,7 @@ def provider_anime_episode_servers_menu(
         else:
             if not Rofi.confirm("Sth went wrong!!Enter to continue..."):
                 exit(1)
-        provider_anime_episode_servers_menu(config, fastanime_runtime_state)
+        media_actions_menu(config, fastanime_runtime_state)
         return
 
     if config.server == "top":
@@ -640,7 +640,9 @@ def provider_anime_episodes_menu(
     )
 
     # prompt for episode number
-    total_episodes = provider_anime["availableEpisodesDetail"][translation_type]
+    total_episodes = sorted(
+        provider_anime["availableEpisodesDetail"][translation_type], key=float
+    )
     current_episode_number = ""
 
     # auto select episode if continue from history otherwise prompt episode number
@@ -731,7 +733,9 @@ def provider_anime_episodes_menu(
     provider_anime_episode_servers_menu(config, fastanime_runtime_state)
 
 
-def fetch_anime_episode(config, fastanime_runtime_state: "FastAnimeRuntimeState"):
+def fetch_anime_episode(
+    config: "Config", fastanime_runtime_state: "FastAnimeRuntimeState"
+):
     selected_anime: "SearchResult" = (
         fastanime_runtime_state.provider_anime_search_result
     )
@@ -739,7 +743,7 @@ def fetch_anime_episode(config, fastanime_runtime_state: "FastAnimeRuntimeState"
     with Progress() as progress:
         progress.add_task("Fetching Anime Info...", total=None)
         provider_anime = anime_provider.get_anime(
-            selected_anime["id"], fastanime_runtime_state.selected_anime_anilist
+            selected_anime["id"],
         )
     if not provider_anime:
         print(
@@ -750,7 +754,7 @@ def fetch_anime_episode(config, fastanime_runtime_state: "FastAnimeRuntimeState"
         else:
             if not Rofi.confirm("Sth went wrong!!Enter to continue..."):
                 exit(1)
-        return fetch_anime_episode(config, fastanime_runtime_state)
+        return media_actions_menu(config, fastanime_runtime_state)
 
     fastanime_runtime_state.provider_anime = provider_anime
     provider_anime_episodes_menu(config, fastanime_runtime_state)
@@ -795,7 +799,7 @@ def anime_provider_search_results_menu(
         else:
             if not Rofi.confirm("Sth went wrong!!Enter to continue..."):
                 exit(1)
-        return anime_provider_search_results_menu(config, fastanime_runtime_state)
+        return media_actions_menu(config, fastanime_runtime_state)
 
     provider_search_results = {
         anime["title"]: anime for anime in provider_search_results["results"]
@@ -1277,7 +1281,7 @@ def anilist_results_menu(
         config: [TODO:description]
         fastanime_runtime_state: [TODO:description]
     """
-    search_results = fastanime_runtime_state.current_anilist_data["data"]["Page"][
+    search_results = fastanime_runtime_state.anilist_results_data["data"]["Page"][
         "media"
     ]
 
@@ -1558,7 +1562,7 @@ def fastanime_main_menu(
     # anilist data is a (bool,data)
     # the bool indicated success
     if anilist_data[0]:
-        fastanime_runtime_state.current_anilist_data = anilist_data[1]
+        fastanime_runtime_state.anilist_results_data = anilist_data[1]
         anilist_results_menu(config, fastanime_runtime_state)
 
     else:

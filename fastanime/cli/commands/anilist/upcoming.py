@@ -25,7 +25,7 @@ def upcoming(config, dump_json):
             from ...utils.tools import FastAnimeRuntimeState
 
             fastanime_runtime_state = FastAnimeRuntimeState()
-            fastanime_runtime_state.current_anilist_data = data
+            fastanime_runtime_state.anilist_results_data = data
             anilist_results_menu(config, fastanime_runtime_state)
     else:
         from sys import exit

@@ -11,7 +11,7 @@ anime_normalizer_raw = {
         'Hazurewaku no "Joutai Ijou Skill" de Saikyou ni Natta Ore ga Subete wo Juurin suru made': "Hazure Waku no [Joutai Ijou Skill] de Saikyou ni Natta Ore ga Subete wo Juurin Suru made",
     },
     "aniwatch": {"My Star": "Oshi no Ko"},
-    "animepahe": {},
+    "animepahe": {"Azumanga Daiou The Animation": "Azumanga Daioh"},
 }
 
 

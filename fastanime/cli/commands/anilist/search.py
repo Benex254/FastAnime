@@ -4,7 +4,7 @@ from ...completion_functions import anime_titles_shell_complete
 
 tags_available = {
     "Cast": ["Polyamorous"],
-    "Cast / Main Cast": [
+    "Cast Main Cast": [
         "Anti-Hero",
         "Elderly Protagonist",
         "Ensemble Cast",
@@ -18,7 +18,7 @@ tags_available = {
         "Primarily Male Cast",
         "Primarily Teen Cast",
     ],
-    "Cast / Traits": [
+    "Cast Traits": [
         "Age Regression",
         "Agender",
         "Aliens",
@@ -94,7 +94,7 @@ tags_available = {
     ],
     "Demographic": ["Josei", "Kids", "Seinen", "Shoujo", "Shounen"],
     "Setting": ["Matriarchy"],
-    "Setting / Scene": [
+    "Setting Scene": [
         "Bar",
         "Boarding School",
         "Circus",
@@ -117,7 +117,7 @@ tags_available = {
         "Urban",
         "Work",
     ],
-    "Setting / Time": [
+    "Setting Time": [
         "Achronological Order",
         "Anachronism",
         "Ancient China",
@@ -125,7 +125,7 @@ tags_available = {
         "Historical",
         "Time Skip",
     ],
-    "Setting / Universe": [
+    "Setting Universe": [
         "Afterlife",
         "Alternate Universe",
         "Augmented Reality",
@@ -152,7 +152,7 @@ tags_available = {
         "Rotoscoping",
         "Stop Motion",
     ],
-    "Theme / Action": [
+    "Theme Action": [
         "Archery",
         "Battle Royale",
         "Espionage",
@@ -162,7 +162,7 @@ tags_available = {
         "Spearplay",
         "Swordplay",
     ],
-    "Theme / Arts": [
+    "Theme Arts": [
         "Acting",
         "Calligraphy",
         "Classic Literature",
@@ -174,7 +174,7 @@ tags_available = {
         "Rakugo",
         "Writing",
     ],
-    "Theme / Arts-Music": [
+    "Theme Arts-Music": [
         "Band",
         "Classical Music",
         "Dancing",
@@ -184,8 +184,8 @@ tags_available = {
         "Musical Theater",
         "Rock Music",
     ],
-    "Theme / Comedy": ["Parody", "Satire", "Slapstick", "Surreal Comedy"],
-    "Theme / Drama": [
+    "Theme Comedy": ["Parody", "Satire", "Slapstick", "Surreal Comedy"],
+    "Theme Drama": [
         "Bullying",
         "Class Struggle",
         "Coming of Age",
@@ -198,7 +198,7 @@ tags_available = {
         "Suicide",
         "Tragedy",
     ],
-    "Theme / Fantasy": [
+    "Theme Fantasy": [
         "Alchemy",
         "Body Swapping",
         "Cultivation",
@@ -216,8 +216,8 @@ tags_available = {
         "Wuxia",
         "Youkai",
     ],
-    "Theme / Game": ["Board Game", "E-Sports", "Video Games"],
-    "Theme / Game-Card & Board Game": [
+    "Theme Game": ["Board Game", "E-Sports", "Video Games"],
+    "Theme Game-Card & Board Game": [
         "Card Battle",
         "Go",
         "Karuta",
@@ -225,7 +225,7 @@ tags_available = {
         "Poker",
         "Shogi",
     ],
-    "Theme / Game-Sport": [
+    "Theme Game-Sport": [
         "Acrobatics",
         "Airsoft",
         "American Football",
@@ -258,7 +258,7 @@ tags_available = {
         "Volleyball",
         "Wrestling",
     ],
-    "Theme / Other": [
+    "Theme Other": [
         "Adoption",
         "Animals",
         "Astronomy",
@@ -308,7 +308,7 @@ tags_available = {
         "Travel",
         "War",
     ],
-    "Theme / Other-Organisations": [
+    "Theme Other-Organisations": [
         "Assassins",
         "Criminal Organization",
         "Cult",
@@ -320,7 +320,7 @@ tags_available = {
         "Triads",
         "Yakuza",
     ],
-    "Theme / Other-Vehicle": [
+    "Theme Other-Vehicle": [
         "Aviation",
         "Cars",
         "Mopeds",
@@ -329,7 +329,7 @@ tags_available = {
         "Tanks",
         "Trains",
     ],
-    "Theme / Romance": [
+    "Theme Romance": [
         "Age Gap",
         "Bisexual",
         "Boys' Love",
@@ -343,15 +343,15 @@ tags_available = {
         "Unrequited Love",
         "Yuri",
     ],
-    "Theme / Sci Fi": [
+    "Theme Sci Fi": [
         "Cyberpunk",
         "Space Opera",
         "Time Loop",
         "Time Manipulation",
         "Tokusatsu",
     ],
-    "Theme / Sci Fi-Mecha": ["Real Robot", "Super Robot"],
-    "Theme / Slice of Life": [
+    "Theme Sci Fi-Mecha": ["Real Robot", "Super Robot"],
+    "Theme Slice of Life": [
         "Agriculture",
         "Cute Boys Doing Cute Things",
         "Cute Girls Doing Cute Things",
@@ -386,6 +386,7 @@ for tag_category, tags_in_category in tags_available.items():
     "--status",
     "-S",
     help="The media status of the anime",
+    multiple=True,
     type=click.Choice(
         ["FINISHED", "RELEASING", "NOT_YET_RELEASED", "CANCELLED", "HIATUS"]
     ),
@@ -486,38 +487,38 @@ for tag_category, tags_in_category in tags_available.items():
     "-y",
     type=click.Choice(
         [
-            "2024",
-            "2023",
-            "2022",
-            "2021",
-            "2020",
-            "2019",
-            "2018",
-            "2017",
-            "2016",
-            "2015",
-            "2014",
-            "2013",
-            "2012",
-            "2011",
-            "2010",
-            "2009",
-            "2008",
-            "2007",
-            "2006",
-            "2005",
-            "2004",
-            "2000",
-            "1990",
-            "1980",
-            "1970",
-            "1960",
-            "1950",
-            "1940",
-            "1930",
-            "1920",
-            "1910",
             "1900",
+            "1910",
+            "1920",
+            "1930",
+            "1940",
+            "1950",
+            "1960",
+            "1970",
+            "1980",
+            "1990",
+            "2000",
+            "2004",
+            "2005",
+            "2006",
+            "2007",
+            "2008",
+            "2009",
+            "2010",
+            "2011",
+            "2012",
+            "2013",
+            "2014",
+            "2015",
+            "2016",
+            "2017",
+            "2018",
+            "2019",
+            "2020",
+            "2021",
+            "2022",
+            "2023",
+            "2024",
         ]
     ),
     help="the year the media was released",
@@ -531,7 +532,7 @@ def search(
     success, search_results = AniList.search(
         query=title,
         sort=sort,
-        status=status,
+        status_in=list(status),
         genre_in=list(genres),
         season=season,
         tag_in=list(tags),
@@ -548,7 +549,7 @@ def search(
             from ...utils.tools import FastAnimeRuntimeState
 
             fastanime_runtime_state = FastAnimeRuntimeState()
-            fastanime_runtime_state.current_anilist_data = search_results
+            fastanime_runtime_state.anilist_results_data = search_results
             anilist_results_menu(config, fastanime_runtime_state)
     else:
         from sys import exit

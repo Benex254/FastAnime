@@ -42,5 +42,5 @@ def paused(config: "Config", dump_json):
         from ...utils.tools import FastAnimeRuntimeState
 
         anilist_config = FastAnimeRuntimeState()
-        anilist_config.data = anime_list[1]
+        anilist_config.anilist_results_data = anime_list[1]
         anilist_interfaces.anilist_results_menu(config, anilist_config)

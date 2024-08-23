@@ -111,7 +111,6 @@ class MpvPlayer(object):
             provider_anime,
             current_episode_number,
             translation_type,
-            fastanime_runtime_state.selected_anime_anilist,
         )
         if not episode_streams:
             self.mpv_player.show_text("No streams were found")
@@ -271,7 +270,6 @@ class MpvPlayer(object):
             mpv_player.show_text("Changing translation type...")
             anime = anime_provider.get_anime(
                 fastanime_runtime_state.provider_anime_search_result["id"],
-                fastanime_runtime_state.selected_anime_anilist,
             )
             if not anime:
                 mpv_player.show_text("Failed to update translation type")

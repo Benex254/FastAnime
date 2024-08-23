@@ -37,7 +37,66 @@ query($query:String){
 """
 
 
-def search_foranime_with_anilist(anime_title: str):
+def search_for_manga_with_anilist(manga_title: str):
+    query = """
+    query($query:String){
+        Page(perPage:50){
+            pageInfo{
+                currentPage
+            }
+            media(search:$query,type:MANGA){
+                id
+                idMal
+                title{
+                    romaji
+                    english
+                }
+                chapters
+                status
+                coverImage{
+                medium
+                large
+                }
+            }
+        }
+    }
+    """
+    response = post(
+        ANILIST_ENDPOINT,
+        json={"query": query, "variables": {"query": manga_title}},
+        timeout=10,
+    )
+    if response.status_code == 200:
+        anilist_data: "AnilistDataSchema" = response.json()
+        return {
+            "pageInfo": anilist_data["data"]["Page"]["pageInfo"],
+            "results": [
+                {
+                    "id": anime_result["id"],
+                    "poster": anime_result["coverImage"]["large"],
+                    "title": (
+                        anime_result["title"]["romaji"]
+                        or anime_result["title"]["english"]
+                    )
+                    + f"  [Chapters: {anime_result['chapters']}]",
+                    "type": "manga",
+                    "availableChapters": list(
+                        range(
+                            1,
+                            (
+                                anime_result["chapters"]
+                                if anime_result["chapters"]
+                                else 0
+                            ),
+                        )
+                    ),
+                }
+                for anime_result in anilist_data["data"]["Page"]["media"]
+            ],
+        }
+
+
+def search_for_anime_with_anilist(anime_title: str):
     query = """
     query($query:String){
         Page(perPage:50){

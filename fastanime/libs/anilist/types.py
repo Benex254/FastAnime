@@ -165,6 +165,7 @@ class AnilistBaseMediaDataSchema(TypedDict):
     nextAiringEpisode: AnilistMediaNextAiringEpisode
     season: str
     streamingEpisodes: list[StreamingEpisode]
+    chapters: int
     seasonYear: int
     duration: int
     synonyms: list[str]

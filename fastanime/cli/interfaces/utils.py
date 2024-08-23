@@ -7,7 +7,7 @@ import textwrap
 from threading import Thread
 
 import requests
-from yt_dlp.utils import clean_html
+from yt_dlp.utils import clean_html, sanitize_filename
 
 from ...constants import APP_CACHE_DIR
 from ...libs.anilist.types import AnilistBaseMediaDataSchema
@@ -166,6 +166,63 @@ def get_rofi_icons(
                 future.result()
             except Exception as e:
                 logger.error("%r generated an exception: %s" % (url, e))
+
+
+# get rofi icons
+def get_fzf_manga_preview(manga_results, workers=None, wait=False):
+    """A helper function to make sure that the images are downloaded so they can be used as icons
+
+    Args:
+        titles (list[str]): sanitized titles of the anime; NOTE: its important that they are sanitized since they are used as the filenames of the images
+        workers ([TODO:parameter]): Number of threads to use to download the images; defaults to as many as possible
+        anilist_results: the anilist results from an anilist action
+    """
+
+    def _worker():
+        # use concurrency to download the images as fast as possible
+        with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:
+            # load the jobs
+            future_to_url = {}
+            for manga in manga_results:
+                image_url = manga["poster"]
+                future_to_url[
+                    executor.submit(
+                        save_image_from_url,
+                        image_url,
+                        sanitize_filename(manga["title"]),
+                    )
+                ] = image_url
+
+            # execute the jobs
+            for future in concurrent.futures.as_completed(future_to_url):
+                url = future_to_url[future]
+                try:
+                    future.result()
+                except Exception as e:
+                    logger.error("%r generated an exception: %s" % (url, e))
+
+    background_worker = Thread(
+        target=_worker,
+    )
+    # ensure images and info exists
+    background_worker.daemon = True
+    background_worker.start()
+
+    # the preview script is in bash so making sure fzf doesnt use any other shell lang to process the preview script
+    os.environ["SHELL"] = shutil.which("bash") or "bash"
+    preview = """
+        %s
+        if [ -s %s/{} ]; then fzf-preview %s/{}
+        else echo Loading...
+        fi
+    """ % (
+        fzf_preview,
+        IMAGES_CACHE_DIR,
+        IMAGES_CACHE_DIR,
+    )
+    if wait:
+        background_worker.join()
+    return preview
 
 
 # get rofi icons

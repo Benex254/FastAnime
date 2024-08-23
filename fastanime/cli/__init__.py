@@ -40,6 +40,7 @@ signal.signal(signal.SIGINT, handle_exit)
     short_help="Stream Anime",
 )
 @click.version_option(__version__, "--version")
+@click.option("--manga", "-m", help="Enable manga mode", is_flag=True)
 @click.option("--log", help="Allow logging to stdout", is_flag=True)
 @click.option("--log-file", help="Allow logging to a file", is_flag=True)
 @click.option("--rich-traceback", help="Use rich to output tracebacks", is_flag=True)
@@ -150,6 +151,7 @@ signal.signal(signal.SIGINT, handle_exit)
 @click.pass_context
 def run_cli(
     ctx: click.Context,
+    manga,
     log,
     log_file,
     rich_traceback,
@@ -183,6 +185,7 @@ def run_cli(
     from .config import Config
 
     ctx.obj = Config()
+    ctx.obj.manga = manga
     if log:
         import logging
 

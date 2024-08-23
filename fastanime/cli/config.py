@@ -55,6 +55,7 @@ class Config(object):
         user: [TODO:attribute]
     """
 
+    manga = False
     sync_play = False
     anime_list: list
     watch_history: dict

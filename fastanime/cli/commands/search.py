@@ -113,7 +113,7 @@ def search(config: "Config", anime_titles: str, episode_range: str):
             print(
                 f"[purple bold]Now Reading: [/] {search_result_manga_title} [cyan bold]Chapter:[/] {chapter_info['title']}"
             )
-            feh_manga_viewer(chapter_info["thumbnails"], chapter_info["title"])
+            feh_manga_viewer(chapter_info["thumbnails"], str(chapter_info["title"]))
             if anilist_helper:
                 anilist_helper.update_anime_list(
                     {"mediaId": anilist_id, "progress": chapter_number}

@@ -104,6 +104,11 @@ def write_search_results(
                 image_url
             )
 
+            mediaListName = "Not in any of your lists"
+            progress = "UNKNOWN"
+            if anime_list := anime["mediaListEntry"]:
+                mediaListName = anime_list["status"]
+                progress = anime_list["progress"]
             # handle the text data
             template = f"""
             {get_true_fg("-"*SEPARATOR_WIDTH,*SEPARATOR_COLOR,bold=False)}
@@ -117,6 +122,9 @@ def write_search_results(
             {get_true_fg('Next Episode:',*HEADER_COLOR)} {anilist_data_helper.extract_next_airing_episode(anime['nextAiringEpisode'])}
             {get_true_fg('Start Date:',*HEADER_COLOR)} {anilist_data_helper.format_anilist_date_object(anime['startDate'])}
             {get_true_fg('End Date:',*HEADER_COLOR)} {anilist_data_helper.format_anilist_date_object(anime['endDate'])}
+            {get_true_fg("-"*SEPARATOR_WIDTH,*SEPARATOR_COLOR,bold=False)}
+            {get_true_fg('Media List:',*HEADER_COLOR)} {mediaListName}
+            {get_true_fg('Progress:',*HEADER_COLOR)} {progress}
             {get_true_fg("-"*SEPARATOR_WIDTH,*SEPARATOR_COLOR,bold=False)}
             {get_true_fg('Description:',*HEADER_COLOR)}
             """

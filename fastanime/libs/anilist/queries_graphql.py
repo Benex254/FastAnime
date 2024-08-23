@@ -239,6 +239,7 @@ $endDate_lesser:FuzzyDateInt,\
 $format_in:[MediaFormat],\
 $type:MediaType\
 $season:MediaSeason\
+$on_list:Boolean\
 "
 
 search_query = (
@@ -274,6 +275,7 @@ query($query:String,%s){
       season: $season
       seasonYear: $seasonYear
       type: $type
+        onList:$on_list
     ) {
       id
       idMal

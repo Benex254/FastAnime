@@ -114,14 +114,15 @@ class AnilistCharactersEdges(TypedDict):
     edges: list[AnilistCharactersEdge]
 
 
-class AnilistMediaList_(TypedDict):
-    id: int
-    progress: int
-
-
 AnilistMediaListStatus = Literal[
     "CURRENT", "PLANNING", "COMPLETED", "DROPPED", "PAUSED", "REPEATING"
 ]
+
+
+class AnilistMediaList_(TypedDict):
+    id: int
+    progress: int
+    status: AnilistMediaListStatus
 
 
 class AnilistMediaListProperties(TypedDict):

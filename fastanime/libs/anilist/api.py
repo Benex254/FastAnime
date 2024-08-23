@@ -316,6 +316,7 @@ class AniListApi:
         page: int | None = None,
         season: str | None = None,
         format_in: list[str] | None = None,
+        on_list: bool | None = None,
         type="ANIME",
         **kwargs,
     ):
@@ -324,7 +325,7 @@ class AniListApi:
         """
         variables = {}
         for key, val in list(locals().items())[1:]:
-            if val and key not in ["variables"]:
+            if (val or val is False) and key not in ["variables"]:
                 variables[key] = val
         search_results = self.get_data(search_query, variables=variables)
         return search_results

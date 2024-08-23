@@ -523,9 +523,25 @@ for tag_category, tags_in_category in tags_available.items():
     ),
     help="the year the media was released",
 )
+@click.option(
+    "--on-list/--not-on-list",
+    "-L/-no-L",
+    help="Whether the anime should be in your list or not",
+    type=bool,
+)
 @click.pass_obj
 def search(
-    config, title, dump_json, season, status, sort, genres, tags, media_format, year
+    config,
+    title,
+    dump_json,
+    season,
+    status,
+    sort,
+    genres,
+    tags,
+    media_format,
+    year,
+    on_list,
 ):
     from ....anilist import AniList
 
@@ -538,6 +554,7 @@ def search(
         tag_in=list(tags),
         seasonYear=year,
         format_in=list(media_format),
+        on_list=on_list,
     )
     if success:
         if dump_json:

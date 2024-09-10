@@ -63,6 +63,22 @@ def get_anime_titles(query: str, variables: dict = {}):
         return []
 
 
+def downloaded_anime_titles(ctx, param, incomplete):
+    import os
+
+    from ..constants import USER_VIDEOS_DIR
+
+    try:
+        titles = [
+            title
+            for title in os.listdir(USER_VIDEOS_DIR)
+            if title.lower().startswith(incomplete.lower()) or not incomplete
+        ]
+        return titles
+    except Exception:
+        return []
+
+
 def anime_titles_shell_complete(ctx, param, incomplete):
     incomplete = incomplete.strip()
     if not incomplete:

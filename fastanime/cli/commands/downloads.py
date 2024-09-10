@@ -3,6 +3,8 @@ from typing import TYPE_CHECKING
 
 import click
 
+from ..completion_functions import downloaded_anime_titles
+
 logger = logging.getLogger(__name__)
 if TYPE_CHECKING:
     from ..config import Config
@@ -12,16 +14,24 @@ if TYPE_CHECKING:
     help="View and watch your downloads using mpv", short_help="Watch downloads"
 )
 @click.option("--path", "-p", help="print the downloads folder and exit", is_flag=True)
+@click.option(
+    "--title",
+    "-T",
+    shell_complete=downloaded_anime_titles,
+    help="watch a specific title",
+)
 @click.option("--view-episodes", "-v", help="View individual episodes", is_flag=True)
 @click.option(
     "--ffmpegthumbnailer-seek-time",
     "--time-to-seek",
     "-t",
     type=click.IntRange(-1, 100),
-    help="ffmpegthumbnailer seek time [0-100]",
+    help="ffmpegthumbnailer seek time",
 )
 @click.pass_obj
-def downloads(config: "Config", path: bool, view_episodes, ffmpegthumbnailer_seek_time):
+def downloads(
+    config: "Config", path: bool, title, view_episodes, ffmpegthumbnailer_seek_time
+):
     import os
 
     from ...cli.utils.mpv import run_mpv
@@ -239,6 +249,7 @@ def downloads(config: "Config", path: bool, view_episodes, ffmpegthumbnailer_see
                 os.listdir(anime_playlist_path), key=sort_by_episode_number
             )
             downloaded_episodes = [*episodes, "Back"]
+
             if config.use_fzf:
                 if not config.preview:
                     episode_title = fzf.run(
@@ -271,8 +282,12 @@ def downloads(config: "Config", path: bool, view_episodes, ffmpegthumbnailer_see
                 run_mpv(episode_path)
             stream_episode(anime_playlist_path)
 
-    def stream_anime():
-        if config.use_fzf:
+    def stream_anime(title=None):
+        if title:
+            from thefuzz import fuzz
+
+            playlist_name = max(anime_downloads, key=lambda t: fuzz.ratio(title, t))
+        elif config.use_fzf:
             if not config.preview:
                 playlist_name = fzf.run(
                     anime_downloads,
@@ -309,4 +324,4 @@ def downloads(config: "Config", path: bool, view_episodes, ffmpegthumbnailer_see
                 run_mpv(playlist)
         stream_anime()
 
-    stream_anime()
+    stream_anime(title)

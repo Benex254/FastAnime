@@ -538,6 +538,10 @@ fastanime downloads --time-to-seek <intRange(-1,100)>
 # --- or ---
 fastanime downloads -t <intRange(-1,100)>
 
+# to watch a specific title
+# be sure to get the completions for the best experience
+fastanime downloads --title <title>
+
 # to get the path to the downloads folder set
 fastanime downloads --path
 # useful when you want to use the value for other programs

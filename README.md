@@ -25,7 +25,7 @@ Welcome to **FastAnime**, anime site experience from the terminal.
 
 </details>
 
-Heavily inspired by [animdl](https://github.com/justfoolingaround/animdl), [magic-tape](https://gitlab.com/christosangel/magic-tape/-/tree/main?ref_type=heads) and [ani-cli](https://github.com/pystardust/ani-cli).
+Heavily inspired by [animdl](https://github.com/justfoolingaround/animdl), [jerry](https://github.com/justchokingaround/jerry/tree/main),[magic-tape](https://gitlab.com/christosangel/magic-tape/-/tree/main?ref_type=heads) and [ani-cli](https://github.com/pystardust/ani-cli).
 
 <!--toc:start-->
 
@@ -255,7 +255,7 @@ fastanime --sync-play --server sharepoint search -t <anime-title>
 fastanime --sync-play --server sharepoint anilist
 
 # downloading dubbed anime
-fastanime --dub download <anime>
+fastanime --dub download -t <anime>
 
 # use  icons and fzf for a more elegant ui with preview
 fastanime --icons --preview --fzf anilist

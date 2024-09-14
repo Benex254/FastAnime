@@ -4,8 +4,6 @@ import os
 from configparser import ConfigParser
 from typing import TYPE_CHECKING
 
-from rich import print
-
 from ..constants import USER_CONFIG_PATH, USER_DATA_PATH, USER_VIDEOS_DIR
 from ..libs.rofi import Rofi
 
@@ -104,13 +102,11 @@ class Config(object):
         self.configparser.add_section("stream")
         self.configparser.add_section("general")
         self.configparser.add_section("anilist")
-        if not os.path.exists(USER_CONFIG_PATH):
-            with open(USER_CONFIG_PATH, "w") as config:
-                self.configparser.write(config)
-
-        self.configparser.read(USER_CONFIG_PATH)
 
         # --- set config values from file or using defaults ---
+        if os.path.exists(USER_CONFIG_PATH):
+            self.configparser.read(USER_CONFIG_PATH)
+
         self.downloads_dir = self.get_downloads_dir()
         self.sub_lang = self.get_sub_lang()
         self.provider = self.get_provider()
@@ -125,7 +121,7 @@ class Config(object):
         self.auto_next = self.get_auto_next()
         self.normalize_titles = self.get_normalize_titles()
         self.auto_select = self.get_auto_select()
-        self.use_mpv_mod = self.get_use_mpv_mod()
+        self.use_python_mpv = self.get_use_mpv_mod()
         self.quality = self.get_quality()
         self.notification_duration = self.get_notification_duration()
         self.error = self.get_error()
@@ -147,6 +143,9 @@ class Config(object):
         self.user: dict = self.user_data.get("user", {})
 
         os.environ["CURRENT_FASTANIME_PROVIDER"] = self.provider
+        if not os.path.exists(USER_CONFIG_PATH):
+            with open(USER_CONFIG_PATH, "w") as config:
+                config.write(self.__repr__())
 
     def update_user(self, user):
         self.user = user
@@ -274,7 +273,15 @@ class Config(object):
             self.configparser.write(config)
 
     def __repr__(self):
-        current_config_state = f"""
+        current_config_state = f"""\
+#
+#    ███████╗░█████╗░░██████╗████████╗░█████╗░███╗░░██╗██╗███╗░░░███╗███████╗  ░█████╗░░█████╗░███╗░░██╗███████╗██╗░██████╗░
+#    ██╔════╝██╔══██╗██╔════╝╚══██╔══╝██╔══██╗████╗░██║██║████╗░████║██╔════╝  ██╔══██╗██╔══██╗████╗░██║██╔════╝██║██╔════╝░
+#    █████╗░░███████║╚█████╗░░░░██║░░░███████║██╔██╗██║██║██╔████╔██║█████╗░░  ██║░░╚═╝██║░░██║██╔██╗██║█████╗░░██║██║░░██╗░
+#    ██╔══╝░░██╔══██║░╚═══██╗░░░██║░░░██╔══██║██║╚████║██║██║╚██╔╝██║██╔══╝░░  ██║░░██╗██║░░██║██║╚████║██╔══╝░░██║██║░░╚██╗
+#    ██║░░░░░██║░░██║██████╔╝░░░██║░░░██║░░██║██║░╚███║██║██║░╚═╝░██║███████╗  ╚█████╔╝╚█████╔╝██║░╚███║██║░░░░░██║╚██████╔╝
+#    ╚═╝░░░░░╚═╝░░╚═╝╚═════╝░░░░╚═╝░░░╚═╝░░╚═╝╚═╝░░╚══╝╚═╝╚═╝░░░░░╚═╝╚══════╝  ░╚════╝░░╚════╝░╚═╝░░╚══╝╚═╝░░░░░╚═╝░╚═════╝░
+#
 [stream]
 # Auto continue from watch history
 continue_from_history = {self.continue_from_history}  
@@ -307,7 +314,7 @@ error = {self.error}
 # whether to use python-mpv
 # to enable superior control over the player 
 # adding more options to it
-use_mpv_mod = {self.use_mpv_mod}
+use_mpv_mod = {self.use_python_mpv}
 
 # force mpv window
 # passed directly to mpv so values are same
@@ -367,18 +374,3 @@ notification_duration = {self.notification_duration}
 
     def __str__(self):
         return self.__repr__()
-
-    # WARNING: depracated and will probably be removed
-    def update_anime_list(self, anime_id: int, remove=False):
-        if remove:
-            try:
-                self.anime_list.remove(anime_id)
-                print("Succesfully removed :cry:")
-            except Exception:
-                print(anime_id, "Nothing to remove :confused:")
-        else:
-            self.anime_list.append(anime_id)
-            self.user_data["animelist"] = list(set(self.anime_list))
-            self._update_user_data()
-            print("Succesfully added :smile:")
-            input("Enter to continue...")

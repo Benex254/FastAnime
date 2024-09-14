@@ -7,7 +7,7 @@ if TYPE_CHECKING:
 
 
 @click.command(
-    help="Opens up your fastanime config in your preferred editor",
+    help="Manage your config with ease",
     short_help="Edit your config",
 )
 @click.option("--path", "-p", help="Print the config location and exit", is_flag=True)
@@ -20,8 +20,14 @@ if TYPE_CHECKING:
     help="Configure the desktop entry of fastanime",
     is_flag=True,
 )
+@click.option(
+    "--update",
+    "-u",
+    help="Persist all the config options passed to fastanime to your config file",
+    is_flag=True,
+)
 @click.pass_obj
-def config(config: "Config", path, view, desktop_entry):
+def config(user_config: "Config", path, view, desktop_entry, update):
     import sys
 
     from rich import print
@@ -32,7 +38,7 @@ def config(config: "Config", path, view, desktop_entry):
     if path:
         print(USER_CONFIG_PATH)
     elif view:
-        print(config)
+        print(user_config)
     elif desktop_entry:
         import os
         import shutil
@@ -87,7 +93,9 @@ def config(config: "Config", path, view, desktop_entry):
             with open(desktop_entry_path) as f:
                 print(f"Successfully wrote \n{f.read()}")
                 exit_app(0)
+    elif update:
+        with open(USER_CONFIG_PATH, "w") as file:
+            file.write(user_config.__repr__())
+        print("update successfull")
     else:
-        import click
-
         click.edit(filename=USER_CONFIG_PATH)

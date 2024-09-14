@@ -141,7 +141,7 @@ def media_player_controls(
                 headers=selected_server["headers"],
                 subtitles=subtitles,
             )
-        elif config.use_mpv_mod:
+        elif config.use_python_mpv:
             from ..utils.player import player
 
             player.create_player(
@@ -545,7 +545,7 @@ def provider_anime_episode_servers_menu(
             headers=selected_server["headers"],
             subtitles=subtitles,
         )
-    elif config.use_mpv_mod:
+    elif config.use_python_mpv:
         from ..utils.player import player
 
         if start_time == "0" and episode_in_history != current_episode_number:
@@ -1072,13 +1072,13 @@ def media_actions_menu(
         # update internal config
         if player == "syncplay":
             config.sync_play = True
-            config.use_mpv_mod = False
+            config.use_python_mpv = False
         else:
             config.sync_play = False
             if player == "mpv-mod":
-                config.use_mpv_mod = True
+                config.use_python_mpv = True
             else:
-                config.use_mpv_mod = False
+                config.use_python_mpv = False
         media_actions_menu(config, fastanime_runtime_state)
 
     def _view_info(config: "Config", fastanime_runtime_state: "FastAnimeRuntimeState"):

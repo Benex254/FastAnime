@@ -145,7 +145,7 @@ signal.signal(signal.SIGINT, handle_exit)
     type=click.Path(),
 )
 @click.option(
-    "--use-mpv-mod/--use-default-player", help="Whether to use python-mpv", type=bool
+    "--use-python-mpv/--use-default-player", help="Whether to use python-mpv", type=bool
 )
 @click.option("--sync-play", "-sp", help="Use sync play", is_flag=True)
 @click.pass_context
@@ -179,7 +179,7 @@ def run_cli(
     rofi_theme,
     rofi_theme_confirm,
     rofi_theme_input,
-    use_mpv_mod,
+    use_python_mpv,
     sync_play,
 ):
     from .config import Config
@@ -260,10 +260,10 @@ def run_cli(
     ):
         ctx.obj.auto_select = auto_select
     if (
-        ctx.get_parameter_source("use_mpv_mod")
+        ctx.get_parameter_source("use_python_mpv")
         == click.core.ParameterSource.COMMANDLINE
     ):
-        ctx.obj.use_mpv_mod = use_mpv_mod
+        ctx.obj.use_mpv_mod = use_python_mpv
     if downloads_dir:
         ctx.obj.downloads_dir = downloads_dir
     if translation_type:

@@ -5,7 +5,6 @@ import subprocess
 import sys
 from typing import Callable, List
 
-# TODO: will probably scrap art not to useful
 from click import clear
 from rich import print
 

@@ -13,46 +13,6 @@ if TYPE_CHECKING:
 
 
 class Config(object):
-    """class that handles and manages configuration and user data throughout the clis lifespan
-
-    Attributes:
-        anime_list: [TODO:attribute]
-        watch_history: [TODO:attribute]
-        fastanime_anilist_app_login_url: [TODO:attribute]
-        anime_provider: [TODO:attribute]
-        user_data: [TODO:attribute]
-        configparser: [TODO:attribute]
-        downloads_dir: [TODO:attribute]
-        provider: [TODO:attribute]
-        use_fzf: [TODO:attribute]
-        use_rofi: [TODO:attribute]
-        skip: [TODO:attribute]
-        icons: [TODO:attribute]
-        preview: [TODO:attribute]
-        translation_type: [TODO:attribute]
-        sort_by: [TODO:attribute]
-        continue_from_history: [TODO:attribute]
-        auto_next: [TODO:attribute]
-        auto_select: [TODO:attribute]
-        use_mpv_mod: [TODO:attribute]
-        quality: [TODO:attribute]
-        notification_duration: [TODO:attribute]
-        error: [TODO:attribute]
-        server: [TODO:attribute]
-        format: [TODO:attribute]
-        force_window: [TODO:attribute]
-        preferred_language: [TODO:attribute]
-        rofi_theme: [TODO:attribute]
-        rofi_theme: [TODO:attribute]
-        rofi_theme_input: [TODO:attribute]
-        rofi_theme_input: [TODO:attribute]
-        rofi_theme_confirm: [TODO:attribute]
-        rofi_theme_confirm: [TODO:attribute]
-        watch_history: [TODO:attribute]
-        anime_list: [TODO:attribute]
-        user: [TODO:attribute]
-    """
-
     manga = False
     sync_play = False
     anime_list: list
@@ -62,43 +22,42 @@ class Config(object):
     )
     anime_provider: "AnimeProvider"
     user_data = {"watch_history": {}, "animelist": [], "user": {}}
+    default_options = {
+        "quality": "1080",
+        "auto_next": "False",
+        "auto_select": "True",
+        "sort_by": "search match",
+        "downloads_dir": USER_VIDEOS_DIR,
+        "translation_type": "sub",
+        "server": "top",
+        "continue_from_history": "True",
+        "preferred_history": "local",
+        "use_mpv_mod": "false",
+        "force_window": "immediate",
+        "preferred_language": "english",
+        "use_fzf": "False",
+        "preview": "False",
+        "format": "best[height<=1080]/bestvideo[height<=1080]+bestaudio/best",
+        "provider": "allanime",
+        "error": "3",
+        "icons": "false",
+        "notification_duration": "2",
+        "skip": "false",
+        "use_rofi": "false",
+        "rofi_theme": "",
+        "rofi_theme_input": "",
+        "rofi_theme_confirm": "",
+        "ffmpegthumnailer_seek_time": "-1",
+        "sub_lang": "eng",
+        "normalize_titles": "true",
+    }
 
     def __init__(self) -> None:
         self.initialize_user_data()
         self.load_config()
 
     def load_config(self):
-        self.configparser = ConfigParser(
-            {
-                "quality": "1080",
-                "auto_next": "False",
-                "auto_select": "True",
-                "sort_by": "search match",
-                "downloads_dir": USER_VIDEOS_DIR,
-                "translation_type": "sub",
-                "server": "top",
-                "continue_from_history": "True",
-                "preferred_history": "local",
-                "use_mpv_mod": "false",
-                "force_window": "immediate",
-                "preferred_language": "english",
-                "use_fzf": "False",
-                "preview": "False",
-                "format": "best[height<=1080]/bestvideo[height<=1080]+bestaudio/best",
-                "provider": "allanime",
-                "error": "3",
-                "icons": "false",
-                "notification_duration": "2",
-                "skip": "false",
-                "use_rofi": "false",
-                "rofi_theme": "",
-                "rofi_theme_input": "",
-                "rofi_theme_confirm": "",
-                "ffmpegthumnailer_seek_time": "-1",
-                "sub_lang": "eng",
-                "normalize_titles": "true",
-            }
-        )
+        self.configparser = ConfigParser(self.default_options)
         self.configparser.add_section("stream")
         self.configparser.add_section("general")
         self.configparser.add_section("anilist")
@@ -238,7 +197,7 @@ class Config(object):
         return self.configparser.getboolean("stream", "continue_from_history")
 
     def get_use_mpv_mod(self):
-        return self.configparser.getboolean("stream", "use_mpv_mod")
+        return self.configparser.getboolean("stream", "use_python_mpv")
 
     def get_notification_duration(self):
         return self.configparser.getint("general", "notification_duration")
@@ -282,94 +241,185 @@ class Config(object):
 #    ██║░░░░░██║░░██║██████╔╝░░░██║░░░██║░░██║██║░╚███║██║██║░╚═╝░██║███████╗  ╚█████╔╝╚█████╔╝██║░╚███║██║░░░░░██║╚██████╔╝
 #    ╚═╝░░░░░╚═╝░░╚═╝╚═════╝░░░░╚═╝░░░╚═╝░░╚═╝╚═╝░░╚══╝╚═╝╚═╝░░░░░╚═╝╚══════╝  ░╚════╝░░╚════╝░╚═╝░░╚══╝╚═╝░░░░░╚═╝░╚═════╝░
 #
-[stream]
-# Auto continue from watch history
-continue_from_history = {self.continue_from_history}  
-
-# which hostory to use [local/remote]
-preferred_history = {self.preferred_history}
-
-
-# Preferred language for anime (options: dub, sub)
-translation_type = {self.translation_type}
-
-# Default server (options: dropbox, sharepoint, wetransfer.gogoanime, top, wixmp)
-server = {self.server}
-
-# Auto-select next episode
-auto_next = {self.auto_next}
-
-# Auto select the anime provider results with fuzzy find.
-# Note this wont always be correct.But 99% of the time will be.
-auto_select = {self.auto_select}
-
-# whether to skip the opening and ending theme songs
-# NOTE: requires ani-skip to be in path
-skip = {self.skip}
-
-# the maximum delta time in minutes after which the episode should be considered as completed
-# used in the continue from time stamp
-error = {self.error}
-
-# whether to use python-mpv
-# to enable superior control over the player 
-# adding more options to it
-use_mpv_mod = {self.use_python_mpv}
-
-# force mpv window
-# passed directly to mpv so values are same
-force_window = immediate
-
-# the format of downloaded anime and trailer
-# based on yt-dlp format and passed directly to it
-# learn more by looking it up on their site
-# only works for downloaded anime if server=gogoanime
-# since its the only one that offers different formats
-# the others tend not to
-format = {self.format}
-
 [general]
+# whether to show the icons in the tui [True/False]
+# more like emojis
+# by the way if you have any recommendations to which should be used where please
+# don't hesitate to share your opinion
+# cause it's a lot of work to look for the right one for each menu option
+# be sure to also give the replacement emoji
+icons = {self.icons}
 
-# whether to normalize provider titles
+# the quality of the stream [1080,720,480,360]
+# this option is usually only reliable when:
+# provider=animepahe
+# since it provides links that actually point to streams of different qualities
+# while the rest just point to another link that can provide the anime from the same server
+quality = {self.quality}
+
+# whether to normalize provider titles [True/False]
+# basically takes the provider titles and finds the corresponding anilist title then changes the title to that
+# useful for uniformity especially when downloading from different providers
+# this also applies to episode titles
 normalize_titles = {self.normalize_titles}
 
-# can be [allanime,animepahe]
+# can be [allanime, animepahe, aniwatch]
+# allanime is the most realible
+# animepahe provides different links to streams of different quality so a quality can be selected reliably with --quality option
+# aniwatch which is now hianime usually provides subs in different languuages and its servers are generally faster
 provider = {self.provider}
 
-# Display language (options: english, romaji)
+# Display language [english, romaji]
+# this is passed to anilist directly and is used to set the language which the anime titles will be in
+# when using the anilist interface
 preferred_language = {self.preferred_language}
 
 # Download directory
+# where you will find your videos after downloading them with 'fastanime download' command
 downloads_dir = {self.downloads_dir}
 
-# whether to show a preview window when using fzf or rofi
+# whether to show a preview window when using fzf or rofi [True/False]
+# the preview requires you have a commandline image viewer as documented in the README
+# this is only when usinf fzf
+# if you dont care about image previews it doesnt matter
+# though its awesome
+# try it and you will see
 preview = {self.preview} 
 
 # the time to seek when using ffmpegthumbnailer [-1 to 100]
 # -1 means random and is the default
+# ffmpegthumbnailer is used to generate previews and you can select at what time in the video to extract an image
+# random makes things quite exciting cause you never no at what time it will extract the image from
 ffmpegthumbnailer_seek_time = {self.ffmpegthumbnailer_seek_time}
 
-# whether to use fzf as the interface for the anilist command and others.
+# whether to use fzf as the interface for the anilist command and others. [True/False]
 use_fzf = {self.use_fzf} 
 
-# whether to use rofi for the ui
+# whether to use rofi for the ui [True/False]
+# it's more useful if you want to create a desktop entry 
+# which can be setup with 'fastanime config --desktop-entry'
+# though if you want it to be your sole interface even when fastanime is run directly from the terminal
 use_rofi = {self.use_rofi}
 
-# rofi theme to use
+# rofi themes to use 
+# the values of this option is the path to the rofi config files to use
+# i choose to split it into three since it gives the best look and feel
+# you can refer to the rofi demo on github to see for your self
+# by the way i recommend getting the rofi themes from this project;  
 rofi_theme = {self.rofi_theme}
 
 rofi_theme_input = {self.rofi_theme_input}
 
 rofi_theme_confirm = {self.rofi_theme_confirm}
 
-
-# whether to show the icons
-icons = {self.icons}
-
 # the duration in minutes a notification will stay in the screen
 # used by notifier command
 notification_duration = {self.notification_duration}
-        """
+
+# used when the provider gives subs of different languages
+# currently its the case for:
+# aniwatch
+# the values for this option are the short names for countries
+# regex is used to determine what you selected
+sub_lang = {self.sub_lang}
+
+
+[stream]
+# Auto continue from watch history [True/False]
+# this will make fastanime to choose the episode that you last watched to completion
+# and increment it by one
+# and use that to auto select the episode you want to watch
+continue_from_history = {self.continue_from_history}  
+
+# which history to use [local/remote]
+# local history means it will just use the watch history stored locally in your device 
+# the file that stores it is called watch_history.json and is stored next to your config file
+# remote means it ignores the last episode stored locally and instead uses the one in your anilist anime list
+# this config option is useful if you want to overwrite your local history or import history covered from another device or platform
+# since remote history will take precendence over whats available locally
+preferred_history = {self.preferred_history}
+
+# Preferred language for anime [dub/sub]
+translation_type = {self.translation_type}
+
+# what server to use for a particular provider
+# allanime: [dropbox, sharepoint, wetransfer, gogoanime, wixmp]
+# animepahe: [kwik]
+# aniwatch: [HD1, HD2, StreamSB, StreamTape]
+# 'top' can also be used as a value for this option
+# 'top' will cause fastanime to auto select the first server it sees
+# this saves on resources and is faster since not all servers are being fetched
+server = {self.server}
+
+# Auto select next episode [True/False]
+# this makes fastanime increment the current episode number 
+# then after using that value to fetch the next episode instead of prompting
+# this option is useful for binging
+auto_next = {self.auto_next}
+
+# Auto select the anime provider results with fuzzy find. [True/False]
+# Note this won't always be correct
+# this is because the providers sometime use non-standard names
+# that are there own preference rather than the official names
+# But 99% of the time will be accurate
+# if this happens just turn of auto_select in the menus or from the commandline and manually select the correct anime title
+# and then please open an issue at <> highlighting the normalized title and the title given by the provider for the anime you wished to watch  
+# or even better edit this file <> and open a pull request
+auto_select = {self.auto_select}
+
+# whether to skip the opening and ending theme songs [True/False]
+# NOTE: requires ani-skip to be in path
+# for python-mpv users am planning to create this functionality n python without the use of an external script
+# so its disabled for now
+skip = {self.skip}
+
+# the maximum delta time in minutes after which the episode should be considered as completed
+# used in the continue from time stamp
+error = {self.error}
+
+# whether to use python-mpv [True/False]
+# to enable superior control over the player 
+# adding more options to it
+# Enable this one and you will be wonder why you did not discover fastanime sooner 
+# Since you basically don't have to close the player window to go to the next or previous episode, switch servers, change translation type or change to a given episode x
+# so try it if you haven't already
+# if you have any issues setting it up 
+# don't be afraid to ask
+# especially on windows
+# honestly it can be a pain to set it up there
+# personally it took me quite sometime to figure it out
+# this is because of how windows handles shared libraries
+# so just ask when you find yourself stuck
+# or just switch to arch linux
+use_python_mpv = {self.use_python_mpv}
+
+# force mpv window
+# the default 'immediate' just makes mpv to open the window even if the video has not yet loaded
+# done for asthetics
+# passed directly to mpv so values are same
+force_window = immediate
+
+# the format of downloaded anime and trailer
+# based on yt-dlp format and passed directly to it
+# learn more by looking it up on their site
+# only works for downloaded anime if: 
+# provider=allanime, server=gogoanime
+# provider=allanime, server=wixmp
+# provider=aniwatch
+# this is because they provider a m3u8 file that contans multiple quality streams
+format = {self.format}
+
+# NOTE:
+# if you have any trouble setting up your config
+# please don't be afraid to ask in our discord
+# plus if there are any errors, improvements or suggestions please tell us in the discord
+# or help us by contributing
+# we appreciate all the help we can get
+# since we may not always have the time to immediately implement the changes
+#
+# HOPE YOU ENJOY FASTANIME AND BE SURE TO STAR THE PROJECT ON GITHUB
+#
+"""
         return current_config_state
 
     def __str__(self):

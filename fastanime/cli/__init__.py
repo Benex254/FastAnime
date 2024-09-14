@@ -263,7 +263,7 @@ def run_cli(
         ctx.get_parameter_source("use_python_mpv")
         == click.core.ParameterSource.COMMANDLINE
     ):
-        ctx.obj.use_mpv_mod = use_python_mpv
+        ctx.obj.use_python_mpv = use_python_mpv
     if downloads_dir:
         ctx.obj.downloads_dir = downloads_dir
     if translation_type:

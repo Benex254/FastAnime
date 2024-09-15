@@ -719,7 +719,7 @@ preferred_language = english
 
 # Download directory
 # where you will find your videos after downloading them with 'fastanime download' command
-downloads_dir = /home/benxl-85/Videos/FastAnime
+downloads_dir = ~/Videos/FastAnime
 
 # whether to show a preview window when using fzf or rofi [True/False]
 # the preview requires you have a commandline image viewer as documented in the README

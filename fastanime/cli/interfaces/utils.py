@@ -93,7 +93,7 @@ def write_search_results(
     # NOTE: Will probably make this a configuraable option
     HEADER_COLOR = 215, 0, 95
     SEPARATOR_COLOR = 208, 208, 208
-    SEPARATOR_WIDTH = 25
+    SEPARATOR_WIDTH = 30
     # use concurency to download and write as fast as possible
     with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:
         future_to_task = {}
@@ -342,7 +342,11 @@ def get_fzf_anime_preview(
         preview = """
             %s
             title={}
-            if [ -s "%s\\\\\\$title" ]; then echo image preview for windows is still being fixed hope you understand
+            dim=${FZF_PREVIEW_COLUMNS}x${FZF_PREVIEW_LINES}
+            if [ -s "%s\\\\\\$title" ]; then 
+            if command -v chafa >/dev/null;then
+            chafa -f kitty -s $dim "%s\\\\\\$title"
+            fi
             else echo Loading...
             fi
             if [ -s "%s\\\\\\$title" ]; then cat "%s\\\\\\$title"
@@ -350,6 +354,7 @@ def get_fzf_anime_preview(
             fi
         """ % (
             fzf_preview,
+            IMAGES_CACHE_DIR.replace("\\","\\\\\\"),
             IMAGES_CACHE_DIR.replace("\\","\\\\\\"),
             ANIME_INFO_CACHE_DIR.replace("\\","\\\\\\"),
             ANIME_INFO_CACHE_DIR.replace("\\","\\\\\\"),

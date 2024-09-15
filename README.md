@@ -673,76 +673,196 @@ The app includes sensible defaults but can be customized extensively. Configurat
 >
 
 
+The default config:
+
 ```ini
+#
+#    ███████╗░█████╗░░██████╗████████╗░█████╗░███╗░░██╗██╗███╗░░░███╗███████╗  ░█████╗░░█████╗░███╗░░██╗███████╗██╗░██████╗░
+#    ██╔════╝██╔══██╗██╔════╝╚══██╔══╝██╔══██╗████╗░██║██║████╗░████║██╔════╝  ██╔══██╗██╔══██╗████╗░██║██╔════╝██║██╔════╝░
+#    █████╗░░███████║╚█████╗░░░░██║░░░███████║██╔██╗██║██║██╔████╔██║█████╗░░  ██║░░╚═╝██║░░██║██╔██╗██║█████╗░░██║██║░░██╗░
+#    ██╔══╝░░██╔══██║░╚═══██╗░░░██║░░░██╔══██║██║╚████║██║██║╚██╔╝██║██╔══╝░░  ██║░░██╗██║░░██║██║╚████║██╔══╝░░██║██║░░╚██╗
+#    ██║░░░░░██║░░██║██████╔╝░░░██║░░░██║░░██║██║░╚███║██║██║░╚═╝░██║███████╗  ╚█████╔╝╚█████╔╝██║░╚███║██║░░░░░██║╚██████╔╝
+#    ╚═╝░░░░░╚═╝░░╚═╝╚═════╝░░░░╚═╝░░░╚═╝░░╚═╝╚═╝░░╚══╝╚═╝╚═╝░░░░░╚═╝╚══════╝  ░╚════╝░░╚════╝░╚═╝░░╚══╝╚═╝░░░░░╚═╝░╚═════╝░
+#
+[general]
+# whether to show the icons in the tui [True/False]
+# more like emojis
+# by the way if you have any recommendations to which should be used where please
+# don't hesitate to share your opinion
+# cause it's a lot of work to look for the right one for each menu option
+# be sure to also give the replacement emoji
+icons = False
+
+# the quality of the stream [1080,720,480,360]
+# this option is usually only reliable when:
+# provider=animepahe
+# since it provides links that actually point to streams of different qualities
+# while the rest just point to another link that can provide the anime from the same server
+quality = 1080
+
+# whether to normalize provider titles [True/False]
+# basically takes the provider titles and finds the corresponding anilist title then changes the title to that
+# useful for uniformity especially when downloading from different providers
+# this also applies to episode titles
+normalize_titles = True
+
+# can be [allanime, animepahe, aniwatch]
+# allanime is the most realible
+# animepahe provides different links to streams of different quality so a quality can be selected reliably with --quality option
+# aniwatch which is now hianime usually provides subs in different languuages and its servers are generally faster
+provider = allanime
+
+# Display language [english, romaji]
+# this is passed to anilist directly and is used to set the language which the anime titles will be in
+# when using the anilist interface
+preferred_language = english
+
+# Download directory
+# where you will find your videos after downloading them with 'fastanime download' command
+downloads_dir = /home/benxl-85/Videos/FastAnime
+
+# whether to show a preview window when using fzf or rofi [True/False]
+# the preview requires you have a commandline image viewer as documented in the README
+# this is only when usinf fzf
+# if you dont care about image previews it doesnt matter
+# though its awesome
+# try it and you will see
+preview = False 
+
+# the time to seek when using ffmpegthumbnailer [-1 to 100]
+# -1 means random and is the default
+# ffmpegthumbnailer is used to generate previews and you can select at what time in the video to extract an image
+# random makes things quite exciting cause you never no at what time it will extract the image from
+ffmpegthumbnailer_seek_time = -1
+
+# whether to use fzf as the interface for the anilist command and others. [True/False]
+use_fzf = False 
+
+# whether to use rofi for the ui [True/False]
+# it's more useful if you want to create a desktop entry 
+# which can be setup with 'fastanime config --desktop-entry'
+# though if you want it to be your sole interface even when fastanime is run directly from the terminal
+use_rofi = False
+
+# rofi themes to use 
+# the values of this option is the path to the rofi config files to use
+# i choose to split it into three since it gives the best look and feel
+# you can refer to the rofi demo on github to see for your self
+# by the way i recommend getting the rofi themes from this project;  
+rofi_theme = 
+
+rofi_theme_input = 
+
+rofi_theme_confirm = 
+
+# the duration in minutes a notification will stay in the screen
+# used by notifier command
+notification_duration = 2
+
+# used when the provider gives subs of different languages
+# currently its the case for:
+# aniwatch
+# the values for this option are the short names for countries
+# regex is used to determine what you selected
+sub_lang = eng
+
+
 [stream]
-continue_from_history = True  # Auto continue from watch history
+# Auto continue from watch history [True/False]
+# this will make fastanime to choose the episode that you last watched to completion
+# and increment it by one
+# and use that to auto select the episode you want to watch
+continue_from_history = True  
 
 # which history to use [local/remote]
+# local history means it will just use the watch history stored locally in your device 
+# the file that stores it is called watch_history.json and is stored next to your config file
+# remote means it ignores the last episode stored locally and instead uses the one in your anilist anime list
+# this config option is useful if you want to overwrite your local history or import history covered from another device or platform
+# since remote history will take precendence over whats available locally
 preferred_history = local
 
-# force mpv window
-# passed directly to mpv so values are same
-force_window = immediate
+# Preferred language for anime [dub/sub]
+translation_type = sub
 
-translation_type = sub  # Preferred language for anime (options: dub, sub)
+# what server to use for a particular provider
+# allanime: [dropbox, sharepoint, wetransfer, gogoanime, wixmp]
+# animepahe: [kwik]
+# aniwatch: [HD1, HD2, StreamSB, StreamTape]
+# 'top' can also be used as a value for this option
+# 'top' will cause fastanime to auto select the first server it sees
+# this saves on resources and is faster since not all servers are being fetched
+server = top
 
-server = top  # Default server (options: dropbox, sharepoint, wetransfer.gogoanime, top, wixmp)
+# Auto select next episode [True/False]
+# this makes fastanime increment the current episode number 
+# then after using that value to fetch the next episode instead of prompting
+# this option is useful for binging
+auto_next = False
 
-auto_next = False  # Auto-select next episode
+# Auto select the anime provider results with fuzzy find. [True/False]
+# Note this won't always be correct
+# this is because the providers sometime use non-standard names
+# that are there own preference rather than the official names
+# But 99% of the time will be accurate
+# if this happens just turn of auto_select in the menus or from the commandline and manually select the correct anime title
+# and then please open an issue at <> highlighting the normalized title and the title given by the provider for the anime you wished to watch  
+# or even better edit this file <> and open a pull request
+auto_select = True
 
-# Auto select the anime provider results with fuzzy find.
-# Note this wont always be correct.But 99% of the time will be.
-auto_select=True
-
-# whether to skip the opening and ending theme songs
-# note requires ani-skip to be in path
-skip=false
+# whether to skip the opening and ending theme songs [True/False]
+# NOTE: requires ani-skip to be in path
+# for python-mpv users am planning to create this functionality n python without the use of an external script
+# so its disabled for now
+skip = False
 
 # the maximum delta time in minutes after which the episode should be considered as completed
 # used in the continue from time stamp
-error=3
+error = 3
 
-# whether to use python mpv for enhanced experience
-use_mpv_mod=False
+# whether to use python-mpv [True/False]
+# to enable superior control over the player 
+# adding more options to it
+# Enable this one and you will be wonder why you did not discover fastanime sooner 
+# Since you basically don't have to close the player window to go to the next or previous episode, switch servers, change translation type or 
+change to a given episode x
+# so try it if you haven't already
+# if you have any issues setting it up 
+# don't be afraid to ask
+# especially on windows
+# honestly it can be a pain to set it up there
+# personally it took me quite sometime to figure it out
+# this is because of how windows handles shared libraries
+# so just ask when you find yourself stuck
+# or just switch to arch linux
+use_python_mpv = False
+
+# force mpv window
+# the default 'immediate' just makes mpv to open the window even if the video has not yet loaded
+# done for asthetics
+# passed directly to mpv so values are same
+force_window = immediate
 
 # the format of downloaded anime and trailer
 # based on yt-dlp format and passed directly to it
 # learn more by looking it up on their site
-# only works for downloaded anime if server=gogoanime
-# since its the only one that offers different formats
-# the others tend not to
-format=best[height<=1080]/bestvideo[height<=1080]+bestaudio/best # default
+# only works for downloaded anime if: 
+# provider=allanime, server=gogoanime
+# provider=allanime, server=wixmp
+# provider=aniwatch
+# this is because they provider a m3u8 file that contans multiple quality streams
+format = best[height<=1080]/bestvideo[height<=1080]+bestaudio/best
 
-[general]
-# can be [allanime,animepahe]
-provider = allanime
-
-preferred_language = romaji  # Display language (options: english, romaji)
-
-normalize_titles = true
-
-downloads_dir = <Default-videos-dir>/FastAnime  # Download directory
-
-preview=false # whether to show a preview window when using fzf or rofi
-
-use_fzf=False # whether to use fzf as the interface for the anilist command and others.
-
-use_rofi=false # whether to use rofi for the ui
-
-rofi_theme=<path-to-rofi-theme-file>
-
-rofi_theme_input=<path-to-rofi-theme-file>
-
-rofi_theme_confirm=<path-to-rofi-theme-file>
-
-
-# whether to show the icons
-icons=false
-
-# the duration in minutes a notification will stay in the screen
-# used by notifier command
-notification_duration=2
-
+# NOTE:
+# if you have any trouble setting up your config
+# please don't be afraid to ask in our discord
+# plus if there are any errors, improvements or suggestions please tell us in the discord
+# or help us by contributing
+# we appreciate all the help we can get
+# since we may not always have the time to immediately implement the changes
+#
+# HOPE YOU ENJOY FASTANIME AND BE SURE TO STAR THE PROJECT ON GITHUB
+#
 ```
 
 ## Contributing

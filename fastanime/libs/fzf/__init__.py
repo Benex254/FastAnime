@@ -123,7 +123,9 @@ class FZF:
             [self.FZF_EXECUTABLE, *commands],
             input=fzf_input,
             stdout=subprocess.PIPE,
+            universal_newlines=True,
             text=True,
+            encoding="utf-8"
         )
         if not result or result.returncode != 0 or not result.stdout:
             print("sth went wrong:confused:")

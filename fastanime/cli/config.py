@@ -32,7 +32,7 @@ class Config(object):
         "server": "top",
         "continue_from_history": "True",
         "preferred_history": "local",
-        "use_mpv_mod": "false",
+        "use_python_mpv": "false",
         "force_window": "immediate",
         "preferred_language": "english",
         "use_fzf": "False",

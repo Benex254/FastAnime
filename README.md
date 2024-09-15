@@ -664,6 +664,15 @@ The default interface uses inquirerPy which is customizable. Read here to findou
 
 The app includes sensible defaults but can be customized extensively. Configuration is stored in `.ini` format at `~/.config/FastAnime/config.ini` on arch linux; for the other operating systems you can check by running `fastanime config --path`.
 
+
+> [!TIP]
+> You can now use the option `--update` to update your config file from the command-line
+> For Example:
+> `fastanime --icons --fzf --preview config --update` 
+> the above will set icons to true, use_fzf to true and preview to true in your config file
+>
+
+
 ```ini
 [stream]
 continue_from_history = True  # Auto continue from watch history
@@ -734,8 +743,6 @@ icons=false
 # used by notifier command
 notification_duration=2
 
-[anilist]
-# Not implemented yet
 ```
 
 ## Contributing

@@ -25,7 +25,7 @@ else:
 # ----- user configs and data -----
 
 S_PLATFORM = sys.platform
-APP_DATA_DIR = click.get_app_dir(APP_NAME)
+APP_DATA_DIR = click.get_app_dir(APP_NAME,roaming=False)
 if S_PLATFORM == "win32":
     # app data
     # app_data_dir_base = os.getenv("LOCALAPPDATA")

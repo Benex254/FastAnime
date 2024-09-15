@@ -93,7 +93,7 @@ def write_search_results(
     # NOTE: Will probably make this a configuraable option
     HEADER_COLOR = 215, 0, 95
     SEPARATOR_COLOR = 208, 208, 208
-    SEPARATOR_WIDTH = 45
+    SEPARATOR_WIDTH = 25
     # use concurency to download and write as fast as possible
     with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:
         future_to_task = {}
@@ -329,6 +329,7 @@ def get_fzf_anime_preview(
         THe fzf preview script to use
     """
     # ensure images and info exists
+    from ...constants import S_PLATFORM
     background_worker = Thread(
         target=write_search_results, args=(anilist_results, titles)
     )
@@ -337,21 +338,38 @@ def get_fzf_anime_preview(
 
     # the preview script is in bash so making sure fzf doesnt use any other shell lang to process the preview script
     os.environ["SHELL"] = shutil.which("bash") or "bash"
-    preview = """
-        %s
-        if [ -s %s/{} ]; then fzf-preview %s/{}
-        else echo Loading...
-        fi
-        if [ -s %s/{} ]; then cat %s/{}
-        else echo Loading...
-        fi
-    """ % (
-        fzf_preview,
-        IMAGES_CACHE_DIR,
-        IMAGES_CACHE_DIR,
-        ANIME_INFO_CACHE_DIR,
-        ANIME_INFO_CACHE_DIR,
-    )
+    if S_PLATFORM == "win32":
+        preview = """
+            %s
+            title={}
+            if [ -s "%s\\\\\\$title" ]; then echo image preview for windows is still being fixed hope you understand
+            else echo Loading...
+            fi
+            if [ -s "%s\\\\\\$title" ]; then cat "%s\\\\\\$title"
+            else echo Loading...
+            fi
+        """ % (
+            fzf_preview,
+            IMAGES_CACHE_DIR.replace("\\","\\\\\\"),
+            ANIME_INFO_CACHE_DIR.replace("\\","\\\\\\"),
+            ANIME_INFO_CACHE_DIR.replace("\\","\\\\\\"),
+        )
+    else:
+        preview = """
+            %s
+            if [ -s %s/{} ]; then fzf-preview %s/{}
+            else echo Loading...
+            fi
+            if [ -s %s/{} ]; then cat %s/{}
+            else echo Loading...
+            fi
+        """ % (
+            fzf_preview,
+            IMAGES_CACHE_DIR,
+            IMAGES_CACHE_DIR,
+            ANIME_INFO_CACHE_DIR,
+            ANIME_INFO_CACHE_DIR,
+        )
     if wait:
         background_worker.join()
     return preview

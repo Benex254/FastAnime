@@ -64,7 +64,7 @@ class Config(object):
 
         # --- set config values from file or using defaults ---
         if os.path.exists(USER_CONFIG_PATH):
-            self.configparser.read(USER_CONFIG_PATH)
+            self.configparser.read(USER_CONFIG_PATH,encoding="utf-8")
 
         self.downloads_dir = self.get_downloads_dir()
         self.sub_lang = self.get_sub_lang()
@@ -103,7 +103,7 @@ class Config(object):
 
         os.environ["CURRENT_FASTANIME_PROVIDER"] = self.provider
         if not os.path.exists(USER_CONFIG_PATH):
-            with open(USER_CONFIG_PATH, "w") as config:
+            with open(USER_CONFIG_PATH, "w",encoding="utf-8") as config:
                 config.write(self.__repr__())
 
     def update_user(self, user):

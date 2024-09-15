@@ -94,8 +94,8 @@ def config(user_config: "Config", path, view, desktop_entry, update):
                 print(f"Successfully wrote \n{f.read()}")
                 exit_app(0)
     elif update:
-        with open(USER_CONFIG_PATH, "w") as file:
-            file.write(user_config.__repr__())
+        with open(USER_CONFIG_PATH, "w",encoding="utf-8") as file:
+            file.write(user_config.__str__())
         print("update successfull")
     else:
         click.edit(filename=USER_CONFIG_PATH)

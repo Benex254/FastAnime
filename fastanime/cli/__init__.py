@@ -268,10 +268,11 @@ def run_cli(
         ctx.obj.downloads_dir = downloads_dir
     if translation_type:
         ctx.obj.translation_type = translation_type
-    if fzf:
-        ctx.obj.use_fzf = True
     if default:
         ctx.obj.use_fzf = False
+        ctx.obj.use_rofi = False
+    if fzf:
+        ctx.obj.use_fzf = True
     if preview:
         ctx.obj.preview = True
     if no_preview:

@@ -68,7 +68,7 @@ Heavily inspired by [animdl](https://github.com/justfoolingaround/animdl), [jerr
 
 The app can run wherever python can run. So all you need to have is python installed on your device.
 On android you can use [termux](https://github.com/termux/termux-app).
-If you have any difficulty consult for help on the [discord channel](https://discord.gg/HRjySFjQ)
+If you have any difficulty consult for help on the [discord channel](https://discord.gg/HBEmAwvbHV)
 
 ### Installation using your favourite package manager
 
@@ -875,10 +875,10 @@ If you find an anime title that does not correspond with a provider or is just w
 
 ## Receiving Support
 
-For inquiries, join our [Discord Server](https://discord.gg/C4rhMA4mmK).
+For inquiries, join our [Discord Server](https://discord.gg/HBEmAwvbHV).
 
 <p align="center">
-<a href="https://discord.gg/C4rhMA4mmK">
+<a href="https://discord.gg/HBEmAwvbHV">
 <img src="https://invidget.switchblade.xyz/C4rhMA4mmK">
 </a>
 </p>

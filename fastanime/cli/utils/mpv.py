@@ -50,75 +50,126 @@ def stream_video(MPV, url, mpv_args, custom_args):
 
 def run_mpv(
     link: str,
-    title: str | None = "",
+    title: str = "",
     start_time: str = "0",
     ytdl_format="",
     custom_args=[],
     headers={},
     subtitles=[],
+    player="",
 ):
-    # Determine if mpv is available
-    MPV = shutil.which("mpv")
-
     # If title is None, set a default value
 
     # Regex to check if the link is a YouTube URL
     youtube_regex = r"(https?://)?(www\.)?(youtube|youtu|youtube-nocookie)\.(com|be)/.+"
 
-    if not MPV and not S_PLATFORM == "win32":
-        # Determine if the link is a YouTube URL
-        if re.match(youtube_regex, link):
-            # Android specific commands to launch mpv with a YouTube URL
-            args = [
-                "nohup",
-                "am",
-                "start",
-                "--user",
-                "0",
-                "-a",
-                "android.intent.action.VIEW",
-                "-d",
-                link,
-                "-n",
-                "com.google.android.youtube/.UrlActivity",
-            ]
+    if player == "vlc":
+        VLC = shutil.which("vlc")
+        if not VLC and not S_PLATFORM == "win32":
+            # Determine if the link is a YouTube URL
+            if re.match(youtube_regex, link):
+                # Android specific commands to launch mpv with a YouTube URL
+                args = [
+                    "nohup",
+                    "am",
+                    "start",
+                    "--user",
+                    "0",
+                    "-a",
+                    "android.intent.action.VIEW",
+                    "-d",
+                    link,
+                    "-n",
+                    "com.google.android.youtube/.UrlActivity",
+                ]
+                return "0", "0"
+            else:
+                args = [
+                    "nohup",
+                    "am",
+                    "start",
+                    "--user",
+                    "0",
+                    "-a",
+                    "android.intent.action.VIEW" "-d",
+                    link,
+                    "-n",
+                    "org.videolan.vlc/org.videolan.vlc.gui.video.VideoPlayerActivity",
+                    "-e",
+                    "title",
+                    title,
+                ]
+
+            subprocess.run(args)
             return "0", "0"
         else:
-            # Android specific commands to launch mpv with a regular URL
-            args = [
-                "nohup",
-                "am",
-                "start",
-                "--user",
-                "0",
-                "-a",
-                "android.intent.action.VIEW",
-                "-d",
-                link,
-                "-n",
-                "is.xyz.mpv/.MPVActivity",
-            ]
-
-        subprocess.run(args)
-        return "0", "0"
+            args = ["vlc", link]
+            for subtitle in subtitles:
+                args.append("--sub-file")
+                args.append(subtitle["url"])
+                break
+            if title:
+                args.append("--video-title")
+                args.append(title)
+            subprocess.run(args)
+            return "0", "0"
     else:
-        # General mpv command with custom arguments
-        mpv_args = []
-        if headers:
-            mpv_headers = "--http-header-fields="
-            for header_name, header_value in headers.items():
-                mpv_headers += f"{header_name}:{header_value},"
-            mpv_args.append(mpv_headers)
-        for subtitle in subtitles:
-            mpv_args.append(f"--sub-file={subtitle['url']}")
-        if start_time != "0":
-            mpv_args.append(f"--start={start_time}")
-        if title:
-            mpv_args.append(f"--title={title}")
-        if ytdl_format:
-            mpv_args.append(f"--ytdl-format={ytdl_format}")
-        stop_time, total_time = stream_video(MPV, link, mpv_args, custom_args)
-        return stop_time, total_time
+        # Determine if mpv is available
+        MPV = shutil.which("mpv")
+        if not MPV and not S_PLATFORM == "win32":
+            # Determine if the link is a YouTube URL
+            if re.match(youtube_regex, link):
+                # Android specific commands to launch mpv with a YouTube URL
+                args = [
+                    "nohup",
+                    "am",
+                    "start",
+                    "--user",
+                    "0",
+                    "-a",
+                    "android.intent.action.VIEW",
+                    "-d",
+                    link,
+                    "-n",
+                    "com.google.android.youtube/.UrlActivity",
+                ]
+                return "0", "0"
+            else:
+                # Android specific commands to launch mpv with a regular URL
+                args = [
+                    "nohup",
+                    "am",
+                    "start",
+                    "--user",
+                    "0",
+                    "-a",
+                    "android.intent.action.VIEW",
+                    "-d",
+                    link,
+                    "-n",
+                    "is.xyz.mpv/.MPVActivity",
+                ]
+
+            subprocess.run(args)
+            return "0", "0"
+        else:
+            # General mpv command with custom arguments
+            mpv_args = []
+            if headers:
+                mpv_headers = "--http-header-fields="
+                for header_name, header_value in headers.items():
+                    mpv_headers += f"{header_name}:{header_value},"
+                mpv_args.append(mpv_headers)
+            for subtitle in subtitles:
+                mpv_args.append(f"--sub-file={subtitle['url']}")
+            if start_time != "0":
+                mpv_args.append(f"--start={start_time}")
+            if title:
+                mpv_args.append(f"--title={title}")
+            if ytdl_format:
+                mpv_args.append(f"--ytdl-format={ytdl_format}")
+            stop_time, total_time = stream_video(MPV, link, mpv_args, custom_args)
+            return stop_time, total_time
 
 
 # Example usage

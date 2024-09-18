@@ -279,7 +279,10 @@ def downloads(
 
                 SyncPlayer(episode_path)
             else:
-                run_mpv(episode_path)
+                run_mpv(
+                    episode_path,
+                    player=config.player,
+                )
             stream_episode(anime_playlist_path)
 
     def stream_anime(title=None):
@@ -321,7 +324,10 @@ def downloads(
 
                 SyncPlayer(playlist)
             else:
-                run_mpv(playlist)
+                run_mpv(
+                    playlist,
+                    player=config.player,
+                )
         stream_anime()
 
     stream_anime(title)

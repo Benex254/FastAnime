@@ -18,7 +18,7 @@ fzf-preview() {
 	fi
 
 	# 1. Use kitty icat on kitty terminal
-	if [[ $KITTY_WINDOW_ID ]] && false; then
+	if [[ $KITTY_WINDOW_ID ]]; then
 		# 1. 'memory' is the fastest option but if you want the image to be scrollable,
 		#    you have to use 'stream'.
 		#

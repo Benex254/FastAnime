@@ -164,6 +164,7 @@ def media_player_controls(
                 custom_args=custom_args,
                 headers=selected_server["headers"],
                 subtitles=subtitles,
+                player=config.player,
             )
 
         # either update the watch history to the next episode or current depending on progress
@@ -574,6 +575,7 @@ def provider_anime_episode_servers_menu(
             custom_args=custom_args,
             headers=selected_server["headers"],
             subtitles=subtitles,
+            player=config.player,
         )
     print("Finished at: ", stop_time)
 
@@ -893,6 +895,7 @@ def media_actions_menu(
             run_mpv(
                 trailer_url,
                 ytdl_format=config.format,
+                player=config.player,
             )
             media_actions_menu(config, fastanime_runtime_state)
         else:

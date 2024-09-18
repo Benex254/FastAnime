@@ -50,6 +50,7 @@ class Config(object):
         "ffmpegthumnailer_seek_time": "-1",
         "sub_lang": "eng",
         "normalize_titles": "true",
+        "player": "mpv",
     }
 
     def __init__(self) -> None:
@@ -64,7 +65,7 @@ class Config(object):
 
         # --- set config values from file or using defaults ---
         if os.path.exists(USER_CONFIG_PATH):
-            self.configparser.read(USER_CONFIG_PATH,encoding="utf-8")
+            self.configparser.read(USER_CONFIG_PATH, encoding="utf-8")
 
         self.downloads_dir = self.get_downloads_dir()
         self.sub_lang = self.get_sub_lang()
@@ -86,6 +87,7 @@ class Config(object):
         self.error = self.get_error()
         self.server = self.get_server()
         self.format = self.get_format()
+        self.player = self.get_player()
         self.force_window = self.get_force_window()
         self.preferred_language = self.get_preferred_language()
         self.preferred_history = self.get_preferred_history()
@@ -103,7 +105,7 @@ class Config(object):
 
         os.environ["CURRENT_FASTANIME_PROVIDER"] = self.provider
         if not os.path.exists(USER_CONFIG_PATH):
-            with open(USER_CONFIG_PATH, "w",encoding="utf-8") as config:
+            with open(USER_CONFIG_PATH, "w", encoding="utf-8") as config:
                 config.write(self.__repr__())
 
     def update_user(self, user):
@@ -222,6 +224,9 @@ class Config(object):
 
     def get_format(self):
         return self.configparser.get("stream", "format")
+
+    def get_player(self):
+        return self.configparser.get("stream", "player")
 
     def get_sort_by(self):
         return self.configparser.get("anilist", "sort_by")
@@ -408,6 +413,11 @@ force_window = immediate
 # provider=aniwatch
 # this is because they provider a m3u8 file that contans multiple quality streams
 format = {self.format}
+
+# set the player to use for streaming [mpv/vlc]
+# while this option exists i will still recommend that you use mpv
+# since you will miss out on some features if you use the others
+player = {self.player}
 
 # NOTE:
 # if you have any trouble setting up your config

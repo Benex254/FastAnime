@@ -148,6 +148,12 @@ signal.signal(signal.SIGINT, handle_exit)
     "--use-python-mpv/--use-default-player", help="Whether to use python-mpv", type=bool
 )
 @click.option("--sync-play", "-sp", help="Use sync play", is_flag=True)
+@click.option(
+    "--player",
+    "-P",
+    help="the player to use when streaming",
+    type=click.Choice(["mpv", "vlc"]),
+)
 @click.pass_context
 def run_cli(
     ctx: click.Context,
@@ -181,6 +187,7 @@ def run_cli(
     rofi_theme_input,
     use_python_mpv,
     sync_play,
+    player,
 ):
     from .config import Config
 
@@ -235,6 +242,8 @@ def run_cli(
         ctx.obj.sub_lang = sub_lang
     if ctx.get_parameter_source("continue_") == click.core.ParameterSource.COMMANDLINE:
         ctx.obj.continue_from_history = continue_
+    if ctx.get_parameter_source("player") == click.core.ParameterSource.COMMANDLINE:
+        ctx.obj.player = player
     if ctx.get_parameter_source("skip") == click.core.ParameterSource.COMMANDLINE:
         ctx.obj.skip = skip
     if (

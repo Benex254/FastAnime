@@ -352,6 +352,7 @@ def search(config: "Config", anime_titles: str, episode_range: str):
                             episode_title,
                             headers=stream_headers,
                             subtitles=subtitles,
+                            player=config.player,
                         )
                 except IndexError as e:
                     print(e)

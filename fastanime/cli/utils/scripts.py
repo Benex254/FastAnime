@@ -1,43 +1,13 @@
-# this script was written by the fzf devs as an example on how to preview images
-# its only here for convinience
 fzf_preview = r"""
 #
-# The purpose of this script is to demonstrate how to preview a file or an
-# image in the preview window of fzf.
+# Adapted from the preview script in the fzf repo
 #
 # Dependencies:
-# - https://github.com/sharkdp/bat
 # - https://github.com/hpjansson/chafa
 # - https://iterm2.com/utilities/imgcat
+#
 fzf-preview() {
-	if [[ $# -ne 1 ]]; then
-		>&2 echo "usage: $0 FILENAME"
-		exit 1
-	fi
-
 	file=${1/#\~\//$HOME/}
-	type=$(file --dereference --mime -- "$file")
-
-	if [[ ! $type =~ image/ ]]; then
-		if [[ $type =~ =binary ]]; then
-			file "$1"
-			exit
-		fi
-
-		# Sometimes bat is installed as batcat.
-		if command -v batcat >/dev/null; then
-			batname="batcat"
-		elif command -v bat >/dev/null; then
-			batname="bat"
-		else
-			cat "$1"
-			exit
-		fi
-
-		${batname} --style="${BAT_STYLE:-numbers}" --color=always --pager=never -- "$file"
-		exit
-	fi
-
 	dim=${FZF_PREVIEW_COLUMNS}x${FZF_PREVIEW_LINES}
 	if [[ $dim = x ]]; then
 		dim=$(stty size </dev/tty | awk '{print $2 "x" $1}')
@@ -48,7 +18,7 @@ fzf-preview() {
 	fi
 
 	# 1. Use kitty icat on kitty terminal
-	if [[ $KITTY_WINDOW_ID ]]; then
+	if [[ $KITTY_WINDOW_ID ]] && false; then
 		# 1. 'memory' is the fastest option but if you want the image to be scrollable,
 		#    you have to use 'stream'.
 		#
@@ -57,22 +27,27 @@ fzf-preview() {
 		#    So we remove the last line and append the reset code to its previous line.
 		kitty icat --clear --transfer-mode=memory --unicode-placeholder --stdin=no --place="$dim@0x0" "$file" | sed '$d' | sed $'$s/$/\e[m/'
 
-		# 2. Use chafa with Sixel output
+    # 2. Use chafa with Sixel output
 	elif command -v chafa >/dev/null; then
-		chafa -f sixel -s "$dim" "$file"
+        case "$(uname -a)" in
+            # termux does not support sixel graphics
+            # and produces weird output
+            *ndroid*) chafa -s "$dim" "$file";;
+            *) chafa -f sixel -s "$dim" "$file";;
+        esac
 		# Add a new line character so that fzf can display multiple images in the preview window
 		echo
 
-		# 3. If chafa is not found but imgcat is available, use it on iTerm2
+    # 3. If chafa is not found but imgcat is available, use it on iTerm2
 	elif command -v imgcat >/dev/null; then
 		# NOTE: We should use https://iterm2.com/utilities/it2check to check if the
 		# user is running iTerm2. But for the sake of simplicity, we just assume
 		# that's the case here.
 		imgcat -W "${dim%%x*}" -H "${dim##*x}" "$file"
 
-		# 4. Cannot find any suitable method to preview the image
+    # 4. Cannot find any suitable method to preview the image
 	else
-		file "$file"
+        echo install chafa or imgcat or install kitty terminal so you can enjoy image previews
 	fi
 }
 """

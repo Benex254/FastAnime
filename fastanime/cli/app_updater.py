@@ -112,6 +112,7 @@ def update_app():
                 "pip",
                 "install",
                 APP_NAME,
+                "-U",
                 "--user",
                 "--no-warn-script-location",
             ]

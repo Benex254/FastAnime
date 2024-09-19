@@ -9,6 +9,25 @@ if TYPE_CHECKING:
 @click.command(
     help="Manage your config with ease",
     short_help="Edit your config",
+    epilog="""
+\b
+\b\bExamples:
+  # Edit your config in your default editor 
+  # NB: If it opens vim or vi exit with `:q`
+  fastanime config
+\b
+  # get the path of the config file
+  fastanime config --path
+\b
+  # print desktop entry info
+  fastanime config --desktop-entry
+\b
+  # update your config without opening an editor
+  fastanime --icons --fzf --preview config --update
+\b 
+  # view the current contents of your config
+  fastanime config --view
+""",
 )
 @click.option("--path", "-p", help="Print the config location and exit", is_flag=True)
 @click.option(
@@ -94,7 +113,7 @@ def config(user_config: "Config", path, view, desktop_entry, update):
                 print(f"Successfully wrote \n{f.read()}")
                 exit_app(0)
     elif update:
-        with open(USER_CONFIG_PATH, "w",encoding="utf-8") as file:
+        with open(USER_CONFIG_PATH, "w", encoding="utf-8") as file:
             file.write(user_config.__str__())
         print("update successfull")
     else:

@@ -38,6 +38,29 @@ signal.signal(signal.SIGINT, handle_exit)
     cls=LazyGroup,
     help="A command line application for streaming anime that provides a complete and featureful interface",
     short_help="Stream Anime",
+    epilog="""
+\b
+\b\bExamples:
+  # example of syncplay intergration
+  fastanime --sync-play --server sharepoint search -t <anime-title>
+\b
+  # --- or ---
+\b
+  # to watch with anilist intergration
+  fastanime --sync-play --server sharepoint anilist
+\b
+  # downloading dubbed anime
+  fastanime --dub download -t <anime>
+\b
+  # use  icons and fzf for a more elegant ui with preview
+  fastanime --icons --preview --fzf anilist
+\b
+  # use icons with default ui
+  fastanime --icons --default anilist
+\b
+  # viewing manga
+  fastanime --manga search -t <manga-title> 
+""",
 )
 @click.version_option(__version__, "--version")
 @click.option("--manga", "-m", help="Enable manga mode", is_flag=True)

@@ -1,7 +1,18 @@
 import click
 
 
-@click.command(help="Helper command to update fastanime to latest")
+@click.command(
+    help="Helper command to update fastanime to latest",
+    epilog="""
+\b
+\b\bExamples:
+  # update fastanime to latest
+  fastanime update
+\b
+  # check for latest release
+  fastanime update --check
+""",
+)
 @click.option("--check", "-c", help="Check for the latest release", is_flag=True)
 def update(
     check,

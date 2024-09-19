@@ -11,7 +11,32 @@ if TYPE_CHECKING:
 
 
 @click.command(
-    help="View and watch your downloads using mpv", short_help="Watch downloads"
+    help="View and watch your downloads using mpv",
+    short_help="Watch downloads",
+    epilog="""
+\b
+\b\bExamples:
+    fastanime downloads
+\b
+    # view individual episodes
+    fastanime downloads --view-episodes
+    # --- or ---
+    fastanime downloads -v
+\b
+    # to set seek time when using ffmpegthumbnailer for local previews
+    # -1 means random and is the default
+    fastanime downloads --time-to-seek <intRange(-1,100)>
+    # --- or ---
+    fastanime downloads -t <intRange(-1,100)>
+\b
+    # to watch a specific title
+    # be sure to get the completions for the best experience
+    fastanime downloads --title <title>
+\b
+    # to get the path to the downloads folder set
+    fastanime downloads --path
+    # useful when you want to use the value for other programs
+""",
 )
 @click.option("--path", "-p", help="print the downloads folder and exit", is_flag=True)
 @click.option(

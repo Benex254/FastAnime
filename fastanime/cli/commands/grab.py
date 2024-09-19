@@ -11,6 +11,41 @@ if TYPE_CHECKING:
 @click.command(
     help="Helper command to get streams for anime to use externally in a non-python application",
     short_help="Print anime streams to standard out",
+    epilog="""
+\b
+\b\bExamples:
+  # --- print anime info + episode streams ---
+\b
+  # multiple titles can be specified with the -t option
+  fastanime grab -t <anime-title> -t <anime-title>
+  # -- or --
+  # print all available episodes
+  fastanime grab -t <anime-title> -r ':'
+\b
+  # print the latest episode
+  fastanime grab -t <anime-title> -r '-1'
+\b
+  # print a specific episode range
+  # be sure to observe the range Syntax
+  fastanime grab -t <anime-title> -r '<start>:<stop>'
+\b
+  fastanime grab -t <anime-title> -r '<start>:<stop>:<step>'
+\b
+  fastanime grab -t <anime-title> -r '<start>:'
+\b
+  fastanime grab -t <anime-title> -r ':<end>'
+\b
+  # --- grab options ---
+\b
+  # print search results only
+  fastanime grab -t <anime-title> -r <range> --search-results-only
+\b
+  # print anime info only
+  fastanime grab -t <anime-title> -r <range> --anime-info-only
+\b
+  # print episode streams only
+  fastanime grab -t <anime-title> -r <range> --episode-streams-only
+""",
 )
 @click.option(
     "--anime-titles",

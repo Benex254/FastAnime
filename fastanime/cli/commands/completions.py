@@ -1,7 +1,24 @@
 import click
 
 
-@click.command(help="Helper command to get shell completions")
+@click.command(
+    help="Helper command to get shell completions",
+    epilog="""
+\b
+\b\bExamples:
+    # try to detect your shell and print completions
+    fastanime completions
+\b
+    # print fish completions
+    fastanime completions --fish
+\b
+    # print bash completions
+    fastanime completions --bash
+\b
+    # print zsh completions
+    fastanime completions --zsh
+""",
+)
 @click.option("--fish", is_flag=True, help="print fish completions")
 @click.option("--zsh", is_flag=True, help="print zsh completions")
 @click.option("--bash", is_flag=True, help="print bash completions")

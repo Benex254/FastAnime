@@ -1,7 +1,24 @@
 import click
 
 
-@click.command(help="Helper command to manage cache")
+@click.command(
+    help="Helper command to manage cache",
+    epilog="""
+\b
+\b\bExamples:
+  # delete everything in the cache dir
+  fastanime cache --clean
+\b
+  # print the path to the cache dir and exit
+  fastanime cache --path
+\b
+  # print the current size of the cache dir and exit
+  fastanime cache --size
+\b
+  # open the cache dir and exit
+  fastanime cache
+""",
+)
 @click.option("--clean", help="Clean the cache dir", is_flag=True)
 @click.option("--path", help="The path to the cache dir", is_flag=True)
 @click.option("--size", help="The size of the cache dir", is_flag=True)

@@ -11,6 +11,29 @@ if TYPE_CHECKING:
 @click.command(
     help="This subcommand directly interacts with the provider to enable basic streaming. Useful for binging anime.",
     short_help="Binge anime",
+    epilog="""
+\b
+\b\bExamples:
+  # basic form where you will still be prompted for the episode number
+  # multiple titles can be specified with the -t option
+  fastanime search -t <anime-title> -t <anime-title>
+\b
+  # binge all episodes with this command
+  fastanime search -t <anime-title> -r ':'
+\b
+  # watch latest episode
+  fastanime search -t <anime-title> -r '-1'
+\b
+  # binge a specific episode range with this command
+  # be sure to observe the range Syntax
+  fastanime search -t <anime-title> -r '<start>:<stop>'
+\b
+  fastanime search -t <anime-title> -r '<start>:<stop>:<step>'
+\b
+  fastanime search -t <anime-title> -r '<start>:'
+\b
+  fastanime search -t <anime-title> -r ':<end>'
+""",
 )
 @click.option(
     "--anime-titles",

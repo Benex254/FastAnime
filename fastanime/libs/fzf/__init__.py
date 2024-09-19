@@ -124,7 +124,7 @@ class FZF:
             stdout=subprocess.PIPE,
             universal_newlines=True,
             text=True,
-            encoding="utf-8"
+            encoding="utf-8",
         )
         if not result or result.returncode != 0 or not result.stdout:
             print("sth went wrong:confused:")
@@ -163,7 +163,7 @@ class FZF:
             HEADER,
             "--header-first",
             "--prompt",
-            prompt.title(),
+            f"{prompt.title()}: ",
         ]  # pyright:ignore
 
         if preview:

@@ -44,7 +44,7 @@ def search_for_manga_with_anilist(manga_title: str):
             pageInfo {
             currentPage
             }
-            media(search: $query, type: MANGA) {
+            media(search: $query, type: MANGA,genre_not_in: ["hentai"]) {
             id
             idMal
             title {
@@ -105,7 +105,7 @@ def search_for_anime_with_anilist(anime_title: str):
             currentPage
             hasNextPage
             }
-            media(search: $query, type: ANIME) {
+            media(search: $query, type: ANIME,genre_not_in: ["hentai"]) {
             id
             idMal
             title {
@@ -228,7 +228,7 @@ def get_basic_anime_info_by_title(anime_title: str):
             pageInfo {
             total
             }
-            media(search: $query, type: ANIME) {
+            media(search: $query, type: ANIME,genre_not_in: ["hentai"]) {
             id
             idMal
             title {

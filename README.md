@@ -188,6 +188,7 @@ The project also offers subs in different languages thanks to aniwatch provider.
 ### The Commandline interface :fire:
 
 Designed for efficiency and automation. Plus has a beautiful pseudo-TUI in some of the commands.
+If you are stuck anywhere just use `--help` before the command you would like to get help on
 
 **Overview of main commands:**
 
@@ -664,14 +665,11 @@ The default interface uses inquirerPy which is customizable. Read here to findou
 
 The app includes sensible defaults but can be customized extensively. Configuration is stored in `.ini` format at `~/.config/FastAnime/config.ini` on arch linux; for the other operating systems you can check by running `fastanime config --path`.
 
-
 > [!TIP]
 > You can now use the option `--update` to update your config file from the command-line
 > For Example:
-> `fastanime --icons --fzf --preview config --update` 
+> `fastanime --icons --fzf --preview config --update`
 > the above will set icons to true, use_fzf to true and preview to true in your config file
->
-
 
 The default config:
 
@@ -727,7 +725,7 @@ downloads_dir = ~/Videos/FastAnime
 # if you dont care about image previews it doesnt matter
 # though its awesome
 # try it and you will see
-preview = False 
+preview = False
 
 # the time to seek when using ffmpegthumbnailer [-1 to 100]
 # -1 means random and is the default
@@ -736,24 +734,24 @@ preview = False
 ffmpegthumbnailer_seek_time = -1
 
 # whether to use fzf as the interface for the anilist command and others. [True/False]
-use_fzf = False 
+use_fzf = False
 
 # whether to use rofi for the ui [True/False]
-# it's more useful if you want to create a desktop entry 
+# it's more useful if you want to create a desktop entry
 # which can be setup with 'fastanime config --desktop-entry'
 # though if you want it to be your sole interface even when fastanime is run directly from the terminal
 use_rofi = False
 
-# rofi themes to use 
+# rofi themes to use
 # the values of this option is the path to the rofi config files to use
 # i choose to split it into three since it gives the best look and feel
 # you can refer to the rofi demo on github to see for your self
-# by the way i recommend getting the rofi themes from this project;  
-rofi_theme = 
+# by the way i recommend getting the rofi themes from this project;
+rofi_theme =
 
-rofi_theme_input = 
+rofi_theme_input =
 
-rofi_theme_confirm = 
+rofi_theme_confirm =
 
 # the duration in minutes a notification will stay in the screen
 # used by notifier command
@@ -772,10 +770,10 @@ sub_lang = eng
 # this will make fastanime to choose the episode that you last watched to completion
 # and increment it by one
 # and use that to auto select the episode you want to watch
-continue_from_history = True  
+continue_from_history = True
 
 # which history to use [local/remote]
-# local history means it will just use the watch history stored locally in your device 
+# local history means it will just use the watch history stored locally in your device
 # the file that stores it is called watch_history.json and is stored next to your config file
 # remote means it ignores the last episode stored locally and instead uses the one in your anilist anime list
 # this config option is useful if you want to overwrite your local history or import history covered from another device or platform
@@ -795,7 +793,7 @@ translation_type = sub
 server = top
 
 # Auto select next episode [True/False]
-# this makes fastanime increment the current episode number 
+# this makes fastanime increment the current episode number
 # then after using that value to fetch the next episode instead of prompting
 # this option is useful for binging
 auto_next = False
@@ -806,7 +804,7 @@ auto_next = False
 # that are there own preference rather than the official names
 # But 99% of the time will be accurate
 # if this happens just turn of auto_select in the menus or from the commandline and manually select the correct anime title
-# and then please open an issue at <> highlighting the normalized title and the title given by the provider for the anime you wished to watch  
+# and then please open an issue at <> highlighting the normalized title and the title given by the provider for the anime you wished to watch
 # or even better edit this file <> and open a pull request
 auto_select = True
 
@@ -821,13 +819,13 @@ skip = False
 error = 3
 
 # whether to use python-mpv [True/False]
-# to enable superior control over the player 
+# to enable superior control over the player
 # adding more options to it
-# Enable this one and you will be wonder why you did not discover fastanime sooner 
-# Since you basically don't have to close the player window to go to the next or previous episode, switch servers, change translation type or 
+# Enable this one and you will be wonder why you did not discover fastanime sooner
+# Since you basically don't have to close the player window to go to the next or previous episode, switch servers, change translation type or
 change to a given episode x
 # so try it if you haven't already
-# if you have any issues setting it up 
+# if you have any issues setting it up
 # don't be afraid to ask
 # especially on windows
 # honestly it can be a pain to set it up there
@@ -846,7 +844,7 @@ force_window = immediate
 # the format of downloaded anime and trailer
 # based on yt-dlp format and passed directly to it
 # learn more by looking it up on their site
-# only works for downloaded anime if: 
+# only works for downloaded anime if:
 # provider=allanime, server=gogoanime
 # provider=allanime, server=wixmp
 # provider=aniwatch

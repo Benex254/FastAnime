@@ -19,6 +19,7 @@ class FastAnimeRuntimeState(object):
     provider_anime_title: str
     provider_anime: "Anime"
     provider_anime_search_result: "SearchResult"
+    progress_tracking: str = ""
 
     selected_anime_anilist: "AnilistBaseMediaDataSchema"
     selected_anime_id_anilist: int

@@ -25,7 +25,7 @@ else:
 # ----- user configs and data -----
 
 S_PLATFORM = sys.platform
-APP_DATA_DIR = click.get_app_dir(APP_NAME,roaming=False)
+APP_DATA_DIR = click.get_app_dir(APP_NAME, roaming=False)
 if S_PLATFORM == "win32":
     # app data
     # app_data_dir_base = os.getenv("LOCALAPPDATA")
@@ -78,6 +78,7 @@ Path(USER_VIDEOS_DIR).mkdir(parents=True, exist_ok=True)
 
 # useful paths
 USER_DATA_PATH = os.path.join(APP_DATA_DIR, "user_data.json")
+USER_WATCH_HISTORY_PATH = os.path.join(APP_DATA_DIR, "watch_history.json")
 USER_CONFIG_PATH = os.path.join(APP_DATA_DIR, "config.ini")
 LOG_FILE_PATH = os.path.join(APP_DATA_DIR, "fastanime.log")
 

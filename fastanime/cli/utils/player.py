@@ -68,7 +68,11 @@ class MpvPlayer(object):
             current_episode_number = (
                 fastanime_runtime_state.provider_current_episode_number
             )
-            config.update_watch_history(anime_id_anilist, str(current_episode_number))
+            config.media_list_track(
+                anime_id_anilist,
+                episode_no=str(current_episode_number),
+                progress_tracking=fastanime_runtime_state.progress_tracking,
+            )
         elif type == "reload":
             if current_episode_number not in total_episodes:
                 self.mpv_player.show_text("Episode not available")
@@ -84,7 +88,11 @@ class MpvPlayer(object):
 
             self.mpv_player.show_text(f"Fetching episode {ep_no}")
             current_episode_number = ep_no
-            config.update_watch_history(anime_id_anilist, str(ep_no))
+            config.media_list_track(
+                anime_id_anilist,
+                episode_no=str(ep_no),
+                progress_tracking=fastanime_runtime_state.progress_tracking,
+            )
             fastanime_runtime_state.provider_current_episode_number = str(ep_no)
         else:
             self.mpv_player.show_text("Fetching previous episode...")
@@ -97,7 +105,11 @@ class MpvPlayer(object):
             current_episode_number = (
                 fastanime_runtime_state.provider_current_episode_number
             )
-            config.update_watch_history(anime_id_anilist, str(current_episode_number))
+            config.media_list_track(
+                anime_id_anilist,
+                episode_no=str(current_episode_number),
+                progress_tracking=fastanime_runtime_state.progress_tracking,
+            )
         # update episode progress
         if config.user and current_episode_number:
             AniList.update_anime_list(

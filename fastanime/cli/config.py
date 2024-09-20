@@ -4,7 +4,12 @@ import os
 from configparser import ConfigParser
 from typing import TYPE_CHECKING
 
-from ..constants import USER_CONFIG_PATH, USER_DATA_PATH, USER_VIDEOS_DIR
+from ..constants import (
+    USER_CONFIG_PATH,
+    USER_DATA_PATH,
+    USER_VIDEOS_DIR,
+    USER_WATCH_HISTORY_PATH,
+)
 from ..libs.rofi import Rofi
 
 logger = logging.getLogger(__name__)
@@ -16,7 +21,7 @@ class Config(object):
     manga = False
     sync_play = False
     anime_list: list
-    watch_history: dict
+    watch_history: dict = {}
     fastanime_anilist_app_login_url = (
         "https://anilist.co/api/v2/oauth/authorize?client_id=20148&response_type=token"
     )
@@ -39,7 +44,6 @@ class Config(object):
         "preview": "False",
         "format": "best[height<=1080]/bestvideo[height<=1080]+bestaudio/best",
         "provider": "allanime",
-        "error": "3",
         "icons": "false",
         "notification_duration": "2",
         "skip": "false",
@@ -51,10 +55,13 @@ class Config(object):
         "sub_lang": "eng",
         "normalize_titles": "true",
         "player": "mpv",
+        "episode_complete_at": "80",
+        "force_forward_tracking": "true",
+        "default_media_list_tracking": "None",
     }
 
     def __init__(self) -> None:
-        self.initialize_user_data()
+        self.initialize_user_data_and_watch_history()
         self.load_config()
 
     def load_config(self):
@@ -84,7 +91,9 @@ class Config(object):
         self.use_python_mpv = self.get_use_mpv_mod()
         self.quality = self.get_quality()
         self.notification_duration = self.get_notification_duration()
-        self.error = self.get_error()
+        self.episode_complete_at = self.get_episode_complete_at()
+        self.default_media_list_tracking = self.get_default_media_list_tracking()
+        self.force_forward_tracking = self.get_force_forward_tracking()
         self.server = self.get_server()
         self.format = self.get_format()
         self.player = self.get_player()
@@ -99,7 +108,6 @@ class Config(object):
         Rofi.rofi_theme_confirm = self.rofi_theme_confirm
         self.ffmpegthumbnailer_seek_time = self.get_ffmpegthumnailer_seek_time()
         # ---- setup user data ------
-        self.watch_history: dict = self.user_data.get("watch_history", {})
         self.anime_list: list = self.user_data.get("animelist", [])
         self.user: dict = self.user_data.get("user", {})
 
@@ -113,27 +121,40 @@ class Config(object):
         self.user_data["user"] = user
         self._update_user_data()
 
-    def update_watch_history(
-        self, anime_id: int, episode: str, start_time="0", total_time="0"
+    def media_list_track(
+        self,
+        anime_id: int,
+        episode_no: str,
+        episode_stopped_at="0",
+        episode_total_length="0",
+        progress_tracking="prompt",
     ):
         self.watch_history.update(
             {
                 str(anime_id): {
-                    "episode": episode,
-                    "start_time": start_time,
-                    "total_time": total_time,
+                    "episode_no": episode_no,
+                    "episode_stopped_at": episode_stopped_at,
+                    "episode_total_length": episode_total_length,
+                    "progress_tracking": progress_tracking,
                 }
             }
         )
-        self.user_data["watch_history"] = self.watch_history
-        self._update_user_data()
+        with open(USER_WATCH_HISTORY_PATH, "w") as f:
+            json.dump(self.watch_history, f)
 
-    def initialize_user_data(self):
+    def initialize_user_data_and_watch_history(self):
         try:
             if os.path.isfile(USER_DATA_PATH):
                 with open(USER_DATA_PATH, "r") as f:
                     user_data = json.load(f)
                     self.user_data.update(user_data)
+        except Exception as e:
+            logger.error(e)
+        try:
+            if os.path.isfile(USER_WATCH_HISTORY_PATH):
+                with open(USER_WATCH_HISTORY_PATH, "r") as f:
+                    watch_history = json.load(f)
+                    self.watch_history.update(watch_history)
         except Exception as e:
             logger.error(e)
 
@@ -182,6 +203,12 @@ class Config(object):
     def get_rofi_theme_confirm(self):
         return self.configparser.get("general", "rofi_theme_confirm")
 
+    def get_force_forward_tracking(self):
+        return self.configparser.getboolean("general", "force_forward_tracking")
+
+    def get_default_media_list_tracking(self):
+        return self.configparser.get("general", "default_media_list_tracking")
+
     def get_normalize_titles(self):
         return self.configparser.getboolean("general", "normalize_titles")
 
@@ -204,8 +231,8 @@ class Config(object):
     def get_notification_duration(self):
         return self.configparser.getint("general", "notification_duration")
 
-    def get_error(self):
-        return self.configparser.getint("stream", "error")
+    def get_episode_complete_at(self):
+        return self.configparser.getint("stream", "episode_complete_at")
 
     def get_force_window(self):
         return self.configparser.get("stream", "force_window")
@@ -328,6 +355,17 @@ notification_duration = {self.notification_duration}
 # regex is used to determine what you selected
 sub_lang = {self.sub_lang}
 
+# what is your default media list tracking [track/disabled/prompt]
+# only affects your anilist anime list
+# track - means your progress will always be reflected in your anilist anime list
+# disabled - means progress tracking will no longer be reflected in your anime list
+# prompt - means for every anime you will be prompted whether you want your progress to be tracked or not
+default_media_list_tracking = {self.default_media_list_tracking}
+
+# whether media list tracking should only be updated when the next episode is greater than the previous
+# this affects only your anilist anime list
+force_forward_tracking = {self.force_forward_tracking}
+
 
 [stream]
 # Auto continue from watch history [True/False]
@@ -378,9 +416,11 @@ auto_select = {self.auto_select}
 # so its disabled for now
 skip = {self.skip}
 
-# the maximum delta time in minutes after which the episode should be considered as completed
-# used in the continue from time stamp
-error = {self.error}
+# at what percentage progress should the episode be considered as completed [0-100]
+# this value is used to determine whether to increment the current episode number and save it to your local list
+# so you can continue immediately to the next episode without select it the next time you decide to watch the anime
+# it is also used to determine whether your anilist anime list should be updated or not
+episode_complete_at = {self.episode_complete_at}
 
 # whether to use python-mpv [True/False]
 # to enable superior control over the player 

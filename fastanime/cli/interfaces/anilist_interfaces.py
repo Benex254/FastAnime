@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import os
 import random
-from datetime import datetime
 from typing import TYPE_CHECKING
 
 from click import clear
@@ -35,8 +34,7 @@ if TYPE_CHECKING:
     from ..utils.tools import FastAnimeRuntimeState
 
 
-# TODO: make the error handling more sane
-def calculate_time_delta(start_time, end_time):
+def calculate_percentage_completion(start_time, end_time):
     """helper function used to calculate the difference between two timestamps in seconds
 
     Args:
@@ -46,16 +44,12 @@ def calculate_time_delta(start_time, end_time):
     Returns:
         [TODO:return]
     """
-    time_format = "%H:%M:%S"
 
-    # Convert string times to datetime objects
-    start = datetime.strptime(start_time, time_format)
-    end = datetime.strptime(end_time, time_format)
-
-    # Calculate the difference
-    delta = end - start
-
-    return delta
+    start = start_time.split(":")
+    end = end_time.split(":")
+    start_secs = int(start[0]) * 3600 + int(start[1]) * 60 + int(start[2])
+    end_secs = int(end[0]) * 3600 + int(end[1]) * 60 + int(end[2])
+    return start_secs / end_secs * 100
 
 
 def media_player_controls(
@@ -103,10 +97,12 @@ def media_player_controls(
         )
 
         if (
-            config.watch_history[str(anime_id_anilist)]["episode"]
+            config.watch_history[str(anime_id_anilist)]["episode_no"]
             == current_episode_number
         ):
-            start_time = config.watch_history[str(anime_id_anilist)]["start_time"]
+            start_time = config.watch_history[str(anime_id_anilist)][
+                "episode_stopped_at"
+            ]
             print("[green]Continuing from:[/] ", start_time)
         else:
             start_time = "0"
@@ -171,9 +167,10 @@ def media_player_controls(
         if stop_time == "0" or total_time == "0":
             episode = str(int(current_episode_number) + 1)
         else:
-            error = 5 * 60
-            delta = calculate_time_delta(stop_time, total_time)
-            if delta.total_seconds() > error:
+            percentage_completion_of_episode = calculate_percentage_completion(
+                stop_time, total_time
+            )
+            if percentage_completion_of_episode < config.episode_complete_at:
                 episode = current_episode_number
             else:
                 episode = str(int(current_episode_number) + 1)
@@ -181,28 +178,34 @@ def media_player_controls(
                 total_time = "0"
 
         clear()
-        config.update_watch_history(anime_id_anilist, episode, stop_time, total_time)
+        config.media_list_track(
+            anime_id_anilist,
+            episode_no=episode,
+            episode_stopped_at=stop_time,
+            episode_total_length=total_time,
+            progress_tracking=fastanime_runtime_state.progress_tracking,
+        )
         media_player_controls(config, fastanime_runtime_state)
 
     def _next_episode():
         """watch the next episode"""
         # ensures you dont accidentally erase your progress for an in complete episode
         stop_time = config.watch_history.get(str(anime_id_anilist), {}).get(
-            "start_time", "0"
+            "episode_stopped_at", "0"
         )
 
         total_time = config.watch_history.get(str(anime_id_anilist), {}).get(
-            "total_time", "0"
+            "episode_total_length", "0"
         )
 
         # compute if the episode is actually completed
-        error = config.error * 60
         if stop_time == "0" or total_time == "0":
-            dt = 0
+            percentage_completion_of_episode = 0
         else:
-            delta = calculate_time_delta(stop_time, total_time)
-            dt = delta.total_seconds()
-        if dt > error:
+            percentage_completion_of_episode = calculate_percentage_completion(
+                stop_time, total_time
+            )
+        if percentage_completion_of_episode < config.episode_complete_at:
             if config.auto_next:
                 if config.use_rofi:
                     if not Rofi.confirm(
@@ -236,7 +239,11 @@ def media_player_controls(
         ]
 
         # update user config
-        config.update_watch_history(anime_id_anilist, available_episodes[next_episode])
+        config.media_list_track(
+            anime_id_anilist,
+            episode_no=available_episodes[next_episode],
+            progress_tracking=fastanime_runtime_state.progress_tracking,
+        )
 
         # call interface
         provider_anime_episode_servers_menu(config, fastanime_runtime_state)
@@ -260,7 +267,11 @@ def media_player_controls(
         ]
 
         # update user config
-        config.update_watch_history(anime_id_anilist, available_episodes[prev_episode])
+        config.media_list_track(
+            anime_id_anilist,
+            episode_no=available_episodes[prev_episode],
+            progress_tracking=fastanime_runtime_state.progress_tracking,
+        )
 
         # call interface
         provider_anime_episode_servers_menu(config, fastanime_runtime_state)
@@ -496,21 +507,12 @@ def provider_anime_episode_servers_menu(
         "[bold magenta] Episode: [/]",
         current_episode_number,
     )
-    # -- update anilist progress if user --
-    if config.user and current_episode_number:
-        AniList.update_anime_list(
-            {
-                "mediaId": anime_id_anilist,
-                "progress": int(float(current_episode_number)),
-            }
-        )
-
     # try to get the timestamp you left off from if available
     start_time = config.watch_history.get(str(anime_id_anilist), {}).get(
-        "start_time", "0"
+        "episode_stopped_at", "0"
     )
     episode_in_history = config.watch_history.get(str(anime_id_anilist), {}).get(
-        "episode", ""
+        "episode_no", ""
     )
     if start_time != "0" and episode_in_history == current_episode_number:
         print("[green]Continuing from:[/] ", start_time)
@@ -593,11 +595,36 @@ def provider_anime_episode_servers_menu(
             next_episode = len(available_episodes) - 1
         episode = available_episodes[next_episode]
     else:
-        error = config.error * 60
-        delta = calculate_time_delta(stop_time, total_time)
-        if delta.total_seconds() > error:
+        percentage_completion_of_episode = calculate_percentage_completion(
+            stop_time, total_time
+        )
+        if percentage_completion_of_episode < config.episode_complete_at:
             episode = current_episode_number
         else:
+            # -- update anilist progress if user --
+            remote_progress = (
+                fastanime_runtime_state.selected_anime_anilist["mediaListEntry"] or {}
+            ).get("progress")
+            disable_anilist_update = False
+            if remote_progress:
+                if (
+                    float(remote_progress) > float(current_episode_number)
+                    and config.force_forward_tracking
+                ):
+                    disable_anilist_update = True
+            if (
+                fastanime_runtime_state.progress_tracking == "track"
+                and config.user
+                and not disable_anilist_update
+                and current_episode_number
+            ):
+                AniList.update_anime_list(
+                    {
+                        "mediaId": anime_id_anilist,
+                        "progress": int(float(current_episode_number)),
+                    }
+                )
+
             # increment the episodes
             next_episode = available_episodes.index(current_episode_number) + 1
             if next_episode >= len(available_episodes):
@@ -606,11 +633,12 @@ def provider_anime_episode_servers_menu(
             stop_time = "0"
             total_time = "0"
 
-    config.update_watch_history(
+    config.media_list_track(
         anime_id_anilist,
-        episode,
-        start_time=stop_time,
-        total_time=total_time,
+        episode_no=episode,
+        episode_stopped_at=stop_time,
+        episode_total_length=total_time,
+        progress_tracking=fastanime_runtime_state.progress_tracking,
     )
 
     # switch to controls
@@ -652,7 +680,7 @@ def provider_anime_episodes_menu(
         # the user watch history thats locally available
         # will be preferred over remote
         if (
-            user_watch_history.get(str(anime_id_anilist), {}).get("episode")
+            user_watch_history.get(str(anime_id_anilist), {}).get("episode_no")
             in total_episodes
         ):
             if (
@@ -660,7 +688,7 @@ def provider_anime_episodes_menu(
                 or not selected_anime_anilist["mediaListEntry"]
             ):
                 current_episode_number = user_watch_history[str(anime_id_anilist)][
-                    "episode"
+                    "episode_no"
                 ]
             else:
                 current_episode_number = str(
@@ -765,6 +793,39 @@ def fetch_anime_episode(
 #
 #   ---- ANIME PROVIDER SEARCH RESULTS MENU ----
 #
+
+
+def set_prefered_progress_tracking(
+    config: "Config", fastanime_runtime_state: "FastAnimeRuntimeState", update=False
+):
+    if (
+        fastanime_runtime_state.progress_tracking == ""
+        or update
+        or fastanime_runtime_state.progress_tracking == "prompt"
+    ):
+        if config.default_media_list_tracking == "track":
+            fastanime_runtime_state.progress_tracking = "track"
+        elif config.default_media_list_tracking == "disabled":
+            fastanime_runtime_state.progress_tracking = "disabled"
+        else:
+            options = ["disabled", "track"]
+            if config.use_fzf:
+                fastanime_runtime_state.progress_tracking = fzf.run(
+                    options,
+                    "Enter your preferred progress tracking for the current anime",
+                )
+            elif config.use_rofi:
+                fastanime_runtime_state.progress_tracking = Rofi.run(
+                    options,
+                    "Enter your preferred progress tracking for the current anime",
+                )
+            else:
+                fastanime_runtime_state.progress_tracking = fuzzy_inquirer(
+                    options,
+                    "Enter your preferred progress tracking for the current anime",
+                )
+
+
 def anime_provider_search_results_menu(
     config: "Config", fastanime_runtime_state: "FastAnimeRuntimeState"
 ):
@@ -852,6 +913,11 @@ def anime_provider_search_results_menu(
     fastanime_runtime_state.provider_anime_search_result = provider_search_results[
         provider_anime_title
     ]
+
+    fastanime_runtime_state.progress_tracking = config.watch_history.get(
+        str(fastanime_runtime_state.selected_anime_id_anilist), {}
+    ).get("progress_tracking", "prompt")
+    set_prefered_progress_tracking(config, fastanime_runtime_state)
     fetch_anime_episode(config, fastanime_runtime_state)
 
 
@@ -1241,12 +1307,19 @@ def media_actions_menu(
         config.continue_from_history = False
         anime_provider_search_results_menu(config, fastanime_runtime_state)
 
+    def _set_progress_tracking(
+        config: "Config", fastanime_runtime_state: "FastAnimeRuntimeState"
+    ):
+        set_prefered_progress_tracking(config, fastanime_runtime_state, update=True)
+        media_actions_menu(config, fastanime_runtime_state)
+
     icons = config.icons
     options = {
         f"{'📽️ ' if icons else ''}Stream ({progress}/{episodes_total})": _stream_anime,
         f"{'📽️ ' if icons else ''}Episodes": _select_episode_to_stream,
         f"{'📼 ' if icons else ''}Watch Trailer": _watch_trailer,
         f"{'✨ ' if icons else ''}Score Anime": _score_anime,
+        f"{'✨ ' if icons else ''}Progress Tracking": _set_progress_tracking,
         f"{'📥 ' if icons else ''}Add to List": _add_to_list,
         f"{'📤 ' if icons else ''}Remove from List": _remove_from_list,
         f"{'📖 ' if icons else ''}View Info": _view_info,
@@ -1261,7 +1334,7 @@ def media_actions_menu(
     }
     choices = list(options.keys())
     if config.use_fzf:
-        action = fzf.run(choices, prompt="Select Action:", header="Anime Menu")
+        action = fzf.run(choices, prompt="Select Action", header="Anime Menu")
     elif config.use_rofi:
         action = Rofi.run(choices, "Select Action")
     else:
@@ -1551,7 +1624,7 @@ def fastanime_main_menu(
     if config.use_fzf:
         action = fzf.run(
             choices,
-            prompt="Select Action: ",
+            prompt="Select Action",
             header="Anilist Menu",
         )
     elif config.use_rofi:

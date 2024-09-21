@@ -1,4 +1,10 @@
-# FastAnime
+# **FastAnime**
+
+![PyPI - Downloads](https://img.shields.io/pypi/dm/fastanime)  ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/Benex254/FastAnime/test.yml?label=Tests)
+![Discord](https://img.shields.io/discord/1250887070906323096?label=Discord)
+![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/Benex254/FastAnime)
+![GitHub deployments](https://img.shields.io/github/deployments/Benex254/fastanime/pypi?label=PyPi%20Publish)
+![PyPI - License](https://img.shields.io/pypi/l/fastanime)
 
 Welcome to **FastAnime**, anime site experience from the terminal.
 
@@ -65,6 +71,12 @@ Heavily inspired by [animdl](https://github.com/justfoolingaround/animdl), [jerr
 > This project currently scrapes allanime, aniwatch and animepahe. The site is in the public domain and can be accessed by any one with a browser.
 
 ## Installation
+
+![Windows](https://img.shields.io/badge/-Windows_x64-blue.svg?style=for-the-badge&logo=windows)
+![Linux/BSD](https://img.shields.io/badge/-Linux/BSD-red.svg?style=for-the-badge&logo=linux)
+![Arch Linux](https://img.shields.io/badge/-Arch_Linux-black.svg?style=for-the-badge&logo=archlinux)
+![MacOS](https://img.shields.io/badge/-MacOS-lightblue.svg?style=for-the-badge&logo=apple)
+![Android](https://img.shields.io/badge/-Android-green.svg?style=for-the-badge&logo=android)
 
 The app can run wherever python can run. So all you need to have is python installed on your device.
 On android you can use [termux](https://github.com/termux/termux-app).
@@ -166,6 +178,7 @@ The only required external dependency, unless you won't be streaming, is [MPV](h
 > player because we believe nothing beats **MPV** and it provides
 > everything you could ever need with a small footprint.
 > But if you have a reason feel free to encourage as to do so.
+> However, on android this is not the case so vlc is also supported
 
 **Other external dependencies that will just make your experience better:**
 
@@ -178,7 +191,7 @@ The only required external dependency, unless you won't be streaming, is [MPV](h
 - [ani-skip](https://github.com/synacktraa/ani-skip) used for skipping the opening and ending theme songs
 - [ffmpegthumbnailer](https://github.com/dirkvdb/ffmpegthumbnailer) used for local previews of downloaded anime
 - [syncplay](https://syncplay.pl/) to enable watch together.
-- [feh]() used in manga mode
+- [feh](https://github.com/derf/feh) used in manga mode
 
 ## Usage
 

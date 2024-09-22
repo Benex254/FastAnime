@@ -9,17 +9,21 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.10"
 yt-dlp = "^2024.5.27"
-rich = "^13.7.1"
-click = "^8.1.7"
-inquirerpy = "^0.3.4"
 thefuzz = "^0.22.1"
 requests = "^2.32.3"
+rich = { version = "^13.7.1", optional = true }
+click = { version = "^8.1.7", optional = true }
+inquirerpy = { version = "^0.3.4", optional = true }
+mpv = { version = "^1.0.7", optional = true }
 plyer = { version = "^2.1.0", optional = true }
 
-[tool.poetry.extras]
-full = ["plyer"]
 
-mpv = "^1.0.7"
+[tool.poetry.extras]
+full = ["plyer", "mpv", "rich", "click", "inquirerpy"]
+cli = ["rich", "click", "inquirerpy"]
+mpv = ["mpv"]
+notifications = ["plyer"]
+
 [tool.poetry.group.dev.dependencies]
 black = "^24.4.2"
 isort = "^5.13.2"

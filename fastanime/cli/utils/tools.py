@@ -37,8 +37,13 @@ def exit_app(exit_code=0, *args):
 
     console = Console()
     if not console.is_terminal:
-        from plyer import notification
-
+        try:
+            from plyer import notification
+        except ImportError:
+            print(
+                "Plyer is not installed; install it for desktop notifications to be enabled"
+            )
+            exit(1)
         notification.notify(
             app_name=APP_NAME,
             app_icon=ICON_PATH,

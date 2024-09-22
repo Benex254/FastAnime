@@ -14,7 +14,10 @@ click = "^8.1.7"
 inquirerpy = "^0.3.4"
 thefuzz = "^0.22.1"
 requests = "^2.32.3"
-plyer = "^2.1.0"
+plyer = { version = "^2.1.0", optional = true }
+
+[tool.poetry.extras]
+full = ["plyer"]
 
 mpv = "^1.0.7"
 [tool.poetry.group.dev.dependencies]

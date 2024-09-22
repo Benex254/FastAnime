@@ -16,7 +16,12 @@ def notifier(config: "Config"):
     from sys import exit
 
     import requests
-    from plyer import notification
+
+    try:
+        from plyer import notification
+    except ImportError:
+        print("Please install plyer to use this command")
+        exit(1)
 
     from ....anilist import AniList
     from ....constants import APP_CACHE_DIR, APP_DATA_DIR, APP_NAME, ICON_PATH, PLATFORM

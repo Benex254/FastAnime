@@ -2,8 +2,6 @@ import subprocess
 from shutil import which
 from sys import exit
 
-from plyer import notification
-
 from fastanime import APP_NAME
 
 from ...constants import ICON_PATH
@@ -35,6 +33,13 @@ class RofiApi:
 
         choice = result.stdout.strip()
         if not choice:
+            try:
+                from plyer import notification
+            except ImportError:
+                print(
+                    "Plyer is not installed; install it for desktop notifications to be enabled"
+                )
+                exit(1)
             notification.notify(
                 app_name=APP_NAME,
                 app_icon=ICON_PATH,
@@ -64,6 +69,13 @@ class RofiApi:
 
         choice = result.stdout.strip()
         if not choice or choice not in options:
+            try:
+                from plyer import notification
+            except ImportError:
+                print(
+                    "Plyer is not installed; install it for desktop notifications to be enabled"
+                )
+                exit(1)
             notification.notify(
                 app_name=APP_NAME,
                 app_icon=ICON_PATH,
@@ -91,6 +103,13 @@ class RofiApi:
 
         choice = result.stdout.strip()
         if not choice:
+            try:
+                from plyer import notification
+            except ImportError:
+                print(
+                    "Plyer is not installed; install it for desktop notifications to be enabled"
+                )
+                exit(1)
             notification.notify(
                 app_name=APP_NAME,
                 app_icon=ICON_PATH,
@@ -120,6 +139,13 @@ class RofiApi:
 
         user_input = result.stdout.strip()
         if not user_input:
+            try:
+                from plyer import notification
+            except ImportError:
+                print(
+                    "Plyer is not installed; install it for desktop notifications to be enabled"
+                )
+                exit(1)
             notification.notify(
                 app_name=APP_NAME,
                 app_icon=ICON_PATH,

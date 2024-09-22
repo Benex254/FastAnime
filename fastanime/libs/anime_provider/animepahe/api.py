@@ -147,7 +147,9 @@ class AnimePaheApi(AnimeProvider):
         }
 
     @debug_provider("ANIMEPAHE")
-    def get_episode_streams(self, anime, episode_number: str, translation_type, *args):
+    def get_episode_streams(
+        self, anime_id, anime_title, episode_number: str, translation_type, *args
+    ):
         # extract episode details from memory
         episode = [
             episode
@@ -160,7 +162,6 @@ class AnimePaheApi(AnimeProvider):
             return []
         episode = episode[0]
 
-        anime_id = anime["id"]
         # fetch the episode page
         url = f"{ANIMEPAHE_BASE}/play/{anime_id}/{episode['session']}"
         response = self.session.get(url)
@@ -175,7 +176,7 @@ class AnimePaheApi(AnimeProvider):
 
         # get the episode title
         episode_title = (
-            f"{episode['title'] or anime['title']}; Episode {episode['episode']}"
+            f"{episode['title'] or anime_title}; Episode {episode['episode']}"
         )
         # get all links
         streams = {

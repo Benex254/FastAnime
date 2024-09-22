@@ -217,7 +217,7 @@ def grab(
                     if episode not in episodes:
                         continue
                     streams = anime_provider.get_episode_streams(
-                        anime, episode, config.translation_type
+                        anime["id"], anime["title"], episode, config.translation_type
                     )
                     if not streams:
                         continue

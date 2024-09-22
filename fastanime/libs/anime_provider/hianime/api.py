@@ -139,7 +139,9 @@ class HiAnimeApi(AnimeProvider):
             }
 
     @debug_provider("ANIWATCH")
-    def get_episode_streams(self, anime, episode, translation_type, *args):
+    def get_episode_streams(
+        self, anime_id, anime_title, episode, translation_type, *args
+    ):
         episode_details = [
             episode_details
             for episode_details in self.episodes_info

@@ -153,7 +153,9 @@ class AllAnimeAPI(AnimeProvider):
         return episode["episode"]
 
     @debug_provider("ALLANIME")
-    def get_episode_streams(self, anime, episode_number: str, translation_type="sub"):
+    def get_episode_streams(
+        self, anime_id, anime_title, episode_number: str, translation_type="sub"
+    ):
         """get the streams of an episode
 
         Args:
@@ -164,7 +166,6 @@ class AllAnimeAPI(AnimeProvider):
         Yields:
             [TODO:description]
         """
-        anime_id = anime["id"]
         allanime_episode = self._get_anime_episode(
             anime_id, episode_number, translation_type
         )
@@ -202,7 +203,7 @@ class AllAnimeAPI(AnimeProvider):
             if "tools.fast4speed.rsvp" in url:
                 return {
                     "server": "Yt",
-                    "episode_title": f'{anime["title"]}; Episode {episode_number}',
+                    "episode_title": f"{anime_title}; Episode {episode_number}",
                     "headers": {"Referer": f"https://{ALLANIME_BASE}/"},
                     "subtitles": [],
                     "links": [
@@ -229,7 +230,7 @@ class AllAnimeAPI(AnimeProvider):
                             "headers": {},
                             "subtitles": [],
                             "episode_title": (
-                                allanime_episode["notes"] or f'{anime["title"]}'
+                                allanime_episode["notes"] or f"{anime_title}"
                             )
                             + f"; Episode {episode_number}",
                             "links": give_random_quality(resp.json()["links"]),
@@ -241,7 +242,7 @@ class AllAnimeAPI(AnimeProvider):
                             "headers": {},
                             "subtitles": [],
                             "episode_title": (
-                                allanime_episode["notes"] or f'{anime["title"]}'
+                                allanime_episode["notes"] or f"{anime_title}"
                             )
                             + f"; Episode {episode_number}",
                             "links": give_random_quality(resp.json()["links"]),
@@ -253,7 +254,7 @@ class AllAnimeAPI(AnimeProvider):
                             "headers": {},
                             "subtitles": [],
                             "episode_title": (
-                                allanime_episode["notes"] or f'{anime["title"]}'
+                                allanime_episode["notes"] or f"{anime_title}"
                             )
                             + f"; Episode {episode_number}",
                             "links": give_random_quality(resp.json()["links"]),
@@ -265,7 +266,7 @@ class AllAnimeAPI(AnimeProvider):
                             "headers": {},
                             "subtitles": [],
                             "episode_title": (
-                                allanime_episode["notes"] or f'{anime["title"]}'
+                                allanime_episode["notes"] or f"{anime_title}"
                             )
                             + f"; Episode {episode_number}",
                             "links": give_random_quality(resp.json()["links"]),
@@ -277,7 +278,7 @@ class AllAnimeAPI(AnimeProvider):
                             "headers": {},
                             "subtitles": [],
                             "episode_title": (
-                                allanime_episode["notes"] or f'{anime["title"]}'
+                                allanime_episode["notes"] or f"{anime_title}"
                             )
                             + f"; Episode {episode_number}",
                             "links": give_random_quality(resp.json()["links"]),

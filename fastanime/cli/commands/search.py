@@ -247,7 +247,7 @@ def search(config: "Config", anime_titles: str, episode_range: str):
 
                 anilist_anime_info = get_basic_anime_info_by_title(anime["title"])
 
-            def stream_anime():
+            def stream_anime(anime: "Anime"):
                 clear()
                 episode = None
 
@@ -283,7 +283,7 @@ def search(config: "Config", anime_titles: str, episode_range: str):
                 with Progress() as progress:
                     progress.add_task("Fetching Episode Streams...", total=None)
                     streams = anime_provider.get_episode_streams(
-                        anime, episode, config.translation_type
+                        anime["id"], anime["title"], episode, config.translation_type
                     )
                     if not streams:
                         print("Failed to get streams")
@@ -298,13 +298,13 @@ def search(config: "Config", anime_titles: str, episode_range: str):
                             if not server:
                                 print("Sth went wrong when fetching the episode")
                                 input("Enter to continue")
-                                stream_anime()
+                                stream_anime(anime)
                                 return
                         stream_link = filter_by_quality(config.quality, server["links"])
                         if not stream_link:
                             print("Quality not found")
                             input("Enter to continue")
-                            stream_anime()
+                            stream_anime(anime)
                             return
                         link = stream_link["link"]
                         subtitles = server["subtitles"]
@@ -334,7 +334,7 @@ def search(config: "Config", anime_titles: str, episode_range: str):
                         if not stream_link:
                             print("Quality not found")
                             input("Enter to continue")
-                            stream_anime()
+                            stream_anime(anime)
                             return
                         link = stream_link["link"]
                         stream_headers = servers[server]["headers"]
@@ -380,6 +380,6 @@ def search(config: "Config", anime_titles: str, episode_range: str):
                 except IndexError as e:
                     print(e)
                     input("Enter to continue")
-                stream_anime()
+                stream_anime(anime)
 
-            stream_anime()
+            stream_anime(anime)

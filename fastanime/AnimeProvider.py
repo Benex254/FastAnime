@@ -66,13 +66,9 @@ class AnimeProvider:
             [TODO:return]
         """
         anime_provider = self.anime_provider
-        try:
-            results = anime_provider.search_for_anime(
-                user_query, translation_type, nsfw, unknown
-            )
-        except Exception as e:
-            logger.error(f"[ANIMEPROVIDER-ERROR]: {e}")
-            results = None
+        results = anime_provider.search_for_anime(
+            user_query, translation_type, nsfw, unknown
+        )
 
         return results
 
@@ -90,12 +86,8 @@ class AnimeProvider:
             [TODO:return]
         """
         anime_provider = self.anime_provider
-        try:
-            results = anime_provider.get_anime(anime_id)
-        except Exception as e:
-            logger.error(f"[ANIMEPROVIDER-ERROR]: {e}")
+        results = anime_provider.get_anime(anime_id)
 
-            results = None
         return results
 
     def get_episode_streams(
@@ -116,12 +108,5 @@ class AnimeProvider:
             [TODO:return]
         """
         anime_provider = self.anime_provider
-        try:
-            results = anime_provider.get_episode_streams(
-                anime, episode, translation_type
-            )
-        except Exception as e:
-            logger.error(f"[ANIMEPROVIDER-ERROR]: {e}")
-
-            results = None
+        results = anime_provider.get_episode_streams(anime, episode, translation_type)
         return results

@@ -24,7 +24,7 @@ jobs:
           path: ./.venv
           key: venv-${{ hashFiles('poetry.lock') }}
       - name: Install the project dependencies
-        run: poetry install
+        run: poetry install --all-extras
       - name: build app
         run: poetry build
       - name: Archive production artifacts

@@ -293,7 +293,7 @@ def downloads(
             else:
                 episode_title = fuzzy_inquirer(
                     downloaded_episodes,
-                    "Enter Playlist Name: ",
+                    "Enter Playlist Name",
                 )
             if episode_title == "Back":
                 stream_anime()
@@ -333,7 +333,7 @@ def downloads(
         else:
             playlist_name = fuzzy_inquirer(
                 anime_downloads,
-                "Enter Playlist Name: ",
+                "Enter Playlist Name",
             )
         if playlist_name == "Exit":
             exit_app()

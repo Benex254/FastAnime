@@ -284,7 +284,7 @@ def media_player_controls(
         # prompt for new quality
         if config.use_fzf:
             quality = fzf.run(
-                options, prompt="Select Quality:", header="Quality Options"
+                options, prompt="Select Quality", header="Quality Options"
             )
         elif config.use_rofi:
             quality = Rofi.run(options, "Select Quality")
@@ -302,7 +302,7 @@ def media_player_controls(
         options = ["sub", "dub"]
         if config.use_fzf:
             translation_type = fzf.run(
-                options, prompt="Select Translation Type: ", header="Lang Options"
+                options, prompt="Select Translation Type", header="Lang Options"
             ).lower()
         elif config.use_rofi:
             translation_type = Rofi.run(options, "Select Translation Type")
@@ -348,7 +348,7 @@ def media_player_controls(
     if config.use_fzf:
         action = fzf.run(
             choices,
-            prompt="Select Action:",
+            prompt="Select Action",
         )
     elif config.use_rofi:
         action = Rofi.run(choices, "Select Action")
@@ -447,7 +447,7 @@ def provider_anime_episode_servers_menu(
             if config.use_fzf:
                 server_name = fzf.run(
                     choices,
-                    prompt="Select Server: ",
+                    prompt="Select Server",
                     header="Servers",
                 )
             elif config.use_rofi:
@@ -734,7 +734,7 @@ def provider_anime_episodes_menu(
             )
         if config.use_fzf:
             current_episode_number = fzf.run(
-                choices, prompt="Select Episode:", header=anime_title, preview=preview
+                choices, prompt="Select Episode", header=anime_title, preview=preview
             )
         elif config.use_rofi:
             current_episode_number = Rofi.run(choices, "Select Episode")
@@ -892,7 +892,7 @@ def anime_provider_search_results_menu(
         if config.use_fzf:
             provider_anime_title = fzf.run(
                 choices,
-                prompt="Select Search Result:",
+                prompt="Select Search Result",
                 header="Anime Search Results",
             )
 
@@ -967,7 +967,7 @@ def media_actions_menu(
             media_actions_menu(config, fastanime_runtime_state)
         else:
             if not config.use_rofi:
-                print("no trailer available :confused:")
+                print("no trailer available :confused")
                 input("Enter to continue...")
             else:
                 if not Rofi.confirm("No trailler found!!Enter to continue"):
@@ -1100,7 +1100,7 @@ def media_actions_menu(
         options = ["Sub", "Dub"]
         if config.use_fzf:
             translation_type = fzf.run(
-                options, prompt="Select Translation Type:", header="Language Options"
+                options, prompt="Select Translation Type", header="Language Options"
             )
         elif config.use_rofi:
             translation_type = Rofi.run(options, "Select Translation Type")
@@ -1129,10 +1129,10 @@ def media_actions_menu(
         if config.use_fzf:
             player = fzf.run(
                 options,
-                prompt="Select Player:",
+                prompt="Select Player",
             )
         elif config.use_rofi:
-            player = Rofi.run(options, "Select Player: ")
+            player = Rofi.run(options, "Select Player")
         else:
             player = fuzzy_inquirer(
                 options,
@@ -1269,7 +1269,7 @@ def media_actions_menu(
         options = list(anime_sources.keys())
         if config.use_fzf:
             provider = fzf.run(
-                options, prompt="Select Translation Type:", header="Language Options"
+                options, prompt="Select Translation Type", header="Language Options"
             )
         elif config.use_rofi:
             provider = Rofi.run(options, "Select Translation Type")
@@ -1403,14 +1403,14 @@ def anilist_results_menu(
             preview = get_fzf_anime_preview(search_results, anime_data.keys())
             selected_anime_title = fzf.run(
                 choices,
-                prompt="Select Anime: ",
+                prompt="Select Anime",
                 header="Search Results",
                 preview=preview,
             )
         else:
             selected_anime_title = fzf.run(
                 choices,
-                prompt="Select Anime: ",
+                prompt="Select Anime",
                 header="Search Results",
             )
     elif config.use_rofi:

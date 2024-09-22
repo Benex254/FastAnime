@@ -99,7 +99,7 @@ def search(config: "Config", anime_titles: str, episode_range: str):
                 preview = get_fzf_manga_preview(search_results)
             if config.use_fzf:
                 search_result_manga_title = fzf.run(
-                    choices, "Please Select title: ", preview=preview
+                    choices, "Please Select title", preview=preview
                 )
             elif config.use_rofi:
                 search_result_manga_title = Rofi.run(choices, "Please Select Title")
@@ -189,7 +189,7 @@ def search(config: "Config", anime_titles: str, episode_range: str):
                 choices = list(search_results_.keys())
                 if config.use_fzf:
                     search_result_manga_title = fzf.run(
-                        choices, "Please Select title: ", "FastAnime"
+                        choices, "Please Select title", "FastAnime"
                     )
                 elif config.use_rofi:
                     search_result_manga_title = Rofi.run(choices, "Please Select Title")
@@ -266,7 +266,7 @@ def search(config: "Config", anime_titles: str, episode_range: str):
                     if config.use_fzf:
                         episode = fzf.run(
                             choices,
-                            "Select an episode: ",
+                            "Select an episode",
                             header=search_result_manga_title,
                         )
                     elif config.use_rofi:
@@ -320,7 +320,7 @@ def search(config: "Config", anime_titles: str, episode_range: str):
                             server = config.server
                         else:
                             if config.use_fzf:
-                                server = fzf.run(servers_names, "Select an link: ")
+                                server = fzf.run(servers_names, "Select an link")
                             elif config.use_rofi:
                                 server = Rofi.run(servers_names, "Select an link")
                             else:

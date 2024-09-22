@@ -207,7 +207,7 @@ def download(
             choices = list(search_results_.keys())
             if config.use_fzf:
                 selected_anime_title = fzf.run(
-                    choices, "Please Select title: ", "FastAnime"
+                    choices, "Please Select title", "FastAnime"
                 )
             else:
                 selected_anime_title = fuzzy_inquirer(
@@ -319,7 +319,7 @@ def download(
                         server_name = config.server
                     else:
                         if config.use_fzf:
-                            server_name = fzf.run(servers_names, "Select an link: ")
+                            server_name = fzf.run(servers_names, "Select an link")
                         else:
                             server_name = fuzzy_inquirer(
                                 servers_names,

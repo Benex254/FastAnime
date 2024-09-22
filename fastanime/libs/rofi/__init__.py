@@ -25,7 +25,7 @@ class RofiApi:
         args = [self.ROFI_EXECUTABLE]
         if self.rofi_theme:
             args.extend(["-no-config", "-theme", self.rofi_theme])
-        args.extend(["-p", prompt_text, "-i", "-show-icons", "-dmenu"])
+        args.extend(["-p", f"{prompt_text.title()}", "-i", "-show-icons", "-dmenu"])
         result = subprocess.run(
             args,
             input=rofi_input,

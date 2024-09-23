@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fastanime"
-version = "2.5.4.dev1"
+version = "2.5.5.dev1"
 description = "A browser anime site experience from the terminal"
 authors = ["Benextempest <benextempest@gmail.com>"]
 license = "UNLICENSE"
@@ -11,16 +11,16 @@ python = "^3.10"
 yt-dlp = "^2024.5.27"
 thefuzz = "^0.22.1"
 requests = "^2.32.3"
-rich = { version = "^13.7.1", optional = true }
-click = { version = "^8.1.7", optional = true }
-inquirerpy = { version = "^0.3.4", optional = true }
+rich = { version = "^13.7.1", optional = false }
+click = { version = "^8.1.7", optional = false }
+inquirerpy = { version = "^0.3.4", optional = false }
 mpv = { version = "^1.0.7", optional = true }
 plyer = { version = "^2.1.0", optional = true }
 
 
 [tool.poetry.extras]
-full = ["plyer", "mpv", "rich", "click", "inquirerpy"]
-cli = ["rich", "click", "inquirerpy"]
+full = ["plyer", "mpv"]
+# cli = ["rich", "click", "inquirerpy"]
 mpv = ["mpv"]
 notifications = ["plyer"]
 

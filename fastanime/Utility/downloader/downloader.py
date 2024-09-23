@@ -79,7 +79,14 @@ class YtDLPDownloader:
             if not info:
                 continue
             if i == 0:
-                vid_path = info["requested_downloads"][0]["filepath"]
+                vid_path: str = info["requested_downloads"][0]["filepath"]
+                if vid_path.endswith(".unknown_video"):
+                    print("Normalizing path...")
+                    _vid_path = vid_path.replace(".unknown_video", ".mp4")
+                    shutil.move(vid_path, _vid_path)
+                    vid_path = _vid_path
+                    print("successfully normalized path")
+
             else:
                 sub_path = info["requested_downloads"][0]["filepath"]
         if sub_path and vid_path and merge:

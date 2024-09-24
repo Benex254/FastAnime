@@ -59,6 +59,19 @@ class YtDLPDownloader:
         """
         anime_title = sanitize_filename(anime_title)
         episode_title = sanitize_filename(episode_title)
+        if url.endswith(".torrent"):
+            WEBTORRENT_CLI = shutil.which("webtorrent")
+            if not WEBTORRENT_CLI:
+                return
+            cmd = [
+                WEBTORRENT_CLI,
+                "download",
+                url,
+                "--out",
+                os.path.join(download_dir, anime_title, episode_title),
+            ]
+            subprocess.run(cmd)
+            return
         ydl_opts = {
             # Specify the output path and template
             "http_headers": headers,

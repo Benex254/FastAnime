@@ -19,6 +19,7 @@ class PageInfo(TypedDict):
 class SearchResult(TypedDict):
     id: str
     title: str
+    otherTitles: list[str]
     availableEpisodes: list[str]
     type: str
     score: int

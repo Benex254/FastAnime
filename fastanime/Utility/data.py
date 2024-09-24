@@ -12,6 +12,7 @@ anime_normalizer_raw = {
     },
     "hianime": {"My Star": "Oshi no Ko"},
     "animepahe": {"Azumanga Daiou The Animation": "Azumanga Daioh"},
+    "nyaa": {},
 }
 
 

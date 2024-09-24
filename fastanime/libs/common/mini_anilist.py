@@ -96,32 +96,36 @@ def search_for_manga_with_anilist(manga_title: str):
         }
 
 
-def search_for_anime_with_anilist(anime_title: str):
+def search_for_anime_with_anilist(anime_title: str, prefer_eng_titles=False):
     query = """
-        query ($query: String) {
-        Page(perPage: 50) {
-            pageInfo {
-            total
-            currentPage
-            hasNextPage
-            }
-            media(search: $query, type: ANIME,genre_not_in: ["hentai"]) {
-            id
-            idMal
-            title {
-                romaji
-                english
-            }
-            episodes
-            status
-            nextAiringEpisode {
-                timeUntilAiring
-                airingAt
-                episode
-            }
-            }
-        }
-        }
+query ($query: String) {
+  Page(perPage: 50) {
+    pageInfo {
+      total
+      currentPage
+      hasNextPage
+    }
+    media(search: $query, type: ANIME, genre_not_in: ["hentai"]) {
+      id
+      idMal
+      title {
+        romaji
+        english
+      }
+      episodes
+      status
+      synonyms
+      nextAiringEpisode {
+        timeUntilAiring
+        airingAt
+        episode
+      }
+      coverImage {
+        large
+      }
+    }
+  }
+}
     """
     response = post(
         ANILIST_ENDPOINT,
@@ -134,22 +138,49 @@ def search_for_anime_with_anilist(anime_title: str):
             "pageInfo": anilist_data["data"]["Page"]["pageInfo"],
             "results": [
                 {
-                    "id": anime_result["id"],
-                    "title": anime_result["title"]["romaji"]
-                    or anime_result["title"]["english"],
-                    "type": "anime",
-                    "availableEpisodes": list(
-                        range(
-                            1,
+                    "id": str(anime_result["id"]),
+                    "title": (
+                        (
+                            anime_result["title"]["english"]
+                            or anime_result["title"]["romaji"]
+                        )
+                        if prefer_eng_titles
+                        else (
+                            anime_result["title"]["romaji"]
+                            or anime_result["title"]["english"]
+                        )
+                    ),
+                    "otherTitles": [
+                        (
                             (
-                                anime_result["episodes"]
-                                if not anime_result["status"] == "RELEASING"
-                                and anime_result["episodes"]
-                                else (
-                                    anime_result["nextAiringEpisode"]["episode"] - 1
-                                    if anime_result["nextAiringEpisode"]
-                                    else 0
-                                )
+                                anime_result["title"]["romaji"]
+                                or anime_result["title"]["english"]
+                            )
+                            if prefer_eng_titles
+                            else (
+                                anime_result["title"]["english"]
+                                or anime_result["title"]["romaji"]
+                            )
+                        ),
+                        *(anime_result["synonyms"] or []),
+                    ],
+                    "type": "anime",
+                    "poster": anime_result["coverImage"]["large"],
+                    "availableEpisodes": list(
+                        map(
+                            str,
+                            range(
+                                1,
+                                (
+                                    anime_result["episodes"]
+                                    if not anime_result["status"] == "RELEASING"
+                                    and anime_result["episodes"]
+                                    else (
+                                        anime_result["nextAiringEpisode"]["episode"] - 1
+                                        if anime_result["nextAiringEpisode"]
+                                        else 0
+                                    )
+                                ),
                             ),
                         )
                     ),

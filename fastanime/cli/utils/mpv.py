@@ -63,6 +63,10 @@ def run_mpv(
     # Regex to check if the link is a YouTube URL
     youtube_regex = r"(https?://)?(www\.)?(youtube|youtu|youtube-nocookie)\.(com|be)/.+"
 
+    if link.endswith(".torrent"):
+        cmd = ["webtorrent", link, f"--{player}"]
+        subprocess.run(cmd)
+        return "0", "0"
     if player == "vlc":
         VLC = shutil.which("vlc")
         if not VLC and not S_PLATFORM == "win32":

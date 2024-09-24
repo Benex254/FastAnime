@@ -1,6 +1,6 @@
 # **FastAnime**
 
-![PyPI - Downloads](https://img.shields.io/pypi/dm/fastanime)  ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/Benex254/FastAnime/test.yml?label=Tests)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/fastanime) ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/Benex254/FastAnime/test.yml?label=Tests)
 ![Discord](https://img.shields.io/discord/1250887070906323096?label=Discord)
 ![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/Benex254/FastAnime)
 ![GitHub deployments](https://img.shields.io/github/deployments/Benex254/fastanime/pypi?label=PyPi%20Publish)
@@ -68,7 +68,7 @@ Heavily inspired by [animdl](https://github.com/justfoolingaround/animdl), [jerr
 
 > [!IMPORTANT]
 >
-> This project currently scrapes allanime, hianime and animepahe. The site is in the public domain and can be accessed by any one with a browser.
+> This project currently scrapes allanime, hianime and animepahe, nyaa. The site is in the public domain and can be accessed by any one with a browser.
 
 ## Installation
 
@@ -182,6 +182,7 @@ The only required external dependency, unless you won't be streaming, is [MPV](h
 
 **Other external dependencies that will just make your experience better:**
 
+- [webtorrent-cli](https://github.com/webtorrent/webtorrent-cli) used when the provider is nyaa
 - [ffmpeg](https://www.ffmpeg.org/) is required to be in your path environment variables to properly download [hls](https://www.cloudflare.com/en-gb/learning/video/what-is-http-live-streaming/) streams.
 - [fzf](https://github.com/junegunn/fzf) 🔥 which is used as a better alternative to the ui.
 - [rofi](https://github.com/davatorium/rofi) 🔥 which is used as another alternative ui + the the desktop entry ui
@@ -251,7 +252,7 @@ Available options for the fastanime include:
 - `--log-file` allow logging to a file
 - `--rich-traceback` allow rich traceback
 - `--use-mpv-mod/--use-default-player` whether to use python-mpv
-- `--provider <allanime/animepahe>` anime site of choice to scrape from
+- `--provider <allanime/animepahe/hianime/nyaa>` anime site of choice to scrape from
 - `--sync-play` or `-sp` use syncplay for streaming anime so you can watch with your friends
 - `--sub-lang <en/or any other common shortform for country>` regex is used to determine the appropriate. Only works when provider is hianime.
 - `--normalize-titles/--no-normalize-titles` whether to normalize provider titles

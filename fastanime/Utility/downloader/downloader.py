@@ -62,6 +62,12 @@ class YtDLPDownloader:
         if url.endswith(".torrent"):
             WEBTORRENT_CLI = shutil.which("webtorrent")
             if not WEBTORRENT_CLI:
+                import time
+
+                print(
+                    "webtorrent cli is not installed which is required for downloading and streaming from nyaa\nplease install it or use another provider"
+                )
+                time.sleep(120)
                 return
             cmd = [
                 WEBTORRENT_CLI,

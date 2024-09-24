@@ -17,7 +17,7 @@ from ..base_provider import AnimeProvider
 from ..decorators import debug_provider
 from ..utils import give_random_quality
 from .constants import SERVERS_AVAILABLE
-from .types import AniWatchStream
+from .types import HiAnimeStream
 
 logger = logging.getLogger(__name__)
 
@@ -41,7 +41,7 @@ class ParseAnchorAndImgTag(HTMLParser):
 class HiAnimeApi(AnimeProvider):
     # HEADERS = {"Referer": "https://hianime.to/home"}
 
-    @debug_provider("ANIWATCH")
+    @debug_provider("HIANIME")
     def search_for_anime(self, anime_title: str, *args):
         query = quote_plus(anime_title)
         url = f"https://hianime.to/search?keyword={query}"
@@ -88,20 +88,20 @@ class HiAnimeApi(AnimeProvider):
         self.search_results = results
         return {"pageInfo": {}, "results": results}
 
-    @debug_provider("ANIWATCH")
-    def get_anime(self, aniwatch_id, *args):
+    @debug_provider("HIANIME")
+    def get_anime(self, hianime_id, *args):
         anime_result = {}
         for anime in self.search_results:
-            if anime["id"] == aniwatch_id:
+            if anime["id"] == hianime_id:
                 anime_result = anime
                 break
-        anime_url = f"https://hianime.to/ajax/v2/episode/list/{aniwatch_id}"
+        anime_url = f"https://hianime.to/ajax/v2/episode/list/{hianime_id}"
         response = self.session.get(anime_url, timeout=10)
         if response.ok:
             response_json = response.json()
-            aniwatch_anime_page = response_json["html"]
+            hianime_anime_page = response_json["html"]
             episodes_info_container_html = get_element_html_by_class(
-                "ss-list", aniwatch_anime_page
+                "ss-list", hianime_anime_page
             )
             episodes_info_html_list = get_elements_html_by_class(
                 "ep-item", episodes_info_container_html
@@ -127,7 +127,7 @@ class HiAnimeApi(AnimeProvider):
                 for episode in episodes_info_dicts
             ]
             return {
-                "id": aniwatch_id,
+                "id": hianime_id,
                 "availableEpisodesDetail": {
                     "dub": episodes,
                     "sub": episodes,
@@ -138,7 +138,7 @@ class HiAnimeApi(AnimeProvider):
                 "episodes_info": self.episodes_info,
             }
 
-    @debug_provider("ANIWATCH")
+    @debug_provider("HIANIME")
     def get_episode_streams(
         self, anime_id, anime_title, episode, translation_type, *args
     ):
@@ -166,7 +166,7 @@ class HiAnimeApi(AnimeProvider):
                     "server-item", servers_containers_html[0]
                 )
             except Exception:
-                logger.warning("AniWatch: sub not found")
+                logger.warning("HiAnime: sub not found")
                 servers_html_sub = None
 
             # dub servers
@@ -175,7 +175,7 @@ class HiAnimeApi(AnimeProvider):
                     "server-item", servers_containers_html[1]
                 )
             except Exception:
-                logger.warning("AniWatch: dub not found")
+                logger.warning("HiAnime: dub not found")
                 servers_html_dub = None
 
             if translation_type == "dub":
@@ -185,7 +185,7 @@ class HiAnimeApi(AnimeProvider):
             if not servers_html:
                 return
 
-            @debug_provider("ANIWATCH")
+            @debug_provider("HIANIME")
             def _get_server(server_name, server_html):
                 # keys: [ data-type: translation_type, data-id: embed_id, data-server-id: server_id ]
                 servers_info = extract_attributes(server_html)
@@ -205,7 +205,7 @@ class HiAnimeApi(AnimeProvider):
                     link_to_streams = f"https://{provider_domain}/embed-{embed_type}/ajax/e-{episode_number}/getSources?id={source_id}"
                     link_to_streams_response = self.session.get(link_to_streams)
                     if link_to_streams_response.ok:
-                        juicy_streams_json: "AniWatchStream" = (
+                        juicy_streams_json: "HiAnimeStream" = (
                             link_to_streams_response.json()
                         )
                         return {

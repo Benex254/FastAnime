@@ -42,7 +42,7 @@ if TYPE_CHECKING:
   # remember python indexing starts at 0
   fastanime download -t <anime-title> -r '<episode-1>:<episode>'
 \b
-  # merge subtitles with ffmpeg to mkv format; aniwatch tends to give subs as separate files
+  # merge subtitles with ffmpeg to mkv format; hianime tends to give subs as separate files
   # and dont prompt for anything
   # eg existing file in destination instead remove
   # and clean

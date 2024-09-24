@@ -1,26 +1,26 @@
 from typing import Literal, TypedDict
 
 
-class AniWatchSkipTime(TypedDict):
+class HiAnimeSkipTime(TypedDict):
     start: int
     end: int
 
 
-class AniWatchSource(TypedDict):
+class HiAnimeSource(TypedDict):
     file: str
     type: str
 
 
-class AniWatchTrack(TypedDict):
+class HiAnimeTrack(TypedDict):
     file: str
     label: str
     kind: Literal["captions", "thumbnails", "audio"]
 
 
-class AniWatchStream(TypedDict):
-    sources: list[AniWatchSource]
-    tracks: list[AniWatchTrack]
+class HiAnimeStream(TypedDict):
+    sources: list[HiAnimeSource]
+    tracks: list[HiAnimeTrack]
     encrypted: bool
-    intro: AniWatchSkipTime
-    outro: AniWatchSkipTime
+    intro: HiAnimeSkipTime
+    outro: HiAnimeSkipTime
     server: int

@@ -68,7 +68,7 @@ Heavily inspired by [animdl](https://github.com/justfoolingaround/animdl), [jerr
 
 > [!IMPORTANT]
 >
-> This project currently scrapes allanime, aniwatch and animepahe. The site is in the public domain and can be accessed by any one with a browser.
+> This project currently scrapes allanime, hianime and animepahe. The site is in the public domain and can be accessed by any one with a browser.
 
 ## Installation
 
@@ -196,7 +196,7 @@ The only required external dependency, unless you won't be streaming, is [MPV](h
 ## Usage
 
 The project offers a featureful command-line interface and MPV interface through the use of python-mpv.
-The project also offers subs in different languages thanks to aniwatch provider.
+The project also offers subs in different languages thanks to hianime provider.
 
 ### The Commandline interface :fire:
 
@@ -240,7 +240,7 @@ Available options for the fastanime include:
 - `--default` use the default ui
 - `--preview` show a preview when using fzf
 - `--no-preview` dont show a preview when using fzf
-- `--format <yt-dlp format string>` or `-f <yt-dlp format string>` set the format of anime downloaded and streamed based on [yt-dlp format](https://github.com/yt-dlp/yt-dlp#format-selection). Works when `--server gogoanime` or on providers that provide multi quality streams eg aniwatch
+- `--format <yt-dlp format string>` or `-f <yt-dlp format string>` set the format of anime downloaded and streamed based on [yt-dlp format](https://github.com/yt-dlp/yt-dlp#format-selection). Works when `--server gogoanime` or on providers that provide multi quality streams eg hianime
 - `--icons/--no-icons` toggle the visibility of the icons
 - `--skip/--no-skip` whether to skip the opening and ending theme songs.
 - `--rofi` use rofi for the ui
@@ -253,7 +253,7 @@ Available options for the fastanime include:
 - `--use-mpv-mod/--use-default-player` whether to use python-mpv
 - `--provider <allanime/animepahe>` anime site of choice to scrape from
 - `--sync-play` or `-sp` use syncplay for streaming anime so you can watch with your friends
-- `--sub-lang <en/or any other common shortform for country>` regex is used to determine the appropriate. Only works when provider is aniwatch.
+- `--sub-lang <en/or any other common shortform for country>` regex is used to determine the appropriate. Only works when provider is hianime.
 - `--normalize-titles/--no-normalize-titles` whether to normalize provider titles
 - `--manga` toggle experimental manga mode
 
@@ -431,7 +431,7 @@ fastanime download -t <anime-title> -r ':<episodes-end>'
 # remember python indexing starts at 0
 fastanime download -t <anime-title> -r '<episode-1>:<episode>'
 
-# merge subtitles with ffmpeg to mkv format; aniwatch tends to give subs as separate files
+# merge subtitles with ffmpeg to mkv format; hianime tends to give subs as separate files
 # and dont prompt for anything
 # eg existing file in destination instead remove
 # and clean
@@ -717,10 +717,10 @@ quality = 1080
 # this also applies to episode titles
 normalize_titles = True
 
-# can be [allanime, animepahe, aniwatch]
+# can be [allanime, animepahe, hianime]
 # allanime is the most realible
 # animepahe provides different links to streams of different quality so a quality can be selected reliably with --quality option
-# aniwatch which is now hianime usually provides subs in different languuages and its servers are generally faster
+# hianime which is now hianime usually provides subs in different languuages and its servers are generally faster
 provider = allanime
 
 # Display language [english, romaji]
@@ -772,7 +772,7 @@ notification_duration = 2
 
 # used when the provider gives subs of different languages
 # currently its the case for:
-# aniwatch
+# hianime
 # the values for this option are the short names for countries
 # regex is used to determine what you selected
 sub_lang = eng
@@ -799,7 +799,7 @@ translation_type = sub
 # what server to use for a particular provider
 # allanime: [dropbox, sharepoint, wetransfer, gogoanime, wixmp]
 # animepahe: [kwik]
-# aniwatch: [HD1, HD2, StreamSB, StreamTape]
+# hianime: [HD1, HD2, StreamSB, StreamTape]
 # 'top' can also be used as a value for this option
 # 'top' will cause fastanime to auto select the first server it sees
 # this saves on resources and is faster since not all servers are being fetched
@@ -860,7 +860,7 @@ force_window = immediate
 # only works for downloaded anime if:
 # provider=allanime, server=gogoanime
 # provider=allanime, server=wixmp
-# provider=aniwatch
+# provider=hianime
 # this is because they provider a m3u8 file that contans multiple quality streams
 format = best[height<=1080]/bestvideo[height<=1080]+bestaudio/best
 

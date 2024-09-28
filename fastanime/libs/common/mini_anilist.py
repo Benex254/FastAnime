@@ -176,11 +176,17 @@ query ($query: String) {
                                     if not anime_result["status"] == "RELEASING"
                                     and anime_result["episodes"]
                                     else (
-                                        anime_result["nextAiringEpisode"]["episode"] - 1
-                                        if anime_result["nextAiringEpisode"]
-                                        else 0
+                                        (
+                                            anime_result["nextAiringEpisode"]["episode"]
+                                            - 1
+                                            if anime_result["nextAiringEpisode"]
+                                            else 0
+                                        )
+                                        if not anime_result["episodes"]
+                                        else anime_result["episodes"]
                                     )
-                                ),
+                                )
+                                + 1,
                             ),
                         )
                     ),

@@ -60,6 +60,7 @@ class CachedRequestsSession(requests.Session):
     ):
         super().__init__(*args, **kwargs)
 
+        self.lockfile_path = cache_db_lock_file
         self.cache_db_path = cache_db_path
         self.max_lifetime = max_lifetime
         self.max_size = max_size
@@ -200,6 +201,11 @@ class CachedRequestsSession(requests.Session):
         return mime in caching_mimetypes and any(
             content in caching_mimetypes[mime] for content in contents.split("+")
         )
+
+    def kill_connection_to_db(self):
+        lockfile_path = pathlib.Path(self.lockfile_path)
+        self.connection.close()
+        lockfile_path.unlink(missing_ok=True)
 
     @staticmethod
     def acquirer_lock(lock_file: str):

@@ -1,7 +1,4 @@
-"""An abstraction over all providers offering added features with a simple and well typed api
-
-[TODO:description]
-"""
+"""An abstraction over all providers offering added features with a simple and well typed api"""
 
 import importlib
 import logging
@@ -40,6 +37,10 @@ class AnimeProvider:
 
     def lazyload_provider(self, provider):
         """updates the current provider being used"""
+        try:
+            self.anime_provider.session.kill_connection_to_db()
+        except Exception:
+            pass
         _, anime_provider_cls_name = anime_sources[provider].split(".", 1)
         package = f"fastanime.libs.anime_provider.{provider}"
         provider_api = importlib.import_module(".api", package)

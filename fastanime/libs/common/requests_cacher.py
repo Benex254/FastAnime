@@ -26,45 +26,7 @@ caching_mimetypes = {
 
 
 class CachedRequestsSession(requests.Session):
-    """
-    A requests session object that supports caching of its requests in addition to session management
-
-    :param cache_db_path: The path to the cache database.
-    :param cache_db_lock_file: The path to the cache database lock file.
-    :param max_lifetime: The maximum lifetime of a cache entry.
-    :param max_size: The maximum size of the cache database.
-    :param table_name: The name of the table to use for the cache.
-
-    This class adds a middleware to the HTTPX client that
-    caches the responses to an sqlite3 database.
-
-    The cache database is a single table with the following
-    columns:
-
-    - url: The URL of the request.
-    - status_code: The status code of the response.
-    - request_headers: The request headers of the request.
-    - response_headers: The response headers of the response.
-    - data: The data of the response.
-    - redirection_policy: The redirection policy of the request.
-    - cache_expiry: The expiry time of the cache entry.
-
-    Usage:
-
-    >>> from animdl.utils.http_caching import CachingHTTPXClient
-    >>> import time
-    >>> client = CachingHTTPXClient("cache.db", "cache.lock")
-    >>> initial_time = time.time()
-    >>> client.get("https://example.com")
-    <Response [200 OK]>
-    >>> print("Request took:", time.time() - initial_time)
-    >>> initial_time = time.time()
-    >>> client.get("https://example.com")
-    <Response [200 OK]>
-    >>> print("Cached request took:", time.time() - initial_time)
-    """
-
-    request_functions = (
+    __request_functions__ = (
         "get",
         "options",
         "head",
@@ -81,7 +43,7 @@ class CachedRequestsSession(requests.Session):
 
             return wrapper
 
-        for func in cls.request_functions:
+        for func in cls.__request_functions__:
             setattr(cls, func, caching_params(func))
 
         return super().__new__(cls)

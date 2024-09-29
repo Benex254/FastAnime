@@ -60,7 +60,7 @@ class CachedRequestsSession(requests.Session):
     ):
         super().__init__(*args, **kwargs)
 
-        self.lockfile_path = cache_db_lock_file
+        self.lockfile_path = pathlib.Path(cache_db_lock_file)
         self.cache_db_path = cache_db_path
         self.max_lifetime = max_lifetime
         self.max_size = max_size
@@ -87,7 +87,7 @@ class CachedRequestsSession(requests.Session):
         )
 
         atexit.register(
-            lambda connection: connection.commit() or connection.close(),
+            self._kill_connection_to_db,
             self.connection,
         )
 
@@ -203,30 +203,34 @@ class CachedRequestsSession(requests.Session):
         )
 
     def kill_connection_to_db(self):
-        lockfile_path = pathlib.Path(self.lockfile_path)
-        self.connection.close()
-        lockfile_path.unlink(missing_ok=True)
+        self._kill_connection_to_db(self.connection)
+        self.lockfile_path.unlink()
+        atexit.unregister(self.lockfile_path.unlink)
+        atexit.unregister(self._kill_connection_to_db)
 
     @staticmethod
-    def acquirer_lock(lock_file: str):
-        """the function creates a lock file preventing other instances of the cacher from running at the same time"""
-        lockfile_path = pathlib.Path(lock_file)
+    def _kill_connection_to_db(connection):
+        connection.commit()
+        connection.close()
 
-        if lockfile_path.exists():
-            with lockfile_path.open("r") as f:
+    def acquirer_lock(self, lock_file: str):
+        """the function creates a lock file preventing other instances of the cacher from running at the same time"""
+
+        if self.lockfile_path.exists():
+            with self.lockfile_path.open("r") as f:
                 pid = f.read()
 
             raise RuntimeError(
                 f"This instance of {__class__.__name__!r} is already running with PID: {pid}. "
                 "Sqlite3 does not support multiple connections to the same database. "
                 "If you are sure that no other instance of this class is running, "
-                f"delete the lock file at {lockfile_path.as_posix()!r} and try again."
+                f"delete the lock file at {self.lockfile_path.as_posix()!r} and try again."
             )
 
-        with lockfile_path.open("w") as f:
+        with self.lockfile_path.open("w") as f:
             f.write(str(os.getpid()))
 
-        atexit.register(lockfile_path.unlink)
+        atexit.register(self.lockfile_path.unlink)
 
 
 if __name__ == "__main__":

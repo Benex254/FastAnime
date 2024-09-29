@@ -253,10 +253,7 @@ def run_cli(
     if sync_play:
         ctx.obj.sync_play = sync_play
     if provider:
-        import os
-
         ctx.obj.provider = provider
-        os.environ["CURRENT_FASTANIME_PROVIDER"] = provider
     if server:
         ctx.obj.server = server
     if format:
@@ -330,3 +327,4 @@ def run_cli(
         if rofi_theme_confirm:
             ctx.obj.rofi_theme_confirm = rofi_theme_confirm
             Rofi.rofi_theme_confirm = rofi_theme_confirm
+    ctx.obj.set_fastanime_config_environs()

@@ -27,7 +27,7 @@ class Config(object):
     )
     anime_provider: "AnimeProvider"
     user_data = {"watch_history": {}, "animelist": [], "user": {}}
-    default_options = {
+    default_config = {
         "quality": "1080",
         "auto_next": "False",
         "auto_select": "True",
@@ -51,13 +51,14 @@ class Config(object):
         "rofi_theme": "",
         "rofi_theme_input": "",
         "rofi_theme_confirm": "",
-        "ffmpegthumnailer_seek_time": "-1",
+        "ffmpegthumbnailer_seek_time": "-1",
         "sub_lang": "eng",
         "normalize_titles": "true",
         "player": "mpv",
         "episode_complete_at": "80",
         "force_forward_tracking": "true",
         "default_media_list_tracking": "None",
+        "cache_requests": "true",
     }
 
     def __init__(self) -> None:
@@ -65,7 +66,7 @@ class Config(object):
         self.load_config()
 
     def load_config(self):
-        self.configparser = ConfigParser(self.default_options)
+        self.configparser = ConfigParser(self.default_config)
         self.configparser.add_section("stream")
         self.configparser.add_section("general")
         self.configparser.add_section("anilist")
@@ -94,6 +95,7 @@ class Config(object):
         self.episode_complete_at = self.get_episode_complete_at()
         self.default_media_list_tracking = self.get_default_media_list_tracking()
         self.force_forward_tracking = self.get_force_forward_tracking()
+        self.cache_requests = self.get_cache_requests()
         self.server = self.get_server()
         self.format = self.get_format()
         self.player = self.get_player()
@@ -111,10 +113,15 @@ class Config(object):
         self.anime_list: list = self.user_data.get("animelist", [])
         self.user: dict = self.user_data.get("user", {})
 
-        os.environ["CURRENT_FASTANIME_PROVIDER"] = self.provider
         if not os.path.exists(USER_CONFIG_PATH):
             with open(USER_CONFIG_PATH, "w", encoding="utf-8") as config:
                 config.write(self.__repr__())
+
+    def set_fastanime_config_environs(self):
+        current_config = []
+        for key in self.default_config:
+            current_config.append((f"FASTANIME_{key.upper()}", str(getattr(self, key))))
+        os.environ.update(current_config)
 
     def update_user(self, user):
         self.user = user
@@ -170,7 +177,7 @@ class Config(object):
         return self.configparser.get("general", "provider")
 
     def get_ffmpegthumnailer_seek_time(self):
-        return self.configparser.getint("general", "ffmpegthumnailer_seek_time")
+        return self.configparser.getint("general", "ffmpegthumbnailer_seek_time")
 
     def get_preferred_language(self):
         return self.configparser.get("general", "preferred_language")
@@ -205,6 +212,9 @@ class Config(object):
 
     def get_force_forward_tracking(self):
         return self.configparser.getboolean("general", "force_forward_tracking")
+
+    def get_cache_requests(self):
+        return self.configparser.getboolean("general", "cache_requests")
 
     def get_default_media_list_tracking(self):
         return self.configparser.get("general", "default_media_list_tracking")
@@ -365,6 +375,13 @@ default_media_list_tracking = {self.default_media_list_tracking}
 # whether media list tracking should only be updated when the next episode is greater than the previous
 # this affects only your anilist anime list
 force_forward_tracking = {self.force_forward_tracking}
+
+# whether to cache requests [true/false]
+# this makes the experience better and more faster
+# as data need not always be fetched from web server
+# and instead can be gotten from a locally
+# from the cached_requests_db
+cache_requests = {self.cache_requests}
 
 
 [stream]

@@ -20,7 +20,7 @@ def get_anime_normalizer():
     """Used because there are different providers"""
     import os
 
-    current_provider = os.environ["CURRENT_FASTANIME_PROVIDER"]
+    current_provider = os.environ["FASTANIME_PROVIDER"]
     return anime_normalizer_raw[current_provider]
 
 

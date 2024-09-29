@@ -6,7 +6,7 @@ from fastanime.cli import run_cli
 
 @pytest.fixture
 def runner():
-    return CliRunner()
+    return CliRunner(env={"FASTANIME_CACHE_REQUESTS": "false"})
 
 
 def test_main_help(runner: CliRunner):

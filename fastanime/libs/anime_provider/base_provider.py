@@ -11,7 +11,7 @@ class AnimeProvider:
     HEADERS = {}
 
     def __init__(
-        self, cache_requests=os.environ.get("FASTANIME_CACHE_REQUESTS", "true")
+        self, cache_requests=os.environ.get("FASTANIME_CACHE_REQUESTS", "false")
     ) -> None:
         if cache_requests.lower() == "true":
             from ...constants import APP_CACHE_DIR

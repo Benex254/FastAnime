@@ -18,8 +18,8 @@ class AnimeProvider:
             from ..common.requests_cacher import CachedRequestsSession
 
             self.session = CachedRequestsSession(
-                os.path.join(APP_CACHE_DIR, "cached_requests.db"),
-                os.path.join(APP_CACHE_DIR, "cached_requests.lock"),
+                os.path.join(APP_CACHE_DIR, "anime_provider_cached_requests.db"),
+                os.path.join(APP_CACHE_DIR, "anime_provider_cached_requests.lock"),
             )
         else:
             self.session = requests.session()

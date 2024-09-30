@@ -55,11 +55,13 @@ class CachedRequestsSession(requests.Session):
         max_lifetime: int = 604800,
         max_size: int = (1024**2) * 10,
         table_name: str = "fastanime_requests_cache",
+        clean_db=False,
         *args,
         **kwargs,
     ):
         super().__init__(*args, **kwargs)
 
+        self.clean_db = clean_db
         self.lockfile_path = pathlib.Path(cache_db_lock_file)
         self.cache_db_path = cache_db_path
         self.max_lifetime = max_lifetime
@@ -158,6 +160,7 @@ class CachedRequestsSession(requests.Session):
             )
             response.request = _request.prepare()
             response.elapsed = time_after_access_db - time_before_access_db
+            logger.debug(f"Cacher Elapsed: {response.elapsed}")
             return response
 
         # construct a new response if the request does not already exist in the cache
@@ -208,10 +211,11 @@ class CachedRequestsSession(requests.Session):
         atexit.unregister(self.lockfile_path.unlink)
         atexit.unregister(self._kill_connection_to_db)
 
-    @staticmethod
-    def _kill_connection_to_db(connection):
+    def _kill_connection_to_db(self, connection):
         connection.commit()
         connection.close()
+        if self.clean_db:
+            os.remove(self.cache_db_path)
 
     def acquirer_lock(self, lock_file: str):
         """the function creates a lock file preventing other instances of the cacher from running at the same time"""

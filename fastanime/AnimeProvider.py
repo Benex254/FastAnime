@@ -94,7 +94,6 @@ class AnimeProvider:
     def get_episode_streams(
         self,
         anime_id,
-        anime_title,
         episode: str,
         translation_type: str,
     ) -> "Iterator[Server] | None":
@@ -111,6 +110,6 @@ class AnimeProvider:
         """
         anime_provider = self.anime_provider
         results = anime_provider.get_episode_streams(
-            anime_id, anime_title, episode, translation_type
+            anime_id, episode, translation_type
         )
         return results

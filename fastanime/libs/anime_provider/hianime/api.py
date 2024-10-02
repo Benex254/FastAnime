@@ -41,7 +41,9 @@ class ParseAnchorAndImgTag(HTMLParser):
 class HiAnimeApi(AnimeProvider):
     # HEADERS = {"Referer": "https://hianime.to/home"}
 
-    @debug_provider("HIANIME")
+    PROVIDER = "hianime"
+
+    @debug_provider(PROVIDER.upper())
     def search_for_anime(self, anime_title: str, *args):
         query = quote_plus(anime_title)
         url = f"https://hianime.to/search?keyword={query}"
@@ -77,157 +79,163 @@ class HiAnimeApi(AnimeProvider):
             anime_id = anime_link_data["data-id"]
             title = anime_link_data["title"]
 
-            results.append(
-                {
-                    "availableEpisodes": list(range(1, episodes)),
-                    "id": anime_id,
-                    "title": title,
-                    "poster": image_link,
-                }
-            )
-        self.search_results = results
-        return {"pageInfo": {}, "results": results}
-
-    @debug_provider("HIANIME")
-    def get_anime(self, hianime_id, *args):
-        anime_result = {}
-        for anime in self.search_results:
-            if anime["id"] == hianime_id:
-                anime_result = anime
-                break
-        anime_url = f"https://hianime.to/ajax/v2/episode/list/{hianime_id}"
-        response = self.session.get(anime_url, timeout=10)
-        if response.ok:
-            response_json = response.json()
-            hianime_anime_page = response_json["html"]
-            episodes_info_container_html = get_element_html_by_class(
-                "ss-list", hianime_anime_page
-            )
-            episodes_info_html_list = get_elements_html_by_class(
-                "ep-item", episodes_info_container_html
-            )
-            # keys: [ data-number: episode_number, data-id: episode_id, title: episode_title , href:episode_page_url]
-            episodes_info_dicts = [
-                extract_attributes(episode_dict)
-                for episode_dict in episodes_info_html_list
-            ]
-            episodes = [episode["data-number"] for episode in episodes_info_dicts]
-            self.episodes_info = [
-                {
-                    "id": episode["data-id"],
-                    "title": (
-                        (episode["title"] or "").replace(
-                            f"Episode {episode['data-number']}", ""
-                        )
-                        or anime_result["title"]
-                    )
-                    + f"; Episode {episode['data-number']}",
-                    "episode": episode["data-number"],
-                }
-                for episode in episodes_info_dicts
-            ]
-            return {
-                "id": hianime_id,
-                "availableEpisodesDetail": {
-                    "dub": episodes,
-                    "sub": episodes,
-                    "raw": episodes,
-                },
-                "poster": anime_result["poster"],
-                "title": anime_result["title"],
-                "episodes_info": self.episodes_info,
+            result = {
+                "availableEpisodes": list(range(1, episodes)),
+                "id": anime_id,
+                "title": title,
+                "poster": image_link,
             }
 
-    @debug_provider("HIANIME")
-    def get_episode_streams(
-        self, anime_id, anime_title, episode, translation_type, *args
-    ):
-        episode_details = [
-            episode_details
-            for episode_details in self.episodes_info
-            if episode_details["episode"] == episode
-        ]
-        if not episode_details:
-            return
-        episode_details = episode_details[0]
-        episode_url = f"https://hianime.to/ajax/v2/episode/servers?episodeId={episode_details['id']}"
-        response = self.session.get(episode_url)
-        if response.ok:
-            response_json = response.json()
-            episode_page_html = response_json["html"]
-            servers_containers_html = get_elements_html_by_class(
-                "ps__-list", episode_page_html
-            )
-            if not servers_containers_html:
-                return
-            # sub servers
-            try:
-                servers_html_sub = get_elements_html_by_class(
-                    "server-item", servers_containers_html[0]
+            results.append(result)
+
+            self.store.set(result["id"], "search_result", result)
+        return {"pageInfo": {}, "results": results}
+
+    @debug_provider(PROVIDER.upper())
+    def get_anime(self, hianime_id, *args):
+        anime_result = {}
+        if d := self.store.get(str(hianime_id), "search_result"):
+            anime_result = d
+            anime_url = f"https://hianime.to/ajax/v2/episode/list/{hianime_id}"
+            response = self.session.get(anime_url, timeout=10)
+            if response.ok:
+                response_json = response.json()
+                hianime_anime_page = response_json["html"]
+                episodes_info_container_html = get_element_html_by_class(
+                    "ss-list", hianime_anime_page
                 )
-            except Exception:
-                logger.warning("HiAnime: sub not found")
-                servers_html_sub = None
-
-            # dub servers
-            try:
-                servers_html_dub = get_elements_html_by_class(
-                    "server-item", servers_containers_html[1]
+                episodes_info_html_list = get_elements_html_by_class(
+                    "ep-item", episodes_info_container_html
                 )
-            except Exception:
-                logger.warning("HiAnime: dub not found")
-                servers_html_dub = None
-
-            if translation_type == "dub":
-                servers_html = servers_html_dub
-            else:
-                servers_html = servers_html_sub
-            if not servers_html:
-                return
-
-            @debug_provider("HIANIME")
-            def _get_server(server_name, server_html):
-                # keys: [ data-type: translation_type, data-id: embed_id, data-server-id: server_id ]
-                servers_info = extract_attributes(server_html)
-                embed_url = f"https://hianime.to/ajax/v2/episode/sources?id={servers_info['data-id']}"
-                embed_response = self.session.get(embed_url)
-                if embed_response.ok:
-                    embed_json = embed_response.json()
-                    raw_link_to_streams = embed_json["link"]
-                    match = LINK_TO_STREAMS_REGEX.match(raw_link_to_streams)
-                    if not match:
-                        return
-                    provider_domain = match.group(1)
-                    embed_type = match.group(2)
-                    episode_number = match.group(3)
-                    source_id = match.group(4)
-
-                    link_to_streams = f"https://{provider_domain}/embed-{embed_type}/ajax/e-{episode_number}/getSources?id={source_id}"
-                    link_to_streams_response = self.session.get(link_to_streams)
-                    if link_to_streams_response.ok:
-                        juicy_streams_json: "HiAnimeStream" = (
-                            link_to_streams_response.json()
+                # keys: [ data-number: episode_number, data-id: episode_id, title: episode_title , href:episode_page_url]
+                episodes_info_dicts = [
+                    extract_attributes(episode_dict)
+                    for episode_dict in episodes_info_html_list
+                ]
+                episodes = [episode["data-number"] for episode in episodes_info_dicts]
+                episodes_info = [
+                    {
+                        "id": episode["data-id"],
+                        "title": (
+                            (episode["title"] or "").replace(
+                                f"Episode {episode['data-number']}", ""
+                            )
+                            or anime_result["title"]
                         )
-                        return {
-                            "headers": {},
-                            "subtitles": [
-                                {
-                                    "url": track["file"],
-                                    "language": track["label"],
-                                }
-                                for track in juicy_streams_json["tracks"]
-                                if track["kind"] == "captions"
-                            ],
-                            "server": server_name,
-                            "episode_title": episode_details["title"],
-                            "links": give_random_quality(
-                                [
-                                    {"link": link["file"], "type": link["type"]}
-                                    for link in juicy_streams_json["sources"]
-                                ]
-                            ),
-                        }
+                        + f"; Episode {episode['data-number']}",
+                        "episode": episode["data-number"],
+                    }
+                    for episode in episodes_info_dicts
+                ]
+                self.store.set(
+                    str(hianime_id),
+                    "anime_info",
+                    episodes_info,
+                )
+                return {
+                    "id": hianime_id,
+                    "availableEpisodesDetail": {
+                        "dub": episodes,
+                        "sub": episodes,
+                        "raw": episodes,
+                    },
+                    "poster": anime_result["poster"],
+                    "title": anime_result["title"],
+                    "episodes_info": episodes_info,
+                }
 
-            for server_name, server_html in zip(cycle(SERVERS_AVAILABLE), servers_html):
-                if server := _get_server(server_name, server_html):
-                    yield server
+    @debug_provider(PROVIDER.upper())
+    def get_episode_streams(self, anime_id, episode, translation_type, *args):
+        if d := self.store.get(str(anime_id), "anime_info"):
+            episodes_info = d
+            episode_details = [
+                episode_details
+                for episode_details in episodes_info
+                if episode_details["episode"] == episode
+            ]
+            if not episode_details:
+                return
+            episode_details = episode_details[0]
+            episode_url = f"https://hianime.to/ajax/v2/episode/servers?episodeId={episode_details['id']}"
+            response = self.session.get(episode_url)
+            if response.ok:
+                response_json = response.json()
+                episode_page_html = response_json["html"]
+                servers_containers_html = get_elements_html_by_class(
+                    "ps__-list", episode_page_html
+                )
+                if not servers_containers_html:
+                    return
+                # sub servers
+                try:
+                    servers_html_sub = get_elements_html_by_class(
+                        "server-item", servers_containers_html[0]
+                    )
+                except Exception:
+                    logger.warning("HiAnime: sub not found")
+                    servers_html_sub = None
+
+                # dub servers
+                try:
+                    servers_html_dub = get_elements_html_by_class(
+                        "server-item", servers_containers_html[1]
+                    )
+                except Exception:
+                    logger.warning("HiAnime: dub not found")
+                    servers_html_dub = None
+
+                if translation_type == "dub":
+                    servers_html = servers_html_dub
+                else:
+                    servers_html = servers_html_sub
+                if not servers_html:
+                    return
+
+                @debug_provider(self.PROVIDER.upper())
+                def _get_server(server_name, server_html):
+                    # keys: [ data-type: translation_type, data-id: embed_id, data-server-id: server_id ]
+                    servers_info = extract_attributes(server_html)
+                    embed_url = f"https://hianime.to/ajax/v2/episode/sources?id={servers_info['data-id']}"
+                    embed_response = self.session.get(embed_url)
+                    if embed_response.ok:
+                        embed_json = embed_response.json()
+                        raw_link_to_streams = embed_json["link"]
+                        match = LINK_TO_STREAMS_REGEX.match(raw_link_to_streams)
+                        if not match:
+                            return
+                        provider_domain = match.group(1)
+                        embed_type = match.group(2)
+                        episode_number = match.group(3)
+                        source_id = match.group(4)
+
+                        link_to_streams = f"https://{provider_domain}/embed-{embed_type}/ajax/e-{episode_number}/getSources?id={source_id}"
+                        link_to_streams_response = self.session.get(link_to_streams)
+                        if link_to_streams_response.ok:
+                            juicy_streams_json: "HiAnimeStream" = (
+                                link_to_streams_response.json()
+                            )
+                            return {
+                                "headers": {},
+                                "subtitles": [
+                                    {
+                                        "url": track["file"],
+                                        "language": track["label"],
+                                    }
+                                    for track in juicy_streams_json["tracks"]
+                                    if track["kind"] == "captions"
+                                ],
+                                "server": server_name,
+                                "episode_title": episode_details["title"],
+                                "links": give_random_quality(
+                                    [
+                                        {"link": link["file"]}
+                                        for link in juicy_streams_json["tracks"]
+                                    ]
+                                ),
+                            }
+
+                for server_name, server_html in zip(
+                    cycle(SERVERS_AVAILABLE), servers_html
+                ):
+                    if server := _get_server(server_name, server_html):
+                        yield server

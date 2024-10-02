@@ -29,8 +29,9 @@ EXTRACT_USEFUL_INFO_PATTERN_2 = re.compile(
 
 class NyaaApi(AnimeProvider):
     search_results: SearchResults
+    PROVIDER = "nyaa"
 
-    @debug_provider("NYAA")
+    @debug_provider(PROVIDER.upper())
     def search_for_anime(self, user_query: str, *args, **_):
         self.search_results = search_for_anime_with_anilist(
             user_query, True
@@ -38,7 +39,7 @@ class NyaaApi(AnimeProvider):
         self.user_query = user_query
         return self.search_results
 
-    @debug_provider("NYAA")
+    @debug_provider(PROVIDER.upper())
     def get_anime(self, anilist_id: str, *_):
         for anime in self.search_results["results"]:
             if anime["id"] == anilist_id:
@@ -54,11 +55,10 @@ class NyaaApi(AnimeProvider):
                     },
                 }
 
-    @debug_provider("NYAA")
+    @debug_provider(PROVIDER.upper())
     def get_episode_streams(
         self,
         anime_id: str,
-        anime_title: str,
         episode_number: str,
         translation_type: str,
         trusted_only=bool(int(os.environ.get("FA_NYAA_TRUSTED_ONLY", "0"))),
@@ -66,6 +66,7 @@ class NyaaApi(AnimeProvider):
         sort_by="seeders",
         *args,
     ):
+        anime_title = self.titles[0]
         logger.debug(f"Searching nyaa for query: '{anime_title} {episode_number}'")
         servers = {}
 

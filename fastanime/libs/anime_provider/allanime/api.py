@@ -26,6 +26,7 @@ class AllAnimeAPI(AnimeProvider):
     Provides a fast and effective interface to AllAnime site.
     """
 
+    PROVIDER = "allanime"
     api_endpoint = ALLANIME_API_ENDPOINT
     HEADERS = {
         "Referer": ALLANIME_REFERER,
@@ -55,7 +56,7 @@ class AllAnimeAPI(AnimeProvider):
             logger.error("[ALLANIME-ERROR]: ", response.text)
             return {}
 
-    @debug_provider("ALLANIME")
+    @debug_provider(PROVIDER.upper())
     def search_for_anime(
         self,
         user_query: str,
@@ -106,7 +107,7 @@ class AllAnimeAPI(AnimeProvider):
         }
         return normalized_search_results
 
-    @debug_provider("ALLANIME")
+    @debug_provider(PROVIDER.upper())
     def get_anime(self, allanime_show_id: str):
         """get an anime details given its id
 
@@ -121,6 +122,7 @@ class AllAnimeAPI(AnimeProvider):
         id: str = anime["show"]["_id"]
         title: str = anime["show"]["name"]
         availableEpisodesDetail = anime["show"]["availableEpisodesDetail"]
+        self.store.set(allanime_show_id, "anime_info", {"title": title})
         type = anime.get("__typename")
         normalized_anime = {
             "id": id,
@@ -130,9 +132,9 @@ class AllAnimeAPI(AnimeProvider):
         }
         return normalized_anime
 
-    @debug_provider("ALLANIME")
+    @debug_provider(PROVIDER.upper())
     def _get_anime_episode(
-        self, allanime_show_id: str, episode_string: str, translation_type: str = "sub"
+        self, allanime_show_id: str, episode, translation_type: str = "sub"
     ) -> "AllAnimeEpisode | dict":
         """get the episode details and sources info
 
@@ -147,14 +149,14 @@ class AllAnimeAPI(AnimeProvider):
         variables = {
             "showId": allanime_show_id,
             "translationType": translation_type,
-            "episodeString": episode_string,
+            "episodeString": episode,
         }
         episode = self._fetch_gql(ALLANIME_EPISODES_GQL, variables)
         return episode["episode"]
 
-    @debug_provider("ALLANIME")
+    @debug_provider(PROVIDER.upper())
     def get_episode_streams(
-        self, anime_id, anime_title, episode_number: str, translation_type="sub"
+        self, anime_id, episode_number: str, translation_type="sub"
     ):
         """get the streams of an episode
 
@@ -166,6 +168,10 @@ class AllAnimeAPI(AnimeProvider):
         Yields:
             [TODO:description]
         """
+
+        anime_title = (self.store.get(anime_id, "anime_info", "") or {"title": ""})[
+            "title"
+        ]
         allanime_episode = self._get_anime_episode(
             anime_id, episode_number, translation_type
         )
@@ -174,7 +180,7 @@ class AllAnimeAPI(AnimeProvider):
 
         embeds = allanime_episode["sourceUrls"]
 
-        @debug_provider("ALLANIME")
+        @debug_provider(self.PROVIDER.upper())
         def _get_server(embed):
             # filter the working streams no need to get all since the others are mostly hsl
             # TODO: should i just get all the servers and handle the hsl??

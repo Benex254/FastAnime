@@ -1,7 +1,7 @@
 from typing import Literal, TypedDict
 
 
-class AnimeSearchResult(TypedDict):
+class AnimePaheSearchResult(TypedDict):
     id: int
     title: str
     type: str
@@ -21,7 +21,7 @@ class AnimePaheSearchPage(TypedDict):
     last_page: int
     _from: int
     to: int
-    data: list[AnimeSearchResult]
+    data: list[AnimePaheSearchResult]
 
 
 class Episode(TypedDict):

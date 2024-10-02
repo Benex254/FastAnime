@@ -143,6 +143,8 @@ class CachedRequestsSession(requests.Session):
 
                 if "timeout" in kwargs:
                     kwargs.pop("timeout")
+                if "headers" in kwargs:
+                    kwargs.pop("headers")
                 _request = requests.Request(
                     method, url, headers=json.loads(request_headers), *args, **kwargs
                 )

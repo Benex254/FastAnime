@@ -21,7 +21,7 @@ from .constants import (
 from .utils import process_animepahe_embed_page
 
 if TYPE_CHECKING:
-    from .types import AnimePaheAnimePage, AnimePaheSearchPage, AnimeSearchResult
+    from .types import AnimePaheAnimePage, AnimePaheSearchPage, AnimePaheSearchResult
 JUICY_STREAM_REGEX = re.compile(r"source='(.*)';")
 logger = logging.getLogger(__name__)
 
@@ -32,8 +32,9 @@ class AnimePaheApi(AnimeProvider):
     search_page: "AnimePaheSearchPage"
     anime: "AnimePaheAnimePage"
     HEADERS = REQUEST_HEADERS
+    PROVIDER = "animepahe"
 
-    @debug_provider("ANIMEPAHE")
+    @debug_provider(PROVIDER.upper())
     def search_for_anime(self, user_query: str, *args):
         url = f"{ANIMEPAHE_ENDPOINT}m=search&q={user_query}"
         response = self.session.get(
@@ -43,6 +44,12 @@ class AnimePaheApi(AnimeProvider):
             return
         data: "AnimePaheSearchPage" = response.json()
         self.search_page = data
+        for animepahe_search_result in data["data"]:
+            self.store.set(
+                str(animepahe_search_result["session"]),
+                "search_result",
+                animepahe_search_result,
+            )
 
         return {
             "pageInfo": {
@@ -66,96 +73,98 @@ class AnimePaheApi(AnimeProvider):
             ],
         }
 
-    @debug_provider("ANIMEPAHE")
+    @debug_provider(PROVIDER.upper())
     def get_anime(self, session_id: str, *args):
         page = 1
-        anime_result: "AnimeSearchResult" = [
-            anime
-            for anime in self.search_page["data"]
-            if anime["session"] == session_id
-        ][0]
-        data: "AnimePaheAnimePage" = {}  # pyright:ignore
+        if d := self.store.get(str(session_id), "search_result"):
+            anime_result: "AnimePaheSearchResult" = d
+            data: "AnimePaheAnimePage" = {}  # pyright:ignore
 
-        url = f"{ANIMEPAHE_ENDPOINT}m=release&id={session_id}&sort=episode_asc&page={page}"
+            url = f"{ANIMEPAHE_ENDPOINT}m=release&id={session_id}&sort=episode_asc&page={page}"
 
-        def _pages_loader(
-            url,
-            page,
-        ):
-            response = self.session.get(
+            def _pages_loader(
                 url,
-            )
-            if response.ok:
-                if not data:
-                    data.update(response.json())
-                else:
-                    if ep_data := response.json().get("data"):
-                        data["data"].extend(ep_data)
-                if response.json()["next_page_url"]:
-                    # TODO: Refine this
-                    time.sleep(
-                        random.choice(
-                            [
-                                0.25,
-                                0.1,
-                                0.5,
-                                0.75,
-                                1,
-                            ]
+                page,
+            ):
+                response = self.session.get(
+                    url,
+                )
+                if response.ok:
+                    if not data:
+                        data.update(response.json())
+                    else:
+                        if ep_data := response.json().get("data"):
+                            data["data"].extend(ep_data)
+                    if response.json()["next_page_url"]:
+                        # TODO: Refine this
+                        time.sleep(
+                            random.choice(
+                                [
+                                    0.25,
+                                    0.1,
+                                    0.5,
+                                    0.75,
+                                    1,
+                                ]
+                            )
                         )
-                    )
-                    page += 1
-                    url = f"{ANIMEPAHE_ENDPOINT}m=release&id={session_id}&sort=episode_asc&page={page}"
-                    _pages_loader(
-                        url,
-                        page,
-                    )
+                        page += 1
+                        url = f"{ANIMEPAHE_ENDPOINT}m=release&id={session_id}&sort=episode_asc&page={page}"
+                        _pages_loader(
+                            url,
+                            page,
+                        )
 
-        _pages_loader(
-            url,
-            page,
-        )
+            _pages_loader(
+                url,
+                page,
+            )
 
-        if not data:
-            return {}
-        self.anime = data  # pyright:ignore
-        episodes = list(map(str, [episode["episode"] for episode in data["data"]]))
-        title = ""
-        return {
-            "id": session_id,
-            "title": anime_result["title"],
-            "year": anime_result["year"],
-            "season": anime_result["season"],
-            "poster": anime_result["poster"],
-            "score": anime_result["score"],
-            "availableEpisodesDetail": {
-                "sub": episodes,
-                "dub": episodes,
-                "raw": episodes,
-            },
-            "episodesInfo": [
-                {
-                    "title": f"{episode['title'] or title};{episode['episode']}",
-                    "episode": episode["episode"],
-                    "id": episode["session"],
-                    "translation_type": episode["audio"],
-                    "duration": episode["duration"],
-                    "poster": episode["snapshot"],
-                }
-                for episode in data["data"]
-            ],
-        }
+            if not data:
+                return {}
+            data["title"] = anime_result["title"]  # pyright:ignore
+            self.store.set(str(session_id), "anime_info", data)
+            episodes = list(map(str, [episode["episode"] for episode in data["data"]]))
+            title = ""
+            return {
+                "id": session_id,
+                "title": anime_result["title"],
+                "year": anime_result["year"],
+                "season": anime_result["season"],
+                "poster": anime_result["poster"],
+                "score": anime_result["score"],
+                "availableEpisodesDetail": {
+                    "sub": episodes,
+                    "dub": episodes,
+                    "raw": episodes,
+                },
+                "episodesInfo": [
+                    {
+                        "title": f"{episode['title'] or title};{episode['episode']}",
+                        "episode": episode["episode"],
+                        "id": episode["session"],
+                        "translation_type": episode["audio"],
+                        "duration": episode["duration"],
+                        "poster": episode["snapshot"],
+                    }
+                    for episode in data["data"]
+                ],
+            }
 
-    @debug_provider("ANIMEPAHE")
+    @debug_provider(PROVIDER.upper())
     def get_episode_streams(
-        self, anime_id, anime_title, episode_number: str, translation_type, *args
+        self, anime_id, episode_number: str, translation_type, *args
     ):
+        anime_title = ""
+        episode = None
         # extract episode details from memory
-        episode = [
-            episode
-            for episode in self.anime["data"]
-            if float(episode["episode"]) == float(episode_number)
-        ]
+        if d := self.store.get(str(anime_id), "anime_info"):
+            anime_title = d["title"]
+            episode = [
+                episode
+                for episode in d["data"]
+                if float(episode["episode"]) == float(episode_number)
+            ]
 
         if not episode:
             logger.error(f"[ANIMEPAHE-ERROR]: episode {episode_number} doesn't exist")
@@ -195,7 +204,7 @@ class AnimePaheApi(AnimeProvider):
                 continue
 
             if not embed_url:
-                logger.warn(
+                logger.warning(
                     "[ANIMEPAHE-WARN]: embed url not found please report to the developers"
                 )
                 return []

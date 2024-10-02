@@ -283,7 +283,7 @@ def search(config: "Config", anime_titles: str, episode_range: str):
                 with Progress() as progress:
                     progress.add_task("Fetching Episode Streams...", total=None)
                     streams = anime_provider.get_episode_streams(
-                        anime["id"], anime["title"], episode, config.translation_type
+                        anime["id"], episode, config.translation_type
                     )
                     if not streams:
                         print("Failed to get streams")

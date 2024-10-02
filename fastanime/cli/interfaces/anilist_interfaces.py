@@ -388,7 +388,6 @@ def provider_anime_episode_servers_menu(
         progress.add_task("Fetching Episode Streams...", total=None)
         episode_streams_generator = anime_provider.get_episode_streams(
             provider_anime["id"],
-            provider_anime["title"],
             current_episode_number,
             translation_type,
         )

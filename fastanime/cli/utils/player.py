@@ -121,7 +121,6 @@ class MpvPlayer(object):
         # get them juicy streams
         episode_streams = anime_provider.get_episode_streams(
             provider_anime["id"],
-            provider_anime["title"],
             current_episode_number,
             translation_type,
         )

@@ -330,6 +330,7 @@ def get_fzf_anime_preview(
     """
     # ensure images and info exists
     from ...constants import S_PLATFORM
+
     background_worker = Thread(
         target=write_search_results, args=(anilist_results, titles)
     )
@@ -354,10 +355,10 @@ def get_fzf_anime_preview(
             fi
         """ % (
             fzf_preview,
-            IMAGES_CACHE_DIR.replace("\\","\\\\\\"),
-            IMAGES_CACHE_DIR.replace("\\","\\\\\\"),
-            ANIME_INFO_CACHE_DIR.replace("\\","\\\\\\"),
-            ANIME_INFO_CACHE_DIR.replace("\\","\\\\\\"),
+            IMAGES_CACHE_DIR.replace("\\", "\\\\\\"),
+            IMAGES_CACHE_DIR.replace("\\", "\\\\\\"),
+            ANIME_INFO_CACHE_DIR.replace("\\", "\\\\\\"),
+            ANIME_INFO_CACHE_DIR.replace("\\", "\\\\\\"),
         )
     else:
         preview = """

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fastanime"
-version = "2.5.6.dev1"
+version = "2.5.8"
 description = "A browser anime site experience from the terminal"
 authors = ["Benextempest <benextempest@gmail.com>"]
 license = "UNLICENSE"
@@ -17,7 +17,6 @@ inquirerpy = { version = "^0.3.4", optional = false }
 mpv = { version = "^1.0.7", optional = true }
 plyer = { version = "^2.1.0", optional = true }
 
-lbry-libtorrent = "^1.2.4"
 [tool.poetry.extras]
 full = ["plyer", "mpv"]
 # cli = ["rich", "click", "inquirerpy"]

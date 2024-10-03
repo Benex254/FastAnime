@@ -37,6 +37,10 @@ def anime_title_percentage_match(
     title_a = str(anime["title"]["romaji"])
     title_b = str(anime["title"]["english"])
     percentage_ratio = max(
+        *[
+            fuzz.ratio(title.lower(), possible_user_requested_anime_title.lower())
+            for title in anime["synonyms"]
+        ],
         fuzz.ratio(title_a.lower(), possible_user_requested_anime_title.lower()),
         fuzz.ratio(title_b.lower(), possible_user_requested_anime_title.lower()),
     )

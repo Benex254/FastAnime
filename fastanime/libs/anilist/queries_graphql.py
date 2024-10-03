@@ -225,6 +225,7 @@ query ($userId: Int, $status: MediaListStatus, $type: MediaType) {
         averageScore
         episodes
         genres
+      synonyms
         studios {
           nodes {
             name
@@ -369,6 +370,7 @@ query($query:String,%s){
       averageScore
       episodes
       genres
+      synonyms
       studios {
         nodes {
           name
@@ -428,6 +430,7 @@ query ($type: MediaType) {
       favourites
       averageScore
       genres
+      synonyms
       episodes
       description
       studios {
@@ -503,6 +506,7 @@ query ($type: MediaType) {
       episodes
       description
       genres
+      synonyms
       studios {
         nodes {
           name
@@ -566,6 +570,7 @@ query ($type: MediaType) {
       averageScore
       description
       genres
+      synonyms
       studios {
         nodes {
           name
@@ -624,6 +629,7 @@ query ($type: MediaType) {
       description
       episodes
       genres
+      synonyms
       mediaListEntry {
         status
         id
@@ -698,6 +704,7 @@ query ($type: MediaType) {
       averageScore
       description
       genres
+      synonyms
       episodes
       studios {
         nodes {
@@ -759,6 +766,7 @@ query ($type: MediaType) {
               id
             }
             genres
+      synonyms
             averageScore
             popularity
             streamingEpisodes {
@@ -862,6 +870,7 @@ query ($id: Int, $type: MediaType) {
             id
           }
           genres
+      synonyms
           averageScore
           popularity
           streamingEpisodes {
@@ -954,6 +963,7 @@ query ($page: Int, $type: MediaType) {
       favourites
       averageScore
       genres
+      synonyms
       episodes
       description
       studios {

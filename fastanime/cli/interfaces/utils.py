@@ -213,7 +213,6 @@ def get_fzf_manga_preview(manga_results, workers=None, wait=False):
         target=_worker,
     )
     # ensure images and info exists
-    background_worker.daemon = True
     background_worker.start()
 
     # the preview script is in bash so making sure fzf doesnt use any other shell lang to process the preview script
@@ -290,7 +289,6 @@ def get_fzf_episode_preview(
         target=_worker,
     )
     # ensure images and info exists
-    background_worker.daemon = True
     background_worker.start()
 
     # the preview script is in bash so making sure fzf doesnt use any other shell lang to process the preview script
@@ -334,7 +332,6 @@ def get_fzf_anime_preview(
     background_worker = Thread(
         target=write_search_results, args=(anilist_results, titles)
     )
-    background_worker.daemon = True
     background_worker.start()
 
     # the preview script is in bash so making sure fzf doesnt use any other shell lang to process the preview script

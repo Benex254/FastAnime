@@ -89,10 +89,12 @@ class CachedRequestsSession(requests.Session):
         url,
         params=None,
         force_caching=False,
-        fresh=False,
+        fresh=0,
         *args,
         **kwargs,
     ):
+        # TODO: improve the caching functionality and add a layer to auto delete
+        # expired requests
         if fresh:
             logger.debug("Executing fresh request")
             return super().request(method, url, params=params, *args, **kwargs)

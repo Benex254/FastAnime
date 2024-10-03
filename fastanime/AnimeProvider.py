@@ -2,6 +2,7 @@
 
 import importlib
 import logging
+import os
 from typing import TYPE_CHECKING
 
 from .libs.anime_provider import anime_sources
@@ -29,10 +30,21 @@ class AnimeProvider:
     PROVIDERS = list(anime_sources.keys())
     provider = PROVIDERS[0]
 
-    def __init__(self, provider, dynamic=False, retries=0) -> None:
+    def __init__(
+        self,
+        provider,
+        cache_requests=os.environ.get("FASTANIME_CACHE_REQUESTS", "false"),
+        use_persistent_provider_store=os.environ.get(
+            "FASTANIME_USE_PERSISTENT_PROVIDER_STORE", "false"
+        ),
+        dynamic=False,
+        retries=0,
+    ) -> None:
         self.provider = provider
         self.dynamic = dynamic
         self.retries = retries
+        self.cache_requests = cache_requests
+        self.use_persistent_provider_store = use_persistent_provider_store
         self.lazyload_provider(self.provider)
 
     def lazyload_provider(self, provider):
@@ -45,7 +57,9 @@ class AnimeProvider:
         package = f"fastanime.libs.anime_provider.{provider}"
         provider_api = importlib.import_module(".api", package)
         anime_provider = getattr(provider_api, anime_provider_cls_name)
-        self.anime_provider = anime_provider()
+        self.anime_provider = anime_provider(
+            self.cache_requests, self.use_persistent_provider_store
+        )
 
     def search_for_anime(
         self,

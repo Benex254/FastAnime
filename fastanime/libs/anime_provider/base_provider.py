@@ -14,11 +14,7 @@ class AnimeProvider:
     USER_AGENT = random_user_agent()
     HEADERS = {}
 
-    def __init__(
-        self,
-        cache_requests=os.environ.get("FASTANIME_CACHE_REQUESTS", "false"),
-        store_type=os.environ.get("FASTANIME_PROVIDER_STORE_TYPE", "persistent"),
-    ) -> None:
+    def __init__(self, cache_requests, use_persistent_provider_store) -> None:
         if cache_requests.lower() == "true":
             from ..common.requests_cacher import CachedRequestsSession
 
@@ -28,7 +24,7 @@ class AnimeProvider:
         else:
             self.session = requests.session()
         self.session.headers.update({"User-Agent": self.USER_AGENT, **self.HEADERS})
-        if store_type == "persistent":
+        if use_persistent_provider_store.lower() == "true":
             self.store = ProviderStore(
                 "persistent",
                 self.PROVIDER,

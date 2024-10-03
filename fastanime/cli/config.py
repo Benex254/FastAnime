@@ -28,37 +28,38 @@ class Config(object):
     anime_provider: "AnimeProvider"
     user_data = {"watch_history": {}, "animelist": [], "user": {}}
     default_config = {
-        "quality": "1080",
         "auto_next": "False",
         "auto_select": "True",
-        "sort_by": "search match",
-        "downloads_dir": USER_VIDEOS_DIR,
-        "translation_type": "sub",
-        "server": "top",
-        "continue_from_history": "True",
-        "preferred_history": "local",
-        "use_python_mpv": "false",
-        "force_window": "immediate",
-        "preferred_language": "english",
-        "use_fzf": "False",
-        "preview": "False",
-        "format": "best[height<=1080]/bestvideo[height<=1080]+bestaudio/best",
-        "provider": "allanime",
-        "icons": "false",
-        "notification_duration": "2",
-        "skip": "false",
-        "use_rofi": "false",
-        "rofi_theme": "",
-        "rofi_theme_input": "",
-        "rofi_theme_confirm": "",
-        "ffmpegthumbnailer_seek_time": "-1",
-        "sub_lang": "eng",
-        "normalize_titles": "true",
-        "player": "mpv",
-        "episode_complete_at": "80",
-        "force_forward_tracking": "true",
-        "default_media_list_tracking": "None",
         "cache_requests": "true",
+        "continue_from_history": "True",
+        "default_media_list_tracking": "None",
+        "downloads_dir": USER_VIDEOS_DIR,
+        "episode_complete_at": "80",
+        "ffmpegthumbnailer_seek_time": "-1",
+        "force_forward_tracking": "true",
+        "force_window": "immediate",
+        "format": "best[height<=1080]/bestvideo[height<=1080]+bestaudio/best",
+        "icons": "false",
+        "normalize_titles": "true",
+        "notification_duration": "2",
+        "player": "mpv",
+        "preferred_history": "local",
+        "preferred_language": "english",
+        "preview": "False",
+        "provider": "allanime",
+        "quality": "1080",
+        "rofi_theme": "",
+        "rofi_theme_confirm": "",
+        "rofi_theme_input": "",
+        "server": "top",
+        "skip": "false",
+        "sort_by": "search match",
+        "sub_lang": "eng",
+        "translation_type": "sub",
+        "use_fzf": "False",
+        "use_persistent_provider_store": "false",
+        "use_python_mpv": "false",
+        "use_rofi": "false",
     }
 
     def __init__(self) -> None:
@@ -75,40 +76,45 @@ class Config(object):
         if os.path.exists(USER_CONFIG_PATH):
             self.configparser.read(USER_CONFIG_PATH, encoding="utf-8")
 
-        self.downloads_dir = self.get_downloads_dir()
-        self.sub_lang = self.get_sub_lang()
-        self.provider = self.get_provider()
-        self.use_fzf = self.get_use_fzf()
-        self.use_rofi = self.get_use_rofi()
-        self.skip = self.get_skip()
-        self.icons = self.get_icons()
-        self.preview = self.get_preview()
-        self.translation_type = self.get_translation_type()
-        self.sort_by = self.get_sort_by()
-        self.continue_from_history = self.get_continue_from_history()
         self.auto_next = self.get_auto_next()
-        self.normalize_titles = self.get_normalize_titles()
         self.auto_select = self.get_auto_select()
-        self.use_python_mpv = self.get_use_mpv_mod()
-        self.quality = self.get_quality()
-        self.notification_duration = self.get_notification_duration()
-        self.episode_complete_at = self.get_episode_complete_at()
-        self.default_media_list_tracking = self.get_default_media_list_tracking()
-        self.force_forward_tracking = self.get_force_forward_tracking()
         self.cache_requests = self.get_cache_requests()
-        self.server = self.get_server()
-        self.format = self.get_format()
-        self.player = self.get_player()
-        self.force_window = self.get_force_window()
-        self.preferred_language = self.get_preferred_language()
-        self.preferred_history = self.get_preferred_history()
-        self.rofi_theme = self.get_rofi_theme()
-        Rofi.rofi_theme = self.rofi_theme
-        self.rofi_theme_input = self.get_rofi_theme_input()
-        Rofi.rofi_theme_input = self.rofi_theme_input
-        self.rofi_theme_confirm = self.get_rofi_theme_confirm()
-        Rofi.rofi_theme_confirm = self.rofi_theme_confirm
+        self.continue_from_history = self.get_continue_from_history()
+        self.default_media_list_tracking = self.get_default_media_list_tracking()
+        self.downloads_dir = self.get_downloads_dir()
+        self.episode_complete_at = self.get_episode_complete_at()
         self.ffmpegthumbnailer_seek_time = self.get_ffmpegthumnailer_seek_time()
+        self.force_forward_tracking = self.get_force_forward_tracking()
+        self.force_window = self.get_force_window()
+        self.format = self.get_format()
+        self.icons = self.get_icons()
+        self.normalize_titles = self.get_normalize_titles()
+        self.notification_duration = self.get_notification_duration()
+        self.player = self.get_player()
+        self.preferred_history = self.get_preferred_history()
+        self.preferred_language = self.get_preferred_language()
+        self.preview = self.get_preview()
+        self.provider = self.get_provider()
+        self.quality = self.get_quality()
+
+        self.rofi_theme_confirm = self.get_rofi_theme_confirm()
+        self.rofi_theme_input = self.get_rofi_theme_input()
+        self.rofi_theme = self.get_rofi_theme()
+
+        Rofi.rofi_theme_confirm = self.rofi_theme_confirm
+        Rofi.rofi_theme_input = self.rofi_theme_input
+        Rofi.rofi_theme = self.rofi_theme
+
+        self.server = self.get_server()
+        self.skip = self.get_skip()
+        self.sort_by = self.get_sort_by()
+        self.sub_lang = self.get_sub_lang()
+        self.translation_type = self.get_translation_type()
+        self.use_fzf = self.get_use_fzf()
+        self.use_python_mpv = self.get_use_mpv_mod()
+        self.use_rofi = self.get_use_rofi()
+        self.use_persistent_provider_store = self.get_use_persistent_provider_store()
+
         # ---- setup user data ------
         self.anime_list: list = self.user_data.get("animelist", [])
         self.user: dict = self.user_data.get("user", {})
@@ -196,6 +202,9 @@ class Config(object):
 
     def get_use_fzf(self):
         return self.configparser.getboolean("general", "use_fzf")
+
+    def get_use_persistent_provider_store(self):
+        return self.configparser.getboolean("general", "use_persistent_provider_store")
 
     # rofi conifiguration
     def get_use_rofi(self):
@@ -379,9 +388,17 @@ force_forward_tracking = {self.force_forward_tracking}
 # whether to cache requests [true/false]
 # this makes the experience better and more faster
 # as data need not always be fetched from web server
-# and instead can be gotten from a locally
+# and instead can be gotten  locally
 # from the cached_requests_db
 cache_requests = {self.cache_requests}
+
+# whether to use a persistent store (basically a sqlitedb) for storing some data the provider requires
+# to enable a seamless experience [true/false]
+# this option exists primarily because i think it may help in the optimization
+# of fastanime as a library in a website project
+# for now i don't recommend changing it
+# leave it as is
+use_persistent_provider_store = {self.use_persistent_provider_store}
 
 
 [stream]
@@ -443,7 +460,9 @@ episode_complete_at = {self.episode_complete_at}
 # to enable superior control over the player 
 # adding more options to it
 # Enable this one and you will be wonder why you did not discover fastanime sooner 
-# Since you basically don't have to close the player window to go to the next or previous episode, switch servers, change translation type or change to a given episode x
+# Since you basically don't have to close the player window 
+# to go to the next or previous episode, switch servers, 
+# change translation type or change to a given episode x
 # so try it if you haven't already
 # if you have any issues setting it up 
 # don't be afraid to ask

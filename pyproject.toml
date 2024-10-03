@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fastanime"
-version = "2.5.8"
+version = "2.6.0"
 description = "A browser anime site experience from the terminal"
 authors = ["Benextempest <benextempest@gmail.com>"]
 license = "UNLICENSE"

@@ -9,7 +9,7 @@ from threading import Thread
 import requests
 from yt_dlp.utils import clean_html, sanitize_filename
 
-from ...constants import APP_CACHE_DIR
+from ...constants import APP_CACHE_DIR,S_PLATFORM
 from ...libs.anilist.types import AnilistBaseMediaDataSchema
 from ...Utility import anilist_data_helper
 from ..utils.scripts import fzf_preview
@@ -293,21 +293,47 @@ def get_fzf_episode_preview(
 
     # the preview script is in bash so making sure fzf doesnt use any other shell lang to process the preview script
     os.environ["SHELL"] = shutil.which("bash") or "bash"
-    preview = """
-        %s
-        if [ -s %s/{} ]; then fzf-preview %s/{}
-        else echo Loading...
-        fi
-        if [ -s %s/{} ]; then cat %s/{}
-        else echo Loading...
-        fi
-    """ % (
-        fzf_preview,
-        IMAGES_CACHE_DIR,
-        IMAGES_CACHE_DIR,
-        ANIME_INFO_CACHE_DIR,
-        ANIME_INFO_CACHE_DIR,
-    )
+    if S_PLATFORM == "win32":
+        preview = """
+            %s
+            title={}
+            dim=${FZF_PREVIEW_COLUMNS}x${FZF_PREVIEW_LINES}
+            if [ -s "%s\\\\\\$title" ]; then 
+                if command -v "chafa">/dev/null;then
+                    chafa -s $dim "%s\\\\\\$title"
+                else
+                    echo please install chafa to enjoy image previews
+                fi
+                echo 
+            else 
+                echo Loading...
+            fi
+            if [ -s "%s\\\\\\$title" ]; then cat "%s\\\\\\$title"
+                else echo Loading...
+            fi
+        """ % (
+            fzf_preview,
+            IMAGES_CACHE_DIR.replace("\\", "\\\\\\"),
+            IMAGES_CACHE_DIR.replace("\\", "\\\\\\"),
+            ANIME_INFO_CACHE_DIR.replace("\\", "\\\\\\"),
+            ANIME_INFO_CACHE_DIR.replace("\\", "\\\\\\"),
+        )
+    else:
+        preview = """
+            %s
+            if [ -s %s/{} ]; then fzf-preview %s/{}
+            else echo Loading...
+            fi
+            if [ -s %s/{} ]; then cat %s/{}
+            else echo Loading...
+            fi
+        """ % (
+            fzf_preview,
+            IMAGES_CACHE_DIR,
+            IMAGES_CACHE_DIR,
+            ANIME_INFO_CACHE_DIR,
+            ANIME_INFO_CACHE_DIR,
+        )
     if wait:
         background_worker.join()
     return preview
@@ -327,7 +353,6 @@ def get_fzf_anime_preview(
         THe fzf preview script to use
     """
     # ensure images and info exists
-    from ...constants import S_PLATFORM
 
     background_worker = Thread(
         target=write_search_results, args=(anilist_results, titles)
@@ -342,13 +367,17 @@ def get_fzf_anime_preview(
             title={}
             dim=${FZF_PREVIEW_COLUMNS}x${FZF_PREVIEW_LINES}
             if [ -s "%s\\\\\\$title" ]; then 
-            if command -v chafa >/dev/null;then
-            chafa -f kitty -s $dim "%s\\\\\\$title"
-            fi
-            else echo Loading...
+                if command -v "chafa">/dev/null;then
+                    chafa  -s $dim "%s\\\\\\$title"
+                else
+                    echo please install chafa to enjoy image previews
+                fi
+                echo 
+            else 
+                echo Loading...
             fi
             if [ -s "%s\\\\\\$title" ]; then cat "%s\\\\\\$title"
-            else echo Loading...
+                else echo Loading...
             fi
         """ % (
             fzf_preview,

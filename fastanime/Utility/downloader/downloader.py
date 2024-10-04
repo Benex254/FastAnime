@@ -174,8 +174,15 @@ class YtDLPDownloader:
             except Exception as e:
                 print(f"[red bold]An error[/] occurred: {e}")
 
-    # WARN: May remove this legacy functionality
-    def download_file(self, url: str, title, silent=True):
+    def download_file(
+        self,
+        url: str,
+        anime_title: str,
+        episode_title: str,
+        download_dir: str,
+        silent: bool = True,
+        **kwargs,
+    ):
         """A helper that just does things in the background
 
         Args:
@@ -183,7 +190,12 @@ class YtDLPDownloader:
             silent ([TODO:parameter]): [TODO:description]
             url: [TODO:description]
         """
-        self.downloads_queue.put((self._download_file, (url, title, silent)))
+        self.downloads_queue.put(
+            (
+                self._download_file,
+                (url, anime_title, episode_title, download_dir, silent),
+            )
+        )
 
 
 downloader = YtDLPDownloader()

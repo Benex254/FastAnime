@@ -5,4 +5,6 @@ VERSION=$1
 [ "$VERSION" = "current" ] && fastanime --version && exit 0
 sed -i "s/^version.*/version = \"$VERSION\"/" "$CLI_DIR/pyproject.toml" &&
   sed -i "s/__version__.*/__version__ = \"v$VERSION\"/" "$CLI_DIR/fastanime/__init__.py" &&
+  git stage "$CLI_DIR/pyproject.toml" "$CLI_DIR/fastanime/__init__.py" &&
+  git commit -m "chore: bump version (v$VERSION)" &&
   gh release create "v$VERSION"

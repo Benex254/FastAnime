@@ -14,7 +14,7 @@ fastanime serve --host 127.0.0.1 --port 8080
 """,
 )
 @click.option("--host", "-H", help="Specify the host to run the server on")
-@click.option("--port", "-p", help="Check for the latest release", type=int)
+@click.option("--port", "-p", help="Specify the port to run the server on")
 def serve(host, port):
     import os
     import sys

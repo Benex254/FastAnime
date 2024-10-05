@@ -7,4 +7,5 @@ sed -i "s/^version.*/version = \"$VERSION\"/" "$CLI_DIR/pyproject.toml" &&
   sed -i "s/__version__.*/__version__ = \"v$VERSION\"/" "$CLI_DIR/fastanime/__init__.py" &&
   git stage "$CLI_DIR/pyproject.toml" "$CLI_DIR/fastanime/__init__.py" &&
   git commit -m "chore: bump version (v$VERSION)" &&
+  git push &&
   gh release create "v$VERSION"

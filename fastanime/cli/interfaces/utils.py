@@ -65,7 +65,7 @@ def save_image_from_url(url: str, file_name: str):
         file_name: filename to use
     """
     image = requests.get(url)
-    with open(f"{IMAGES_CACHE_DIR}/{file_name}", "wb") as f:
+    with open(f"{IMAGES_CACHE_DIR}/{file_name}.png", "wb") as f:
         f.write(image.content)
 
 
@@ -331,9 +331,9 @@ def get_fzf_episode_preview(
             %s
             title={}
             dim=${FZF_PREVIEW_COLUMNS}x${FZF_PREVIEW_LINES}
-            if [ -s "%s\\\\\\$title" ]; then 
+            if [ -s "%s\\\\\\${title}.png" ]; then 
                 if command -v "chafa">/dev/null;then
-                    chafa -s $dim "%s\\\\\\$title"
+                    chafa -s $dim "%s\\\\\\${title}.png"
                 else
                     echo please install chafa to enjoy image previews
                 fi
@@ -399,9 +399,9 @@ def get_fzf_anime_preview(
             %s
             title={}
             dim=${FZF_PREVIEW_COLUMNS}x${FZF_PREVIEW_LINES}
-            if [ -s "%s\\\\\\$title" ]; then 
+            if [ -s "%s\\\\\\${title}.png" ]; then 
                 if command -v "chafa">/dev/null;then
-                    chafa  -s $dim "%s\\\\\\$title"
+                    chafa  -s $dim "%s\\\\\\${title}.png"
                 else
                     echo please install chafa to enjoy image previews
                 fi
@@ -422,10 +422,11 @@ def get_fzf_anime_preview(
     else:
         preview = """
             %s
-            if [ -s %s/{} ]; then fzf-preview %s/{}
+            title={}
+            if [ -s "%s/${title}.png" ]; then fzf-preview "%s/${title}.png"
             else echo Loading...
             fi
-            if [ -s %s/{} ]; then source %s/{}
+            if [ -s "%s/$title" ]; then source "%s/$title"
             else echo Loading...
             fi
         """ % (

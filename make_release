@@ -1,0 +1,8 @@
+#! /usr/bin/env sh
+CLI_DIR="$(dirname "$(realpath "$0")")"
+VERSION=$1
+[ -z "$VERSION" ] && echo no version provided && exit 1
+[ "$VERSION" = "current" ] && fastanime --version && exit 0
+sed -i "s/^version.*/version = \"$VERSION\"/" "$CLI_DIR/pyproject.toml" &&
+  sed -i "s/__version__.*/__version__ = \"v$VERSION\"/" "$CLI_DIR/fastanime/__init__.py" &&
+  gh release create "v$VERSION"

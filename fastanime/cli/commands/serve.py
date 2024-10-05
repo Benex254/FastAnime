@@ -21,7 +21,7 @@ def serve(host, port):
 
     from ...constants import APP_DIR
 
-    args = ["python", "-m", "fastapi", "run"]
+    args = [sys.executable, "-m", "fastapi", "run"]
     if host:
         args.extend(["--host", host])
 

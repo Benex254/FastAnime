@@ -16,6 +16,7 @@ logger = logging.getLogger(__name__)
 
 class YtDLPDownloader:
     downloads_queue = Queue()
+    _thread = None
 
     def _worker(self):
         while True:
@@ -26,11 +27,6 @@ class YtDLPDownloader:
                 logger.error(f"Something went wrong {e}")
             self.downloads_queue.task_done()
 
-    def __init__(self):
-        self._thread = Thread(target=self._worker)
-        self._thread.daemon = True
-        self._thread.start()
-
     def _download_file(
         self,
         url: str,
@@ -38,6 +34,7 @@ class YtDLPDownloader:
         episode_title: str,
         download_dir: str,
         silent: bool,
+        progress_hooks=[],
         vid_format: str = "best",
         force_unknown_ext=False,
         verbose=False,
@@ -86,6 +83,7 @@ class YtDLPDownloader:
             "verbose": verbose,
             "format": vid_format,
             "compat_opts": ("allow-unsafe-ext",) if force_unknown_ext else tuple(),
+            "progress_hooks": progress_hooks,
         }
         urls = [url]
         if sub:
@@ -190,6 +188,11 @@ class YtDLPDownloader:
             silent ([TODO:parameter]): [TODO:description]
             url: [TODO:description]
         """
+        if not self._thread:
+            self._thread = Thread(target=self._worker)
+            self._thread.daemon = True
+            self._thread.start()
+
         self.downloads_queue.put(
             (
                 self._download_file,

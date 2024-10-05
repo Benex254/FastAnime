@@ -49,7 +49,7 @@ class FZF:
         "--info=hidden",
         "--layout=reverse",
         "--height=100%",
-        "--bind=right:accept",
+        "--bind=right:accept,ctrl-/:toggle-preview,ctrl-space:toggle-wrap+toggle-preview-wrap",
         "--no-margin",
         "+m",
         "-i",

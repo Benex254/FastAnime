@@ -169,6 +169,7 @@ def downloads(
             from threading import Thread
 
             worker = Thread(target=_worker)
+            worker.daemon = True
             worker.start()
         else:
             _worker()
@@ -241,6 +242,7 @@ def downloads(
             from threading import Thread
 
             worker = Thread(target=_worker)
+            worker.daemon = True
             worker.start()
         else:
             _worker()

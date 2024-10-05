@@ -1,4 +1,3 @@
 #!/usr/bin/env sh
-# exec "${PYTHON:-python3}" -Werror -Xdev -m "$(dirname "$(realpath "$0")")/fastanime" "$@"
-cd "$(dirname "$(realpath "$0")")" || exit 1
-exec python -m fastanime "$@"
+CLI_DIR="$(dirname "$(realpath "$0")")"
+exec python -m "$CLI_DIR/fastanime" "$@"

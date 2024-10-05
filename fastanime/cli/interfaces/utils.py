@@ -9,7 +9,7 @@ from threading import Thread
 import requests
 from yt_dlp.utils import clean_html, sanitize_filename
 
-from ...constants import APP_CACHE_DIR,S_PLATFORM
+from ...constants import APP_CACHE_DIR, S_PLATFORM
 from ...libs.anilist.types import AnilistBaseMediaDataSchema
 from ...Utility import anilist_data_helper
 from ..utils.scripts import fzf_preview
@@ -46,7 +46,9 @@ def aniskip(mal_id: int, episode: str):
 
 # NOTE: May change this to a temp dir but there were issues so later
 WORKING_DIR = APP_CACHE_DIR  # tempfile.gettempdir()
-
+HEADER_COLOR = 215, 0, 95
+SEPARATOR_COLOR = 208, 208, 208
+SINGLE_QUOTE = "'"
 IMAGES_CACHE_DIR = os.path.join(WORKING_DIR, "images")
 if not os.path.exists(IMAGES_CACHE_DIR):
     os.mkdir(IMAGES_CACHE_DIR)
@@ -91,9 +93,6 @@ def write_search_results(
         workers:number of threads to use defaults to as many as possible
     """
     # NOTE: Will probably make this a configuraable option
-    HEADER_COLOR = 215, 0, 95
-    SEPARATOR_COLOR = 208, 208, 208
-    SEPARATOR_WIDTH = 30
     # use concurency to download and write as fast as possible
     with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:
         future_to_task = {}
@@ -111,28 +110,57 @@ def write_search_results(
                 progress = anime_list["progress"]
             # handle the text data
             template = f"""
-            {get_true_fg("-"*SEPARATOR_WIDTH,*SEPARATOR_COLOR,bold=False)}
-            {get_true_fg('Title(jp):',*HEADER_COLOR)} {anime['title']['romaji']}
-            {get_true_fg('Title(eng):',*HEADER_COLOR)} {anime['title']['english']}
-            {get_true_fg('Popularity:',*HEADER_COLOR)} {anime['popularity']}
-            {get_true_fg('Favourites:',*HEADER_COLOR)} {anime['favourites']}
-            {get_true_fg('Status:',*HEADER_COLOR)} {anime['status']}
-            {get_true_fg('Episodes:',*HEADER_COLOR)} {anime['episodes']}
-            {get_true_fg('Genres:',*HEADER_COLOR)} {anilist_data_helper.format_list_data_with_comma(anime['genres'])}
-            {get_true_fg('Next Episode:',*HEADER_COLOR)} {anilist_data_helper.extract_next_airing_episode(anime['nextAiringEpisode'])}
-            {get_true_fg('Start Date:',*HEADER_COLOR)} {anilist_data_helper.format_anilist_date_object(anime['startDate'])}
-            {get_true_fg('End Date:',*HEADER_COLOR)} {anilist_data_helper.format_anilist_date_object(anime['endDate'])}
-            {get_true_fg("-"*SEPARATOR_WIDTH,*SEPARATOR_COLOR,bold=False)}
-            {get_true_fg('Media List:',*HEADER_COLOR)} {mediaListName}
-            {get_true_fg('Progress:',*HEADER_COLOR)} {progress}
-            {get_true_fg("-"*SEPARATOR_WIDTH,*SEPARATOR_COLOR,bold=False)}
-            {get_true_fg('Description:',*HEADER_COLOR)}
+            ll=2
+            while [ $ll -le $FZF_PREVIEW_COLUMNS ];do 
+                echo -n -e "{get_true_fg("─",*SEPARATOR_COLOR,bold=False)}"
+                ((ll++))
+            done
+            echo
+            echo "{get_true_fg('Title(jp):',*HEADER_COLOR)} {(anime['title']['romaji'] or "").replace('"',SINGLE_QUOTE)}"
+            echo "{get_true_fg('Title(eng):',*HEADER_COLOR)} {(anime['title']['english'] or "").replace('"',SINGLE_QUOTE)}"
+            ll=2
+            while [ $ll -le $FZF_PREVIEW_COLUMNS ];do 
+                echo -n -e "{get_true_fg("─",*SEPARATOR_COLOR,bold=False)}"
+                ((ll++))
+            done
+            echo
+            echo "{get_true_fg('Popularity:',*HEADER_COLOR)} {anilist_data_helper.format_number_with_commas(anime['popularity'])}"
+            echo "{get_true_fg('Favourites:',*HEADER_COLOR)} {anilist_data_helper.format_number_with_commas(anime['favourites'])}"
+            echo "{get_true_fg('Status:',*HEADER_COLOR)} {str(anime['status']).replace('"',SINGLE_QUOTE)}"
+            echo "{get_true_fg('Next Episode:',*HEADER_COLOR)} {anilist_data_helper.extract_next_airing_episode(anime['nextAiringEpisode']).replace('"',SINGLE_QUOTE)}"
+            echo "{get_true_fg('Genres:',*HEADER_COLOR)} {anilist_data_helper.format_list_data_with_comma(anime['genres']).replace('"',SINGLE_QUOTE)}"
+            ll=2
+            while [ $ll -le $FZF_PREVIEW_COLUMNS ];do 
+                echo -n -e "{get_true_fg("─",*SEPARATOR_COLOR,bold=False)}"
+                ((ll++))
+            done
+            echo
+            echo "{get_true_fg('Episodes:',*HEADER_COLOR)} {(anime['episodes']) or 'UNKNOWN'}"
+            echo "{get_true_fg('Start Date:',*HEADER_COLOR)} {anilist_data_helper.format_anilist_date_object(anime['startDate']).replace('"',SINGLE_QUOTE)}"
+            echo "{get_true_fg('End Date:',*HEADER_COLOR)} {anilist_data_helper.format_anilist_date_object(anime['endDate']).replace('"',SINGLE_QUOTE)}"
+            ll=2
+            while [ $ll -le $FZF_PREVIEW_COLUMNS ];do 
+                echo -n -e "{get_true_fg("─",*SEPARATOR_COLOR,bold=False)}"
+                ((ll++))
+            done
+            echo
+            echo "{get_true_fg('Media List:',*HEADER_COLOR)} {mediaListName.replace('"',SINGLE_QUOTE)}"
+            echo "{get_true_fg('Progress:',*HEADER_COLOR)} {progress}"
+            ll=2
+            while [ $ll -le $FZF_PREVIEW_COLUMNS ];do 
+                echo -n -e "{get_true_fg("─",*SEPARATOR_COLOR,bold=False)}"
+                ((ll++))
+            done
+            echo
+            # echo "{get_true_fg('Description:',*HEADER_COLOR).replace('"',SINGLE_QUOTE)}"
             """
             template = textwrap.dedent(template)
             template = f"""
             {template}
+            echo "
             {textwrap.fill(clean_html(
-                str(anime['description'])), width=45)}
+                (anime['description']) or "").replace('"',SINGLE_QUOTE), width=45)}
+            "
             """
             future_to_task[executor.submit(save_info_from_str, template, title)] = title
 
@@ -269,8 +297,13 @@ def get_fzf_episode_preview(
                     ] = image_url
                     template = textwrap.dedent(
                         f"""
-                    {get_true_fg('Anime Title:',*HEADER_COLOR)} {anilist_result['title']['romaji'] or anilist_result['title']['english']}
-                    {get_true_fg('Episode Title:',*HEADER_COLOR)} {episode_title}
+                    ll=2
+                    while [ $ll -le $FZF_PREVIEW_COLUMNS ];do 
+                        echo -n -e "{get_true_fg("─",*SEPARATOR_COLOR,bold=False)}"
+                        ((ll++))
+                    done
+                    echo "{get_true_fg('Anime Title:',*HEADER_COLOR)} {(anilist_result['title']['romaji'] or anilist_result['title']['english']).replace('"',SINGLE_QUOTE)}"
+                    echo "{get_true_fg('Episode Title:',*HEADER_COLOR)} {str(episode_title).replace('"',SINGLE_QUOTE)}"
                     """
                     )
                     future_to_url[
@@ -308,7 +341,7 @@ def get_fzf_episode_preview(
             else 
                 echo Loading...
             fi
-            if [ -s "%s\\\\\\$title" ]; then cat "%s\\\\\\$title"
+            if [ -s "%s\\\\\\$title" ]; then source "%s\\\\\\$title"
                 else echo Loading...
             fi
         """ % (
@@ -324,7 +357,7 @@ def get_fzf_episode_preview(
             if [ -s %s/{} ]; then fzf-preview %s/{}
             else echo Loading...
             fi
-            if [ -s %s/{} ]; then cat %s/{}
+            if [ -s %s/{} ]; then source %s/{}
             else echo Loading...
             fi
         """ % (
@@ -376,7 +409,7 @@ def get_fzf_anime_preview(
             else 
                 echo Loading...
             fi
-            if [ -s "%s\\\\\\$title" ]; then cat "%s\\\\\\$title"
+            if [ -s "%s\\\\\\$title" ]; then source "%s\\\\\\$title"
                 else echo Loading...
             fi
         """ % (
@@ -392,7 +425,7 @@ def get_fzf_anime_preview(
             if [ -s %s/{} ]; then fzf-preview %s/{}
             else echo Loading...
             fi
-            if [ -s %s/{} ]; then cat %s/{}
+            if [ -s %s/{} ]; then source %s/{}
             else echo Loading...
             fi
         """ % (

@@ -8,12 +8,12 @@
 
 Welcome to **FastAnime**, anime site experience from the terminal.
 
-![fastanime-demo](https://github.com/user-attachments/assets/16e29f54-e9fa-48c7-b944-bfacb31ae1b5)
+![fastanime](https://github.com/user-attachments/assets/9ab09f26-e4a8-4b70-a315-7def998cec63)
 
 <details>
 <summary><b>fzf mode</b></summary>
   
-[fa_fzf_demo.webm](https://github.com/user-attachments/assets/b1fecf25-e358-4e8b-a144-bcb7947210cf)
+[fastanime-fzf.webm](https://github.com/user-attachments/assets/90875a57-198b-4c78-98d5-10a459001edd)
 
 </details>
 

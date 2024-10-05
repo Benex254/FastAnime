@@ -1420,7 +1420,7 @@ def anilist_results_menu(
             choices = []
             for title in anime_data.keys():
                 icon_path = os.path.join(IMAGES_CACHE_DIR, title)
-                choices.append(f"{title}\0icon\x1f{icon_path}")
+                choices.append(f"{title}\0icon\x1f{icon_path}.png")
             choices.append("Back")
             selected_anime_title = Rofi.run_with_icons(choices, "Select Anime")
         else:

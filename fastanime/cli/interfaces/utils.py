@@ -98,10 +98,11 @@ def write_search_results(
         future_to_task = {}
         for anime, title in zip(anilist_results, titles):
             # actual image url
-            image_url = anime["coverImage"]["large"]
-            future_to_task[executor.submit(save_image_from_url, image_url, title)] = (
-                image_url
-            )
+            if os.environ.get("FASTANIME_IMAGE_PREVIEWS", "true").lower() == "true":
+                image_url = anime["coverImage"]["large"]
+                future_to_task[
+                    executor.submit(save_image_from_url, image_url, title)
+                ] = image_url
 
             mediaListName = "Not in any of your lists"
             progress = "UNKNOWN"
@@ -330,22 +331,26 @@ def get_fzf_episode_preview(
         preview = """
             %s
             title={}
+            show_image_previews="%s"
             dim=${FZF_PREVIEW_COLUMNS}x${FZF_PREVIEW_LINES}
-            if [ -s "%s\\\\\\${title}.png" ]; then 
-                if command -v "chafa">/dev/null;then
-                    chafa -s $dim "%s\\\\\\${title}.png"
-                else
-                    echo please install chafa to enjoy image previews
+            if [ $show_image_previews = "true" ];then 
+                if [ -s "%s\\\\\\${title}.png" ]; then 
+                    if command -v "chafa">/dev/null;then
+                        chafa -s $dim "%s\\\\\\${title}.png"
+                    else
+                        echo please install chafa to enjoy image previews
+                    fi
+                    echo 
+                else 
+                    echo Loading...
                 fi
-                echo 
-            else 
-                echo Loading...
             fi
             if [ -s "%s\\\\\\$title" ]; then source "%s\\\\\\$title"
                 else echo Loading...
             fi
         """ % (
             fzf_preview,
+            os.environ.get("FASTANIME_IMAGE_PREVIEWS", "true").lower(),
             IMAGES_CACHE_DIR.replace("\\", "\\\\\\"),
             IMAGES_CACHE_DIR.replace("\\", "\\\\\\"),
             ANIME_INFO_CACHE_DIR.replace("\\", "\\\\\\"),
@@ -354,14 +359,18 @@ def get_fzf_episode_preview(
     else:
         preview = """
             %s
-            if [ -s %s/{} ]; then fzf-preview %s/{}
-            else echo Loading...
+            show_image_previews="%s"
+            if [ $show_image_previews = "true" ];then 
+                if [ -s %s/{} ]; then fzf-preview %s/{}
+                else echo Loading...
+                fi
             fi
             if [ -s %s/{} ]; then source %s/{}
             else echo Loading...
             fi
         """ % (
             fzf_preview,
+            os.environ.get("FASTANIME_IMAGE_PREVIEWS", "true").lower(),
             IMAGES_CACHE_DIR,
             IMAGES_CACHE_DIR,
             ANIME_INFO_CACHE_DIR,
@@ -398,22 +407,26 @@ def get_fzf_anime_preview(
         preview = """
             %s
             title={}
+            show_image_previews="%s"
             dim=${FZF_PREVIEW_COLUMNS}x${FZF_PREVIEW_LINES}
-            if [ -s "%s\\\\\\${title}.png" ]; then 
-                if command -v "chafa">/dev/null;then
-                    chafa  -s $dim "%s\\\\\\${title}.png"
-                else
-                    echo please install chafa to enjoy image previews
+            if [ $show_image_previews = "true" ];then
+                if [ -s "%s\\\\\\${title}.png" ]; then 
+                    if command -v "chafa">/dev/null;then
+                        chafa  -s $dim "%s\\\\\\${title}.png"
+                    else
+                        echo please install chafa to enjoy image previews
+                    fi
+                    echo 
+                else 
+                    echo Loading...
                 fi
-                echo 
-            else 
-                echo Loading...
             fi
             if [ -s "%s\\\\\\$title" ]; then source "%s\\\\\\$title"
                 else echo Loading...
             fi
         """ % (
             fzf_preview,
+            os.environ.get("FASTANIME_IMAGE_PREVIEWS", "true").lower(),
             IMAGES_CACHE_DIR.replace("\\", "\\\\\\"),
             IMAGES_CACHE_DIR.replace("\\", "\\\\\\"),
             ANIME_INFO_CACHE_DIR.replace("\\", "\\\\\\"),
@@ -423,14 +436,18 @@ def get_fzf_anime_preview(
         preview = """
             %s
             title={}
-            if [ -s "%s/${title}.png" ]; then fzf-preview "%s/${title}.png"
-            else echo Loading...
+            show_image_previews="%s"
+            if [ $show_image_previews = "true" ];then
+                if [ -s "%s/${title}.png" ]; then fzf-preview "%s/${title}.png"
+                else echo Loading...
+                fi
             fi
             if [ -s "%s/$title" ]; then source "%s/$title"
             else echo Loading...
             fi
         """ % (
             fzf_preview,
+            os.environ.get("FASTANIME_IMAGE_PREVIEWS", "true").lower(),
             IMAGES_CACHE_DIR,
             IMAGES_CACHE_DIR,
             ANIME_INFO_CACHE_DIR,

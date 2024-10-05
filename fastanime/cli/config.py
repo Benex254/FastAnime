@@ -40,6 +40,7 @@ class Config(object):
         "force_window": "immediate",
         "format": "best[height<=1080]/bestvideo[height<=1080]+bestaudio/best",
         "icons": "false",
+        "image_previews": "true",
         "normalize_titles": "true",
         "notification_duration": "2",
         "player": "mpv",
@@ -88,6 +89,7 @@ class Config(object):
         self.force_window = self.get_force_window()
         self.format = self.get_format()
         self.icons = self.get_icons()
+        self.image_previews = self.get_image_previews()
         self.normalize_titles = self.get_normalize_titles()
         self.notification_duration = self.get_notification_duration()
         self.player = self.get_player()
@@ -196,6 +198,9 @@ class Config(object):
 
     def get_icons(self):
         return self.configparser.getboolean("general", "icons")
+
+    def get_image_previews(self):
+        return self.configparser.getboolean("general", "image_previews")
 
     def get_preview(self):
         return self.configparser.getboolean("general", "preview")
@@ -336,6 +341,9 @@ downloads_dir = {self.downloads_dir}
 # though its awesome
 # try it and you will see
 preview = {self.preview} 
+
+# whether to show images in the preview [true/false]
+image_previews = {self.image_previews}
 
 # the time to seek when using ffmpegthumbnailer [-1 to 100]
 # -1 means random and is the default

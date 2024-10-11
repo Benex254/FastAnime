@@ -26,7 +26,7 @@ class Config(object):
         "https://anilist.co/api/v2/oauth/authorize?client_id=20148&response_type=token"
     )
     anime_provider: "AnimeProvider"
-    user_data = {"watch_history": {}, "animelist": [], "user": {}}
+    user_data = {"recent_anime": [], "animelist": [], "user": {}}
     default_config = {
         "auto_next": "False",
         "auto_select": "True",
@@ -49,6 +49,7 @@ class Config(object):
         "preview": "False",
         "provider": "allanime",
         "quality": "1080",
+        "recent": "50",
         "rofi_theme": "",
         "rofi_theme_confirm": "",
         "rofi_theme_input": "",
@@ -64,7 +65,7 @@ class Config(object):
     }
 
     def __init__(self) -> None:
-        self.initialize_user_data_and_watch_history()
+        self.initialize_user_data_and_watch_history_recent_anime()
         self.load_config()
 
     def load_config(self):
@@ -99,6 +100,7 @@ class Config(object):
         self.provider = self.get_provider()
         self.quality = self.get_quality()
 
+        self.recent = self.get_recent()
         self.rofi_theme_confirm = self.get_rofi_theme_confirm()
         self.rofi_theme_input = self.get_rofi_theme_input()
         self.rofi_theme = self.get_rofi_theme()
@@ -136,6 +138,20 @@ class Config(object):
         self.user_data["user"] = user
         self._update_user_data()
 
+    def update_recent(self, recent_anime: list):
+        recent_anime_ids = []
+        _recent_anime = []
+        for anime in recent_anime[::-1]:
+            if (
+                anime["id"] not in recent_anime_ids
+                and len(recent_anime_ids) <= self.recent
+            ):
+                _recent_anime.append(anime)
+                recent_anime_ids.append(anime["id"])
+
+        self.user_data["recent_anime"] = _recent_anime
+        self._update_user_data()
+
     def media_list_track(
         self,
         anime_id: int,
@@ -157,7 +173,7 @@ class Config(object):
         with open(USER_WATCH_HISTORY_PATH, "w") as f:
             json.dump(self.watch_history, f)
 
-    def initialize_user_data_and_watch_history(self):
+    def initialize_user_data_and_watch_history_recent_anime(self):
         try:
             if os.path.isfile(USER_DATA_PATH):
                 with open(USER_DATA_PATH, "r") as f:
@@ -235,6 +251,9 @@ class Config(object):
 
     def get_normalize_titles(self):
         return self.configparser.getboolean("general", "normalize_titles")
+
+    def get_recent(self):
+        return self.configparser.getint("general", "recent")
 
     # --- stream section ---
     def get_skip(self):
@@ -407,6 +426,10 @@ cache_requests = {self.cache_requests}
 # for now i don't recommend changing it
 # leave it as is
 use_persistent_provider_store = {self.use_persistent_provider_store}
+
+# no of recent anime to keep [0-50]
+# 0 will disable recent anime tracking
+recent = {self.recent}
 
 
 [stream]

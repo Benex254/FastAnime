@@ -539,6 +539,14 @@ def provider_anime_episode_servers_menu(
                 episode_title = episode_detail["title"]
                 break
 
+    if config.recent:
+        config.update_recent(
+            [
+                *config.user_data["recent_anime"],
+                fastanime_runtime_state.selected_anime_anilist,
+            ]
+        )
+        print("Updating recent anime...")
     if config.sync_play:
         from ..utils.syncplay import SyncPlayer
 
@@ -1562,6 +1570,9 @@ def fastanime_main_menu(
         watch_history = list(map(int, config.watch_history.keys()))
         return AniList.search(id_in=watch_history, sort="TRENDING_DESC")
 
+    def _recent():
+        return (True, {"data": {"Page": {"media": config.user_data["recent_anime"]}}})
+
     # WARNING: Will probably be depracated
     def _anime_list():
         anime_list = config.anime_list
@@ -1589,6 +1600,7 @@ def fastanime_main_menu(
     # each option maps to anilist data that is described by the option name
     options = {
         f"{'🔥 ' if icons else ''}Trending": AniList.get_trending,
+        f"{'🎞️ ' if icons else ''}Recent": _recent,
         f"{'📺 ' if icons else ''}Watching": lambda media_list_type="Watching": handle_animelist(
             config, fastanime_runtime_state, media_list_type
         ),

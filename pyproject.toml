@@ -6,13 +6,39 @@ license = "UNLICENSE"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    "click>=8.1.7",
-    "fastapi>=0.115.0",
-    "mpv>=1.0.7",
-    "plyer>=2.1.0",
-    "rich>=13.9.2",
-    "yt-dlp>=2024.10.7",
+  "click>=8.1.7",
+  "inquirerpy>=0.3.4",
+  "rich>=13.9.2",
+  "thefuzz>=0.22.1",
+  "yt-dlp>=2024.10.7",
 ]
 
 [project.scripts]
 fastanime = 'fastanime:FastAnime'
+
+[project.optional-dependencies]
+standard = [
+    "fastapi[standard]>=0.115.0",
+    "mpv>=1.0.7",
+    "plyer>=2.1.0",
+]
+api = [
+    "fastapi[standard]>=0.115.0",
+]
+notifications = [
+    "plyer>=2.1.0",
+]
+mpv = [
+    "mpv>=1.0.7",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.uv]
+dev-dependencies = [
+    "pyright>=1.1.384",
+    "pytest>=8.3.3",
+    "ruff>=0.6.9",
+]

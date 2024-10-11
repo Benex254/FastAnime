@@ -85,10 +85,30 @@ If you have any difficulty consult for help on the [discord channel](https://dis
 ### Installation using your favourite package manager
 
 Currently the app is only published on [pypi](https://pypi.org/project/fastanime/).
+With the following extras available:
+
+- standard -which installs all dependencies
+- api - which installs dependencies required to use `fastanime serve`
+- mpv - which installs python mpv
+- notifications - which installs plyer required for desktop notifications
+
+#### Using uv
+
+Recommended method of installation
+
+```bash
+# generally:
+uv tool install fastanime
+
+# if you want other functionality:
+uv tool install fastanime[standard]
+uv tool install fastanime[api]
+uv tool install fastanime[mpv]
+uv tool install fastanime[notifications]
+
+```
 
 #### Using pipx
-
-Preferred method of installation since [Pipx](https://github.com/pypa/pipx) creates an isolated environment for each app it installs.
 
 ```bash
 
@@ -637,6 +657,19 @@ fastanime completions --bash
 fastanime completions --zsh
 ```
 
+#### fastanime serve
+
+Helper command that starts a rest server.
+This requires you to install fastanime with the api extra or standard extra.
+
+```bash
+# default options
+fastanime serve
+
+# specify host and port
+fastanime serve --host <host> --port <port>
+```
+
 ### MPV specific commands
 
 The project now allows on the fly media controls directly from mpv. This means you can go to the next or previous episode without the window ever closing thus offering a seamless experience.
@@ -727,6 +760,8 @@ force_forward_tracking = True
 cache_requests = True
 
 use_persistent_provider_store = False
+
+recent = 50
 
 
 [stream]

@@ -178,6 +178,9 @@ signal.signal(signal.SIGINT, handle_exit)
     help="the player to use when streaming",
     type=click.Choice(["mpv", "vlc"]),
 )
+@click.option(
+    "--fresh-requests", is_flag=True, help="Force the requests cache to be updated"
+)
 @click.pass_context
 def run_cli(
     ctx: click.Context,
@@ -212,7 +215,10 @@ def run_cli(
     use_python_mpv,
     sync_play,
     player,
+    fresh_requests,
 ):
+    import os
+
     from .config import Config
 
     ctx.obj = Config()
@@ -251,6 +257,8 @@ def run_cli(
 
         install()
 
+    if fresh_requests:
+        os.environ["FASTANIME_FRESH_REQUESTS"] = "1"
     if sync_play:
         ctx.obj.sync_play = sync_play
     if provider:

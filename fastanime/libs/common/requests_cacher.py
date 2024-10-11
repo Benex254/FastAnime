@@ -1,5 +1,6 @@
 import json
 import logging
+import os
 import re
 import time
 from datetime import datetime
@@ -49,7 +50,7 @@ class CachedRequestsSession(requests.Session):
     def __init__(
         self,
         cache_db_path: str,
-        max_lifetime: int = 604800,
+        max_lifetime: int = 259200,
         max_size: int = (1024**2) * 10,
         table_name: str = "fastanime_requests_cache",
         clean_db=False,
@@ -89,16 +90,10 @@ class CachedRequestsSession(requests.Session):
         url,
         params=None,
         force_caching=False,
-        fresh=0,
+        fresh=int(os.environ.get("FASTANIME_FRESH_REQUESTS", 0)),
         *args,
         **kwargs,
     ):
-        # TODO: improve the caching functionality and add a layer to auto delete
-        # expired requests
-        if fresh:
-            logger.debug("Executing fresh request")
-            return super().request(method, url, params=params, *args, **kwargs)
-
         if params:
             url += "?" + urlencode(params)
 
@@ -128,7 +123,7 @@ class CachedRequestsSession(requests.Session):
             cached_request = cursor.fetchone()
             time_after_access_db = datetime.now()
 
-            if cached_request:
+            if cached_request and not fresh:
                 logger.debug("Found existing request in cache")
                 (
                     status_code,

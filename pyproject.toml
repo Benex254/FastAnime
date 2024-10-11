@@ -1,43 +1,18 @@
-[tool.poetry]
+[project]
 name = "fastanime"
 version = "2.6.6"
 description = "A browser anime site experience from the terminal"
-authors = ["Benextempest <benextempest@gmail.com>"]
 license = "UNLICENSE"
 readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "click>=8.1.7",
+    "fastapi>=0.115.0",
+    "mpv>=1.0.7",
+    "plyer>=2.1.0",
+    "rich>=13.9.2",
+    "yt-dlp>=2024.10.7",
+]
 
-[tool.poetry.dependencies]
-python = "^3.10"
-yt-dlp = "^2024.5.27"
-thefuzz = "^0.22.1"
-requests = "^2.32.3"
-rich = { version = "^13.7.1", optional = false }
-click = { version = "^8.1.7", optional = false }
-inquirerpy = { version = "^0.3.4", optional = false }
-mpv = { version = "^1.0.7", optional = true }
-plyer = { version = "^2.1.0", optional = true }
-
-fastapi = {extras = ["standard"], version = "^0.115.0", optional = true}
-[tool.poetry.extras]
-full = ["plyer", "mpv", "fastapi"]
-# cli = ["rich", "click", "inquirerpy"]
-mpv = ["mpv"]
-notifications = ["plyer"]
-api = ["fastapi"]
-
-[tool.poetry.group.dev.dependencies]
-black = "^24.4.2"
-isort = "^5.13.2"
-pytest = "^8.2.2"
-ruff = "^0.4.10"
-pre-commit = "^3.7.1"
-autoflake = "^2.3.1"
-tox = "^4.16.0"
-
-pyright = "^1.1.374"
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
-
-[tool.poetry.scripts]
+[project.scripts]
 fastanime = 'fastanime:FastAnime'

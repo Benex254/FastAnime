@@ -11,12 +11,14 @@ import click
 \b
   # check for latest release
   fastanime update --check
+
+  # Force an update regardless of the current version
+  fastanime update --force
 """,
 )
 @click.option("--check", "-c", help="Check for the latest release", is_flag=True)
-def update(
-    check,
-):
+@click.option("--force", "-c", help="Force update", is_flag=True)
+def update(check, force):
     from rich.console import Console
     from rich.markdown import Markdown
 
@@ -45,7 +47,7 @@ def update(
             print(f"You are running the latest version ({__version__}) of fastanime")
             _print_release(github_release_data)
     else:
-        success, github_release_data = update_app()
+        success, github_release_data = update_app(force)
         _print_release(github_release_data)
         if success:
             print("Successfully updated")

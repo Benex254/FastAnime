@@ -75,9 +75,9 @@ def is_git_repo(author, repository):
     return bool(match) and match.group(1) == f"{author}/{repository}"
 
 
-def update_app():
+def update_app(force=False):
     is_latest, release_json = check_for_updates()
-    if is_latest:
+    if is_latest and not force:
         print("[green]App is up to date[/]")
         return False, release_json
     tag_name = release_json["tag_name"]
@@ -101,8 +101,10 @@ def update_app():
         )
 
     else:
-        if PIPX_EXECUTABLE := shutil.which("pipx"):
-            process = subprocess.run([PIPX_EXECUTABLE, "upgrade", APP_NAME])
+        if UV := shutil.which("uv"):
+            process = subprocess.run([UV, "tool", "upgrade", APP_NAME])
+        elif PIPX := shutil.which("pipx"):
+            process = subprocess.run([PIPX, "upgrade", APP_NAME])
         else:
             PYTHON_EXECUTABLE = sys.executable
 

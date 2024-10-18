@@ -29,6 +29,3 @@ jobs:
           name: fastanime_debug_build
           path: |
             dist
-            !dist/*.whl
-      # - name: Run the automated tests (for example)
-      # run: poetry run pytest -v

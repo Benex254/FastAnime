@@ -1,9 +1,9 @@
 # **FastAnime**
 
-![PyPI - Downloads](https://img.shields.io/pypi/dm/fastanime) ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/Benex254/FastAnime/test.yml?label=Tests)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/fastanime) ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/FastAnime/FastAnime/test.yml?label=Tests)
 ![Discord](https://img.shields.io/discord/1250887070906323096?label=Discord)
-![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/Benex254/FastAnime)
-![GitHub deployments](https://img.shields.io/github/deployments/Benex254/fastanime/pypi?label=PyPi%20Publish)
+![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/FastAnime/FastAnime)
+![GitHub deployments](https://img.shields.io/github/deployments/FastAnime/fastanime/pypi?label=PyPi%20Publish)
 ![PyPI - License](https://img.shields.io/pypi/l/fastanime)
 
 Welcome to **FastAnime**, anime site experience from the terminal.
@@ -132,7 +132,7 @@ pip install 'fastanime==<latest-pre-release-tag>.dev1'
 
 ### Installing the bleeding edge version
 
-To install the latest build which are created on every push by GitHub actions, download the [fastanime_debug_build](https://github.com/Benex254/FastAnime/actions) of your choosing from the GitHub actions page.
+To install the latest build which are created on every push by GitHub actions, download the [fastanime_debug_build](https://github.com/FastAnime/FastAnime/actions) of your choosing from the GitHub actions page.
 Then:
 
 ```bash
@@ -157,7 +157,7 @@ Requirements:
 
 To build from the source, follow these steps:
 
-1. Clone the repository: `git clone https://github.com/Benex254/FastAnime.git --depth 1`
+1. Clone the repository: `git clone https://github.com/FastAnime/FastAnime.git --depth 1`
 2. Navigate into the folder: `cd FastAnime`
 3. Then build and Install the app:
 
@@ -174,7 +174,7 @@ fastanime --version
 
 > [!Tip]
 >
-> Download the completions from [here](https://github.com/Benex254/FastAnime/tree/master/completions) for your shell.
+> Download the completions from [here](https://github.com/FastAnime/FastAnime/tree/master/completions) for your shell.
 > To add completions:
 >
 > - Fish Users: `cp $FASTANIME_PATH/completions/fastanime.fish ~/.config/fish/completions/`
@@ -358,7 +358,7 @@ fastanime anilist search -f MOVIE -s FAVOURITES_DESC
 
 For more details visit the anilist docs or just get the completions which will improve the experience.
 
-Like seriously **[get the completions](https://github.com/Benex254/FastAnime#completions-subcommand)** and the experience will be a 💯 💯 better.
+Like seriously **[get the completions](https://github.com/FastAnime/FastAnime#completions-subcommand)** and the experience will be a 💯 💯 better.
 
 The following are commands you can only run if you are signed in to your AniList account:
 
@@ -790,7 +790,7 @@ We welcome your issues and feature requests. However, due to time constraints, w
 
 If you wish to contribute directly, please first open an issue describing your proposed changes so it can be discussed or if you are in a rush for the feature to be merged just open a pr.
 
-If you find an anime title that does not correspond with a provider or is just weird just [edit the data file](https://github.com/Benex254/FastAnime/blob/master/fastanime/Utility/data.py) and open a pr or if you don't want to do that open an issue.
+If you find an anime title that does not correspond with a provider or is just weird just [edit the data file](https://github.com/FastAnime/FastAnime/blob/master/fastanime/Utility/data.py) and open a pr or if you don't want to do that open an issue.
 
 ## Receiving Support
 

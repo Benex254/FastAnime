@@ -325,13 +325,6 @@ class Config(object):
 # be sure to also give the replacement emoji
 icons = {self.icons}
 
-# the quality of the stream [1080,720,480,360]
-# this option is usually only reliable when:
-# provider=animepahe
-# since it provides links that actually point to streams of different qualities
-# while the rest just point to another link that can provide the anime from the same server
-quality = {self.quality}
-
 # whether to normalize provider titles [True/False]
 # basically takes the provider titles and finds the corresponding anilist title then changes the title to that
 # useful for uniformity especially when downloading from different providers
@@ -433,6 +426,13 @@ recent = {self.recent}
 
 
 [stream]
+# the quality of the stream [1080,720,480,360]
+# this option is usually only reliable when:
+# provider=animepahe
+# since it provides links that actually point to streams of different qualities
+# while the rest just point to another link that can provide the anime from the same server
+quality = {self.quality}
+
 # Auto continue from watch history [True/False]
 # this will make fastanime to choose the episode that you last watched to completion
 # and increment it by one

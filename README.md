@@ -153,7 +153,7 @@ Requirements:
 
 - [git](https://git-scm.com/)
 - [python 3.10 and above](https://www.python.org/)
-- [poetry](https://python-poetry.org/docs/#installation)
+- [uv](https://astral.sh/blog/uv)
 
 To build from the source, follow these steps:
 
@@ -162,15 +162,8 @@ To build from the source, follow these steps:
 3. Then build and Install the app:
 
 ```bash
-# Normal Installation
-poetry build
-cd dist
-pip install fastanime<version>.whl
-
-# Editable installation (easiest for updates)
-# just do a git pull in the Project dir
-# the latter will require rebuilding the app
-pip install -e .
+# build and install fastanime with uv
+uv tool install .
 ```
 
 4. Enjoy! Verify installation with:
@@ -187,6 +180,7 @@ fastanime --version
 > - Fish Users: `cp $FASTANIME_PATH/completions/fastanime.fish ~/.config/fish/completions/`
 > - Bash Users: Add `source $FASTANIME_PATH/completions/fastanime.bash` to your `.bashrc`
 > - Zsh Users: Add `source $FASTANIME_PATH/completions/fastanime.zsh` to your `.zshrc`
+>   or using the built in command `fastanime completions`
 
 ### External Dependencies
 

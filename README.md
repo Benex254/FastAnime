@@ -98,10 +98,10 @@ Recommended method of installation
 
 ```bash
 # generally:
-uv tool install fastanime
-
-# if you want other functionality:
 uv tool install fastanime[standard]
+
+# or stripped down installations:
+uv tool install fastanime
 uv tool install fastanime[api]
 uv tool install fastanime[mpv]
 uv tool install fastanime[notifications]
@@ -663,6 +663,547 @@ fastanime serve
 # specify host and port
 fastanime serve --host <host> --port <port>
 ```
+An example instance is hosted by [render](https://fastanime.onrender.com/)
+
+
+Examples:
+
+**search for anime by title:**
+
+```bash
+curl 'https://fastanime.onrender.com/search?title=dragon&translation_type=sub'
+
+```
+
+<details>
+<summary>
+Result
+</summary>
+
+```json
+{
+  "pageInfo": {
+    "total": 22839
+  },
+  "results": [
+    {
+      "id": "ju2pgynxn9o9DZvse",
+      "title": "Dragon Ball Daima",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 5,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "qpnhxfarTHfP7kjgR",
+      "title": "My WeChat connects to the Dragon Palace",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 26,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "8aM5BBoEGLvjG3MZm",
+      "title": "Sayounara Ryuusei, Konnichiwa Jinsei",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 6,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "Sg9Q9FyqBnJ9qtv5n",
+      "title": "Yarinaoshi Reijou wa Ryuutei Heika wo Kouryakuchuu",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 5,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "gF2mKbWBatQudcF6A",
+      "title": "Throne of the Dragon King",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 3,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "SXLNNoorPifT5ZStw",
+      "title": "Shi Cao Lao Long Bei Guan Yi E Long Zhi Ming Season 2",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 7,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "v4ZkjtyftscNzYF2A",
+      "title": "I Have a Dragon in My Body Episode122-133",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 77,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "9RSQCRJ3d554sBzoz",
+      "title": "City Immortal Emperor: Dragon King Temple",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 20,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "t8C6zvsdJE5JJKDLE",
+      "title": "It Turns Out I Am the Peerless Dragon God",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 2,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "xyDt3mJieZkD76P7S",
+      "title": "Urban Hidden Dragon",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 13,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "8PoJiTEDAswkw8b3u",
+      "title": "The Collected Animations of ICAF (2001-2006)",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 1,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "KZeMmRSsyJgz37EmH",
+      "title": "Dragon Master",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 1,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "7a33i9m26poonyNLg",
+      "title": "I Have a Dragon in My Body",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 79,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "uwwvBujGRsjCQ8kKM",
+      "title": "Cong Gu Huo Niao Kaishi: Long Cheng Fengyun",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 16,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "RoexdZwHSTDwyzEzd",
+      "title": "Super Dragon Ball Heroes Meteor Mission",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 6,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "gAcGCcMENjbWhBnR9",
+      "title": "Dungeon Meshi",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 24,
+        "dub": 24,
+        "raw": 0
+      }
+    },
+    {
+      "id": "ZGh2QHiaCY5T5Mhi4",
+      "title": "Long Shidai",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 9,
+        "dub": 0,
+        "raw": 1
+      }
+    },
+    {
+      "id": "gZSHt98fQpHRfJJXw",
+      "title": "Xanadu Dragonslayer Densetsu",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 1,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "wo8pX4Sba97mFCAkc",
+      "title": "Vanguard Dragon God",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 86,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "rrbCftmca3Y2TEiBX",
+      "title": "Super Dragon Ball Heroes Ultra God Mission",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 10,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "JzSeXC2WtBBhn3guN",
+      "title": "Dragon King's Son-In-Law",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 11,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "eE3txJGGk9atw7k2v",
+      "title": "Majutsushi Orphen Hagure Tabi: Seiiki-hen",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 12,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "4X2JbZgiQrb2PTzex",
+      "title": "Yowai 5000-nen no Soushoku Dragon, Iwarenaki Jaryuu Nintei (Japanese Dub)",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 12,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "SHp5NFDakKjPT5nJE",
+      "title": "Starting from Gu Huoniao: Dragon City Hegemony",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 22,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "8LgaCGrz7Gz35LRpk",
+      "title": "Yuan Zun",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 5,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "4GKHyjFC7Dyc7fBpT",
+      "title": "Shen Ji Long Wei",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 26,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "2PQiuXiuJoTQTdgy4",
+      "title": "Long Zu",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 15,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "rE47AepmBFRvZ6cne",
+      "title": "Jidao Long Shen",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 40,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "c4JcjPbRfiuoJPB4F",
+      "title": "Dragon Quest: Dai no Daibouken (2020)",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 101,
+        "dub": 100,
+        "raw": 0
+      }
+    },
+    {
+      "id": "nGRTwG7kj5rCPiAX4",
+      "title": "Dragon Quest: Dai no Daibouken Tachiagare!! Aban no Shito",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 1,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "6LJBjT4RzJaucdmX3",
+      "title": "Dragon Slayer Eiyuu Densetsu: Ouji no Tabidachi",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 1,
+        "dub": 1,
+        "raw": 0
+      }
+    },
+    {
+      "id": "JKbtxdw2cRqqmZgnS",
+      "title": "Dragon Quest: Dai no Daibouken Buchiyabure!! Shinsei 6 Daishougun",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 1,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "pn32RijEHPfuTYt4h",
+      "title": "Dragon Quest Retsuden: Roto no Monshou",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 1,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "xHwk6oo7jaDrMG9to",
+      "title": "Dragon Fist",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 1,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "ugFXPFQW8kvLocZgx",
+      "title": "Yowai 5000-nen no Soushoku Dragon, Iwarenaki Jaryuu Nintei",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 12,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "qSFMEcT4SufEhLZnq",
+      "title": "Doraemon Movie 8: Nobita to Ryuu no Kishi",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 1,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "LTzXFSmQR878MdJaS",
+      "title": "Dragon Ball Specials",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 2,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "XuTNNzF7DfapLFMFJ",
+      "title": "Dragon Ball Super: Super Hero",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 1,
+        "dub": 1,
+        "raw": 0
+      }
+    },
+    {
+      "id": "n4S2spjyTHXHNAMDW",
+      "title": "Shin Ikkitousen",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 3,
+        "dub": 3,
+        "raw": 0
+      }
+    },
+    {
+      "id": "srMRCkMEJA9Rmt7do",
+      "title": "Dragon Ball Z: Atsumare! Goku World",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 1,
+        "dub": 0,
+        "raw": 0
+      }
+    }
+  ]
+}
+```
+
+</details>
+
+**Get anime by id:**
+
+
+```bash
+curl 'https://fastanime.onrender.com/anime/8aM5BBoEGLvjG3MZm'
+```
+
+<details>
+<summary>
+Result
+</summary>
+
+```json
+{
+  "id": "8aM5BBoEGLvjG3MZm",
+  "title": "Sayounara Ryuusei, Konnichiwa Jinsei",
+  "availableEpisodesDetail": {
+    "sub": [
+      "6",
+      "5",
+      "4",
+      "3",
+      "2",
+      "1"
+    ],
+    "dub": [],
+    "raw": []
+  },
+  "type": null
+}
+```
+
+</details>
+
+**Get episode streams by translation_type:**
+
+```bash
+curl 'https://fastanime.onrender.com/anime/8aM5BBoEGLvjG3MZm/watch?episode=3&translation_type=sub'
+```
+
+<details>
+<summary>
+Result
+</summary>
+
+```json
+[
+  {
+    "server": "Yt",
+    "episode_title": "Sayounara Ryuusei, Konnichiwa Jinsei; Episode 3",
+    "headers": {
+      "Referer": "https://allanime.day/"
+    },
+    "subtitles": [],
+    "links": [
+      {
+        "link": "https://tools.fast4speed.rsvp//media9/videos/8aM5BBoEGLvjG3MZm/sub/3",
+        "quality": "1080"
+      }
+    ]
+  },
+  {
+    "server": "sharepoint",
+    "headers": {},
+    "subtitles": [],
+    "episode_title": "Sayounara Ryuusei, Konnichiwa Jinsei; Episode 3",
+    "links": [
+      {
+        "link": "https://myanime.sharepoint.com/sites/chartlousty/_layouts/15/download.aspx?share=ERpIT0CTmOVHmO8386bNGZMBf7Emtoda_3bUMzCleWhp4g",
+        "mp4": true,
+        "resolutionStr": "Mp4",
+        "src": "https://myanime.sharepoint.com/sites/chartlousty/_layouts/15/download.aspx?share=ERpIT0CTmOVHmO8386bNGZMBf7Emtoda_3bUMzCleWhp4g",
+        "quality": "1080"
+      }
+    ]
+  },
+  {
+    "server": "gogoanime",
+    "headers": {},
+    "subtitles": [],
+    "episode_title": "Sayounara Ryuusei, Konnichiwa Jinsei; Episode 3",
+    "links": [
+      {
+        "link": "https://www114.anzeat.pro/streamhls/6454b50a557e9fa52a60cfdee0b0906e/ep.3.1729188150.m3u8",
+        "hls": true,
+        "mp4": false,
+        "resolutionStr": "hls P",
+        "priority": 3,
+        "quality": "1080"
+      },
+      {
+        "link": "https://www114.anicdnstream.info/videos/hls/h1IUtAefmoWTc8hJhtr8OQ/1731106912/235294/6454b50a557e9fa52a60cfdee0b0906e/ep.3.1729188150.m3u8",
+        "hls": true,
+        "mp4": false,
+        "resolutionStr": "HLS1",
+        "priority": 2,
+        "quality": "720"
+      },
+      {
+        "link": "https://workfields.maverickki.lol/7d2473746a243c246e727276753c29297171713737322867686f65626875727463676b286f68606929706f62636975296e6a75296e374f53724763606b695152653e6e4c6e72743e495729373135373736303f373429343533343f32293032333264333667333331633f6067333467303665606263633664363f3630632963762835283731343f373e3e373336286b35733e242a2476677475634e6a75243c727473632a2462677263243c373135373634363236363636367b",
+        "hls": true,
+        "resolutionStr": "Alt",
+        "src": "https://workfields.maverickki.lol/7d2473746a243c246e727276753c29297171713737322867686f65626875727463676b286f68606929706f62636975296e6a75296e374f53724763606b695152653e6e4c6e72743e495729373135373736303f373429343533343f32293032333264333667333331633f6067333467303665606263633664363f3630632963762835283731343f373e3e373336286b35733e242a2476677475634e6a75243c727473632a2462677263243c373135373634363236363636367b",
+        "priority": 1,
+        "quality": "480"
+      }
+    ]
+  }
+]
+```
+
+</details>
 
 ### MPV specific commands
 

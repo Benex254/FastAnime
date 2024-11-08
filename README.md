@@ -663,8 +663,8 @@ fastanime serve
 # specify host and port
 fastanime serve --host <host> --port <port>
 ```
-An example instance is hosted by [render](https://fastanime.onrender.com/)
 
+An example instance is hosted by [render](https://fastanime.onrender.com/)
 
 Examples:
 
@@ -1094,7 +1094,6 @@ Result
 
 **Get anime by id:**
 
-
 ```bash
 curl 'https://fastanime.onrender.com/anime/8aM5BBoEGLvjG3MZm'
 ```
@@ -1109,14 +1108,7 @@ Result
   "id": "8aM5BBoEGLvjG3MZm",
   "title": "Sayounara Ryuusei, Konnichiwa Jinsei",
   "availableEpisodesDetail": {
-    "sub": [
-      "6",
-      "5",
-      "4",
-      "3",
-      "2",
-      "1"
-    ],
+    "sub": ["6", "5", "4", "3", "2", "1"],
     "dub": [],
     "raw": []
   },
@@ -1197,6 +1189,99 @@ Result
         "src": "https://workfields.maverickki.lol/7d2473746a243c246e727276753c29297171713737322867686f65626875727463676b286f68606929706f62636975296e6a75296e374f53724763606b695152653e6e4c6e72743e495729373135373736303f373429343533343f32293032333264333667333331633f6067333467303665606263633664363f3630632963762835283731343f373e3e373336286b35733e242a2476677475634e6a75243c727473632a2462677263243c373135373634363236363636367b",
         "priority": 1,
         "quality": "480"
+      }
+    ]
+  }
+]
+```
+
+</details>
+
+**Get Episode Streams by AniList Id:**
+
+```bash
+curl 'https://fastanime.onrender.com/watch/269?episode=1&translation_type=dub'
+```
+
+<details>
+<summary>
+Results
+  </summary>
+
+```json
+[
+  {
+    "server": "gogoanime",
+    "headers": {},
+    "subtitles": [],
+    "episode_title": "Bleach; Episode 1",
+    "links": [
+      {
+        "link": "https://www032.anzeat.pro/streamhls/f643f0c19d5bee9f1c3aed888eee75d6/ep.1.1709258176.m3u8",
+        "hls": true,
+        "mp4": false,
+        "resolutionStr": "hls P",
+        "priority": 3,
+        "quality": "1080"
+      },
+      {
+        "link": "https://www032.anicdnstream.info/videos/hls/WEJ7719z_r37wHYpaOsTqQ/1731115258/76805/f643f0c19d5bee9f1c3aed888eee75d6/ep.1.1709258176.m3u8",
+        "hls": true,
+        "mp4": false,
+        "resolutionStr": "HLS1",
+        "priority": 2,
+        "quality": "720"
+      },
+      {
+        "link": "https://workfields.maverickki.lol/7d2473746a243c246e727276753c29297171713635342867686f65626875727463676b286f68606929706f62636975296e6a752951434c3131373f7c59743531714e5f76674975527757293731353737373334333e2931303e36332960303235603665373f62336463633f603765356763623e3e3e636363313362302963762837283731363f34333e373130286b35733e242a2476677475634e6a75243c727473632a2462677263243c373135373634363236363636367b",
+        "hls": true,
+        "resolutionStr": "Alt",
+        "src": "https://workfields.maverickki.lol/7d2473746a243c246e727276753c29297171713635342867686f65626875727463676b286f68606929706f62636975296e6a752951434c3131373f7c59743531714e5f76674975527757293731353737373334333e2931303e36332960303235603665373f62336463633f603765356763623e3e3e636363313362302963762837283731363f34333e373130286b35733e242a2476677475634e6a75243c727473632a2462677263243c373135373634363236363636367b",
+        "priority": 1,
+        "quality": "480"
+      }
+    ]
+  },
+  {
+    "server": "Yt",
+    "episode_title": "Bleach; Episode 1",
+    "headers": {
+      "Referer": "https://allanime.day/"
+    },
+    "subtitles": [],
+    "links": [
+      {
+        "link": "https://tools.fast4speed.rsvp//media3/videos/XqKvkSEty5koms32i/dub/1",
+        "quality": "1080"
+      }
+    ]
+  },
+  {
+    "server": "wixmp",
+    "headers": {},
+    "subtitles": [],
+    "episode_title": "Bleach; Episode 1",
+    "links": [
+      {
+        "link": "https://repackager.wixmp.com/video.wixstatic.com/video/eba0c8_706b389e50f94fe5bf8c72e2f10c545e/,720p,480p,/mp4/file.mp4.urlset/master.m3u8",
+        "hls": true,
+        "resolutionStr": "Hls",
+        "quality": "1080"
+      }
+    ]
+  },
+  {
+    "server": "sharepoint",
+    "headers": {},
+    "subtitles": [],
+    "episode_title": "Bleach; Episode 1",
+    "links": [
+      {
+        "link": "https://myanime.sharepoint.com/sites/anime/_layouts/15/download.aspx?share=EaNJF1eTtptGovmPAcR3_7QBH1gFepgMcBpL5YfyEM5Uhw",
+        "mp4": true,
+        "resolutionStr": "Mp4",
+        "src": "https://myanime.sharepoint.com/sites/anime/_layouts/15/download.aspx?share=EaNJF1eTtptGovmPAcR3_7QBH1gFepgMcBpL5YfyEM5Uhw",
+        "quality": "1080"
       }
     ]
   }

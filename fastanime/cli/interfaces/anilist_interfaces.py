@@ -1591,6 +1591,8 @@ def fastanime_main_menu(
         else:
             config.load_config()
 
+        config.set_fastanime_config_environs()
+
         config.anime_provider.provider = config.provider
         config.anime_provider.lazyload_provider(config.provider)
 

@@ -9,6 +9,7 @@ from ..constants import (
     USER_DATA_PATH,
     USER_VIDEOS_DIR,
     USER_WATCH_HISTORY_PATH,
+    S_PLATFORM
 )
 from ..libs.rofi import Rofi
 
@@ -40,8 +41,8 @@ class Config(object):
         "force_window": "immediate",
         "format": "best[height<=1080]/bestvideo[height<=1080]+bestaudio/best",
         "icons": "false",
-        "image_previews": "true",
-        "normalize_titles": "true",
+        "image_previews": "True" if S_PLATFORM != "win32" else "False",
+        "normalize_titles": "True",
         "notification_duration": "2",
         "player": "mpv",
         "preferred_history": "local",

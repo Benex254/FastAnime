@@ -65,7 +65,7 @@ def save_image_from_url(url: str, file_name: str):
         file_name: filename to use
     """
     image = requests.get(url)
-    with open(f"{IMAGES_CACHE_DIR}/{file_name}.png", "wb") as f:
+    with open(os.path.join(IMAGES_CACHE_DIR,f"{file_name}.png"), "wb") as f:
         f.write(image.content)
 
 
@@ -76,7 +76,7 @@ def save_info_from_str(info: str, file_name: str):
         info: the information anilist has on the anime
         file_name: the filename to use
     """
-    with open(f"{ANIME_INFO_CACHE_DIR}/{file_name}", "w") as f:
+    with open(os.path.join(ANIME_INFO_CACHE_DIR,file_name,), "w",encoding="utf-8") as f:
         f.write(info)
 
 

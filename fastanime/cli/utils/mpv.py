@@ -37,7 +37,6 @@ def stream_video(MPV, url, mpv_args, custom_args):
             # Check if the process has terminated
             retcode = process.poll()
             if retcode is not None:
-                print("Finshed at: ", last_time)
                 break
 
     except Exception as e:

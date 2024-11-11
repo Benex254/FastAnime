@@ -593,22 +593,18 @@ def provider_anime_episode_servers_menu(
     # this will try to update the episode to be the next episode if delta has reached a specific threshhold
     # this update will only apply locally
     # the remote(anilist) is only updated when its certain you are going to open the player
-    available_episodes: list[str] = sorted(
-        fastanime_runtime_state.provider_available_episodes, key=float
-    )
     if stop_time == "0" or total_time == "0":
         # increment the episodes
-        next_episode = available_episodes.index(current_episode_number) + 1
-        if next_episode >= len(available_episodes):
-            next_episode = len(available_episodes) - 1
-        episode = available_episodes[next_episode]
+        # next_episode = available_episodes.index(current_episode_number) + 1
+        # if next_episode >= len(available_episodes):
+        #     next_episode = len(available_episodes) - 1
+        # episode = available_episodes[next_episode]
+        pass
     else:
         percentage_completion_of_episode = calculate_percentage_completion(
             stop_time, total_time
         )
-        if percentage_completion_of_episode < config.episode_complete_at:
-            episode = current_episode_number
-        else:
+        if percentage_completion_of_episode > config.episode_complete_at:
             # -- update anilist progress if user --
             remote_progress = (
                 fastanime_runtime_state.selected_anime_anilist["mediaListEntry"] or {}
@@ -634,16 +630,16 @@ def provider_anime_episode_servers_menu(
                 )
 
             # increment the episodes
-            next_episode = available_episodes.index(current_episode_number) + 1
-            if next_episode >= len(available_episodes):
-                next_episode = len(available_episodes) - 1
-            episode = available_episodes[next_episode]
-            stop_time = "0"
-            total_time = "0"
+            # next_episode = available_episodes.index(current_episode_number) + 1
+            # if next_episode >= len(available_episodes):
+            #     next_episode = len(available_episodes) - 1
+            # episode = available_episodes[next_episode]
+            # stop_time = "0"
+            # total_time = "0"
 
     config.media_list_track(
         anime_id_anilist,
-        episode_no=episode,
+        episode_no=current_episode_number,
         episode_stopped_at=stop_time,
         episode_total_length=total_time,
         progress_tracking=fastanime_runtime_state.progress_tracking,
@@ -678,7 +674,7 @@ def provider_anime_episodes_menu(
     )
 
     # prompt for episode number
-    total_episodes = sorted(
+    available_episodes = sorted(
         provider_anime["availableEpisodesDetail"][translation_type], key=float
     )
     current_episode_number = ""
@@ -689,7 +685,7 @@ def provider_anime_episodes_menu(
         # will be preferred over remote
         if (
             user_watch_history.get(str(anime_id_anilist), {}).get("episode_no")
-            in total_episodes
+            in available_episodes
         ):
             if (
                 config.preferred_history == "local"
@@ -698,6 +694,29 @@ def provider_anime_episodes_menu(
                 current_episode_number = user_watch_history[str(anime_id_anilist)][
                     "episode_no"
                 ]
+
+                stop_time = user_watch_history.get(str(anime_id_anilist), {}).get(
+                    "episode_stopped_at", "0"
+                )
+                total_time = user_watch_history.get(str(anime_id_anilist), {}).get(
+                    "episode_total_length", "0"
+                )
+                if stop_time != "0" or total_time != "0":
+                    percentage_completion_of_episode = calculate_percentage_completion(
+                        stop_time, total_time
+                    )
+                    if percentage_completion_of_episode > config.episode_complete_at:
+                        # increment the episodes
+                        next_episode = (
+                            available_episodes.index(current_episode_number) + 1
+                        )
+                        if next_episode >= len(available_episodes):
+                            next_episode = len(available_episodes) - 1
+                        episode = available_episodes[next_episode]
+                        stop_time = "0"
+                        total_time = "0"
+                        current_episode_number = episode
+
             else:
                 current_episode_number = str(
                     (selected_anime_anilist["mediaListEntry"] or {"progress": 0}).get(
@@ -715,7 +734,7 @@ def provider_anime_episodes_menu(
                     "progress"
                 )
             )
-            if current_episode_number not in total_episodes:
+            if current_episode_number not in available_episodes:
                 current_episode_number = ""
             print(
                 f"[bold cyan]Continuing from Episode:[/] [bold]{current_episode_number}[/]"
@@ -725,8 +744,8 @@ def provider_anime_episodes_menu(
             current_episode_number = ""
 
     # prompt for episode number if not set
-    if not current_episode_number or current_episode_number not in total_episodes:
-        choices = [*total_episodes, "Back"]
+    if not current_episode_number or current_episode_number not in available_episodes:
+        choices = [*available_episodes, "Back"]
         preview = None
         if config.preview:
             from .utils import get_fzf_episode_preview
@@ -735,7 +754,7 @@ def provider_anime_episodes_menu(
             if e:
                 eps = range(0, e + 1)
             else:
-                eps = total_episodes
+                eps = available_episodes
             preview = get_fzf_episode_preview(
                 fastanime_runtime_state.selected_anime_anilist, eps
             )
@@ -764,7 +783,7 @@ def provider_anime_episodes_menu(
     # )
 
     # update runtime data
-    fastanime_runtime_state.provider_available_episodes = total_episodes
+    fastanime_runtime_state.provider_available_episodes = available_episodes
     fastanime_runtime_state.provider_current_episode_number = current_episode_number
 
     # next interface

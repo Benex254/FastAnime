@@ -7,5 +7,6 @@ anime_sources = {
     "animepahe": "api.AnimePaheApi",
     "hianime": "api.HiAnimeApi",
     "nyaa": "api.NyaaApi",
+    "yugen": "api.YugenApi"
 }
 SERVERS_AVAILABLE = [*ALLANIME_SERVERS, *ANIMEPAHE_SERVERS, *HIANIME_SERVERS]

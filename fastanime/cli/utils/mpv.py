@@ -1,49 +1,65 @@
 import re
+import os
 import shutil
 import subprocess
+import logging
+import time
 
-from fastanime.constants import S_PLATFORM
+from ...constants import S_PLATFORM
+
+logger = logging.getLogger(__name__)
 
 
 def stream_video(MPV, url, mpv_args, custom_args):
-    process = subprocess.Popen(
-        [MPV, url, *mpv_args, *custom_args],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        text=True,
-    )
-
-    last_time = None
-    av_time_pattern = re.compile(r"AV: ([0-9:]*) / ([0-9:]*) \(([0-9]*)%\)")
     last_time = "0"
     total_time = "0"
+    if os.environ.get("FASTANIME_DISABLE_MPV_POPEN", "0") == "0":
+        process = subprocess.Popen(
+            [
+                MPV,
+                url,
+                *mpv_args,
+                *custom_args,
+                "--no-terminal",
+            ],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            bufsize=1,
+            encoding="utf-8",
+        )
 
-    try:
-        while True:
-            if not process.stderr:
-                continue
-            output = process.stderr.readline()
+        av_time_pattern = re.compile(r"AV: ([0-9:]*) / ([0-9:]*) \(([0-9]*)%\)")
 
-            if output:
-                # Match the timestamp in the output
-                match = av_time_pattern.search(output.strip())
-                if match:
-                    current_time = match.group(1)
-                    total_time = match.group(2)
-                    match.group(3)
-                    last_time = current_time
-                    # print(f"Current stream time: {current_time}, Total time: {total_time}, Progress: {percentage}%")
+        try:
+            while True:
+                if not process.stderr:
+                    time.sleep(0.1)
+                    continue
+                output = process.stderr.readline()
 
-            # Check if the process has terminated
-            retcode = process.poll()
-            if retcode is not None:
-                break
+                if output:
+                    # Match the timestamp in the output
+                    match = av_time_pattern.search(output.strip())
+                    if match:
+                        current_time = match.group(1)
+                        total_time = match.group(2)
+                        match.group(3)
+                        last_time = current_time
 
-    except Exception as e:
-        print(f"An error occurred: {e}")
-    finally:
-        process.terminate()
+                # Check if the process has terminated
+                retcode = process.poll()
+                if retcode is not None:
+                    break
 
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            logger.error(f"An error occurred: {e}")
+        finally:
+            process.terminate()
+            process.wait()
+    else:
+        subprocess.run([MPV, url, *mpv_args, *custom_args])
     return last_time, total_time
 
 
@@ -183,13 +199,3 @@ def run_mpv(
                 mpv_args.append(f"--ytdl-format={ytdl_format}")
             stop_time, total_time = stream_video(MPV, link, mpv_args, custom_args)
             return stop_time, total_time
-
-
-# Example usage
-if __name__ == "__main__":
-    run_mpv(
-        "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-        "Example Video",
-        "--fullscreen",
-        "--volume=50",
-    )

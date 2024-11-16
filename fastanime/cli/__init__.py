@@ -159,6 +159,9 @@ signal.signal(signal.SIGINT, handle_exit)
 @click.option("--rofi", help="Use rofi for the ui", is_flag=True)
 @click.option("--rofi-theme", help="Rofi theme to use", type=click.Path())
 @click.option(
+    "--rofi-theme-preview", help="Rofi theme to use for previews", type=click.Path()
+)
+@click.option(
     "--rofi-theme-confirm",
     help="Rofi theme to use for the confirm prompt",
     type=click.Path(),
@@ -210,6 +213,7 @@ def run_cli(
     sub,
     rofi,
     rofi_theme,
+    rofi_theme_preview,
     rofi_theme_confirm,
     rofi_theme_input,
     use_python_mpv,
@@ -324,6 +328,10 @@ def run_cli(
         ctx.obj.use_rofi = True
     if rofi:
         from ..libs.rofi import Rofi
+
+        if rofi_theme_preview:
+            ctx.obj.rofi_theme_preview = rofi_theme_preview
+            Rofi.rofi_theme_preview = rofi_theme_preview
 
         if rofi_theme:
             ctx.obj.rofi_theme = rofi_theme

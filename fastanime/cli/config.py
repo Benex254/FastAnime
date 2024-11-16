@@ -9,7 +9,7 @@ from ..constants import (
     USER_DATA_PATH,
     USER_VIDEOS_DIR,
     USER_WATCH_HISTORY_PATH,
-    S_PLATFORM
+    S_PLATFORM,
 )
 from ..libs.rofi import Rofi
 
@@ -52,6 +52,7 @@ class Config(object):
         "quality": "1080",
         "recent": "50",
         "rofi_theme": "",
+        "rofi_theme_preview": "",
         "rofi_theme_confirm": "",
         "rofi_theme_input": "",
         "server": "top",
@@ -105,10 +106,12 @@ class Config(object):
         self.rofi_theme_confirm = self.get_rofi_theme_confirm()
         self.rofi_theme_input = self.get_rofi_theme_input()
         self.rofi_theme = self.get_rofi_theme()
+        self.rofi_theme_preview = self.get_rofi_theme_preview()
 
         Rofi.rofi_theme_confirm = self.rofi_theme_confirm
         Rofi.rofi_theme_input = self.rofi_theme_input
         Rofi.rofi_theme = self.rofi_theme
+        Rofi.rofi_theme_preview = self.rofi_theme_preview
 
         self.server = self.get_server()
         self.skip = self.get_skip()
@@ -234,6 +237,9 @@ class Config(object):
 
     def get_rofi_theme(self):
         return self.configparser.get("general", "rofi_theme")
+
+    def get_rofi_theme_preview(self):
+        return self.configparser.get("general", "rofi_theme_preview")
 
     def get_rofi_theme_input(self):
         return self.configparser.get("general", "rofi_theme_input")
@@ -379,6 +385,8 @@ use_rofi = {self.use_rofi}
 # you can refer to the rofi demo on github to see for your self
 # by the way i recommend getting the rofi themes from this project;  
 rofi_theme = {self.rofi_theme}
+
+rofi_theme = {self.rofi_theme_preview}
 
 rofi_theme_input = {self.rofi_theme_input}
 

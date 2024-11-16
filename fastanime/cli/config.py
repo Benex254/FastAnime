@@ -33,6 +33,7 @@ class Config(object):
         "auto_next": "False",
         "auto_select": "True",
         "cache_requests": "true",
+        "check_for_updates": "True",
         "continue_from_history": "True",
         "default_media_list_tracking": "None",
         "downloads_dir": USER_VIDEOS_DIR,
@@ -88,6 +89,7 @@ class Config(object):
         self.auto_next = self.get_auto_next()
         self.auto_select = self.get_auto_select()
         self.cache_requests = self.get_cache_requests()
+        self.check_for_updates = self.configparser.get("general", "check_for_updates")
         self.continue_from_history = self.get_continue_from_history()
         self.default_media_list_tracking = self.get_default_media_list_tracking()
         self.disable_mpv_popen = self.configparser.getboolean(
@@ -345,6 +347,11 @@ icons = {self.icons}
 # useful for uniformity especially when downloading from different providers
 # this also applies to episode titles
 normalize_titles = {self.normalize_titles}
+
+# whether to check for updates every time you run the script [True/False]
+# this is useful for keeping your script up to date
+# cause there are always new features being added 😄
+check_for_updates = {self.check_for_updates}
 
 # can be [allanime, animepahe, hianime]
 # allanime is the most realible

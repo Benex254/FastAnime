@@ -226,6 +226,17 @@ def run_cli(
     from .config import Config
 
     ctx.obj = Config()
+    if ctx.obj.check_for_updates:
+        from .app_updater import check_for_updates
+        import time
+
+        is_latest = check_for_updates()
+        if not is_latest:
+            print(
+                "You are running an older version of fastanime please update to get the latest features"
+            )
+            time.sleep(10)
+
     ctx.obj.manga = manga
     if log:
         import logging

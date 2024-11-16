@@ -45,8 +45,9 @@ def check_for_updates():
 
         return (is_latest, release_json)
     else:
+        print("Failed to check for updates")
         print(request.text)
-        return (False, {})
+        return (True, {})
 
 
 def is_git_repo(author, repository):

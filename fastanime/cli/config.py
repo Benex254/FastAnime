@@ -8,6 +8,7 @@ from ..constants import (
     USER_CONFIG_PATH,
     USER_DATA_PATH,
     USER_VIDEOS_DIR,
+    ASSETS_DIR,
     USER_WATCH_HISTORY_PATH,
     S_PLATFORM,
 )
@@ -52,10 +53,10 @@ class Config(object):
         "provider": "allanime",
         "quality": "1080",
         "recent": "50",
-        "rofi_theme": "",
-        "rofi_theme_preview": "",
-        "rofi_theme_confirm": "",
-        "rofi_theme_input": "",
+        "rofi_theme": os.path.join(ASSETS_DIR, "rofi_theme.rasi"),
+        "rofi_theme_preview": os.path.join(ASSETS_DIR, "rofi_theme_preview.rasi"),
+        "rofi_theme_confirm": os.path.join(ASSETS_DIR, "rofi_theme_confirm.rasi"),
+        "rofi_theme_input": os.path.join(ASSETS_DIR, "rofi_theme_input.rasi"),
         "server": "top",
         "skip": "false",
         "sort_by": "search match",
@@ -393,7 +394,7 @@ use_rofi = {self.use_rofi}
 # by the way i recommend getting the rofi themes from this project;  
 rofi_theme = {self.rofi_theme}
 
-rofi_theme = {self.rofi_theme_preview}
+rofi_theme_preview = {self.rofi_theme_preview}
 
 rofi_theme_input = {self.rofi_theme_input}
 

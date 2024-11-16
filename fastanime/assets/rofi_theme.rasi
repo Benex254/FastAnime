@@ -1,0 +1,84 @@
+// https://github.com/Wraient/curd/blob/main/rofi/selectanime.rasi
+// Go give there project a star!
+// Was too lazy to make my own preview, so I just used theirs
+
+
+configuration {
+    font: "Sans 12";
+    line-margin: 10;
+    display-drun: "";
+}
+
+* {
+    background:     #000000;  /* Black background for everything */
+    background-alt: #000000;  /* Ensures no alternation */
+    foreground:     #CCCCCC;
+    selected:       #3584E4;
+    active:         #2E7D32;
+    urgent:         #C62828;
+}
+
+window {
+    fullscreen: false;
+    background-color: rgba(0, 0, 0, 1);  /* Solid black background */
+}
+
+mainbox {
+    padding: 50px 100px;
+    background-color: rgba(0, 0, 0, 1);  /* Ensures black background fills entire main area */
+    children: [inputbar, listview];
+    spacing: 20px;
+}
+
+inputbar {
+    background-color: #333333;  /* Dark gray background for input bar */
+    padding: 8px;
+    border-radius: 8px;
+    children: [prompt, entry];
+}
+
+prompt {
+    enabled: true;
+    padding: 8px;
+    background-color: @selected;
+    text-color: #000000;
+    border-radius: 4px;
+}
+
+entry {
+    padding: 8px;
+    background-color: #444444;  /* Slightly lighter gray for visibility */
+    text-color: #FFFFFF;        /* White text to make typing visible */
+    placeholder: "Search...";
+    placeholder-color: rgba(255, 255, 255, 0.5);
+    border-radius: 6px;
+}
+
+listview {
+    layout: vertical;
+    spacing: 8px;
+    lines: 10;
+    background-color: @background;  /* Consistent black background for list items */
+}
+
+element {
+    padding: 12px;
+    border-radius: 4px;
+    background-color: @background;  /* Uniform color for each list item */
+    text-color: @foreground;
+}
+
+element normal.normal {
+    background-color: @background;  /* Ensures no alternating color */
+}
+
+element selected.normal {
+    background-color: @selected;
+    text-color: #FFFFFF;
+}
+
+element-text {
+    background-color: transparent;
+    text-color: inherit;
+    vertical-align: 0.5;
+}

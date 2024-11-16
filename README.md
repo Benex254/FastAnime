@@ -96,7 +96,7 @@ With the following extras available:
 
 #### Using uv
 
-Recommended method of installation
+Recommended method of installation is using [uv](https://docs.astral.sh/uv/). 
 
 ```bash
 # generally:

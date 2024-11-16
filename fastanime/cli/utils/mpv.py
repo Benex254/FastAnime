@@ -9,11 +9,13 @@ from ...constants import S_PLATFORM
 
 logger = logging.getLogger(__name__)
 
+mpv_av_time_pattern = re.compile(r"AV: ([0-9:]*) / ([0-9:]*) \(([0-9]*)%\)")
+
 
 def stream_video(MPV, url, mpv_args, custom_args):
     last_time = "0"
     total_time = "0"
-    if os.environ.get("FASTANIME_DISABLE_MPV_POPEN", "0") == "0":
+    if os.environ.get("FASTANIME_DISABLE_MPV_POPEN", "False") == "False":
         process = subprocess.Popen(
             [
                 MPV,
@@ -29,8 +31,6 @@ def stream_video(MPV, url, mpv_args, custom_args):
             encoding="utf-8",
         )
 
-        av_time_pattern = re.compile(r"AV: ([0-9:]*) / ([0-9:]*) \(([0-9]*)%\)")
-
         try:
             while True:
                 if not process.stderr:
@@ -40,11 +40,10 @@ def stream_video(MPV, url, mpv_args, custom_args):
 
                 if output:
                     # Match the timestamp in the output
-                    match = av_time_pattern.search(output.strip())
+                    match = mpv_av_time_pattern.search(output.strip())
                     if match:
                         current_time = match.group(1)
                         total_time = match.group(2)
-                        match.group(3)
                         last_time = current_time
 
                 # Check if the process has terminated
@@ -59,7 +58,16 @@ def stream_video(MPV, url, mpv_args, custom_args):
             process.terminate()
             process.wait()
     else:
-        subprocess.run([MPV, url, *mpv_args, *custom_args])
+        proc = subprocess.run(
+            [MPV, url, *mpv_args, *custom_args], capture_output=True, text=True
+        )
+        if proc.stdout:
+            for line in reversed(proc.stdout.split("\n")):
+                match = mpv_av_time_pattern.search(line.strip())
+                if match:
+                    last_time = match.group(1)
+                    total_time = match.group(2)
+                    break
     return last_time, total_time
 
 

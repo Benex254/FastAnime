@@ -35,6 +35,7 @@ class Config(object):
         "continue_from_history": "True",
         "default_media_list_tracking": "None",
         "downloads_dir": USER_VIDEOS_DIR,
+        "disable_mpv_popen": "True",
         "episode_complete_at": "80",
         "ffmpegthumbnailer_seek_time": "-1",
         "force_forward_tracking": "true",
@@ -80,11 +81,17 @@ class Config(object):
         if os.path.exists(USER_CONFIG_PATH):
             self.configparser.read(USER_CONFIG_PATH, encoding="utf-8")
 
+        # TODO: rewrite all this removing the useless functions
+        # hate technical debt
+        # why did i do this lol
         self.auto_next = self.get_auto_next()
         self.auto_select = self.get_auto_select()
         self.cache_requests = self.get_cache_requests()
         self.continue_from_history = self.get_continue_from_history()
         self.default_media_list_tracking = self.get_default_media_list_tracking()
+        self.disable_mpv_popen = self.configparser.getboolean(
+            "stream", "disable_mpv_popen"
+        )
         self.downloads_dir = self.get_downloads_dir()
         self.episode_complete_at = self.get_episode_complete_at()
         self.ffmpegthumbnailer_seek_time = self.get_ffmpegthumnailer_seek_time()
@@ -513,6 +520,15 @@ episode_complete_at = {self.episode_complete_at}
 # so just ask when you find yourself stuck
 # or just switch to arch linux
 use_python_mpv = {self.use_python_mpv}
+
+
+# whether to use popen to get the timestamps for continue_from_history
+# implemented because popen does not work for some reason in nixos
+# if you are on nixos and you have a solution to this problem please share
+# i will be glad to hear it 😄
+# So for now ignore this option
+# and anyways the new method of getting timestamps is better
+disable_mpv_popen = {self.disable_mpv_popen}
 
 # force mpv window
 # the default 'immediate' just makes mpv to open the window even if the video has not yet loaded

@@ -228,14 +228,32 @@ def run_cli(
     ctx.obj = Config()
     if ctx.obj.check_for_updates:
         from .app_updater import check_for_updates
-        import time
 
-        is_latest = check_for_updates()
+        is_latest, github_release_data = check_for_updates()
         if not is_latest:
-            print(
-                "You are running an older version of fastanime please update to get the latest features"
-            )
-            time.sleep(10)
+            from rich.console import Console
+            from rich.markdown import Markdown
+            from .app_updater import update_app
+            from rich.prompt import Confirm
+
+            def _print_release(release_data):
+                console = Console()
+                body = Markdown(release_data["body"])
+                tag = github_release_data["tag_name"]
+                tag_title = release_data["name"]
+                github_page_url = release_data["html_url"]
+                console.print(f"Release Page: {github_page_url}")
+                console.print(f"Tag: {tag}")
+                console.print(f"Title: {tag_title}")
+                console.print(body)
+
+            if Confirm.ask(
+                "A new version of fastanime is available, would you like to update?"
+            ):
+                _, release_json = update_app()
+                print("Successfully updated")
+                _print_release(release_json)
+                exit(0)
 
     ctx.obj.manga = manga
     if log:

@@ -542,8 +542,8 @@ def provider_anime_episode_servers_menu(
     if config.recent:
         config.update_recent(
             [
-                *config.user_data["recent_anime"],
                 fastanime_runtime_state.selected_anime_anilist,
+                *config.user_data["recent_anime"],
             ]
         )
         print("Updating recent anime...")
@@ -1590,7 +1590,10 @@ def fastanime_main_menu(
         return AniList.search(id_in=watch_history, sort="TRENDING_DESC")
 
     def _recent():
-        return (True, {"data": {"Page": {"media": config.user_data["recent_anime"]}}})
+        return (
+            True,
+            {"data": {"Page": {"media": config.user_data["recent_anime"]}}},
+        )
 
     # WARNING: Will probably be depracated
     def _anime_list():

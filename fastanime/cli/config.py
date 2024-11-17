@@ -155,7 +155,7 @@ class Config(object):
     def update_recent(self, recent_anime: list):
         recent_anime_ids = []
         _recent_anime = []
-        for anime in recent_anime[::-1]:
+        for anime in recent_anime:
             if (
                 anime["id"] not in recent_anime_ids
                 and len(recent_anime_ids) <= self.recent

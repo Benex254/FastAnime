@@ -18,7 +18,16 @@
 
       # Specify runtime dependencies
       propagatedBuildInputs = with pkgs.python3Packages; [
-          click, rich, inquirerpy, requests, thefuzz, plyer, fastapi,yt-dlp, mpv,dbus-python
+          click
+          rich
+          inquirerpy
+          requests
+          thefuzz
+          plyer
+          fastapi
+          yt-dlp
+          mpv
+          dbus-python
       ];
 
       # CLI entry point (matches your pyproject.toml or setup.py configuration)

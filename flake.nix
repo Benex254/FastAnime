@@ -1,49 +1,49 @@
 {
-  description = "A command-line interface for browsing anime";
+  description = "FastAnime Project Flake";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = { self, nixpkgs }: {
-    # Generate packages for all supported systems
-    packages = nixpkgs.lib.genAttrs nixpkgs.lib.systems.supportedSystems (system: let
+  outputs = { self, nixpkgs, flake-utils }: flake-utils.lib.eachDefaultSystem (system:
+    let
       pkgs = import nixpkgs { inherit system; };
-    in pkgs.python3Packages.buildPythonApplication {
-      pname = "fastanime";
-      version = "2.7.5";
 
-      # Path to your project source
-      src = ./.;
+      python = pkgs.python310;
+      pythonPackages = python.pkgs;
+      fastanimeEnv = pythonPackages.buildPythonApplication {
+        pname = "fastanime";
+        version = "2.7.5";
 
-      # Specify runtime dependencies
-      propagatedBuildInputs = with pkgs.python3Packages; [
+        src = ./.;
+
+        # Add runtime dependencies
+        propagatedBuildInputs = with pythonPackages; [
           click
-          rich
           inquirerpy
           requests
+          rich
           thefuzz
-          plyer
-          fastapi
           yt-dlp
-          mpv
           dbus-python
-      ];
+          hatchling
+        ];
 
-      # CLI entry point (matches your pyproject.toml or setup.py configuration)
-      # Example: Entry point defined as `console_scripts` in pyproject.toml
-      entryPoints = {
-        "console_scripts" = {
-          fastanime = "fastanime:FastAnime";
-        };
+        # Ensure compatibility with the pyproject.toml
+        format = "pyproject";
       };
 
-      meta = with pkgs.lib; {
-        description = "A command-line interface for browsing anime";
-        license = licenses.unlicense;
-        maintainers = [ maintainers.Benex254 ];
-        platforms = platforms.all; # Cross-platform compatibility
+    in
+    {
+      packages.default = fastanimeEnv;
+
+      # DevShell for development
+      devShells.default = pkgs.mkShell {
+        buildInputs = [
+          fastanimeEnv
+          pythonPackages.hatchling
+        ];
       };
     });
-  };
 }

@@ -229,6 +229,11 @@ def run_cli(
     if ctx.obj.check_for_updates:
         from .app_updater import check_for_updates
 
+        print("Checking for updates...")
+        print("So you can enjoy the latest features and bug fixes")
+        print(
+            "You can disable this by setting check_for_updates to False in the config"
+        )
         is_latest, github_release_data = check_for_updates()
         if not is_latest:
             from rich.console import Console

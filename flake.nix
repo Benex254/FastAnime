@@ -10,11 +10,11 @@
     let
       pkgs = import nixpkgs { inherit system; };
 
-      python = pkgs.python310;
+      python = pkgs.python312;
       pythonPackages = python.pkgs;
       fastanimeEnv = pythonPackages.buildPythonApplication {
         pname = "fastanime";
-        version = "2.7.5";
+        version = "2.7.9";
 
         src = ./.;
 
@@ -32,6 +32,9 @@
           yt-dlp
           dbus-python
           hatchling
+          plyer
+          mpv
+          fastapi
         ];
 
         # Ensure compatibility with the pyproject.toml
@@ -47,6 +50,10 @@
         buildInputs = [
           fastanimeEnv
           pythonPackages.hatchling
+          pkgs.mpv
+          pkgs.libmpv
+          pkgs.fzf
+          pkgs.rofi
         ];
       };
     });

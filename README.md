@@ -1431,5 +1431,6 @@ For inquiries, join our [Discord Server](https://discord.gg/HBEmAwvbHV).
 </p>
 
 ## Supporting the Project
+More pr's less issues 🙃
 
-Show your support by starring our GitHub repository or [buying us a coffee](https://ko-fi.com/benex254).
+Show your support by starring the GitHub repository or [buying me a coffee](https://ko-fi.com/benex254).

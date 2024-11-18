@@ -83,55 +83,69 @@ class Config(object):
         if os.path.exists(USER_CONFIG_PATH):
             self.configparser.read(USER_CONFIG_PATH, encoding="utf-8")
 
-        # TODO: rewrite all this removing the useless functions
-        # hate technical debt
-        # why did i do this lol
-        self.auto_next = self.get_auto_next()
-        self.auto_select = self.get_auto_select()
-        self.cache_requests = self.get_cache_requests()
-        self.check_for_updates = self.configparser.get("general", "check_for_updates")
-        self.continue_from_history = self.get_continue_from_history()
-        self.default_media_list_tracking = self.get_default_media_list_tracking()
+        # get the configuration
+        self.auto_next = self.configparser.getboolean("stream", "auto_next")
+        self.auto_select = self.configparser.getboolean("stream", "auto_select")
+        self.cache_requests = self.configparser.getboolean("general", "cache_requests")
+        self.check_for_updates = self.configparser.getboolean(
+            "general", "check_for_updates"
+        )
+        self.continue_from_history = self.configparser.getboolean(
+            "stream", "continue_from_history"
+        )
+        self.default_media_list_tracking = self.configparser.get(
+            "general", "default_media_list_tracking"
+        )
         self.disable_mpv_popen = self.configparser.getboolean(
             "stream", "disable_mpv_popen"
         )
-        self.downloads_dir = self.get_downloads_dir()
-        self.episode_complete_at = self.get_episode_complete_at()
-        self.ffmpegthumbnailer_seek_time = self.get_ffmpegthumnailer_seek_time()
-        self.force_forward_tracking = self.get_force_forward_tracking()
-        self.force_window = self.get_force_window()
-        self.format = self.get_format()
-        self.icons = self.get_icons()
-        self.image_previews = self.get_image_previews()
-        self.normalize_titles = self.get_normalize_titles()
-        self.notification_duration = self.get_notification_duration()
-        self.player = self.get_player()
-        self.preferred_history = self.get_preferred_history()
-        self.preferred_language = self.get_preferred_language()
-        self.preview = self.get_preview()
-        self.provider = self.get_provider()
-        self.quality = self.get_quality()
+        self.downloads_dir = self.configparser.get("general", "downloads_dir")
+        self.episode_complete_at = self.configparser.getint(
+            "stream", "episode_complete_at"
+        )
+        self.ffmpegthumbnailer_seek_time = self.configparser.getint(
+            "general", "ffmpegthumbnailer_seek_time"
+        )
+        self.force_forward_tracking = self.configparser.getboolean(
+            "general", "force_forward_tracking"
+        )
+        self.force_window = self.configparser.get("stream", "force_window")
+        self.format = self.configparser.get("stream", "format")
+        self.icons = self.configparser.getboolean("general", "icons")
+        self.image_previews = self.configparser.getboolean("general", "image_previews")
+        self.normalize_titles = self.configparser.getboolean(
+            "general", "normalize_titles"
+        )
+        self.notification_duration = self.configparser.getint(
+            "general", "notification_duration"
+        )
+        self.player = self.configparser.get("stream", "player")
+        self.preferred_history = self.configparser.get("stream", "preferred_history")
+        self.preferred_language = self.configparser.get("general", "preferred_language")
+        self.preview = self.configparser.getboolean("general", "preview")
+        self.provider = self.configparser.get("general", "provider")
+        self.quality = self.configparser.get("stream", "quality")
+        self.recent = self.configparser.getint("general", "recent")
+        self.rofi_theme_confirm = self.configparser.get("general", "rofi_theme_confirm")
+        self.rofi_theme_input = self.configparser.get("general", "rofi_theme_input")
+        self.rofi_theme = self.configparser.get("general", "rofi_theme")
+        self.rofi_theme_preview = self.configparser.get("general", "rofi_theme_preview")
+        self.server = self.configparser.get("stream", "server")
+        self.skip = self.configparser.getboolean("stream", "skip")
+        self.sort_by = self.configparser.get("anilist", "sort_by")
+        self.sub_lang = self.configparser.get("general", "sub_lang")
+        self.translation_type = self.configparser.get("stream", "translation_type")
+        self.use_fzf = self.configparser.getboolean("general", "use_fzf")
+        self.use_python_mpv = self.configparser.getboolean("stream", "use_python_mpv")
+        self.use_rofi = self.configparser.getboolean("general", "use_rofi")
+        self.use_persistent_provider_store = self.configparser.getboolean(
+            "general", "use_persistent_provider_store"
+        )
 
-        self.recent = self.get_recent()
-        self.rofi_theme_confirm = self.get_rofi_theme_confirm()
-        self.rofi_theme_input = self.get_rofi_theme_input()
-        self.rofi_theme = self.get_rofi_theme()
-        self.rofi_theme_preview = self.get_rofi_theme_preview()
-
-        Rofi.rofi_theme_confirm = self.rofi_theme_confirm
-        Rofi.rofi_theme_input = self.rofi_theme_input
         Rofi.rofi_theme = self.rofi_theme
+        Rofi.rofi_theme_input = self.rofi_theme_input
+        Rofi.rofi_theme_confirm = self.rofi_theme_confirm
         Rofi.rofi_theme_preview = self.rofi_theme_preview
-
-        self.server = self.get_server()
-        self.skip = self.get_skip()
-        self.sort_by = self.get_sort_by()
-        self.sub_lang = self.get_sub_lang()
-        self.translation_type = self.get_translation_type()
-        self.use_fzf = self.get_use_fzf()
-        self.use_python_mpv = self.get_use_mpv_mod()
-        self.use_rofi = self.get_use_rofi()
-        self.use_persistent_provider_store = self.get_use_persistent_provider_store()
 
         # ---- setup user data ------
         self.anime_list: list = self.user_data.get("animelist", [])
@@ -208,116 +222,6 @@ class Config(object):
         with open(USER_DATA_PATH, "w") as f:
             json.dump(self.user_data, f)
 
-    # getters for user configuration
-
-    # --- general section ---
-    def get_provider(self):
-        return self.configparser.get("general", "provider")
-
-    def get_ffmpegthumnailer_seek_time(self):
-        return self.configparser.getint("general", "ffmpegthumbnailer_seek_time")
-
-    def get_preferred_language(self):
-        return self.configparser.get("general", "preferred_language")
-
-    def get_sub_lang(self):
-        return self.configparser.get("general", "sub_lang")
-
-    def get_downloads_dir(self):
-        return self.configparser.get("general", "downloads_dir")
-
-    def get_icons(self):
-        return self.configparser.getboolean("general", "icons")
-
-    def get_image_previews(self):
-        return self.configparser.getboolean("general", "image_previews")
-
-    def get_preview(self):
-        return self.configparser.getboolean("general", "preview")
-
-    def get_use_fzf(self):
-        return self.configparser.getboolean("general", "use_fzf")
-
-    def get_use_persistent_provider_store(self):
-        return self.configparser.getboolean("general", "use_persistent_provider_store")
-
-    # rofi conifiguration
-    def get_use_rofi(self):
-        return self.configparser.getboolean("general", "use_rofi")
-
-    def get_rofi_theme(self):
-        return self.configparser.get("general", "rofi_theme")
-
-    def get_rofi_theme_preview(self):
-        return self.configparser.get("general", "rofi_theme_preview")
-
-    def get_rofi_theme_input(self):
-        return self.configparser.get("general", "rofi_theme_input")
-
-    def get_rofi_theme_confirm(self):
-        return self.configparser.get("general", "rofi_theme_confirm")
-
-    def get_force_forward_tracking(self):
-        return self.configparser.getboolean("general", "force_forward_tracking")
-
-    def get_cache_requests(self):
-        return self.configparser.getboolean("general", "cache_requests")
-
-    def get_default_media_list_tracking(self):
-        return self.configparser.get("general", "default_media_list_tracking")
-
-    def get_normalize_titles(self):
-        return self.configparser.getboolean("general", "normalize_titles")
-
-    def get_recent(self):
-        return self.configparser.getint("general", "recent")
-
-    # --- stream section ---
-    def get_skip(self):
-        return self.configparser.getboolean("stream", "skip")
-
-    def get_auto_next(self):
-        return self.configparser.getboolean("stream", "auto_next")
-
-    def get_auto_select(self):
-        return self.configparser.getboolean("stream", "auto_select")
-
-    def get_continue_from_history(self):
-        return self.configparser.getboolean("stream", "continue_from_history")
-
-    def get_use_mpv_mod(self):
-        return self.configparser.getboolean("stream", "use_python_mpv")
-
-    def get_notification_duration(self):
-        return self.configparser.getint("general", "notification_duration")
-
-    def get_episode_complete_at(self):
-        return self.configparser.getint("stream", "episode_complete_at")
-
-    def get_force_window(self):
-        return self.configparser.get("stream", "force_window")
-
-    def get_translation_type(self):
-        return self.configparser.get("stream", "translation_type")
-
-    def get_preferred_history(self):
-        return self.configparser.get("stream", "preferred_history")
-
-    def get_quality(self):
-        return self.configparser.get("stream", "quality")
-
-    def get_server(self):
-        return self.configparser.get("stream", "server")
-
-    def get_format(self):
-        return self.configparser.get("stream", "format")
-
-    def get_player(self):
-        return self.configparser.get("stream", "player")
-
-    def get_sort_by(self):
-        return self.configparser.get("anilist", "sort_by")
-
     def update_config(self, section: str, key: str, value: str):
         self.configparser.set(section, key, value)
         with open(USER_CONFIG_PATH, "w") as config:
@@ -336,9 +240,11 @@ class Config(object):
 [general]
 # whether to show the icons in the tui [True/False]
 # more like emojis
-# by the way if you have any recommendations to which should be used where please
+# by the way if you have any recommendations
+# to which should be used where please
 # don't hesitate to share your opinion
-# cause it's a lot of work to look for the right one for each menu option
+# cause it's a lot of work
+# to look for the right one for each menu option
 # be sure to also give the replacement emoji
 icons = {self.icons}
 
@@ -353,10 +259,20 @@ normalize_titles = {self.normalize_titles}
 # cause there are always new features being added 😄
 check_for_updates = {self.check_for_updates}
 
-# can be [allanime, animepahe, hianime]
+# can be [allanime, animepahe, hianime, nyaa, yugen]
 # allanime is the most realible
 # animepahe provides different links to streams of different quality so a quality can be selected reliably with --quality option
-# hianime which is now hianime usually provides subs in different languuages and its servers are generally faster
+# hianime usually provides subs in different languuages and its servers are generally faster
+# NOTE: currently they are encrypting the video links 
+# though am working on it
+# however, you can still get the links to the subs
+# with ```fastanime grab``` command
+# yugen meh
+# nyaa those who prefer torrents, though not reliable due to auto selection of results
+# as most of the data in nyaa is not structured
+# though works relatively well for new anime
+# esp with subsplease and horriblesubs
+# oh and you should have webtorrent cli to use this
 provider = {self.provider}
 
 # Display language [english, romaji]
@@ -377,6 +293,10 @@ downloads_dir = {self.downloads_dir}
 preview = {self.preview} 
 
 # whether to show images in the preview [true/false]
+# windows users just swtich to linux 😄
+# cause even if you enable it 
+# it won't look pretty
+# so forget it exists 🤣
 image_previews = {self.image_previews}
 
 # the time to seek when using ffmpegthumbnailer [-1 to 100]
@@ -394,11 +314,13 @@ use_fzf = {self.use_fzf}
 # though if you want it to be your sole interface even when fastanime is run directly from the terminal
 use_rofi = {self.use_rofi}
 
-# rofi themes to use 
+# rofi themes to use <path>
 # the values of this option is the path to the rofi config files to use
-# i choose to split it into three since it gives the best look and feel
+# i choose to split it into 4 since it gives the best look and feel
 # you can refer to the rofi demo on github to see for your self
-# by the way i recommend getting the rofi themes from this project;  
+# i need help designing the default rofi themes
+# if you fancy yourself a rofi ricer please contribute to making 
+# the default theme better
 rofi_theme = {self.rofi_theme}
 
 rofi_theme_preview = {self.rofi_theme_preview}
@@ -414,7 +336,7 @@ notification_duration = {self.notification_duration}
 # used when the provider gives subs of different languages
 # currently its the case for:
 # hianime
-# the values for this option are the short names for countries
+# the values for this option are the short names for languages
 # regex is used to determine what you selected
 sub_lang = {self.sub_lang}
 
@@ -478,6 +400,7 @@ translation_type = {self.translation_type}
 # allanime: [dropbox, sharepoint, wetransfer, gogoanime, wixmp]
 # animepahe: [kwik]
 # hianime: [HD1, HD2, StreamSB, StreamTape]
+# yugen: [gogoanime]
 # 'top' can also be used as a value for this option
 # 'top' will cause fastanime to auto select the first server it sees
 # this saves on resources and is faster since not all servers are being fetched
@@ -495,14 +418,23 @@ auto_next = {self.auto_next}
 # that are there own preference rather than the official names
 # But 99% of the time will be accurate
 # if this happens just turn of auto_select in the menus or from the commandline and manually select the correct anime title
-# and then please open an issue at <> highlighting the normalized title and the title given by the provider for the anime you wished to watch  
-# or even better edit this file <> and open a pull request
+# and then please open an issue 
+# highlighting the normalized title 
+# and the title given by the provider for the anime you wished to watch  
+# or even better edit this file <https://github.com/Benex254/FastAnime/blob/master/fastanime/Utility/data.py>
+# and open a pull request 
+# prefrably, so you can give me a small break
+# of doing everything 😄
+# and its always nice to see people contributing
+# to projects they love and use
 auto_select = {self.auto_select}
 
 # whether to skip the opening and ending theme songs [True/False]
 # NOTE: requires ani-skip to be in path
 # for python-mpv users am planning to create this functionality n python without the use of an external script
 # so its disabled for now
+# and anyways Dan Da Dan
+# taught as the importance of letting it flow 🙃
 skip = {self.skip}
 
 # at what percentage progress should the episode be considered as completed [0-100]
@@ -514,7 +446,8 @@ episode_complete_at = {self.episode_complete_at}
 # whether to use python-mpv [True/False]
 # to enable superior control over the player 
 # adding more options to it
-# Enable this one and you will be wonder why you did not discover fastanime sooner 
+# Enable this one and you will be wonder 
+# why you did not discover fastanime sooner 🙃
 # Since you basically don't have to close the player window 
 # to go to the next or previous episode, switch servers, 
 # change translation type or change to a given episode x
@@ -568,6 +501,7 @@ player = {self.player}
 # since we may not always have the time to immediately implement the changes
 #
 # HOPE YOU ENJOY FASTANIME AND BE SURE TO STAR THE PROJECT ON GITHUB
+# https://github.com/Benex254/FastAnime
 #
 """
         return current_config_state

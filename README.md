@@ -26,6 +26,15 @@
 ![fastanime](https://github.com/user-attachments/assets/9ab09f26-e4a8-4b70-a315-7def998cec63)
 
 <details>
+  <summary>
+    <b>Screenshots</b>
+  </summary>
+  
+  ![image](https://github.com/user-attachments/assets/240023a7-7e4e-47dd-80ff-017d65081ee1)
+
+</details>
+
+<details>
 <summary><b>fzf mode</b></summary>
   
 [fastanime-fzf.webm](https://github.com/user-attachments/assets/90875a57-198b-4c78-98d5-10a459001edd)

@@ -45,7 +45,6 @@
 
 </details>
 
-Heavily inspired by [animdl](https://github.com/justfoolingaround/animdl), [jerry](https://github.com/justchokingaround/jerry/tree/main),[magic-tape](https://gitlab.com/christosangel/magic-tape/-/tree/main?ref_type=heads) and [ani-cli](https://github.com/pystardust/ani-cli).
 
 <!--toc:start-->
 

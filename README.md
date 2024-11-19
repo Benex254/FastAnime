@@ -1,12 +1,22 @@
-# **FastAnime**
+<p align="center">
+  <h1 align="center">FastAnime</h1>
+</p>
 
+<div align="center">
+  
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/fastanime) ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/FastAnime/FastAnime/test.yml?label=Tests)
 ![Discord](https://img.shields.io/discord/1250887070906323096?label=Discord)
 ![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/FastAnime/FastAnime)
 ![GitHub deployments](https://img.shields.io/github/deployments/FastAnime/fastanime/pypi?label=PyPi%20Publish)
 ![PyPI - License](https://img.shields.io/pypi/l/fastanime)
+</div>
 
-Welcome to **FastAnime**, anime site experience from the terminal.
+<p align="center">
+<a href="https://discord.gg/HBEmAwvbHV">
+<img src="https://invidget.switchblade.xyz/C4rhMA4mmK">
+</a>
+</p>
+
 
 ![fastanime](https://github.com/user-attachments/assets/9ab09f26-e4a8-4b70-a315-7def998cec63)
 
@@ -601,7 +611,7 @@ fastanime config --view
 
 > [!Note]
 >
-> If it opens [vim](https://www.vim.org/download.php) you can exit by typing `:q` .
+> If it opens [vim](https://www.vim.org/download.php) you can exit by typing `:q`  😉.
 
 #### cache subcommand
 
@@ -1143,7 +1153,7 @@ Result
     "subtitles": [],
     "links": [
       {
-        "link": "https://tools.fast4speed.rsvp//media9/videos/8aM5BBoEGLvjG3MZm/sub/3",
+        "link": "",
         "quality": "1080"
       }
     ]
@@ -1155,10 +1165,10 @@ Result
     "episode_title": "Sayounara Ryuusei, Konnichiwa Jinsei; Episode 3",
     "links": [
       {
-        "link": "https://myanime.sharepoint.com/sites/chartlousty/_layouts/15/download.aspx?share=ERpIT0CTmOVHmO8386bNGZMBf7Emtoda_3bUMzCleWhp4g",
+        "link": "",
         "mp4": true,
         "resolutionStr": "Mp4",
-        "src": "https://myanime.sharepoint.com/sites/chartlousty/_layouts/15/download.aspx?share=ERpIT0CTmOVHmO8386bNGZMBf7Emtoda_3bUMzCleWhp4g",
+        "src": "",
         "quality": "1080"
       }
     ]
@@ -1170,7 +1180,7 @@ Result
     "episode_title": "Sayounara Ryuusei, Konnichiwa Jinsei; Episode 3",
     "links": [
       {
-        "link": "https://www114.anzeat.pro/streamhls/6454b50a557e9fa52a60cfdee0b0906e/ep.3.1729188150.m3u8",
+        "link": "",
         "hls": true,
         "mp4": false,
         "resolutionStr": "hls P",
@@ -1178,7 +1188,7 @@ Result
         "quality": "1080"
       },
       {
-        "link": "https://www114.anicdnstream.info/videos/hls/h1IUtAefmoWTc8hJhtr8OQ/1731106912/235294/6454b50a557e9fa52a60cfdee0b0906e/ep.3.1729188150.m3u8",
+        "link": "",
         "hls": true,
         "mp4": false,
         "resolutionStr": "HLS1",
@@ -1186,10 +1196,10 @@ Result
         "quality": "720"
       },
       {
-        "link": "https://workfields.maverickki.lol/7d2473746a243c246e727276753c29297171713737322867686f65626875727463676b286f68606929706f62636975296e6a75296e374f53724763606b695152653e6e4c6e72743e495729373135373736303f373429343533343f32293032333264333667333331633f6067333467303665606263633664363f3630632963762835283731343f373e3e373336286b35733e242a2476677475634e6a75243c727473632a2462677263243c373135373634363236363636367b",
+        "link": "",
         "hls": true,
         "resolutionStr": "Alt",
-        "src": "https://workfields.maverickki.lol/7d2473746a243c246e727276753c29297171713737322867686f65626875727463676b286f68606929706f62636975296e6a75296e374f53724763606b695152653e6e4c6e72743e495729373135373736303f373429343533343f32293032333264333667333331633f6067333467303665606263633664363f3630632963762835283731343f373e3e373336286b35733e242a2476677475634e6a75243c727473632a2462677263243c373135373634363236363636367b",
+        "src": "",
         "priority": 1,
         "quality": "480"
       }
@@ -1415,11 +1425,10 @@ player = mpv
 
 ## Contributing
 
-We welcome your issues and feature requests. However, due to time constraints, we currently do not plan to add another provider.
+We welcome your issues and feature requests. However, due to time constraints, I currently do not plan to add another provider.
+But if you are willing to add one yourself pr's are welcome.
 
-If you wish to contribute directly, please first open an issue describing your proposed changes so it can be discussed or if you are in a rush for the feature to be merged just open a pr.
-
-If you find an anime title that does not correspond with a provider or is just weird just [edit the data file](https://github.com/FastAnime/FastAnime/blob/master/fastanime/Utility/data.py) and open a pr or if you don't want to do that open an issue.
+If you find an anime title that does not correspond with a provider or is just weird just [edit the data file](https://github.com/FastAnime/FastAnime/blob/master/fastanime/Utility/data.py) and open a pr, i will ignore issues 😝.
 
 ## Receiving Support
 

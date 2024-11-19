@@ -15,14 +15,18 @@ API_URL = f"https://api.{GIT_REPO}/repos/{AUTHOR}/{APP_NAME}/releases/latest"
 
 def check_for_updates():
     USER_AGENT = f"{APP_NAME} user"
-    request = requests.get(
-        API_URL,
-        headers={
-            "User-Agent": USER_AGENT,
-            "X-GitHub-Api-Version": "2022-11-28",
-            "Accept": "application/vnd.github+json",
-        },
-    )
+    try:
+        request = requests.get(
+            API_URL,
+            headers={
+                "User-Agent": USER_AGENT,
+                "X-GitHub-Api-Version": "2022-11-28",
+                "Accept": "application/vnd.github+json",
+            },
+        )
+    except Exception:
+        print("You are not connected to the internet")
+        return True, {}
 
     if request.status_code == 200:
         release_json = request.json()

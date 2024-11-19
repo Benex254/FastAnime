@@ -2,7 +2,7 @@
 
 <div align="center">
 
-<h2>This project: animdl</h2>
+<h2>This project: fastanime</h2>
 
 <br>
 
@@ -38,13 +38,3 @@ A browser is a tool, and the maliciousness of the tool is directly based on the 
 This project uses client-side content access mechanisms. Hence, the copyright infrigements or DMCA in this project's regards are to be forwarded to the associated site by the associated notifier of any such claims. This is one of the main reasons the sites are listed in this project.
 
 <b>Do not harass the developer. Any personal information about the developer is intentionally not made public. Exploiting such information without consent in regards to this topic will lead to legal actions by the developer themselves.</b>
-
-
-<h2>
-Contacting the developer
-</h3>
-<br>
-
-Begin by making a GitHub issue or sending an email to kr.justfoolingaround@gmail.com.
-
-</div>

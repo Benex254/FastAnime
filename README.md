@@ -27,7 +27,7 @@
 
 <details>
   <summary>
-    <b>Screenshots</b>
+    <b>My Rice</b>
   </summary>
   
   ![image](https://github.com/user-attachments/assets/240023a7-7e4e-47dd-80ff-017d65081ee1)
@@ -1450,6 +1450,7 @@ For inquiries, join our [Discord Server](https://discord.gg/HBEmAwvbHV).
 ## Supporting the Project
 More pr's less issues 🙃
 Those who contribute at least five times will be able to make changes to the repo without my review.
+
 Show your support by starring the GitHub repository or [buying me a coffee](https://ko-fi.com/benex254).
 
 ## Disclaimer

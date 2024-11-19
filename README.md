@@ -100,13 +100,13 @@ Recommended method of installation is using [uv](https://docs.astral.sh/uv/).
 
 ```bash
 # generally:
-uv tool install fastanime[standard]
+uv tool install "fastanime[standard]"
 
 # or stripped down installations:
 uv tool install fastanime
-uv tool install fastanime[api]
-uv tool install fastanime[mpv]
-uv tool install fastanime[notifications]
+uv tool install "fastanime[api]"
+uv tool install "fastanime[mpv]"
+uv tool install "fastanime[notifications]"
 
 ```
 

@@ -81,13 +81,6 @@ Heavily inspired by [animdl](https://github.com/justfoolingaround/animdl), [jerr
   - [Receiving Support](#receiving-support)
   - [Supporting the Project](#supporting-the-project)
   <!--toc:end-->
-
-> [!IMPORTANT]
->
-> This project currently scrapes allanime, hianime, nyaa and animepahe
->  The developer(s) of this application does not have any affiliation with the content providers available, and this application hosts zero content.
-> [DISCLAIMER](https://github.com/Benex254/FastAnime/blob/master/DISCLAIMER.md)
-
 ## Installation
 
 ![Windows](https://img.shields.io/badge/-Windows_x64-blue.svg?style=for-the-badge&logo=windows)
@@ -1449,3 +1442,10 @@ For inquiries, join our [Discord Server](https://discord.gg/HBEmAwvbHV).
 More pr's less issues 🙃
 
 Show your support by starring the GitHub repository or [buying me a coffee](https://ko-fi.com/benex254).
+
+## Disclaimer
+> [!IMPORTANT]
+>
+> This project currently scrapes allanime, hianime, nyaa, yugen and animepahe.
+>  The developer(s) of this application does not have any affiliation with the content providers available, and this application hosts zero content.
+> [DISCLAIMER](https://github.com/Benex254/FastAnime/blob/master/DISCLAIMER.md)

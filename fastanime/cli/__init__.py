@@ -226,7 +226,7 @@ def run_cli(
     from .config import Config
 
     ctx.obj = Config()
-    if ctx.obj.check_for_updates:
+    if ctx.obj.check_for_updates and ctx.invoked_subcommand != "completions":
         from .app_updater import check_for_updates
 
         print("Checking for updates...")

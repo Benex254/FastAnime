@@ -1,5 +1,6 @@
 import pytest
 from click.testing import CliRunner
+from unittest.mock import patch
 
 from fastanime.cli import run_cli
 
@@ -147,3 +148,10 @@ def test_anilist_upcoming_help(runner: CliRunner):
 def test_anilist_watching_help(runner: CliRunner):
     result = runner.invoke(run_cli, ["anilist", "watching", "--help"])
     assert result.exit_code == 0
+
+
+def test_check_for_updates_not_called_on_completions(runner):
+    with patch('fastanime.cli.app_updater.check_for_updates') as mock_check_for_updates:
+        result = runner.invoke(run_cli, ["completions"])
+        assert result.exit_code == 0
+        mock_check_for_updates.assert_not_called()

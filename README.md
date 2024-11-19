@@ -13,6 +13,7 @@
 ![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/FastAnime/FastAnime)
 ![GitHub deployments](https://img.shields.io/github/deployments/FastAnime/fastanime/pypi?label=PyPi%20Publish)
 ![PyPI - License](https://img.shields.io/pypi/l/fastanime)
+![Static Badge](https://img.shields.io/badge/lines%20of%20code-13k%2B-green)
 </div>
 
 <p align="center">

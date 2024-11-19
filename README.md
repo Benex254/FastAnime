@@ -84,7 +84,8 @@ Heavily inspired by [animdl](https://github.com/justfoolingaround/animdl), [jerr
 
 > [!IMPORTANT]
 >
-> This project currently scrapes allanime, hianime and animepahe, nyaa and by no means does the project own any servers.
+> This project currently scrapes allanime, hianime, nyaa and animepahe
+>  The developer(s) of this application does not have any affiliation with the content providers available, and this application hosts zero content.
 > [DISCLAIMER](https://github.com/Benex254/FastAnime/blob/master/DISCLAIMER.md)
 
 ## Installation

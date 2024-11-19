@@ -3,6 +3,7 @@ import logging
 import os
 from configparser import ConfigParser
 from typing import TYPE_CHECKING
+from ..libs.fzf import FZF_DEFAULT_OPTS, HEADER
 
 from ..constants import (
     USER_CONFIG_PATH,
@@ -42,6 +43,9 @@ class Config(object):
         "ffmpegthumbnailer_seek_time": "-1",
         "force_forward_tracking": "true",
         "force_window": "immediate",
+        "fzf_opts": FZF_DEFAULT_OPTS,
+        "header_color": "95,135,175",
+        "header_ascii_art": HEADER,
         "format": "best[height<=1080]/bestvideo[height<=1080]+bestaudio/best",
         "icons": "false",
         "image_previews": "True" if S_PLATFORM != "win32" else "False",
@@ -51,6 +55,8 @@ class Config(object):
         "preferred_history": "local",
         "preferred_language": "english",
         "preview": "False",
+        "preview_header_color": "215,0,95",
+        "preview_separator_color": "208,208,208",
         "provider": "allanime",
         "quality": "1080",
         "recent": "50",
@@ -111,6 +117,9 @@ class Config(object):
         )
         self.force_window = self.configparser.get("stream", "force_window")
         self.format = self.configparser.get("stream", "format")
+        self.fzf_opts = self.configparser.get("general", "fzf_opts")
+        self.header_color = self.configparser.get("general", "header_color")
+        self.header_ascii_art = self.configparser.get("general", "header_ascii_art")
         self.icons = self.configparser.getboolean("general", "icons")
         self.image_previews = self.configparser.getboolean("general", "image_previews")
         self.normalize_titles = self.configparser.getboolean(
@@ -123,6 +132,12 @@ class Config(object):
         self.preferred_history = self.configparser.get("stream", "preferred_history")
         self.preferred_language = self.configparser.get("general", "preferred_language")
         self.preview = self.configparser.getboolean("general", "preview")
+        self.preview_separator_color = self.configparser.get(
+            "general", "preview_separator_color"
+        )
+        self.preview_header_color = self.configparser.get(
+            "general", "preview_header_color"
+        )
         self.provider = self.configparser.get("general", "provider")
         self.quality = self.configparser.get("stream", "quality")
         self.recent = self.configparser.getint("general", "recent")
@@ -146,6 +161,8 @@ class Config(object):
         Rofi.rofi_theme_input = self.rofi_theme_input
         Rofi.rofi_theme_confirm = self.rofi_theme_confirm
         Rofi.rofi_theme_preview = self.rofi_theme_preview
+
+        os.environ["FZF_DEFAULT_OPTS"] = self.fzf_opts
 
         # ---- setup user data ------
         self.anime_list: list = self.user_data.get("animelist", [])
@@ -228,6 +245,8 @@ class Config(object):
             self.configparser.write(config)
 
     def __repr__(self):
+        new_line = "\n"
+        tab = "\t"
         current_config_state = f"""\
 #
 #    ███████╗░█████╗░░██████╗████████╗░█████╗░███╗░░██╗██╗███╗░░░███╗███████╗  ░█████╗░░█████╗░███╗░░██╗███████╗██╗░██████╗░
@@ -238,6 +257,37 @@ class Config(object):
 #    ╚═╝░░░░░╚═╝░░╚═╝╚═════╝░░░░╚═╝░░░╚═╝░░╚═╝╚═╝░░╚══╝╚═╝╚═╝░░░░░╚═╝╚══════╝  ░╚════╝░░╚════╝░╚═╝░░╚══╝╚═╝░░░░░╚═╝░╚═════╝░
 #
 [general]
+# well recently somebody made a post @unixporn subreddit
+# the rice contained fastanime in preview mode
+# Did not even realise you rice with it
+# or i would have cross-posted
+# 'A new way to rice'
+# and immediately one of the mods removed it
+# am not sure why though
+# cause the preview is actually pretty good looking.
+# just like you would use fastfetch or cava
+# as means to protest against this injustice i have addded
+# the following
+# for you all ricers out there
+# and be sure to post a rice with fastanime on it
+# if you also think this is unfair
+
+# for the preview pane
+preview_separator_color = {self.preview_separator_color}
+
+preview_header_color = {self.preview_header_color}
+
+# for the header 
+# be sure to indent
+header_ascii_art = {new_line.join([tab+line for line in self.header_ascii_art.split(new_line)])}
+
+header_color = {self.header_color}
+
+# to be passed to fzf
+# may break it down further for now just pass the options as is
+# be sure to indent
+fzf_opts = {new_line.join([tab+line for line in self.fzf_opts.split(new_line)])}
+
 # whether to show the icons in the tui [True/False]
 # more like emojis
 # by the way if you have any recommendations
@@ -296,6 +346,7 @@ preview = {self.preview}
 # windows users just swtich to linux 😄
 # cause even if you enable it 
 # it won't look pretty
+# just be satisfied with the text previews
 # so forget it exists 🤣
 image_previews = {self.image_previews}
 

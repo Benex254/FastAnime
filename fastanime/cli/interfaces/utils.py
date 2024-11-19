@@ -46,8 +46,12 @@ def aniskip(mal_id: int, episode: str):
 
 # NOTE: May change this to a temp dir but there were issues so later
 WORKING_DIR = APP_CACHE_DIR  # tempfile.gettempdir()
-HEADER_COLOR = 215, 0, 95
-SEPARATOR_COLOR = 208, 208, 208
+_HEADER_COLOR = os.environ.get("FASTANIME_PREVIEW_HEADER_COLOR", "215,0,95").split(",")
+HEADER_COLOR = _HEADER_COLOR[0], _HEADER_COLOR[1], _HEADER_COLOR[2]
+_SEPARATOR_COLOR = os.environ.get(
+    "FASTANIME_PREVIEW_SEPARATOR_COLOR", "208,208,208"
+).split(",")
+SEPARATOR_COLOR = _SEPARATOR_COLOR[0], _SEPARATOR_COLOR[1], _SEPARATOR_COLOR[2]
 SINGLE_QUOTE = "'"
 IMAGES_CACHE_DIR = os.path.join(WORKING_DIR, "images")
 if not os.path.exists(IMAGES_CACHE_DIR):
@@ -65,7 +69,7 @@ def save_image_from_url(url: str, file_name: str):
         file_name: filename to use
     """
     image = requests.get(url)
-    with open(os.path.join(IMAGES_CACHE_DIR,f"{file_name}.png"), "wb") as f:
+    with open(os.path.join(IMAGES_CACHE_DIR, f"{file_name}.png"), "wb") as f:
         f.write(image.content)
 
 
@@ -76,7 +80,14 @@ def save_info_from_str(info: str, file_name: str):
         info: the information anilist has on the anime
         file_name: the filename to use
     """
-    with open(os.path.join(ANIME_INFO_CACHE_DIR,file_name,), "w",encoding="utf-8") as f:
+    with open(
+        os.path.join(
+            ANIME_INFO_CACHE_DIR,
+            file_name,
+        ),
+        "w",
+        encoding="utf-8",
+    ) as f:
         f.write(info)
 
 

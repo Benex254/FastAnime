@@ -108,7 +108,7 @@ def format_bytes_to_human(num_of_bytes: float, suffix: str = "B"):
     return f"{num_of_bytes:.1f}Yi{suffix}"
 
 
-def get_true_fg(string: str, r: int, g: int, b: int, bold: bool = True) -> str:
+def get_true_fg(string: str, r, g, b, bold: bool = True) -> str:
     """Custom helper function that enables colored text in the terminal
 
     Args:

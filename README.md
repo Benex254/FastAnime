@@ -70,7 +70,8 @@ Heavily inspired by [animdl](https://github.com/justfoolingaround/animdl), [jerr
 
 > [!IMPORTANT]
 >
-> This project currently scrapes allanime, hianime and animepahe, nyaa. The site is in the public domain and can be accessed by any one with a browser.
+> This project currently scrapes allanime, hianime and animepahe, nyaa and by no means does the project own any servers.
+> [DISCLAIMER](https://github.com/Benex254/FastAnime/blob/master/DISCLAIMER.md)
 
 ## Installation
 

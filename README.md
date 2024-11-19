@@ -1440,7 +1440,7 @@ For inquiries, join our [Discord Server](https://discord.gg/HBEmAwvbHV).
 
 ## Supporting the Project
 More pr's less issues 🙃
-
+Those who contribute at least five times will be able to make changes to the repo without my review.
 Show your support by starring the GitHub repository or [buying me a coffee](https://ko-fi.com/benex254).
 
 ## Disclaimer

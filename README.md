@@ -1,7 +1,11 @@
 <p align="center">
   <h1 align="center">FastAnime</h1>
 </p>
-
+<p align="center">
+  <sup>
+  Browse anime from the terminal
+  </sup>
+</p>
 <div align="center">
   
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/fastanime) ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/FastAnime/FastAnime/test.yml?label=Tests)

@@ -39,7 +39,7 @@
 ![image](https://github.com/user-attachments/assets/e1248a85-438f-4758-ae34-b0e0b224addd)
 
 **Desktop notifications + episodes menu without image preview:**
-![image](https://github.com/user-attachments/assets/111cf33e-0724-473a-a30d-65b0c20b5bd6)
+![image](https://github.com/user-attachments/assets/b7802ef1-ca0d-45f5-a13a-e39c96a5d499)
 
 
 </details>

@@ -319,7 +319,7 @@ wheels = [
 
 [[package]]
 name = "fastanime"
-version = "2.8.2"
+version = "2.8.3"
 source = { editable = "." }
 dependencies = [
     { name = "click" },

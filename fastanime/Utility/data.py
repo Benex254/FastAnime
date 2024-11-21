@@ -12,7 +12,10 @@ anime_normalizer_raw = {
         "Re:Zero kara Hajimeru Isekai Seikatsu Season 3": "Re:Zero kara Hajimeru Isekai Seikatsu 3rd Season",
     },
     "hianime": {"My Star": "Oshi no Ko"},
-    "animepahe": {"Azumanga Daiou The Animation": "Azumanga Daioh"},
+    "animepahe":    {
+        "Azumanga Daiou The Animation": "Azumanga Daioh",
+        "Mairimashita! Iruma-kun 2": "Mairimashita! Iruma-kun 2nd Season"
+                    },
     "nyaa": {},
     "yugen": {},
 }

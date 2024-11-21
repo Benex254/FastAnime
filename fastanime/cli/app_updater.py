@@ -4,6 +4,7 @@ import shlex
 import shutil
 import subprocess
 import sys
+import os
 
 import requests
 from rich import print
@@ -88,7 +89,14 @@ def update_app(force=False):
     tag_name = release_json["tag_name"]
 
     print("[cyan]Updating app to version %s[/]" % tag_name)
-    if is_git_repo(AUTHOR, APP_NAME):
+    if os.path.exists("/nix/store") and os.path.exists("/run/current-system"):
+        NIX = shutil.which("nix")
+        if not NIX:
+            print("[red]Cannot find nix, it looks like your system is broken.[/]")
+            return False, release_json
+
+        process = subprocess.run([NIX, "profile", "upgrade", APP_NAME.lower()])
+    elif is_git_repo(AUTHOR, APP_NAME):
         GIT_EXECUTABLE = shutil.which("git")
         args = [
             GIT_EXECUTABLE,

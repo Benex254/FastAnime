@@ -162,7 +162,8 @@ class Config(object):
         Rofi.rofi_theme_confirm = self.rofi_theme_confirm
         Rofi.rofi_theme_preview = self.rofi_theme_preview
 
-        os.environ["FZF_DEFAULT_OPTS"] = self.fzf_opts
+        if 'FZF_DEFAULT_OPTS' not in os.environ:
+            os.environ["FZF_DEFAULT_OPTS"] = self.fzf_opts
 
         # ---- setup user data ------
         self.anime_list: list = self.user_data.get("animelist", [])
@@ -271,6 +272,7 @@ header_color = {self.header_color}
 
 # to be passed to fzf
 # be sure to indent
+# if "FZF_DEFAULT_OPTS" is set in the environment this line will be ignored
 fzf_opts = {new_line.join([tab+line for line in self.fzf_opts.split(new_line)])}
 
 # whether to show the icons in the tui [True/False]

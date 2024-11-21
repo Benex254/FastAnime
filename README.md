@@ -28,13 +28,19 @@
   <summary>
     <b>My Rice</b>
   </summary>
-  
+
+  **Anilist results menu:**
   ![image](https://github.com/user-attachments/assets/240023a7-7e4e-47dd-80ff-017d65081ee1)
 
+**Episodes menu preview:**
 ![image](https://github.com/user-attachments/assets/580f86ef-326f-4ab3-9bd8-c1cb312fbfa6)
 
 **Without preview images enabled:**
 ![image](https://github.com/user-attachments/assets/e1248a85-438f-4758-ae34-b0e0b224addd)
+
+**Desktop notifications + episodes menu without image preview:**
+![image](https://github.com/user-attachments/assets/111cf33e-0724-473a-a30d-65b0c20b5bd6)
+
 
 </details>
 

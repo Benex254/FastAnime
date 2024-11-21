@@ -257,21 +257,7 @@ class Config(object):
 #    ╚═╝░░░░░╚═╝░░╚═╝╚═════╝░░░░╚═╝░░░╚═╝░░╚═╝╚═╝░░╚══╝╚═╝╚═╝░░░░░╚═╝╚══════╝  ░╚════╝░░╚════╝░╚═╝░░╚══╝╚═╝░░░░░╚═╝░╚═════╝░
 #
 [general]
-# well recently somebody made a post @unixporn subreddit
-# the rice contained fastanime in preview mode
-# Did not even realise you rice with it
-# or i would have cross-posted
-# 'A new way to rice'
-# and immediately one of the mods removed it
-# am not sure why though
-# cause the preview is actually pretty good looking.
-# just like you would use fastfetch or cava
-# as means to protest against this injustice i have addded
-# the following
-# for you all ricers out there
-# and be sure to post a rice with fastanime on it
-# if you also think this is unfair
-
+# Can you rice it?
 # for the preview pane
 preview_separator_color = {self.preview_separator_color}
 
@@ -284,7 +270,6 @@ header_ascii_art = {new_line.join([tab+line for line in self.header_ascii_art.sp
 header_color = {self.header_color}
 
 # to be passed to fzf
-# may break it down further for now just pass the options as is
 # be sure to indent
 fzf_opts = {new_line.join([tab+line for line in self.fzf_opts.split(new_line)])}
 
@@ -336,8 +321,8 @@ downloads_dir = {self.downloads_dir}
 
 # whether to show a preview window when using fzf or rofi [True/False]
 # the preview requires you have a commandline image viewer as documented in the README
-# this is only when usinf fzf
-# if you dont care about image previews it doesnt matter
+# this is only when using fzf or rofi
+# if you dont care about image and text previews it doesnt matter
 # though its awesome
 # try it and you will see
 preview = {self.preview} 
@@ -352,8 +337,10 @@ image_previews = {self.image_previews}
 
 # the time to seek when using ffmpegthumbnailer [-1 to 100]
 # -1 means random and is the default
-# ffmpegthumbnailer is used to generate previews and you can select at what time in the video to extract an image
+# ffmpegthumbnailer is used to generate previews
+# and you can select at what time in the video to extract an image
 # random makes things quite exciting cause you never no at what time it will extract the image from
+# used by the ```fastanime downloads``` command
 ffmpegthumbnailer_seek_time = {self.ffmpegthumbnailer_seek_time}
 
 # whether to use fzf as the interface for the anilist command and others. [True/False]
@@ -438,9 +425,12 @@ continue_from_history = {self.continue_from_history}
 
 # which history to use [local/remote]
 # local history means it will just use the watch history stored locally in your device 
-# the file that stores it is called watch_history.json and is stored next to your config file
-# remote means it ignores the last episode stored locally and instead uses the one in your anilist anime list
-# this config option is useful if you want to overwrite your local history or import history covered from another device or platform
+# the file that stores it is called watch_history.json
+# and is stored next to your config file
+# remote means it ignores the last episode stored locally
+# and instead uses the one in your anilist anime list
+# this config option is useful if you want to overwrite your local history
+# or import history covered from another device or platform
 # since remote history will take precendence over whats available locally
 preferred_history = {self.preferred_history}
 
@@ -468,16 +458,13 @@ auto_next = {self.auto_next}
 # this is because the providers sometime use non-standard names
 # that are there own preference rather than the official names
 # But 99% of the time will be accurate
-# if this happens just turn of auto_select in the menus or from the commandline and manually select the correct anime title
-# and then please open an issue 
-# highlighting the normalized title 
-# and the title given by the provider for the anime you wished to watch  
-# or even better edit this file <https://github.com/Benex254/FastAnime/blob/master/fastanime/Utility/data.py>
-# and open a pull request 
-# prefrably, so you can give me a small break
-# of doing everything 😄
-# and its always nice to see people contributing
-# to projects they love and use
+# if this happens just turn off auto_select in the menus or from the commandline 
+# and manually select the correct anime title
+# edit this file <https://github.com/Benex254/FastAnime/blob/master/fastanime/Utility/data.py>
+# and to the dictionary of the provider
+# the provider title (key) and their corresponding anilist names (value)
+# and then please open a pr 
+# issues on the same will be ignored and then closed 😆
 auto_select = {self.auto_select}
 
 # whether to skip the opening and ending theme songs [True/False]
@@ -497,7 +484,7 @@ episode_complete_at = {self.episode_complete_at}
 # whether to use python-mpv [True/False]
 # to enable superior control over the player 
 # adding more options to it
-# Enable this one and you will be wonder 
+# Enabling this option and you will ask yourself
 # why you did not discover fastanime sooner 🙃
 # Since you basically don't have to close the player window 
 # to go to the next or previous episode, switch servers, 
@@ -510,13 +497,13 @@ episode_complete_at = {self.episode_complete_at}
 # personally it took me quite sometime to figure it out
 # this is because of how windows handles shared libraries
 # so just ask when you find yourself stuck
-# or just switch to arch linux
+# or just switch to nixos 😄
 use_python_mpv = {self.use_python_mpv}
 
 
 # whether to use popen to get the timestamps for continue_from_history
-# implemented because popen does not work for some reason in nixos
-# if you are on nixos and you have a solution to this problem please share
+# implemented because popen does not work for some reason in nixos and apparently on mac as well
+# if you are on nixos or mac and you have a solution to this problem please share
 # i will be glad to hear it 😄
 # So for now ignore this option
 # and anyways the new method of getting timestamps is better
@@ -543,16 +530,13 @@ format = {self.format}
 # since you will miss out on some features if you use the others
 player = {self.player}
 
-# NOTE:
-# if you have any trouble setting up your config
-# please don't be afraid to ask in our discord
-# plus if there are any errors, improvements or suggestions please tell us in the discord
-# or help us by contributing
-# we appreciate all the help we can get
-# since we may not always have the time to immediately implement the changes
 #
 # HOPE YOU ENJOY FASTANIME AND BE SURE TO STAR THE PROJECT ON GITHUB
 # https://github.com/Benex254/FastAnime
+#
+# Also join the discord server
+# where the anime tech community lives :)
+# https://discord.gg/C4rhMA4mmK
 #
 """
         return current_config_state

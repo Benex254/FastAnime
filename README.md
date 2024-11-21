@@ -34,6 +34,9 @@
 
 ![image](https://github.com/user-attachments/assets/580f86ef-326f-4ab3-9bd8-c1cb312fbfa6)
 
+**Without preview images enabled:**
+![image](https://github.com/user-attachments/assets/e1248a85-438f-4758-ae34-b0e0b224addd)
+
 </details>
 
 <details>

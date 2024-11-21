@@ -22,7 +22,6 @@
 </a>
 </p>
 
-
 ![fastanime](https://github.com/user-attachments/assets/9ab09f26-e4a8-4b70-a315-7def998cec63)
 
 <details>
@@ -60,7 +59,6 @@
 
 </details>
 
-
 <!--toc:start-->
 
 - [**FastAnime**](#fastanime)
@@ -95,6 +93,7 @@
   - [Receiving Support](#receiving-support)
   - [Supporting the Project](#supporting-the-project)
   <!--toc:end-->
+
 ## Installation
 
 ![Windows](https://img.shields.io/badge/-Windows_x64-blue.svg?style=for-the-badge&logo=windows)
@@ -106,9 +105,10 @@
 The app can run wherever python can run. So all you need to have is python installed on your device.
 On android you can use [termux](https://github.com/termux/termux-app).
 If you have any difficulty consult for help on the [discord channel](https://discord.gg/HBEmAwvbHV)
-### Installation on nixos
-![Static Badge](https://img.shields.io/badge/NixOs-black?style=flat&logo=nixos)
 
+### Installation on nixos
+
+![Static Badge](https://img.shields.io/badge/NixOs-black?style=flat&logo=nixos)
 
 ```bash
 nix profile install github:Benex254/fastanime
@@ -126,7 +126,7 @@ With the following extras available:
 
 #### Using uv
 
-Recommended method of installation is using [uv](https://docs.astral.sh/uv/). 
+Recommended method of installation is using [uv](https://docs.astral.sh/uv/).
 
 ```bash
 # generally:
@@ -392,6 +392,33 @@ For more details visit the anilist docs or just get the completions which will i
 
 Like seriously **[get the completions](https://github.com/FastAnime/FastAnime#completions-subcommand)** and the experience will be a 💯 💯 better.
 
+**Fastanime anilist download:**
+Supports all the options for search except its used for downloading.
+it also supports all options for `fastanime download`
+Example:
+
+```bash
+# get anime with the tag of isekai
+fastanime anilist download -T isekai
+
+# get anime of 2024 and sort by popularity
+# that has already finished airing or is releasing
+# and is not in your anime lists
+fastanime anilist download -y 2024 -s POPULARITY_DESC --status RELEASING --status FINISHED --not-on-list
+
+# get anime of 2024 season WINTER
+fastanime anilist download -y 2024 --season WINTER
+
+# get anime genre action and tag isekai,magic
+ fastanime anilist download -g Action -T Isekai -T Magic
+
+# get anime of 2024 thats finished airing
+fastanime anilist download -y 2024 -S FINISHED
+
+# get the most favourite anime movies
+fastanime anilist download -f MOVIE -s FAVOURITES_DESC
+```
+
 The following are commands you can only run if you are signed in to your AniList account:
 
 - `fastanime anilist watching`
@@ -630,7 +657,7 @@ fastanime config --view
 
 > [!Note]
 >
-> If it opens [vim](https://www.vim.org/download.php) you can exit by typing `:q`  😉.
+> If it opens [vim](https://www.vim.org/download.php) you can exit by typing `:q` 😉.
 
 #### cache subcommand
 
@@ -1460,14 +1487,16 @@ For inquiries, join our [Discord Server](https://discord.gg/HBEmAwvbHV).
 </p>
 
 ## Supporting the Project
+
 More pr's less issues 🙃
 Those who contribute at least five times will be able to make changes to the repo without my review.
 
 Show your support by starring the GitHub repository or [buying me a coffee](https://ko-fi.com/benex254).
 
 ## Disclaimer
+
 > [!IMPORTANT]
 >
 > This project currently scrapes allanime, hianime, nyaa, yugen and animepahe.
->  The developer(s) of this application does not have any affiliation with the content providers available, and this application hosts zero content.
+> The developer(s) of this application does not have any affiliation with the content providers available, and this application hosts zero content.
 > [DISCLAIMER](https://github.com/Benex254/FastAnime/blob/master/DISCLAIMER.md)

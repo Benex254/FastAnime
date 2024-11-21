@@ -101,6 +101,13 @@
 The app can run wherever python can run. So all you need to have is python installed on your device.
 On android you can use [termux](https://github.com/termux/termux-app).
 If you have any difficulty consult for help on the [discord channel](https://discord.gg/HBEmAwvbHV)
+### Installation on nixos
+![Static Badge](https://img.shields.io/badge/NixOs-black?style=flat&logo=nixos)
+
+
+```bash
+nix profile install github:Benex254/fastanime
+```
 
 ### Installation using your favourite package manager
 

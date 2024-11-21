@@ -1,0 +1,122 @@
+// Based on https://github.com/Wraient/curd/blob/main/rofi/selectanimepreview.rasi
+// Go give there project a star!
+// Was too lazy to make my own preview, so I just used theirs
+
+// Colours
+* {
+    background-color:               transparent;
+    background:                     #1D2330;
+    background-transparent:         #1D2330A0;
+    text-color:                     #BBBBBB;
+    text-color-selected:            #FFFFFF;
+    primary:                        #BB77BB;
+    important:                      #BF616A;
+}
+
+configuration {
+    font:                           "Roboto 17";
+    show-icons:                     true;
+}
+
+window {
+    fullscreen:                     true;
+    height:                         100%;
+    width:                          100%;
+    transparency:                   "real";
+    background-color:               @background-transparent;
+    border:                         0px;
+    border-color:                   @primary;
+}
+
+mainbox {
+    children:                       [prompt, inputbar-box, listview];
+    padding:                        0px;
+}
+
+prompt {
+    width:                          100%;
+    margin:                         10px 0px 0px 30px;
+    text-color:                     @important;
+    font:                           "Roboto Bold 27";
+}
+
+listview {
+    layout:                         vertical;
+    padding:                        60px;
+    dynamic:                        true;
+    columns:                        7;
+    spacing:                        20px;
+    horizontal-align:               center;   /* Center the list items */
+}
+
+inputbar-box {
+    children:                       [dummy, inputbar, dummy];
+    orientation:                    horizontal;
+    expand:                         false;
+}
+
+inputbar {
+    children:                       [textbox-prompt, entry];
+    margin:                         0px;
+    background-color:               @primary;
+    border:                         4px;
+    border-color:                   @primary;
+    border-radius:                  8px;
+}
+
+textbox-prompt {
+    text-color:                     @background;
+    horizontal-align:               0.5;
+    vertical-align:                 0.5;
+    expand:                         false;
+}
+
+entry {
+    expand:                         false;
+    padding:                        8px;
+    margin:                         -6px;
+    horizontal-align:               0;
+    width:                          300;
+    background-color:               @background;
+    border:                         6px;
+    border-color:                   @primary;
+    border-radius:                  8px;
+    cursor:                         text;
+}
+
+element {
+    children:                       [dummy, element-box, dummy];
+    padding:                        5px;
+    orientation:                    vertical;
+    border:                         0px;
+    border-radius:                  16px;
+    background-color:               transparent; /* Default background */
+}
+
+element selected {
+    background-color:               @primary; /* Solid color for selected item */
+}
+
+element-box {
+    children:                       [element-icon, element-text];
+    orientation:                    vertical;
+    expand:                         false;
+    cursor:                         pointer;
+}
+
+element-icon {
+    padding:                        10px;
+    cursor:                         inherit;
+    size:                           33%;
+    margin:                         10px;
+}
+
+element-text {
+    horizontal-align:               0.5;
+    cursor:                         inherit;
+    text-color:                     @text-color;
+}
+
+element-text selected {
+    text-color:                     @text-color-selected;
+}

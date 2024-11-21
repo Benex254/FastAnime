@@ -159,6 +159,9 @@ signal.signal(signal.SIGINT, handle_exit)
 @click.option("--rofi", help="Use rofi for the ui", is_flag=True)
 @click.option("--rofi-theme", help="Rofi theme to use", type=click.Path())
 @click.option(
+    "--rofi-theme-preview", help="Rofi theme to use for previews", type=click.Path()
+)
+@click.option(
     "--rofi-theme-confirm",
     help="Rofi theme to use for the confirm prompt",
     type=click.Path(),
@@ -210,6 +213,7 @@ def run_cli(
     sub,
     rofi,
     rofi_theme,
+    rofi_theme_preview,
     rofi_theme_confirm,
     rofi_theme_input,
     use_python_mpv,
@@ -222,6 +226,40 @@ def run_cli(
     from .config import Config
 
     ctx.obj = Config()
+    if ctx.obj.check_for_updates and ctx.invoked_subcommand != "completions":
+        from .app_updater import check_for_updates
+
+        print("Checking for updates...")
+        print("So you can enjoy the latest features and bug fixes")
+        print(
+            "You can disable this by setting check_for_updates to False in the config"
+        )
+        is_latest, github_release_data = check_for_updates()
+        if not is_latest:
+            from rich.console import Console
+            from rich.markdown import Markdown
+            from .app_updater import update_app
+            from rich.prompt import Confirm
+
+            def _print_release(release_data):
+                console = Console()
+                body = Markdown(release_data["body"])
+                tag = github_release_data["tag_name"]
+                tag_title = release_data["name"]
+                github_page_url = release_data["html_url"]
+                console.print(f"Release Page: {github_page_url}")
+                console.print(f"Tag: {tag}")
+                console.print(f"Title: {tag_title}")
+                console.print(body)
+
+            if Confirm.ask(
+                "A new version of fastanime is available, would you like to update?"
+            ):
+                _, release_json = update_app()
+                print("Successfully updated")
+                _print_release(release_json)
+                exit(0)
+
     ctx.obj.manga = manga
     if log:
         import logging
@@ -324,6 +362,10 @@ def run_cli(
         ctx.obj.use_rofi = True
     if rofi:
         from ..libs.rofi import Rofi
+
+        if rofi_theme_preview:
+            ctx.obj.rofi_theme_preview = rofi_theme_preview
+            Rofi.rofi_theme_preview = rofi_theme_preview
 
         if rofi_theme:
             ctx.obj.rofi_theme = rofi_theme

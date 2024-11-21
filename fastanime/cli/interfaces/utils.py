@@ -46,8 +46,12 @@ def aniskip(mal_id: int, episode: str):
 
 # NOTE: May change this to a temp dir but there were issues so later
 WORKING_DIR = APP_CACHE_DIR  # tempfile.gettempdir()
-HEADER_COLOR = 215, 0, 95
-SEPARATOR_COLOR = 208, 208, 208
+_HEADER_COLOR = os.environ.get("FASTANIME_PREVIEW_HEADER_COLOR", "215,0,95").split(",")
+HEADER_COLOR = _HEADER_COLOR[0], _HEADER_COLOR[1], _HEADER_COLOR[2]
+_SEPARATOR_COLOR = os.environ.get(
+    "FASTANIME_PREVIEW_SEPARATOR_COLOR", "208,208,208"
+).split(",")
+SEPARATOR_COLOR = _SEPARATOR_COLOR[0], _SEPARATOR_COLOR[1], _SEPARATOR_COLOR[2]
 SINGLE_QUOTE = "'"
 IMAGES_CACHE_DIR = os.path.join(WORKING_DIR, "images")
 if not os.path.exists(IMAGES_CACHE_DIR):
@@ -65,7 +69,7 @@ def save_image_from_url(url: str, file_name: str):
         file_name: filename to use
     """
     image = requests.get(url)
-    with open(f"{IMAGES_CACHE_DIR}/{file_name}.png", "wb") as f:
+    with open(os.path.join(IMAGES_CACHE_DIR, f"{file_name}.png"), "wb") as f:
         f.write(image.content)
 
 
@@ -76,7 +80,14 @@ def save_info_from_str(info: str, file_name: str):
         info: the information anilist has on the anime
         file_name: the filename to use
     """
-    with open(f"{ANIME_INFO_CACHE_DIR}/{file_name}", "w") as f:
+    with open(
+        os.path.join(
+            ANIME_INFO_CACHE_DIR,
+            file_name,
+        ),
+        "w",
+        encoding="utf-8",
+    ) as f:
         f.write(info)
 
 
@@ -92,7 +103,6 @@ def write_search_results(
         titles: sanitized anime titles
         workers:number of threads to use defaults to as many as possible
     """
-    # NOTE: Will probably make this a configuraable option
     # use concurency to download and write as fast as possible
     with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:
         future_to_task = {}
@@ -274,7 +284,7 @@ def get_fzf_episode_preview(
         anilist_results: the anilist results from an anilist action
     """
 
-    HEADER_COLOR = 215, 0, 95
+    # HEADER_COLOR = 215, 0, 95
     import re
 
     def _worker():
@@ -282,18 +292,16 @@ def get_fzf_episode_preview(
         with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:
             # load the jobs
             future_to_url = {}
+
             for episode in episodes:
                 episode_title = ""
                 image_url = ""
                 for episode_detail in anilist_result["streamingEpisodes"]:
-                    if re.match(f"Episode {episode} ", episode_detail["title"]):
+                    if re.match(f".*Episode {episode} .*", episode_detail["title"]):
                         episode_title = episode_detail["title"]
                         image_url = episode_detail["thumbnail"]
 
                 if episode_title and image_url:
-                    # actual link to download image from
-                    if not image_url:
-                        continue
                     future_to_url[
                         executor.submit(save_image_from_url, image_url, episode)
                     ] = image_url
@@ -304,13 +312,25 @@ def get_fzf_episode_preview(
                         echo -n -e "{get_true_fg("─",*SEPARATOR_COLOR,bold=False)}"
                         ((ll++))
                     done
-                    echo "{get_true_fg('Anime Title:',*HEADER_COLOR)} {(anilist_result['title']['romaji'] or anilist_result['title']['english']).replace('"',SINGLE_QUOTE)}"
-                    echo "{get_true_fg('Episode Title:',*HEADER_COLOR)} {str(episode_title).replace('"',SINGLE_QUOTE)}"
+                    echo "{get_true_fg('Anime Title(eng):',*HEADER_COLOR)} {('' or anilist_result['title']['english']).replace('"',SINGLE_QUOTE)}"
+                    echo "{get_true_fg('Anime Title(jp):',*HEADER_COLOR)} {(anilist_result['title']['romaji'] or '').replace('"',SINGLE_QUOTE)}"
+
+                    ll=2
+                    while [ $ll -le $FZF_PREVIEW_COLUMNS ];do 
+                        echo -n -e "{get_true_fg("─",*SEPARATOR_COLOR,bold=False)}"
+                        ((ll++))
+                    done
+                    echo "{str(episode_title).replace('"',SINGLE_QUOTE)}"
+                    ll=2
+                    while [ $ll -le $FZF_PREVIEW_COLUMNS ];do 
+                        echo -n -e "{get_true_fg("─",*SEPARATOR_COLOR,bold=False)}"
+                        ((ll++))
+                    done
                     """
                     )
                     future_to_url[
-                        executor.submit(save_info_from_str, template, episode)
-                    ] = episode_title
+                        executor.submit(save_info_from_str, template, str(episode))
+                    ] = str(episode)
 
             # execute the jobs
             for future in concurrent.futures.as_completed(future_to_url):
@@ -360,14 +380,15 @@ def get_fzf_episode_preview(
         )
     else:
         preview = """
+            title={}
             %s
             show_image_previews="%s"
             if [ $show_image_previews = "true" ];then 
-                if [ -s %s/{} ]; then fzf-preview %s/{}
+                if [ -s %s/${title}.png ]; then fzf-preview %s/${title}.png
                 else echo Loading...
                 fi
             fi
-            if [ -s %s/{} ]; then source %s/{}
+            if [ -f %s/${title} ]; then source %s/${title}
             else echo Loading...
             fi
         """ % (

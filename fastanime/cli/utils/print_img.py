@@ -24,4 +24,10 @@ def print_img(url: str):
             print("Error fetching image")
             return
         img_bytes = res.content
+        """
+        Change made in call to chafa. Chafa dev dropped abilty
+        to pull from urls. Keeping old line here just in case.
+
         subprocess.run([EXECUTABLE, url, "--size=15x15"], input=img_bytes)
+        """
+        subprocess.run([EXECUTABLE, "--size=15x15"], input=img_bytes)

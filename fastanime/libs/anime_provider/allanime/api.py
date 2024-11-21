@@ -233,7 +233,7 @@ class AllAnimeAPI(AnimeProvider):
                         logger.debug("allanime:Found streams from gogoanime")
                         return {
                             "server": "gogoanime",
-                            "headers": {},
+                            "headers": {"Referer": f"https://{ALLANIME_BASE}/"},
                             "subtitles": [],
                             "episode_title": (
                                 allanime_episode["notes"] or f"{anime_title}"
@@ -245,7 +245,7 @@ class AllAnimeAPI(AnimeProvider):
                         logger.debug("allanime:Found streams from wetransfer")
                         return {
                             "server": "wetransfer",
-                            "headers": {},
+                            "headers": {"Referer": f"https://{ALLANIME_BASE}/"},
                             "subtitles": [],
                             "episode_title": (
                                 allanime_episode["notes"] or f"{anime_title}"
@@ -257,7 +257,7 @@ class AllAnimeAPI(AnimeProvider):
                         logger.debug("allanime:Found streams from sharepoint")
                         return {
                             "server": "sharepoint",
-                            "headers": {},
+                            "headers": {"Referer": f"https://{ALLANIME_BASE}/"},
                             "subtitles": [],
                             "episode_title": (
                                 allanime_episode["notes"] or f"{anime_title}"
@@ -269,7 +269,7 @@ class AllAnimeAPI(AnimeProvider):
                         logger.debug("allanime:Found streams from dropbox")
                         return {
                             "server": "dropbox",
-                            "headers": {},
+                            "headers": {"Referer": f"https://{ALLANIME_BASE}/"},
                             "subtitles": [],
                             "episode_title": (
                                 allanime_episode["notes"] or f"{anime_title}"
@@ -281,7 +281,7 @@ class AllAnimeAPI(AnimeProvider):
                         logger.debug("allanime:Found streams from wixmp")
                         return {
                             "server": "wixmp",
-                            "headers": {},
+                            "headers": {"Referer": f"https://{ALLANIME_BASE}/"},
                             "subtitles": [],
                             "episode_title": (
                                 allanime_episode["notes"] or f"{anime_title}"

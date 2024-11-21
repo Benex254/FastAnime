@@ -4,6 +4,7 @@ import shlex
 import shutil
 import subprocess
 import sys
+import os
 
 import requests
 from rich import print
@@ -15,14 +16,18 @@ API_URL = f"https://api.{GIT_REPO}/repos/{AUTHOR}/{APP_NAME}/releases/latest"
 
 def check_for_updates():
     USER_AGENT = f"{APP_NAME} user"
-    request = requests.get(
-        API_URL,
-        headers={
-            "User-Agent": USER_AGENT,
-            "X-GitHub-Api-Version": "2022-11-28",
-            "Accept": "application/vnd.github+json",
-        },
-    )
+    try:
+        request = requests.get(
+            API_URL,
+            headers={
+                "User-Agent": USER_AGENT,
+                "X-GitHub-Api-Version": "2022-11-28",
+                "Accept": "application/vnd.github+json",
+            },
+        )
+    except Exception:
+        print("You are not connected to the internet")
+        return True, {}
 
     if request.status_code == 200:
         release_json = request.json()
@@ -45,8 +50,9 @@ def check_for_updates():
 
         return (is_latest, release_json)
     else:
+        print("Failed to check for updates")
         print(request.text)
-        return (False, {})
+        return (True, {})
 
 
 def is_git_repo(author, repository):
@@ -83,7 +89,14 @@ def update_app(force=False):
     tag_name = release_json["tag_name"]
 
     print("[cyan]Updating app to version %s[/]" % tag_name)
-    if is_git_repo(AUTHOR, APP_NAME):
+    if os.path.exists("/nix/store") and os.path.exists("/run/current-system"):
+        NIX = shutil.which("nix")
+        if not NIX:
+            print("[red]Cannot find nix, it looks like your system is broken.[/]")
+            return False, release_json
+
+        process = subprocess.run([NIX, "profile", "upgrade", APP_NAME.lower()])
+    elif is_git_repo(AUTHOR, APP_NAME):
         GIT_EXECUTABLE = shutil.which("git")
         args = [
             GIT_EXECUTABLE,

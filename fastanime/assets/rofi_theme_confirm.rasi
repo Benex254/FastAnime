@@ -1,0 +1,55 @@
+// https://github.com/Wraient/curd/blob/main/rofi/userinput.rasi
+// Go give there project a star!
+// Was too lazy to make my own preview, so I just used theirs
+
+configuration {
+    font: "Sans 12";
+}
+
+* {
+    background-color: rgba(0, 0, 0, 0.7);
+    text-color: #FFFFFF;
+}
+
+window {
+    fullscreen: true;
+    transparency: "real";
+    background-color: @background-color;
+}
+
+mainbox {
+    children: [ message, listview, inputbar ];
+    padding: 40% 30%;
+}
+
+message {
+    border: 0;
+    padding: 10px;
+    margin: 0 0 20px 0;
+    font: "Sans Bold 24"; /* Increased font size and made it bold */
+}
+
+inputbar {
+    children: [ prompt, entry ];
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 8px;
+    border-radius: 4px;
+}
+
+prompt {
+    padding: 8px;
+}
+
+entry {
+    padding: 8px;
+}
+
+listview {
+    lines: 0;
+}
+
+/* Style for the message text specifically */
+textbox {
+    horizontal-align: 0.5;    /* Center the text */
+    font: "Sans Bold 24";     /* Match message font */
+}

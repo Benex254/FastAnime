@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-# TODO: improve performance of this class and add cool features like auto retry
+# TODO: add cool features like auto retry
 class AnimeProvider:
     """Class that manages all anime sources adding some extra functionality to them.
     Attributes:

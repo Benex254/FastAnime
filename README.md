@@ -1,14 +1,43 @@
-# **FastAnime**
-
-![PyPI - Downloads](https://img.shields.io/pypi/dm/fastanime) ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/Benex254/FastAnime/test.yml?label=Tests)
+<p align="center">
+  <h1 align="center">FastAnime</h1>
+</p>
+<p align="center">
+  <sup>
+  Browse anime from the terminal
+  </sup>
+</p>
+<div align="center">
+  
+![PyPI - Downloads](https://img.shields.io/pypi/dm/fastanime) ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/FastAnime/FastAnime/test.yml?label=Tests)
 ![Discord](https://img.shields.io/discord/1250887070906323096?label=Discord)
-![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/Benex254/FastAnime)
-![GitHub deployments](https://img.shields.io/github/deployments/Benex254/fastanime/pypi?label=PyPi%20Publish)
+![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/FastAnime/FastAnime)
+![GitHub deployments](https://img.shields.io/github/deployments/FastAnime/fastanime/pypi?label=PyPi%20Publish)
 ![PyPI - License](https://img.shields.io/pypi/l/fastanime)
+![Static Badge](https://img.shields.io/badge/lines%20of%20code-13k%2B-green)
+</div>
 
-Welcome to **FastAnime**, anime site experience from the terminal.
+<p align="center">
+<a href="https://discord.gg/HBEmAwvbHV">
+<img src="https://invidget.switchblade.xyz/C4rhMA4mmK">
+</a>
+</p>
+
 
 ![fastanime](https://github.com/user-attachments/assets/9ab09f26-e4a8-4b70-a315-7def998cec63)
+
+<details>
+  <summary>
+    <b>My Rice</b>
+  </summary>
+  
+  ![image](https://github.com/user-attachments/assets/240023a7-7e4e-47dd-80ff-017d65081ee1)
+
+![image](https://github.com/user-attachments/assets/580f86ef-326f-4ab3-9bd8-c1cb312fbfa6)
+
+**Without preview images enabled:**
+![image](https://github.com/user-attachments/assets/e1248a85-438f-4758-ae34-b0e0b224addd)
+
+</details>
 
 <details>
 <summary><b>fzf mode</b></summary>
@@ -31,13 +60,13 @@ Welcome to **FastAnime**, anime site experience from the terminal.
 
 </details>
 
-Heavily inspired by [animdl](https://github.com/justfoolingaround/animdl), [jerry](https://github.com/justchokingaround/jerry/tree/main),[magic-tape](https://gitlab.com/christosangel/magic-tape/-/tree/main?ref_type=heads) and [ani-cli](https://github.com/pystardust/ani-cli).
 
 <!--toc:start-->
 
 - [**FastAnime**](#fastanime)
   - [Installation](#installation)
     - [Installation using your favourite package manager](#installation-using-your-favourite-package-manager)
+      - [Using uv](#using-uv)
       - [Using pipx](#using-pipx)
       - [Using pip](#using-pip)
     - [Installing the bleeding edge version](#installing-the-bleeding-edge-version)
@@ -56,6 +85,7 @@ Heavily inspired by [animdl](https://github.com/justfoolingaround/animdl), [jerr
       - [cache subcommand](#cache-subcommand)
       - [update subcommand](#update-subcommand)
       - [completions subcommand](#completions-subcommand)
+      - [fastanime serve](#fastanime-serve)
     - [MPV specific commands](#mpv-specific-commands)
       - [Key Bindings](#key-bindings)
       - [Script Messages](#script-messages)
@@ -65,11 +95,6 @@ Heavily inspired by [animdl](https://github.com/justfoolingaround/animdl), [jerr
   - [Receiving Support](#receiving-support)
   - [Supporting the Project](#supporting-the-project)
   <!--toc:end-->
-
-> [!IMPORTANT]
->
-> This project currently scrapes allanime, hianime and animepahe, nyaa. The site is in the public domain and can be accessed by any one with a browser.
-
 ## Installation
 
 ![Windows](https://img.shields.io/badge/-Windows_x64-blue.svg?style=for-the-badge&logo=windows)
@@ -81,6 +106,13 @@ Heavily inspired by [animdl](https://github.com/justfoolingaround/animdl), [jerr
 The app can run wherever python can run. So all you need to have is python installed on your device.
 On android you can use [termux](https://github.com/termux/termux-app).
 If you have any difficulty consult for help on the [discord channel](https://discord.gg/HBEmAwvbHV)
+### Installation on nixos
+![Static Badge](https://img.shields.io/badge/NixOs-black?style=flat&logo=nixos)
+
+
+```bash
+nix profile install github:Benex254/fastanime
+```
 
 ### Installation using your favourite package manager
 
@@ -94,17 +126,17 @@ With the following extras available:
 
 #### Using uv
 
-Recommended method of installation
+Recommended method of installation is using [uv](https://docs.astral.sh/uv/). 
 
 ```bash
 # generally:
-uv tool install fastanime
+uv tool install "fastanime[standard]"
 
-# if you want other functionality:
-uv tool install fastanime[standard]
-uv tool install fastanime[api]
-uv tool install fastanime[mpv]
-uv tool install fastanime[notifications]
+# or stripped down installations:
+uv tool install fastanime
+uv tool install "fastanime[api]"
+uv tool install "fastanime[mpv]"
+uv tool install "fastanime[notifications]"
 
 ```
 
@@ -132,7 +164,7 @@ pip install 'fastanime==<latest-pre-release-tag>.dev1'
 
 ### Installing the bleeding edge version
 
-To install the latest build which are created on every push by GitHub actions, download the [fastanime_debug_build](https://github.com/Benex254/FastAnime/actions) of your choosing from the GitHub actions page.
+To install the latest build which are created on every push by GitHub actions, download the [fastanime_debug_build](https://github.com/FastAnime/FastAnime/actions) of your choosing from the GitHub actions page.
 Then:
 
 ```bash
@@ -157,7 +189,7 @@ Requirements:
 
 To build from the source, follow these steps:
 
-1. Clone the repository: `git clone https://github.com/Benex254/FastAnime.git --depth 1`
+1. Clone the repository: `git clone https://github.com/FastAnime/FastAnime.git --depth 1`
 2. Navigate into the folder: `cd FastAnime`
 3. Then build and Install the app:
 
@@ -174,7 +206,7 @@ fastanime --version
 
 > [!Tip]
 >
-> Download the completions from [here](https://github.com/Benex254/FastAnime/tree/master/completions) for your shell.
+> Download the completions from [here](https://github.com/FastAnime/FastAnime/tree/master/completions) for your shell.
 > To add completions:
 >
 > - Fish Users: `cp $FASTANIME_PATH/completions/fastanime.fish ~/.config/fish/completions/`
@@ -199,7 +231,7 @@ The only required external dependency, unless you won't be streaming, is [MPV](h
 - [webtorrent-cli](https://github.com/webtorrent/webtorrent-cli) used when the provider is nyaa
 - [ffmpeg](https://www.ffmpeg.org/) is required to be in your path environment variables to properly download [hls](https://www.cloudflare.com/en-gb/learning/video/what-is-http-live-streaming/) streams.
 - [fzf](https://github.com/junegunn/fzf) 🔥 which is used as a better alternative to the ui.
-- [rofi](https://github.com/davatorium/rofi) 🔥 which is used as another alternative ui + the the desktop entry ui
+- [rofi](https://github.com/davatorium/rofi) 🔥 which is used as another alternative ui + the desktop entry ui
 - [chafa](https://github.com/hpjansson/chafa) currently the best cross platform and cross terminal image viewer for the terminal.
 - [icat](https://sw.kovidgoyal.net/kitty/kittens/icat/) an image viewer that only works in [kitty terminal](https://sw.kovidgoyal.net/kitty/), which is currently the best terminal in my opinion, and by far the best image renderer for the terminal thanks to kitty's terminal graphics protocol. Its terminal graphics is so op that you can [run a browser on it](https://github.com/chase/awrit?tab=readme-ov-file)!!
 - [bash](https://www.gnu.org/software/bash/) is used as the preview script language.
@@ -358,7 +390,7 @@ fastanime anilist search -f MOVIE -s FAVOURITES_DESC
 
 For more details visit the anilist docs or just get the completions which will improve the experience.
 
-Like seriously **[get the completions](https://github.com/Benex254/FastAnime#completions-subcommand)** and the experience will be a 💯 💯 better.
+Like seriously **[get the completions](https://github.com/FastAnime/FastAnime#completions-subcommand)** and the experience will be a 💯 💯 better.
 
 The following are commands you can only run if you are signed in to your AniList account:
 
@@ -598,7 +630,7 @@ fastanime config --view
 
 > [!Note]
 >
-> If it opens [vim](https://www.vim.org/download.php) you can exit by typing `:q` .
+> If it opens [vim](https://www.vim.org/download.php) you can exit by typing `:q`  😉.
 
 #### cache subcommand
 
@@ -663,6 +695,632 @@ fastanime serve
 # specify host and port
 fastanime serve --host <host> --port <port>
 ```
+
+An example instance is hosted by [render](https://fastanime.onrender.com/)
+
+Examples:
+
+**search for anime by title:**
+
+```bash
+curl 'https://fastanime.onrender.com/search?title=dragon&translation_type=sub'
+
+```
+
+<details>
+<summary>
+Result
+</summary>
+
+```json
+{
+  "pageInfo": {
+    "total": 22839
+  },
+  "results": [
+    {
+      "id": "ju2pgynxn9o9DZvse",
+      "title": "Dragon Ball Daima",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 5,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "qpnhxfarTHfP7kjgR",
+      "title": "My WeChat connects to the Dragon Palace",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 26,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "8aM5BBoEGLvjG3MZm",
+      "title": "Sayounara Ryuusei, Konnichiwa Jinsei",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 6,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "Sg9Q9FyqBnJ9qtv5n",
+      "title": "Yarinaoshi Reijou wa Ryuutei Heika wo Kouryakuchuu",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 5,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "gF2mKbWBatQudcF6A",
+      "title": "Throne of the Dragon King",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 3,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "SXLNNoorPifT5ZStw",
+      "title": "Shi Cao Lao Long Bei Guan Yi E Long Zhi Ming Season 2",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 7,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "v4ZkjtyftscNzYF2A",
+      "title": "I Have a Dragon in My Body Episode122-133",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 77,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "9RSQCRJ3d554sBzoz",
+      "title": "City Immortal Emperor: Dragon King Temple",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 20,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "t8C6zvsdJE5JJKDLE",
+      "title": "It Turns Out I Am the Peerless Dragon God",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 2,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "xyDt3mJieZkD76P7S",
+      "title": "Urban Hidden Dragon",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 13,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "8PoJiTEDAswkw8b3u",
+      "title": "The Collected Animations of ICAF (2001-2006)",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 1,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "KZeMmRSsyJgz37EmH",
+      "title": "Dragon Master",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 1,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "7a33i9m26poonyNLg",
+      "title": "I Have a Dragon in My Body",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 79,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "uwwvBujGRsjCQ8kKM",
+      "title": "Cong Gu Huo Niao Kaishi: Long Cheng Fengyun",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 16,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "RoexdZwHSTDwyzEzd",
+      "title": "Super Dragon Ball Heroes Meteor Mission",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 6,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "gAcGCcMENjbWhBnR9",
+      "title": "Dungeon Meshi",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 24,
+        "dub": 24,
+        "raw": 0
+      }
+    },
+    {
+      "id": "ZGh2QHiaCY5T5Mhi4",
+      "title": "Long Shidai",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 9,
+        "dub": 0,
+        "raw": 1
+      }
+    },
+    {
+      "id": "gZSHt98fQpHRfJJXw",
+      "title": "Xanadu Dragonslayer Densetsu",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 1,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "wo8pX4Sba97mFCAkc",
+      "title": "Vanguard Dragon God",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 86,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "rrbCftmca3Y2TEiBX",
+      "title": "Super Dragon Ball Heroes Ultra God Mission",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 10,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "JzSeXC2WtBBhn3guN",
+      "title": "Dragon King's Son-In-Law",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 11,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "eE3txJGGk9atw7k2v",
+      "title": "Majutsushi Orphen Hagure Tabi: Seiiki-hen",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 12,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "4X2JbZgiQrb2PTzex",
+      "title": "Yowai 5000-nen no Soushoku Dragon, Iwarenaki Jaryuu Nintei (Japanese Dub)",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 12,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "SHp5NFDakKjPT5nJE",
+      "title": "Starting from Gu Huoniao: Dragon City Hegemony",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 22,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "8LgaCGrz7Gz35LRpk",
+      "title": "Yuan Zun",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 5,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "4GKHyjFC7Dyc7fBpT",
+      "title": "Shen Ji Long Wei",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 26,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "2PQiuXiuJoTQTdgy4",
+      "title": "Long Zu",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 15,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "rE47AepmBFRvZ6cne",
+      "title": "Jidao Long Shen",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 40,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "c4JcjPbRfiuoJPB4F",
+      "title": "Dragon Quest: Dai no Daibouken (2020)",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 101,
+        "dub": 100,
+        "raw": 0
+      }
+    },
+    {
+      "id": "nGRTwG7kj5rCPiAX4",
+      "title": "Dragon Quest: Dai no Daibouken Tachiagare!! Aban no Shito",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 1,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "6LJBjT4RzJaucdmX3",
+      "title": "Dragon Slayer Eiyuu Densetsu: Ouji no Tabidachi",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 1,
+        "dub": 1,
+        "raw": 0
+      }
+    },
+    {
+      "id": "JKbtxdw2cRqqmZgnS",
+      "title": "Dragon Quest: Dai no Daibouken Buchiyabure!! Shinsei 6 Daishougun",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 1,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "pn32RijEHPfuTYt4h",
+      "title": "Dragon Quest Retsuden: Roto no Monshou",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 1,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "xHwk6oo7jaDrMG9to",
+      "title": "Dragon Fist",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 1,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "ugFXPFQW8kvLocZgx",
+      "title": "Yowai 5000-nen no Soushoku Dragon, Iwarenaki Jaryuu Nintei",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 12,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "qSFMEcT4SufEhLZnq",
+      "title": "Doraemon Movie 8: Nobita to Ryuu no Kishi",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 1,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "LTzXFSmQR878MdJaS",
+      "title": "Dragon Ball Specials",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 2,
+        "dub": 0,
+        "raw": 0
+      }
+    },
+    {
+      "id": "XuTNNzF7DfapLFMFJ",
+      "title": "Dragon Ball Super: Super Hero",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 1,
+        "dub": 1,
+        "raw": 0
+      }
+    },
+    {
+      "id": "n4S2spjyTHXHNAMDW",
+      "title": "Shin Ikkitousen",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 3,
+        "dub": 3,
+        "raw": 0
+      }
+    },
+    {
+      "id": "srMRCkMEJA9Rmt7do",
+      "title": "Dragon Ball Z: Atsumare! Goku World",
+      "type": "Show",
+      "availableEpisodes": {
+        "sub": 1,
+        "dub": 0,
+        "raw": 0
+      }
+    }
+  ]
+}
+```
+
+</details>
+
+**Get anime by id:**
+
+```bash
+curl 'https://fastanime.onrender.com/anime/8aM5BBoEGLvjG3MZm'
+```
+
+<details>
+<summary>
+Result
+</summary>
+
+```json
+{
+  "id": "8aM5BBoEGLvjG3MZm",
+  "title": "Sayounara Ryuusei, Konnichiwa Jinsei",
+  "availableEpisodesDetail": {
+    "sub": ["6", "5", "4", "3", "2", "1"],
+    "dub": [],
+    "raw": []
+  },
+  "type": null
+}
+```
+
+</details>
+
+**Get episode streams by translation_type:**
+
+```bash
+curl 'https://fastanime.onrender.com/anime/8aM5BBoEGLvjG3MZm/watch?episode=3&translation_type=sub'
+```
+
+<details>
+<summary>
+Result
+</summary>
+
+```json
+[
+  {
+    "server": "Yt",
+    "episode_title": "Sayounara Ryuusei, Konnichiwa Jinsei; Episode 3",
+    "headers": {
+      "Referer": "https://allanime.day/"
+    },
+    "subtitles": [],
+    "links": [
+      {
+        "link": "",
+        "quality": "1080"
+      }
+    ]
+  },
+  {
+    "server": "sharepoint",
+    "headers": {},
+    "subtitles": [],
+    "episode_title": "Sayounara Ryuusei, Konnichiwa Jinsei; Episode 3",
+    "links": [
+      {
+        "link": "",
+        "mp4": true,
+        "resolutionStr": "Mp4",
+        "src": "",
+        "quality": "1080"
+      }
+    ]
+  },
+  {
+    "server": "gogoanime",
+    "headers": {},
+    "subtitles": [],
+    "episode_title": "Sayounara Ryuusei, Konnichiwa Jinsei; Episode 3",
+    "links": [
+      {
+        "link": "",
+        "hls": true,
+        "mp4": false,
+        "resolutionStr": "hls P",
+        "priority": 3,
+        "quality": "1080"
+      },
+      {
+        "link": "",
+        "hls": true,
+        "mp4": false,
+        "resolutionStr": "HLS1",
+        "priority": 2,
+        "quality": "720"
+      },
+      {
+        "link": "",
+        "hls": true,
+        "resolutionStr": "Alt",
+        "src": "",
+        "priority": 1,
+        "quality": "480"
+      }
+    ]
+  }
+]
+```
+
+</details>
+
+**Get Episode Streams by AniList Id:**
+
+```bash
+curl 'https://fastanime.onrender.com/watch/269?episode=1&translation_type=dub'
+```
+
+<details>
+<summary>
+Results
+  </summary>
+
+```json
+[
+  {
+    "server": "gogoanime",
+    "headers": {},
+    "subtitles": [],
+    "episode_title": "Bleach; Episode 1",
+    "links": [
+      {
+        "link": "",
+        "hls": true,
+        "mp4": false,
+        "resolutionStr": "hls P",
+        "priority": 3,
+        "quality": "1080"
+      },
+      {
+        "link": "",
+        "hls": true,
+        "mp4": false,
+        "resolutionStr": "HLS1",
+        "priority": 2,
+        "quality": "720"
+      },
+      {
+        "link": "",
+        "hls": true,
+        "resolutionStr": "Alt",
+        "src": "",
+        "priority": 1,
+        "quality": "480"
+      }
+    ]
+  },
+  {
+    "server": "Yt",
+    "episode_title": "Bleach; Episode 1",
+    "headers": {
+      "Referer": "https://allanime.day/"
+    },
+    "subtitles": [],
+    "links": [
+      {
+        "link": "",
+        "quality": "1080"
+      }
+    ]
+  },
+  {
+    "server": "wixmp",
+    "headers": {},
+    "subtitles": [],
+    "episode_title": "Bleach; Episode 1",
+    "links": [
+      {
+        "link": "",
+        "hls": true,
+        "resolutionStr": "Hls",
+        "quality": "1080"
+      }
+    ]
+  },
+  {
+    "server": "sharepoint",
+    "headers": {},
+    "subtitles": [],
+    "episode_title": "Bleach; Episode 1",
+    "links": [
+      {
+        "link": "",
+        "mp4": true,
+        "resolutionStr": "Mp4",
+        "src": "",
+        "quality": "1080"
+      }
+    ]
+  }
+]
+```
+
+</details>
 
 ### MPV specific commands
 
@@ -786,11 +1444,10 @@ player = mpv
 
 ## Contributing
 
-We welcome your issues and feature requests. However, due to time constraints, we currently do not plan to add another provider.
+We welcome your issues and feature requests. However, due to time constraints, I currently do not plan to add another provider.
+But if you are willing to add one yourself pr's are welcome.
 
-If you wish to contribute directly, please first open an issue describing your proposed changes so it can be discussed or if you are in a rush for the feature to be merged just open a pr.
-
-If you find an anime title that does not correspond with a provider or is just weird just [edit the data file](https://github.com/Benex254/FastAnime/blob/master/fastanime/Utility/data.py) and open a pr or if you don't want to do that open an issue.
+If you find an anime title that does not correspond with a provider or is just weird just [edit the data file](https://github.com/FastAnime/FastAnime/blob/master/fastanime/Utility/data.py) and open a pr, i will ignore issues 😝.
 
 ## Receiving Support
 
@@ -803,5 +1460,14 @@ For inquiries, join our [Discord Server](https://discord.gg/HBEmAwvbHV).
 </p>
 
 ## Supporting the Project
+More pr's less issues 🙃
+Those who contribute at least five times will be able to make changes to the repo without my review.
 
-Show your support by starring our GitHub repository or [buying us a coffee](https://ko-fi.com/benex254).
+Show your support by starring the GitHub repository or [buying me a coffee](https://ko-fi.com/benex254).
+
+## Disclaimer
+> [!IMPORTANT]
+>
+> This project currently scrapes allanime, hianime, nyaa, yugen and animepahe.
+>  The developer(s) of this application does not have any affiliation with the content providers available, and this application hosts zero content.
+> [DISCLAIMER](https://github.com/Benex254/FastAnime/blob/master/DISCLAIMER.md)

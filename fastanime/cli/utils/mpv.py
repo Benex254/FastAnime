@@ -1,50 +1,76 @@
 import re
+import os
 import shutil
 import subprocess
+import logging
+import time
 
-from fastanime.constants import S_PLATFORM
+from ...constants import S_PLATFORM
+
+logger = logging.getLogger(__name__)
+
+mpv_av_time_pattern = re.compile(r"AV: ([0-9:]*) / ([0-9:]*) \(([0-9]*)%\)")
 
 
 def stream_video(MPV, url, mpv_args, custom_args):
-    process = subprocess.Popen(
-        [MPV, url, *mpv_args, *custom_args],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        text=True,
-    )
-
-    last_time = None
-    av_time_pattern = re.compile(r"AV: ([0-9:]*) / ([0-9:]*) \(([0-9]*)%\)")
     last_time = "0"
     total_time = "0"
+    if os.environ.get("FASTANIME_DISABLE_MPV_POPEN", "False") == "False":
+        process = subprocess.Popen(
+            [
+                MPV,
+                url,
+                *mpv_args,
+                *custom_args,
+                "--no-terminal",
+            ],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            bufsize=1,
+            encoding="utf-8",
+        )
 
-    try:
-        while True:
-            if not process.stderr:
-                continue
-            output = process.stderr.readline()
+        try:
+            while True:
+                if not process.stderr:
+                    time.sleep(0.1)
+                    continue
+                output = process.stderr.readline()
 
-            if output:
-                # Match the timestamp in the output
-                match = av_time_pattern.search(output.strip())
+                if output:
+                    # Match the timestamp in the output
+                    match = mpv_av_time_pattern.search(output.strip())
+                    if match:
+                        current_time = match.group(1)
+                        total_time = match.group(2)
+                        last_time = current_time
+
+                # Check if the process has terminated
+                retcode = process.poll()
+                if retcode is not None:
+                    break
+
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            logger.error(f"An error occurred: {e}")
+        finally:
+            process.terminate()
+            process.wait()
+    else:
+        proc = subprocess.run(
+            [MPV, url, *mpv_args, *custom_args],
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+        )
+        if proc.stdout:
+            for line in reversed(proc.stdout.split("\n")):
+                match = mpv_av_time_pattern.search(line.strip())
                 if match:
-                    current_time = match.group(1)
+                    last_time = match.group(1)
                     total_time = match.group(2)
-                    match.group(3)
-                    last_time = current_time
-                    # print(f"Current stream time: {current_time}, Total time: {total_time}, Progress: {percentage}%")
-
-            # Check if the process has terminated
-            retcode = process.poll()
-            if retcode is not None:
-                print("Finshed at: ", last_time)
-                break
-
-    except Exception as e:
-        print(f"An error occurred: {e}")
-    finally:
-        process.terminate()
-
+                    break
     return last_time, total_time
 
 
@@ -74,7 +100,7 @@ def run_mpv(
             time.sleep(120)
             return "0", "0"
         cmd = [WEBTORRENT_CLI, link, f"--{player}"]
-        subprocess.run(cmd)
+        subprocess.run(cmd, encoding="utf-8")
         return "0", "0"
     if player == "vlc":
         VLC = shutil.which("vlc")
@@ -125,7 +151,7 @@ def run_mpv(
             if title:
                 args.append("--video-title")
                 args.append(title)
-            subprocess.run(args)
+            subprocess.run(args, encoding="utf-8")
             return "0", "0"
     else:
         # Determine if mpv is available
@@ -184,13 +210,3 @@ def run_mpv(
                 mpv_args.append(f"--ytdl-format={ytdl_format}")
             stop_time, total_time = stream_video(MPV, link, mpv_args, custom_args)
             return stop_time, total_time
-
-
-# Example usage
-if __name__ == "__main__":
-    run_mpv(
-        "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-        "Example Video",
-        "--fullscreen",
-        "--volume=50",
-    )

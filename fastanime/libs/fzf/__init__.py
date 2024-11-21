@@ -41,8 +41,8 @@ class FZF:
         stdout: [TODO:attribute]
     """
 
-    if not os.getenv("FZF_DEFAULT_OPTS"):
-        os.environ["FZF_DEFAULT_OPTS"] = FZF_DEFAULT_OPTS
+    # if not os.getenv("FZF_DEFAULT_OPTS"):
+    #     os.environ["FZF_DEFAULT_OPTS"] = FZF_DEFAULT_OPTS
     FZF_EXECUTABLE = shutil.which("fzf")
     default_options = [
         "--cycle",
@@ -157,10 +157,18 @@ class FZF:
         Returns:
             [TODO:return]
         """
+        _HEADER_COLOR = os.environ.get("FASTANIME_HEADER_COLOR", "215,0,95").split(",")
+        header = os.environ.get("FASTANIME_HEADER_ASCII_ART", HEADER)
+        header = "\n".join(
+            [
+                f"\033[38;2;{_HEADER_COLOR[0]};{_HEADER_COLOR[1]};{_HEADER_COLOR[2]};m{line}\033[0m"
+                for line in header.split("\n")
+            ]
+        )
         _commands = [
             *self.default_options,
             "--header",
-            HEADER,
+            header,
             "--header-first",
             "--prompt",
             f"{prompt.title()}: ",
@@ -182,6 +190,7 @@ class FZF:
                 print(info)
                 input("Enter to try again")
                 return self.run(fzf_input, prompt, header, preview, expect, validator)
+        # os.environ["FZF_DEFAULT_OPTS"] = ""
         return result
 
 

@@ -11,6 +11,7 @@ class RofiApi:
     ROFI_EXECUTABLE = which("rofi")
 
     rofi_theme = ""
+    rofi_theme_preview = ""
     rofi_theme_confirm = ""
     rofi_theme_input = ""
 
@@ -21,8 +22,8 @@ class RofiApi:
             raise Exception("Rofi not found")
 
         args = [self.ROFI_EXECUTABLE]
-        if self.rofi_theme:
-            args.extend(["-no-config", "-theme", self.rofi_theme])
+        if self.rofi_theme_preview:
+            args.extend(["-no-config", "-theme", self.rofi_theme_preview])
         args.extend(["-p", f"{prompt_text.title()}", "-i", "-show-icons", "-dmenu"])
         result = subprocess.run(
             args,

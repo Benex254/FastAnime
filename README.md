@@ -336,7 +336,7 @@ fastanime --manga search -t <manga-title>
 
 #### The anilist command :fire: :fire: :fire:
 
-Stream, browse, and discover anime efficiently from the terminal using the [AniList API](https://github.com/AniList/ApiV2-GraphQL-Docs).
+Uses the [AniList API](https://github.com/AniList/ApiV2-GraphQL-Docs) to create a terminal anilist client which is then intergrated with the scraping capabilities of the project.
 
 ##### Running without any subcommand
 

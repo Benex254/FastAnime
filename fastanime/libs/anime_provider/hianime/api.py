@@ -3,6 +3,7 @@ import re
 from html.parser import HTMLParser
 from itertools import cycle
 from urllib.parse import quote_plus
+from .extractors import MegaCloud
 
 from yt_dlp.utils import (
     clean_html,
@@ -195,11 +196,21 @@ class HiAnimeApi(AnimeProvider):
                 def _get_server(server_name, server_html):
                     # keys: [ data-type: translation_type, data-id: embed_id, data-server-id: server_id ]
                     servers_info = extract_attributes(server_html)
-                    embed_url = f"https://hianime.to/ajax/v2/episode/sources?id={servers_info['data-id']}"
+                    server_id = servers_info["data-id"]
+                    embed_url = (
+                        f"https://hianime.to/ajax/v2/episode/sources?id={server_id}"
+                    )
                     embed_response = self.session.get(embed_url)
                     if embed_response.ok:
                         embed_json = embed_response.json()
                         raw_link_to_streams = embed_json["link"]
+                        print(server_name)
+                        match server_name:
+                            case "HD2":
+                                o = MegaCloud().extract(raw_link_to_streams)
+                                print(o)
+                                input()
+
                         match = LINK_TO_STREAMS_REGEX.match(raw_link_to_streams)
                         if not match:
                             return
@@ -214,6 +225,8 @@ class HiAnimeApi(AnimeProvider):
                             juicy_streams_json: "HiAnimeStream" = (
                                 link_to_streams_response.json()
                             )
+                            return juicy_streams_json
+
                             # TODO: Hianime decided to fucking encrypt shit
                             # so got to fix it later
                             return {

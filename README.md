@@ -117,7 +117,7 @@ If you have any difficulty consult for help on the [discord channel](https://dis
 ![Static Badge](https://img.shields.io/badge/NixOs-black?style=flat&logo=nixos)
 
 ```bash
-nix profile install github:Benex254/fastanime
+nix profile install github:Benexl/fastanime
 ```
 
 ### Installation using your favourite package manager
@@ -195,7 +195,7 @@ Requirements:
 
 To build from the source, follow these steps:
 
-1. Clone the repository: `git clone https://github.com/FastAnime/FastAnime.git --depth 1`
+1. Clone the repository: `git clone https://github.com/Benexl/FastAnime.git --depth 1`
 2. Navigate into the folder: `cd FastAnime`
 3. Then build and Install the app:
 

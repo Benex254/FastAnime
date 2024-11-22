@@ -306,6 +306,7 @@ class AniListApi:
 
     def search(
         self,
+        max_results=50,
         query: str | None = None,
         sort: str | None = None,
         genre_in: list[str] | None = None,

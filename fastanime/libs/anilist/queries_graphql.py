@@ -281,6 +281,7 @@ query ($userId: Int, $status: MediaListStatus, $type: MediaType) {
 
 
 optional_variables = "\
+$max_results:Int,\
 $page:Int,\
 $sort:[MediaSort],\
 $id_in:[Int],\
@@ -310,7 +311,7 @@ $on_list:Boolean\
 search_query = (
     """
 query($query:String,%s){
-  Page(perPage: 50, page: $page) {
+  Page(perPage: $max_results, page: $page) {
     pageInfo {
       total
       currentPage

@@ -21,6 +21,8 @@ commands = {
     "planning": "planning.planning",
     "notifier": "notifier.notifier",
     "stats": "stats.stats",
+    "download": "download.download",
+    "downloads": "downloads.downloads",
 }
 
 

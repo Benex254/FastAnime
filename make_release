@@ -5,7 +5,12 @@ VERSION=$1
 [ "$VERSION" = "current" ] && fastanime --version && exit 0
 sed -i "s/^version.*/version = \"$VERSION\"/" "$CLI_DIR/pyproject.toml" &&
   sed -i "s/__version__.*/__version__ = \"v$VERSION\"/" "$CLI_DIR/fastanime/__init__.py" &&
-  git stage "$CLI_DIR/pyproject.toml" "$CLI_DIR/fastanime/__init__.py" &&
+  sed -i "s/version = .*/version = \"$VERSION\";/" "$CLI_DIR/flake.nix" &&
+  git stage "$CLI_DIR/pyproject.toml" "$CLI_DIR/fastanime/__init__.py" "$CLI_DIR/flake.nix" &&
   git commit -m "chore: bump version (v$VERSION)" &&
+  nix flake lock &&
+  uv lock &&
+  git stage "$CLI_DIR/flake.lock" "$CLI_DIR/uv.lock" &&
+  git commit -m "chore: update lock files" &&
   git push &&
   gh release create "v$VERSION"

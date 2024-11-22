@@ -80,15 +80,13 @@ commands = {
   fastanime --log-file anilist notifier
 """,
 )
+@click.option("--resume", is_flag=True, help="Resume from the last session")
 @click.pass_context
-def anilist(ctx: click.Context):
+def anilist(ctx: click.Context, resume: bool):
     from typing import TYPE_CHECKING
 
     from ....anilist import AniList
     from ....AnimeProvider import AnimeProvider
-    from ...interfaces.anilist_interfaces import (
-        fastanime_main_menu as anilist_interface,
-    )
 
     if TYPE_CHECKING:
         from ...config import Config
@@ -98,4 +96,33 @@ def anilist(ctx: click.Context):
         AniList.update_login_info(user, user["token"])
     if ctx.invoked_subcommand is None:
         fastanime_runtime_state = FastAnimeRuntimeState()
-        anilist_interface(ctx.obj, fastanime_runtime_state)
+        if resume:
+            from ...interfaces.anilist_interfaces import (
+                anime_provider_search_results_menu,
+            )
+
+            if not config.user_data["recent_anime"]:
+                click.echo("No recent anime found", err=True, color=True)
+                return
+            fastanime_runtime_state.anilist_results_data = {
+                "data": {"Page": {"media": config.user_data["recent_anime"]}}
+            }
+
+            fastanime_runtime_state.selected_anime_anilist = config.user_data[
+                "recent_anime"
+            ][0]
+            fastanime_runtime_state.selected_anime_id_anilist = config.user_data[
+                "recent_anime"
+            ][0]["id"]
+            fastanime_runtime_state.selected_anime_title_anilist = (
+                config.user_data["recent_anime"][0]["title"]["romaji"]
+                or config.user_data["recent_anime"][0]["title"]["english"]
+            )
+            anime_provider_search_results_menu(config, fastanime_runtime_state)
+
+        else:
+            from ...interfaces.anilist_interfaces import (
+                fastanime_main_menu as anilist_interface,
+            )
+
+            anilist_interface(ctx.obj, fastanime_runtime_state)

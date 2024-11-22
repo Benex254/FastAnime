@@ -51,6 +51,7 @@ class Config(object):
         "image_previews": "True" if S_PLATFORM != "win32" else "False",
         "normalize_titles": "True",
         "notification_duration": "2",
+        "max_cache_lifetime": "03:00:00",
         "player": "mpv",
         "preferred_history": "local",
         "preferred_language": "english",
@@ -127,6 +128,14 @@ class Config(object):
         )
         self.notification_duration = self.configparser.getint(
             "general", "notification_duration"
+        )
+        max_cache_lifetime = list(
+            map(int, self.configparser.get("general", "max_cache_lifetime").split(":"))
+        )
+        self.max_cache_lifetime = (
+            max_cache_lifetime[0] * 86400
+            + max_cache_lifetime[1] * 3600
+            + max_cache_lifetime[2] * 60
         )
         self.player = self.configparser.get("stream", "player")
         self.preferred_history = self.configparser.get("stream", "preferred_history")
@@ -395,6 +404,11 @@ force_forward_tracking = {self.force_forward_tracking}
 # and instead can be gotten  locally
 # from the cached_requests_db
 cache_requests = {self.cache_requests}
+
+# the max lifetime for a cached request <days:hours:minutes>
+# defaults to 3days = 03:00:00
+# this is the time after which a cached request will be deleted (technically : )
+max_cache_lifetime = {self.max_cache_lifetime}
 
 # whether to use a persistent store (basically a sqlitedb) for storing some data the provider requires
 # to enable a seamless experience [true/false]

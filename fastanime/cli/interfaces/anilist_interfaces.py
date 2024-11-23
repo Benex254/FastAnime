@@ -1421,7 +1421,7 @@ def anilist_results_menu(
         anime_data[title] = anime
 
     # prompt for the anime of choice
-    choices = [*anime_data.keys(), "Back"]
+    choices = [*anime_data.keys(), "Next Page", "Previous Page", "Back"]
     if config.use_fzf:
         if config.preview:
             from .utils import get_fzf_anime_preview
@@ -1460,6 +1460,43 @@ def anilist_results_menu(
     if selected_anime_title == "Back":
         fastanime_main_menu(config, fastanime_runtime_state)
         return
+    if selected_anime_title == "Next Page":
+        fastanime_runtime_state.current_page = page = (
+            fastanime_runtime_state.current_page + 1
+        )
+        success, data = fastanime_runtime_state.current_data_loader(
+            config=config, page=page
+        )
+        if success:
+            fastanime_runtime_state.anilist_results_data = data
+
+            anilist_results_menu(config, fastanime_runtime_state)
+        else:
+            print("Failed to get next page")
+            print(data)
+            input("Enter to continue...")
+            anilist_results_menu(config, fastanime_runtime_state)
+
+        return
+    if selected_anime_title == "Previous Page":
+        fastanime_runtime_state.current_page = page = (
+            (fastanime_runtime_state.current_page - 1)
+            if fastanime_runtime_state.current_page > 1
+            else 1
+        )
+        success, data = fastanime_runtime_state.current_data_loader(
+            config=config, page=page
+        )
+        if success:
+            fastanime_runtime_state.anilist_results_data = data
+
+            anilist_results_menu(config, fastanime_runtime_state)
+        else:
+            print("Failed to get previous page")
+            print(data)
+            input("Enter to continue...")
+            anilist_results_menu(config, fastanime_runtime_state)
+        return
 
     selected_anime: "AnilistBaseMediaDataSchema" = anime_data[selected_anime_title]
     fastanime_runtime_state.selected_anime_anilist = selected_anime
@@ -1475,7 +1512,10 @@ def anilist_results_menu(
 # ---- FASTANIME MAIN MENU ----
 #
 def handle_animelist(
-    config: "Config", fastanime_runtime_state: "FastAnimeRuntimeState", list_type: str
+    config: "Config",
+    fastanime_runtime_state: "FastAnimeRuntimeState",
+    list_type: str,
+    page=1,
 ):
     """A helper function that handles user media lists
 
@@ -1514,7 +1554,7 @@ def handle_animelist(
             return
 
     # get the media list
-    anime_list = AniList.get_anime_list(status)
+    anime_list = AniList.get_anime_list(status, page=page)
     # handle null
     if not anime_list:
         print("Sth went wrong", anime_list)
@@ -1545,6 +1585,56 @@ def handle_animelist(
     return anime_list
 
 
+def _anilist_search(config: "Config", page=1):
+    """A function that enables seaching of an anime
+
+    Returns:
+        [TODO:return]
+    """
+    # TODO: Add filters and other search features
+    if config.use_rofi:
+        search_term = str(Rofi.ask("Search for"))
+    else:
+        search_term = Prompt.ask("[cyan]Search for[/]")
+
+    return AniList.search(query=search_term, page=page)
+
+
+def _anilist_random(config: "Config", page=1):
+    """A function that generates random anilist ids enabling random discovery of anime
+
+    Returns:
+        [TODO:return]
+    """
+    random_anime = range(1, 15000)
+    random_anime = random.sample(random_anime, k=50)
+
+    return AniList.search(id_in=list(random_anime))
+
+
+def _watch_history(config: "Config", page=1):
+    """Function that lets you see all the anime that has locally been saved to your watch history
+
+    Returns:
+        [TODO:return]
+    """
+    watch_history = list(map(int, config.watch_history.keys()))
+    return AniList.search(id_in=watch_history, sort="TRENDING_DESC", page=page)
+
+
+def _recent(config: "Config", page=1):
+    return (
+        True,
+        {"data": {"Page": {"media": config.user_data["recent_anime"]}}},
+    )
+
+
+# WARNING: Will probably be depracated
+def _anime_list(config: "Config", page=1):
+    anime_list = config.anime_list
+    return AniList.search(id_in=anime_list, pages=page)
+
+
 def fastanime_main_menu(
     config: "Config", fastanime_runtime_state: "FastAnimeRuntimeState"
 ):
@@ -1555,52 +1645,7 @@ def fastanime_main_menu(
         fastanime_runtime_state: A query dict used to store data during navigation of the ui # initially this was very messy
     """
 
-    def _anilist_search():
-        """A function that enables seaching of an anime
-
-        Returns:
-            [TODO:return]
-        """
-        # TODO: Add filters and other search features
-        if config.use_rofi:
-            search_term = str(Rofi.ask("Search for"))
-        else:
-            search_term = Prompt.ask("[cyan]Search for[/]")
-
-        return AniList.search(query=search_term)
-
-    def _anilist_random():
-        """A function that generates random anilist ids enabling random discovery of anime
-
-        Returns:
-            [TODO:return]
-        """
-        random_anime = range(1, 15000)
-        random_anime = random.sample(random_anime, k=50)
-
-        return AniList.search(id_in=list(random_anime))
-
-    def _watch_history():
-        """Function that lets you see all the anime that has locally been saved to your watch history
-
-        Returns:
-            [TODO:return]
-        """
-        watch_history = list(map(int, config.watch_history.keys()))
-        return AniList.search(id_in=watch_history, sort="TRENDING_DESC")
-
-    def _recent():
-        return (
-            True,
-            {"data": {"Page": {"media": config.user_data["recent_anime"]}}},
-        )
-
-    # WARNING: Will probably be depracated
-    def _anime_list():
-        anime_list = config.anime_list
-        return AniList.search(id_in=anime_list)
-
-    def _edit_config():
+    def _edit_config(*args, **kwargs):
         """Helper function to edit your config when the ui is still running"""
 
         from click import edit
@@ -1625,23 +1670,35 @@ def fastanime_main_menu(
     options = {
         f"{'🔥 ' if icons else ''}Trending": AniList.get_trending,
         f"{'🎞️ ' if icons else ''}Recent": _recent,
-        f"{'📺 ' if icons else ''}Watching": lambda media_list_type="Watching": handle_animelist(
-            config, fastanime_runtime_state, media_list_type
+        f"{'📺 ' if icons else ''}Watching": lambda config,
+        media_list_type="Watching",
+        page=1: handle_animelist(
+            config, fastanime_runtime_state, media_list_type, page=page
         ),
-        f"{'⏸  ' if icons else ''}Paused": lambda media_list_type="Paused": handle_animelist(
-            config, fastanime_runtime_state, media_list_type
+        f"{'⏸  ' if icons else ''}Paused": lambda config,
+        media_list_type="Paused",
+        page=1: handle_animelist(
+            config, fastanime_runtime_state, media_list_type, page=page
         ),
-        f"{'🚮 ' if icons else ''}Dropped": lambda media_list_type="Dropped": handle_animelist(
-            config, fastanime_runtime_state, media_list_type
+        f"{'🚮 ' if icons else ''}Dropped": lambda config,
+        media_list_type="Dropped",
+        page=1: handle_animelist(
+            config, fastanime_runtime_state, media_list_type, page=page
         ),
-        f"{'📑 ' if icons else ''}Planned": lambda media_list_type="Planned": handle_animelist(
-            config, fastanime_runtime_state, media_list_type
+        f"{'📑 ' if icons else ''}Planned": lambda config,
+        media_list_type="Planned",
+        page=1: handle_animelist(
+            config, fastanime_runtime_state, media_list_type, page=page
         ),
-        f"{'✅ ' if icons else ''}Completed": lambda media_list_type="Completed": handle_animelist(
-            config, fastanime_runtime_state, media_list_type
+        f"{'✅ ' if icons else ''}Completed": lambda config,
+        media_list_type="Completed",
+        page=1: handle_animelist(
+            config, fastanime_runtime_state, media_list_type, page=page
         ),
-        f"{'🔁 ' if icons else ''}Rewatching": lambda media_list_type="Repeating": handle_animelist(
-            config, fastanime_runtime_state, media_list_type
+        f"{'🔁 ' if icons else ''}Rewatching": lambda config,
+        media_list_type="Repeating",
+        page=1: handle_animelist(
+            config, fastanime_runtime_state, media_list_type, page=page
         ),
         f"{'🔔 ' if icons else ''}Recently Updated Anime": AniList.get_most_recently_updated,
         f"{'🔎 ' if icons else ''}Search": _anilist_search,
@@ -1670,7 +1727,9 @@ def fastanime_main_menu(
             choices,
             "Select Action",
         )
-    anilist_data = options[action]()
+    fastanime_runtime_state.current_data_loader = options[action]
+    fastanime_runtime_state.current_page = 1
+    anilist_data = options[action](config=config)
     # anilist data is a (bool,data)
     # the bool indicated success
     if anilist_data[0]:

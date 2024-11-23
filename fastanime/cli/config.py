@@ -129,9 +129,10 @@ class Config(object):
         self.notification_duration = self.configparser.getint(
             "general", "notification_duration"
         )
-        max_cache_lifetime = list(
-            map(int, self.configparser.get("general", "max_cache_lifetime").split(":"))
+        self._max_cache_lifetime = self.configparser.get(
+            "general", "max_cache_lifetime"
         )
+        max_cache_lifetime = list(map(int, self._max_cache_lifetime.split(":")))
         self.max_cache_lifetime = (
             max_cache_lifetime[0] * 86400
             + max_cache_lifetime[1] * 3600
@@ -408,7 +409,7 @@ cache_requests = {self.cache_requests}
 # the max lifetime for a cached request <days:hours:minutes>
 # defaults to 3days = 03:00:00
 # this is the time after which a cached request will be deleted (technically : )
-max_cache_lifetime = {self.max_cache_lifetime}
+max_cache_lifetime = {self._max_cache_lifetime}
 
 # whether to use a persistent store (basically a sqlitedb) for storing some data the provider requires
 # to enable a seamless experience [true/false]

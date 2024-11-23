@@ -110,6 +110,16 @@ from .data import (
     default=True,
 )
 @click.option(
+    "--force-ffmpeg",
+    is_flag=True,
+    help="Force the use of FFmpeg for downloading (supports large variety of streams but slower)",
+)
+@click.option(
+    "--hls-use-mpegts",
+    is_flag=True,
+    help="Use mpegts for hls streams (useful for some streams: see Docs) (this option forces --force-ffmpeg to be True)",
+)
+@click.option(
     "--max-results", "-M", type=int, help="The maximum number of results to show"
 )
 @click.pass_obj
@@ -132,10 +142,14 @@ def download(
     clean,
     wait_time,
     prompt,
+    force_ffmpeg,
+    hls_use_mpegts,
     max_results,
 ):
     from ....anilist import AniList
     from rich import print
+
+    force_ffmpeg |= hls_use_mpegts
 
     success, anilist_search_results = AniList.search(
         query=title,
@@ -367,6 +381,8 @@ def download(
                         merge=merge,
                         clean=clean,
                         prompt=prompt,
+                        force_ffmpeg=force_ffmpeg,
+                        hls_use_mpegts=hls_use_mpegts,
                     )
                 except Exception as e:
                     print(e)

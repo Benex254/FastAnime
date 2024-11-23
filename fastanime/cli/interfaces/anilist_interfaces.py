@@ -1511,7 +1511,7 @@ def anilist_results_menu(
 #
 # ---- FASTANIME MAIN MENU ----
 #
-def handle_animelist(
+def _handle_animelist(
     config: "Config",
     fastanime_runtime_state: "FastAnimeRuntimeState",
     list_type: str,
@@ -1548,7 +1548,7 @@ def handle_animelist(
             status = "DROPPED"
         case "Paused":
             status = "PAUSED"
-        case "Repeating":
+        case "Rewatching":
             status = "REPEATING"
         case _:
             return
@@ -1672,32 +1672,32 @@ def fastanime_main_menu(
         f"{'🎞️ ' if icons else ''}Recent": _recent,
         f"{'📺 ' if icons else ''}Watching": lambda config,
         media_list_type="Watching",
-        page=1: handle_animelist(
+        page=1: _handle_animelist(
             config, fastanime_runtime_state, media_list_type, page=page
         ),
         f"{'⏸  ' if icons else ''}Paused": lambda config,
         media_list_type="Paused",
-        page=1: handle_animelist(
+        page=1: _handle_animelist(
             config, fastanime_runtime_state, media_list_type, page=page
         ),
         f"{'🚮 ' if icons else ''}Dropped": lambda config,
         media_list_type="Dropped",
-        page=1: handle_animelist(
+        page=1: _handle_animelist(
             config, fastanime_runtime_state, media_list_type, page=page
         ),
         f"{'📑 ' if icons else ''}Planned": lambda config,
         media_list_type="Planned",
-        page=1: handle_animelist(
+        page=1: _handle_animelist(
             config, fastanime_runtime_state, media_list_type, page=page
         ),
         f"{'✅ ' if icons else ''}Completed": lambda config,
         media_list_type="Completed",
-        page=1: handle_animelist(
+        page=1: _handle_animelist(
             config, fastanime_runtime_state, media_list_type, page=page
         ),
         f"{'🔁 ' if icons else ''}Rewatching": lambda config,
-        media_list_type="Repeating",
-        page=1: handle_animelist(
+        media_list_type="Rewatching",
+        page=1: _handle_animelist(
             config, fastanime_runtime_state, media_list_type, page=page
         ),
         f"{'🔔 ' if icons else ''}Recently Updated Anime": AniList.get_most_recently_updated,

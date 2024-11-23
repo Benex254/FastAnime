@@ -42,5 +42,12 @@ def rewatching(config: "Config", dump_json):
         from ...utils.tools import FastAnimeRuntimeState
 
         fastanime_runtime_state = FastAnimeRuntimeState()
+
+        fastanime_runtime_state.current_page = 1
+        fastanime_runtime_state.current_data_loader = (
+            lambda config, **kwargs: anilist_interfaces._handle_animelist(
+                config, fastanime_runtime_state, "Rewatching", **kwargs
+            )
+        )
         fastanime_runtime_state.anilist_results_data = anime_list[1]
         anilist_interfaces.anilist_results_menu(config, fastanime_runtime_state)

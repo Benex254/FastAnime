@@ -111,6 +111,22 @@ def search(
             from ...utils.tools import FastAnimeRuntimeState
 
             fastanime_runtime_state = FastAnimeRuntimeState()
+
+            fastanime_runtime_state.current_page = 1
+            fastanime_runtime_state.current_data_loader = (
+                lambda page=1, **kwargs: AniList.search(
+                    query=title,
+                    sort=sort,
+                    status_in=list(status),
+                    genre_in=list(genres),
+                    season=season,
+                    tag_in=list(tags),
+                    seasonYear=year,
+                    format_in=list(media_format),
+                    on_list=on_list,
+                    page=page,
+                )
+            )
             fastanime_runtime_state.anilist_results_data = search_results
             anilist_results_menu(config, fastanime_runtime_state)
     else:

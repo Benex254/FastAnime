@@ -114,6 +114,16 @@ if TYPE_CHECKING:
     help="Whether to prompt for anything instead just do the best thing",
     default=True,
 )
+@click.option(
+    "--force-ffmpeg",
+    is_flag=True,
+    help="Force the use of FFmpeg for downloading (supports large variety of streams but slower)",
+)
+@click.option(
+    "--hls-use-mpegts",
+    is_flag=True,
+    help="Use mpegts for hls streams (useful for some streams: see Docs) (this option forces --force-ffmpeg to be True)",
+)
 @click.pass_obj
 def download(
     config: "Config",
@@ -127,6 +137,8 @@ def download(
     clean,
     wait_time,
     prompt,
+    force_ffmpeg,
+    hls_use_mpegts,
 ):
     import time
 
@@ -145,6 +157,8 @@ def download(
         fuzzy_inquirer,
         move_preferred_subtitle_lang_to_top,
     )
+
+    force_ffmpeg |= hls_use_mpegts
 
     anime_provider = AnimeProvider(config.provider)
     anilist_anime_info = None
@@ -185,6 +199,8 @@ def download(
                 clean,
                 wait_time,
                 prompt,
+                force_ffmpeg,
+                hls_use_mpegts,
             )
             return
         search_results = search_results["results"]
@@ -236,6 +252,8 @@ def download(
                 clean,
                 wait_time,
                 prompt,
+                force_ffmpeg,
+                hls_use_mpegts,
             )
             return
 
@@ -369,6 +387,8 @@ def download(
                     merge=merge,
                     clean=clean,
                     prompt=prompt,
+                    force_ffmpeg=force_ffmpeg,
+                    hls_use_mpegts=hls_use_mpegts,
                 )
             except Exception as e:
                 print(e)

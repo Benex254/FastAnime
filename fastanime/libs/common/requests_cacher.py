@@ -80,7 +80,8 @@ class CachedRequestsSession(requests.Session):
                     response_headers TEXT, 
                     data BLOB,
                     redirection_policy INT,
-                    cache_expiry INTEGER
+                    cache_expiry INTEGER,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )"""
             )
 
@@ -117,6 +118,8 @@ class CachedRequestsSession(requests.Session):
                     url = ? 
                     AND redirection_policy = ? 
                     AND cache_expiry > ?
+                ORDER BY created_at DESC
+                LIMIT 1
                 """,
                 (url, redirection_policy, int(time.time())),
             )
@@ -162,8 +165,15 @@ class CachedRequestsSession(requests.Session):
                 logger.debug("Caching the current request")
                 cursor.execute(
                     f"""
-                    INSERT INTO {self.table_name} 
-                    VALUES (?, ?, ?, ?, ?, ?, ?)
+                    INSERT INTO {self.table_name} (
+                        url, 
+                        status_code, 
+                        request_headers, 
+                        response_headers, 
+                        data, 
+                        redirection_policy, 
+                        cache_expiry
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?)
                     """,
                     (
                         url,

@@ -19,7 +19,10 @@ class AnimeProvider:
             from ..common.requests_cacher import CachedRequestsSession
 
             self.session = CachedRequestsSession(
-                os.path.join(APP_CACHE_DIR, "cached_requests.db")
+                os.path.join(APP_CACHE_DIR, "cached_requests.db"),
+                max_lifetime=int(
+                    os.environ.get("FASTANIME_MAX_CACHE_LIFETIME", 259200)
+                ),
             )
         else:
             self.session = requests.session()

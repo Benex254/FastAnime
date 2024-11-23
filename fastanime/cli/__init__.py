@@ -226,13 +226,18 @@ def run_cli(
     from .config import Config
 
     ctx.obj = Config()
-    if ctx.obj.check_for_updates and ctx.invoked_subcommand != "completions":
+    # TODO: only check once per week or day
+    # so as to not hit api limit
+    # for now i have disabled it
+    if ctx.obj.check_for_updates and ctx.invoked_subcommand != "completions" and False:
         from .app_updater import check_for_updates
+        import sys
 
-        print("Checking for updates...")
-        print("So you can enjoy the latest features and bug fixes")
+        print("Checking for updates...", file=sys.stderr)
+        print("So you can enjoy the latest features and bug fixes", file=sys.stderr)
         print(
-            "You can disable this by setting check_for_updates to False in the config"
+            "You can disable this by setting check_for_updates to False in the config",
+            file=sys.stderr,
         )
         is_latest, github_release_data = check_for_updates()
         if not is_latest:

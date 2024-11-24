@@ -1,10 +1,15 @@
-import requests
+import hashlib
 import time
 import re
 import json
 from typing import List, Dict
 from Crypto.Cipher import AES
-from Crypto.Hash import MD5
+from base64 import b64decode
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from ...common.requests_cacher import CachedRequestsSession
+
 
 # Constants
 megacloud = {
@@ -21,6 +26,9 @@ class HiAnimeError(Exception):
 
 
 class MegaCloud:
+    def __init__(self, session):
+        self.session: "CachedRequestsSession" = session
+
     def extract(self, video_url: str) -> Dict:
         try:
             extracted_data = {
@@ -31,17 +39,14 @@ class MegaCloud:
             }
 
             video_id = video_url.split("/")[-1].split("?")[0]
-            response = requests.get(
+            response = self.session.get(
                 megacloud["sources"] + video_id,
                 headers={
                     "Accept": "*/*",
                     "X-Requested-With": "XMLHttpRequest",
-                    "User-Agent": (
-                        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-                        "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36"
-                    ),
                     "Referer": video_url,
                 },
+                fresh=1,  # pyright: ignore
             )
             srcs_data = response.json()
 
@@ -66,7 +71,7 @@ class MegaCloud:
                 return extracted_data
 
             # Fetch decryption script
-            script_response = requests.get(
+            script_response = self.session.get(
                 megacloud["script"] + str(int(time.time() * 1000))
             )
             script_text = script_response.text
@@ -121,7 +126,7 @@ class MegaCloud:
 
     def get_secret(
         self, encrypted_string: str, values: List[List[int]]
-    ) -> Dict[str, str]:
+    ) -> tuple[str, str]:
         secret = []
         encrypted_source_array = list(encrypted_string)
         current_index = 0
@@ -133,38 +138,49 @@ class MegaCloud:
             encrypted_source_array[start:end] = [""] * length
             current_index += length
 
-        encrypted_source = "".join(encrypted_source_array).replace("\x00", "")
-        return {"secret": "".join(secret), "encrypted_source": encrypted_source}
+        encrypted_source = "".join(encrypted_source_array)  # .replace("\x00", "")
+        return ("".join(secret), encrypted_source)
 
     def decrypt(self, encrypted: str, key_or_secret: str, maybe_iv: str = "") -> str:
         if maybe_iv:
-            key, iv, contents = key_or_secret.encode(), maybe_iv.encode(), encrypted
+            key = key_or_secret.encode()
+            iv = maybe_iv.encode()
+            contents = encrypted
         else:
-            # Handle OpenSSL key derivation
-            print(encrypted)
-            input()
-            cypher = bytes.fromhex(encrypted)
+            # Decode the Base64 string
+            cypher = b64decode(encrypted)
+
+            # Extract the salt from the cypher text
             salt = cypher[8:16]
+
+            # Combine the key_or_secret with the salt
             password = key_or_secret.encode() + salt
 
+            # Generate MD5 hashes
             md5_hashes = []
+            digest = password
             for _ in range(3):
-                md5 = MD5.new()
-                md5.update(password)
-                md5_hash = md5.digest()
-                md5_hashes.append(md5_hash)
-                password = md5_hash + password
+                md5 = hashlib.md5()
+                md5.update(digest)
+                md5_hashes.append(md5.digest())
+                digest = md5_hashes[-1] + password
 
+            # Derive the key and IV
             key = md5_hashes[0] + md5_hashes[1]
             iv = md5_hashes[2]
+
+            # Extract the encrypted contents
             contents = cypher[16:]
 
-        cipher = AES.new(key, AES.MODE_CBC, iv)
-        decrypted = cipher.decrypt(contents)
+        # Initialize the AES decipher
+        decipher = AES.new(key, AES.MODE_CBC, iv)
 
-        # Remove padding
-        pad_len = decrypted[-1]
-        return decrypted[:-pad_len].decode("utf-8")
+        # Decrypt and decode
+        decrypted = decipher.decrypt(contents).decode("utf-8")  # pyright: ignore
+
+        # Remove any padding (PKCS#7)
+        pad = ord(decrypted[-1])
+        return decrypted[:-pad]
 
     def matching_key(self, value: str, script: str) -> str:
         match = re.search(rf",{value}=((?:0x)?[0-9a-fA-F]+)", script)

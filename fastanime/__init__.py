@@ -9,7 +9,7 @@ if sys.version_info < (3, 10):
 __version__ = "v2.8.3"
 
 APP_NAME = "FastAnime"
-AUTHOR = "Benex254"
+AUTHOR = "Benexl"
 GIT_REPO = "github.com"
 REPO = f"{GIT_REPO}/{AUTHOR}/{APP_NAME}"
 

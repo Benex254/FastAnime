@@ -480,7 +480,7 @@ auto_next = {self.auto_next}
 # But 99% of the time will be accurate
 # if this happens just turn off auto_select in the menus or from the commandline 
 # and manually select the correct anime title
-# edit this file <https://github.com/Benex254/FastAnime/blob/master/fastanime/Utility/data.py>
+# edit this file <https://github.com/Benexl/FastAnime/blob/master/fastanime/Utility/data.py>
 # and to the dictionary of the provider
 # the provider title (key) and their corresponding anilist names (value)
 # and then please open a pr 
@@ -552,7 +552,7 @@ player = {self.player}
 
 #
 # HOPE YOU ENJOY FASTANIME AND BE SURE TO STAR THE PROJECT ON GITHUB
-# https://github.com/Benex254/FastAnime
+# https://github.com/Benexl/FastAnime
 #
 # Also join the discord server
 # where the anime tech community lives :)

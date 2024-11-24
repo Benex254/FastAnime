@@ -29,8 +29,8 @@
     <b>My Rice</b>
   </summary>
 
-  **Anilist results menu:**
-  ![image](https://github.com/user-attachments/assets/240023a7-7e4e-47dd-80ff-017d65081ee1)
+**Anilist results menu:**
+![image](https://github.com/user-attachments/assets/240023a7-7e4e-47dd-80ff-017d65081ee1)
 
 **Episodes menu preview:**
 ![image](https://github.com/user-attachments/assets/580f86ef-326f-4ab3-9bd8-c1cb312fbfa6)
@@ -40,7 +40,6 @@
 
 **Desktop notifications + episodes menu without image preview:**
 ![image](https://github.com/user-attachments/assets/b7802ef1-ca0d-45f5-a13a-e39c96a5d499)
-
 
 </details>
 
@@ -729,7 +728,6 @@ fastanime serve
 fastanime serve --host <host> --port <port>
 ```
 
-
 ### MPV specific commands
 
 The project now allows on the fly media controls directly from mpv. This means you can go to the next or previous episode without the window ever closing thus offering a seamless experience.
@@ -855,7 +853,7 @@ player = mpv
 We welcome your issues and feature requests. However, due to time constraints, I currently do not plan to add another provider.
 But if you are willing to add one yourself pr's are welcome.
 
-If you find an anime title that does not correspond with a provider or is just weird just [edit the data file](https://github.com/FastAnime/FastAnime/blob/master/fastanime/Utility/data.py) and open a pr, i will ignore issues 😝.
+If you find an anime title that does not correspond with a provider or is just weird just [edit the data file](https://github.com/Benexl/FastAnime/blob/master/fastanime/Utility/data.py) and open a pr, i will ignore issues 😝.
 
 ## Receiving Support
 
@@ -872,7 +870,7 @@ For inquiries, join our [Discord Server](https://discord.gg/HBEmAwvbHV).
 More pr's less issues 🙃
 Those who contribute at least five times will be able to make changes to the repo without my review.
 
-Show your support by starring the GitHub repository or [buying me a coffee](https://ko-fi.com/benex254).
+Show your support by starring the GitHub repository or [buying me a coffee](https://ko-fi.com/benexl).
 
 ## Disclaimer
 
@@ -880,4 +878,4 @@ Show your support by starring the GitHub repository or [buying me a coffee](http
 >
 > This project currently scrapes allanime, hianime, nyaa, yugen and animepahe.
 > The developer(s) of this application does not have any affiliation with the content providers available, and this application hosts zero content.
-> [DISCLAIMER](https://github.com/Benex254/FastAnime/blob/master/DISCLAIMER.md)
+> [DISCLAIMER](https://github.com/Benexl/FastAnime/blob/master/DISCLAIMER.md)

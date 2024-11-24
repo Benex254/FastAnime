@@ -25,6 +25,9 @@ def popular(config, dump_json):
             from ...utils.tools import FastAnimeRuntimeState
 
             fastanime_runtime_state = FastAnimeRuntimeState()
+
+            fastanime_runtime_state.current_page = 1
+            fastanime_runtime_state.current_data_loader = AniList.get_most_popular
             fastanime_runtime_state.anilist_results_data = anime_data[1]
             anilist_results_menu(config, fastanime_runtime_state)
     else:

@@ -28,13 +28,19 @@
   <summary>
     <b>My Rice</b>
   </summary>
-  
+
+  **Anilist results menu:**
   ![image](https://github.com/user-attachments/assets/240023a7-7e4e-47dd-80ff-017d65081ee1)
 
+**Episodes menu preview:**
 ![image](https://github.com/user-attachments/assets/580f86ef-326f-4ab3-9bd8-c1cb312fbfa6)
 
 **Without preview images enabled:**
 ![image](https://github.com/user-attachments/assets/e1248a85-438f-4758-ae34-b0e0b224addd)
+
+**Desktop notifications + episodes menu without image preview:**
+![image](https://github.com/user-attachments/assets/b7802ef1-ca0d-45f5-a13a-e39c96a5d499)
+
 
 </details>
 
@@ -111,7 +117,7 @@ If you have any difficulty consult for help on the [discord channel](https://dis
 ![Static Badge](https://img.shields.io/badge/NixOs-black?style=flat&logo=nixos)
 
 ```bash
-nix profile install github:Benex254/fastanime
+nix profile install github:Benexl/fastanime
 ```
 
 ### Installation using your favourite package manager
@@ -189,7 +195,7 @@ Requirements:
 
 To build from the source, follow these steps:
 
-1. Clone the repository: `git clone https://github.com/FastAnime/FastAnime.git --depth 1`
+1. Clone the repository: `git clone https://github.com/Benexl/FastAnime.git --depth 1`
 2. Navigate into the folder: `cd FastAnime`
 3. Then build and Install the app:
 
@@ -330,7 +336,7 @@ fastanime --manga search -t <manga-title>
 
 #### The anilist command :fire: :fire: :fire:
 
-Stream, browse, and discover anime efficiently from the terminal using the [AniList API](https://github.com/AniList/ApiV2-GraphQL-Docs).
+Uses the [AniList API](https://github.com/AniList/ApiV2-GraphQL-Docs) to create a terminal anilist client which is then intergrated with the scraping capabilities of the project.
 
 ##### Running without any subcommand
 

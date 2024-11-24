@@ -5,6 +5,7 @@ if TYPE_CHECKING:
 
     from ...libs.anilist.types import AnilistBaseMediaDataSchema
     from ...libs.anime_provider.types import Anime, EpisodeStream, SearchResult, Server
+    from typing import Callable
 
 
 class FastAnimeRuntimeState(object):
@@ -26,9 +27,11 @@ class FastAnimeRuntimeState(object):
     selected_anime_title_anilist: str
     # current_anilist_data: "AnilistDataSchema | AnilistMediaList"
     anilist_results_data: "Any"
+    current_page: int
+    current_data_loader: "Callable"
 
 
-def exit_app(exit_code=0, *args):
+def exit_app(exit_code=0, *args, **kwargs):
     import sys
 
     from rich.console import Console

@@ -139,9 +139,7 @@ class AniListApi:
         return self._make_authenticated_request(media_list_mutation, variables)
 
     def get_anime_list(
-        self,
-        status: "AnilistMediaListStatus",
-        type="ANIME",
+        self, status: "AnilistMediaListStatus", type="ANIME", page=1, **kwargs
     ) -> tuple[bool, "AnilistMediaLists"] | tuple[bool, None]:
         """gets an anime list from your media list given the list status
 
@@ -151,7 +149,12 @@ class AniListApi:
         Returns:
             a media list
         """
-        variables = {"status": status, "userId": self.user_id, "type": type}
+        variables = {
+            "status": status,
+            "userId": self.user_id,
+            "type": type,
+            "page": page,
+        }
         return self._make_authenticated_request(media_list_query, variables)
 
     def get_medialist_entry(
@@ -351,46 +354,43 @@ class AniListApi:
         variables = {"id": id}
         return self.get_data(anime_query, variables)
 
-    def get_trending(self, type="ANIME", *_, **kwargs):
+    def get_trending(self, type="ANIME", page=1, *_, **kwargs):
         """
         Gets the currently trending anime
         """
-        variables = {"type": type}
+        variables = {"type": type, "page": page}
         trending = self.get_data(trending_query, variables)
         return trending
 
-    def get_most_favourite(self, type="ANIME", *_, **kwargs):
+    def get_most_favourite(self, type="ANIME", page=1, *_, **kwargs):
         """
         Gets the most favoured anime on anilist
         """
-        variables = {"type": type}
+        variables = {"type": type, "page": page}
         most_favourite = self.get_data(most_favourite_query, variables)
         return most_favourite
 
-    def get_most_scored(self, type="ANIME", *_, **kwargs):
+    def get_most_scored(self, type="ANIME", page=1, *_, **kwargs):
         """
         Gets most scored anime on anilist
         """
-        variables = {"type": type}
+        variables = {"type": type, "page": page}
         most_scored = self.get_data(most_scored_query, variables)
         return most_scored
 
-    def get_most_recently_updated(self, type="ANIME", *_, **kwargs):
+    def get_most_recently_updated(self, type="ANIME", page=1, *_, **kwargs):
         """
         Gets most recently updated anime from anilist
         """
-        variables = {"type": type}
+        variables = {"type": type, "page": page}
         most_recently_updated = self.get_data(most_recently_updated_query, variables)
         return most_recently_updated
 
-    def get_most_popular(
-        self,
-        type="ANIME",
-    ):
+    def get_most_popular(self, type="ANIME", page=1, **kwargs):
         """
         Gets most popular anime on anilist
         """
-        variables = {"type": type}
+        variables = {"type": type, "page": page}
         most_popular = self.get_data(most_popular_query, variables)
         return most_popular
 
@@ -403,8 +403,8 @@ class AniListApi:
         return upcoming_anime
 
     # NOTE: THe following methods will probably be scraped soon
-    def get_recommended_anime_for(self, id: int, type="ANIME", *_, **kwargs):
-        variables = {"type": type}
+    def get_recommended_anime_for(self, id: int, type="ANIME", page=1, *_, **kwargs):
+        variables = {"type": type, "page": page}
         recommended_anime = self.get_data(recommended_query, variables)
         return recommended_anime
 

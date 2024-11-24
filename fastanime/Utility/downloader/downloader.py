@@ -43,6 +43,8 @@ class YtDLPDownloader:
         merge=False,
         clean=False,
         prompt=True,
+        force_ffmpeg=False,
+        hls_use_mpegts=False,
     ):
         """Helper function that downloads anime given url and path details
 
@@ -91,7 +93,23 @@ class YtDLPDownloader:
         vid_path = ""
         sub_path = ""
         for i, url in enumerate(urls):
-            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            options = ydl_opts
+            if i == 0:
+                if force_ffmpeg:
+                    options = options | {
+                        "external_downloader": {
+                            'default': 'ffmpeg'
+                        },
+                        "external_downloader_args": {
+                            "ffmpeg_i1": ["-v", "error", "-stats"],
+                        },
+                    }
+                if hls_use_mpegts:
+                    options = options | {
+                        "hls_use_mpegts": hls_use_mpegts,
+                    }
+
+            with yt_dlp.YoutubeDL(options) as ydl:
                 info = ydl.extract_info(url, download=True)
             if not info:
                 continue

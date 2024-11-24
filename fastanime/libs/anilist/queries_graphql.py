@@ -193,8 +193,8 @@ mutation (
 """
 
 media_list_query = """
-query ($userId: Int, $status: MediaListStatus, $type: MediaType) {
-  Page {
+query ($userId: Int, $status: MediaListStatus, $type: MediaType, $page: Int) {
+  Page(perPage: 15, page: $page) {
     pageInfo {
       currentPage
       total
@@ -406,8 +406,8 @@ query($query:String,%s){
 )
 
 trending_query = """
-query ($type: MediaType) {
-  Page(perPage: 15) {
+query ($type: MediaType, $page: Int) {
+  Page(perPage: 15, page: $page) {
     media(sort: TRENDING_DESC, type: $type, genre_not_in: ["hentai"]) {
       id
       idMal
@@ -471,8 +471,8 @@ query ($type: MediaType) {
 
 # mosts
 most_favourite_query = """
-query ($type: MediaType) {
-  Page(perPage: 15) {
+query ($type: MediaType, $page: Int) {
+  Page(perPage: 15, page: $page) {
     media(sort: FAVOURITES_DESC, type: $type, genre_not_in: ["hentai"]) {
       id
       idMal
@@ -539,8 +539,8 @@ query ($type: MediaType) {
 """
 
 most_scored_query = """
-query ($type: MediaType) {
-  Page(perPage: 15) {
+query ($type: MediaType, $page: Int) {
+  Page(perPage: 15, page: $page) {
     media(sort: SCORE_DESC, type: $type, genre_not_in: ["hentai"]) {
       id
       idMal
@@ -603,8 +603,8 @@ query ($type: MediaType) {
 """
 
 most_popular_query = """
-query ($type: MediaType) {
-  Page(perPage: 15) {
+query ($type: MediaType, $page: Int) {
+  Page(perPage: 15, page: $page) {
     media(sort: POPULARITY_DESC, type: $type, genre_not_in: ["hentai"]) {
       id
       idMal
@@ -667,8 +667,8 @@ query ($type: MediaType) {
 """
 
 most_recently_updated_query = """
-query ($type: MediaType) {
-  Page(perPage: 15) {
+query ($type: MediaType, $page: Int) {
+  Page(perPage: 15, page: $page) {
     media(
       sort: UPDATED_AT_DESC
       type: $type
@@ -738,8 +738,8 @@ query ($type: MediaType) {
 """
 
 recommended_query = """
-query ($type: MediaType) {
-  Page(perPage: 15) {
+query ($type: MediaType, $page: Int) {
+  Page(perPage: 15, page: $page) {
     media(type: $type, genre_not_in: ["hentai"]) {
       recommendations(sort: RATING_DESC) {
         nodes {
@@ -838,8 +838,8 @@ query ($id: Int, $type: MediaType) {
 
 
 anime_relations_query = """
-query ($id: Int, $type: MediaType) {
-  Page(perPage: 20) {
+query ($type: MediaType, $page: Int) {
+  Page(perPage: 15, page: $page) {
     media(
       id: $id
       sort: POPULARITY_DESC
@@ -924,7 +924,7 @@ query ($id: Int,$type:MediaType) {
 
 upcoming_anime_query = """
 query ($page: Int, $type: MediaType) {
-  Page(page: $page) {
+  Page(perPage: 15, page: $page) {
     pageInfo {
       total
       perPage

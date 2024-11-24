@@ -204,53 +204,75 @@ class HiAnimeApi(AnimeProvider):
                     if embed_response.ok:
                         embed_json = embed_response.json()
                         raw_link_to_streams = embed_json["link"]
-                        print(server_name)
                         match server_name:
+                            # TODO: Finish the other servers
                             case "HD2":
-                                o = MegaCloud().extract(raw_link_to_streams)
-                                print(o)
-                                input()
+                                data = MegaCloud(self.session).extract(
+                                    raw_link_to_streams
+                                )
+                                return {
+                                    "headers": {},
+                                    "subtitles": [
+                                        {
+                                            "url": track["file"],
+                                            "language": track["label"],
+                                        }
+                                        for track in data["tracks"]
+                                        if track["kind"] == "captions"
+                                    ],
+                                    "server": server_name,
+                                    "episode_title": episode_details["title"],
+                                    "links": give_random_quality(
+                                        [
+                                            {"link": link["url"]}
+                                            for link in data["sources"]
+                                        ]
+                                    ),
+                                }
+                            case _:
+                                # NOTE: THIS METHOD DOES'NT WORK will get  the other servers later
+                                match = LINK_TO_STREAMS_REGEX.match(raw_link_to_streams)
+                                if not match:
+                                    return
+                                provider_domain = match.group(1)
+                                embed_type = match.group(2)
+                                episode_number = match.group(3)
+                                source_id = match.group(4)
 
-                        match = LINK_TO_STREAMS_REGEX.match(raw_link_to_streams)
-                        if not match:
-                            return
-                        provider_domain = match.group(1)
-                        embed_type = match.group(2)
-                        episode_number = match.group(3)
-                        source_id = match.group(4)
+                                link_to_streams = f"https://{provider_domain}/embed-{embed_type}/ajax/e-{episode_number}/getSources?id={source_id}"
+                                link_to_streams_response = self.session.get(
+                                    link_to_streams
+                                )
+                                if link_to_streams_response.ok:
+                                    juicy_streams_json: "HiAnimeStream" = (
+                                        link_to_streams_response.json()
+                                    )
 
-                        link_to_streams = f"https://{provider_domain}/embed-{embed_type}/ajax/e-{episode_number}/getSources?id={source_id}"
-                        link_to_streams_response = self.session.get(link_to_streams)
-                        if link_to_streams_response.ok:
-                            juicy_streams_json: "HiAnimeStream" = (
-                                link_to_streams_response.json()
-                            )
-                            return juicy_streams_json
-
-                            # TODO: Hianime decided to fucking encrypt shit
-                            # so got to fix it later
-                            return {
-                                "headers": {},
-                                "subtitles": [
-                                    {
-                                        "url": track["file"],
-                                        "language": track["label"],
+                                    # TODO: Hianime decided to fucking encrypt shit
+                                    # so got to fix it later
+                                    return {
+                                        "headers": {},
+                                        "subtitles": [
+                                            {
+                                                "url": track["file"],
+                                                "language": track["label"],
+                                            }
+                                            for track in juicy_streams_json["tracks"]
+                                            if track["kind"] == "captions"
+                                        ],
+                                        "server": server_name,
+                                        "episode_title": episode_details["title"],
+                                        "links": give_random_quality(
+                                            [
+                                                {"link": link["file"]}
+                                                for link in juicy_streams_json["tracks"]
+                                            ]
+                                        ),
                                     }
-                                    for track in juicy_streams_json["tracks"]
-                                    if track["kind"] == "captions"
-                                ],
-                                "server": server_name,
-                                "episode_title": episode_details["title"],
-                                "links": give_random_quality(
-                                    [
-                                        {"link": link["file"]}
-                                        for link in juicy_streams_json["tracks"]
-                                    ]
-                                ),
-                            }
 
                 for server_name, server_html in zip(
                     cycle(SERVERS_AVAILABLE), servers_html
                 ):
-                    if server := _get_server(server_name, server_html):
-                        yield server
+                    if server_name == "HD2":
+                        if server := _get_server(server_name, server_html):
+                            yield server

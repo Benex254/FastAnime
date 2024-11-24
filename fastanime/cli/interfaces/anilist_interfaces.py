@@ -4,7 +4,7 @@ import os
 import random
 from typing import TYPE_CHECKING
 
-from click import clear, option
+from click import clear
 from InquirerPy import inquirer
 from InquirerPy.validator import EmptyInputValidator
 from rich import print

@@ -1715,6 +1715,18 @@ def fastanime_main_menu(
         f"{'📝 ' if icons else ''}Edit Config": _edit_config,
         f"{'❌ ' if icons else ''}Exit": exit_app,
     }
+
+    # Load main menu order if set in config file
+    if config.menu_order:
+        menu_order_list = config.menu_order.split(",")
+        lookup = {key.split(" ", 1)[-1]: key for key in options}
+        ordered_dict = {
+            lookup[key]: options[lookup[key]]
+            for key in menu_order_list
+            if key in lookup
+        }
+        options = ordered_dict
+
     # prompt user to select an action
     choices = list(options.keys())
     if config.use_fzf:

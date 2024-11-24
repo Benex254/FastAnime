@@ -222,11 +222,16 @@ def run_cli(
     fresh_requests,
 ):
     import os
+    import sys
 
     from .config import Config
 
     ctx.obj = Config()
-    if ctx.obj.check_for_updates and ctx.invoked_subcommand != "completions":
+    if (
+        ctx.obj.check_for_updates
+        and ctx.invoked_subcommand != "completions"
+        and "notifier" not in sys.argv
+    ):
         import time
 
         last_update = ctx.obj.user_data["meta"]["last_updated"]
@@ -237,7 +242,6 @@ def run_cli(
             ctx.obj._update_user_data()
 
             from .app_updater import check_for_updates
-            import sys
 
             print("Checking for updates...", file=sys.stderr)
             print("So you can enjoy the latest features and bug fixes", file=sys.stderr)

@@ -20,6 +20,7 @@
 
         preBuild = ''
           sed -i 's/rich>=13.9.2/rich>=13.8.1/' pyproject.toml
+          sed -i 's/pycryptodome>=3.21.0/pycryptodome>=3.20.0/' pyproject.toml
         '';
 
         # Add runtime dependencies
@@ -35,6 +36,7 @@
           plyer
           mpv
           fastapi
+          pycryptodome
         ];
 
         # Ensure compatibility with the pyproject.toml

@@ -32,6 +32,7 @@ class Config(object):
     user_data = {"recent_anime": [], "animelist": [], "user": {}}
     default_config = {
         "auto_next": "False",
+        "menu_order": "",
         "auto_select": "True",
         "cache_requests": "true",
         "check_for_updates": "True",
@@ -158,7 +159,7 @@ class Config(object):
         self.server = self.configparser.get("stream", "server")
         self.skip = self.configparser.getboolean("stream", "skip")
         self.sort_by = self.configparser.get("anilist", "sort_by")
-        self.menu_order = self.configparser.get("general", "menu_order", fallback=None)
+        self.menu_order = self.configparser.get("general", "menu_order")
         self.sub_lang = self.configparser.get("general", "sub_lang")
         self.translation_type = self.configparser.get("stream", "translation_type")
         self.use_fzf = self.configparser.getboolean("general", "use_fzf")
@@ -353,6 +354,13 @@ image_previews = {self.image_previews}
 # random makes things quite exciting cause you never no at what time it will extract the image from
 # used by the ```fastanime downloads``` command
 ffmpegthumbnailer_seek_time = {self.ffmpegthumbnailer_seek_time}
+
+# specify the order of menu items in a comma-separated list.
+# only include the base names of menu options (e.g., "Trending", "Recent").
+# default value is 'Trending,Recent,Watching,Paused,Dropped,Planned,Completed,Rewatching,Recently Updated Anime,Search,Watch History,Random Anime,Most Popular Anime,Most Favourite Anime,Most Scored Anime,Upcoming Anime,Edit Config,Exit'
+# leave blank to use the default menu order.
+# you can also omit some options by not including them in the list
+menu_order = {self.menu_order}
 
 # whether to use fzf as the interface for the anilist command and others. [True/False]
 use_fzf = {self.use_fzf} 

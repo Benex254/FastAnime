@@ -25,6 +25,7 @@ class HiAnimeError(Exception):
         self.status_code = status_code
 
 
+# Adapted from https://github.com/ghoshRitesh12/aniwatch
 class MegaCloud:
     def __init__(self, session):
         self.session: "CachedRequestsSession" = session

@@ -45,11 +45,14 @@ def calculate_percentage_completion(start_time, end_time):
         [TODO:return]
     """
 
-    start = start_time.split(":")
-    end = end_time.split(":")
-    start_secs = int(start[0]) * 3600 + int(start[1]) * 60 + int(start[2])
-    end_secs = int(end[0]) * 3600 + int(end[1]) * 60 + int(end[2])
-    return start_secs / end_secs * 100
+    try:
+        start = start_time.split(":")
+        end = end_time.split(":")
+        start_secs = int(start[0]) * 3600 + int(start[1]) * 60 + int(start[2])
+        end_secs = int(end[0]) * 3600 + int(end[1]) * 60 + int(end[2])
+        return start_secs / end_secs * 100
+    except Exception:
+        return 0
 
 
 def media_player_controls(
@@ -701,7 +704,7 @@ def provider_anime_episodes_menu(
                 total_time = user_watch_history.get(str(anime_id_anilist), {}).get(
                     "episode_total_length", "0"
                 )
-                if stop_time != "0" or total_time != "0":
+                if stop_time != "0" and total_time != "0":
                     percentage_completion_of_episode = calculate_percentage_completion(
                         stop_time, total_time
                     )

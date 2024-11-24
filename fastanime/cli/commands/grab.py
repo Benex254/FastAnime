@@ -213,25 +213,21 @@ def grab(
 
             # lets download em
             for episode in episodes_range:
-                try:
-                    if episode not in episodes:
-                        continue
-                    streams = anime_provider.get_episode_streams(
-                        anime["id"], episode, config.translation_type
-                    )
-                    if not streams:
-                        continue
-                    episode_streams = {server["server"]: server for server in streams}
+                if episode not in episodes:
+                    continue
+                streams = anime_provider.get_episode_streams(
+                    anime["id"], episode, config.translation_type
+                )
+                if not streams:
+                    continue
+                episode_streams = {server["server"]: server for server in streams}
 
-                    if episode_streams_only:
-                        grabbed_anime[episode] = episode_streams
-                    else:
-                        grabbed_anime["episodes_streams"][  # pyright:ignore
-                            episode
-                        ] = episode_streams
-
-                except Exception as e:
-                    logger.error(e)
+                if episode_streams_only:
+                    grabbed_anime[episode] = episode_streams
+                else:
+                    grabbed_anime["episodes_streams"][  # pyright:ignore
+                        episode
+                    ] = episode_streams
 
             # grab the full data for single title and appen to final result or episode streams
             grabbed_animes.append(grabbed_anime)

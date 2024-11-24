@@ -187,11 +187,7 @@ def download(
         translation_type = config.translation_type
         download_dir = config.downloads_dir
         anime_titles = [
-            (
-                anime["title"][config.preferred_language]
-                or anime["title"]["english"]
-                or anime["title"]["romaji"]
-            )
+            (anime["title"]["romaji"] or anime["title"]["english"])
             for anime in anilist_search_results["data"]["Page"]["media"]
         ]
         print(f"[green bold]Queued:[/] {anime_titles}")

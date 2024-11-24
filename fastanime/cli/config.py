@@ -158,6 +158,7 @@ class Config(object):
         self.server = self.configparser.get("stream", "server")
         self.skip = self.configparser.getboolean("stream", "skip")
         self.sort_by = self.configparser.get("anilist", "sort_by")
+        self.menu_order = self.configparser.get("general", "menu_order", fallback=None)
         self.sub_lang = self.configparser.get("general", "sub_lang")
         self.translation_type = self.configparser.get("stream", "translation_type")
         self.use_fzf = self.configparser.getboolean("general", "use_fzf")

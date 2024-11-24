@@ -226,44 +226,52 @@ def run_cli(
     from .config import Config
 
     ctx.obj = Config()
-    # TODO: only check once per week or day
-    # so as to not hit api limit
-    # for now i have disabled it
-    if ctx.obj.check_for_updates and ctx.invoked_subcommand != "completions" and False:
-        from .app_updater import check_for_updates
-        import sys
+    if ctx.obj.check_for_updates and ctx.invoked_subcommand != "completions":
+        import time
 
-        print("Checking for updates...", file=sys.stderr)
-        print("So you can enjoy the latest features and bug fixes", file=sys.stderr)
-        print(
-            "You can disable this by setting check_for_updates to False in the config",
-            file=sys.stderr,
-        )
-        is_latest, github_release_data = check_for_updates()
-        if not is_latest:
-            from rich.console import Console
-            from rich.markdown import Markdown
-            from .app_updater import update_app
-            from rich.prompt import Confirm
+        last_update = ctx.obj.user_data["meta"]["last_updated"]
+        now = time.time()
+        # checks after every 12 hours
+        if (now - last_update) > 43200:
+            ctx.obj.user_data["meta"]["last_updated"] = now
+            ctx.obj._update_user_data()
 
-            def _print_release(release_data):
-                console = Console()
-                body = Markdown(release_data["body"])
-                tag = github_release_data["tag_name"]
-                tag_title = release_data["name"]
-                github_page_url = release_data["html_url"]
-                console.print(f"Release Page: {github_page_url}")
-                console.print(f"Tag: {tag}")
-                console.print(f"Title: {tag_title}")
-                console.print(body)
+            from .app_updater import check_for_updates
+            import sys
 
-            if Confirm.ask(
-                "A new version of fastanime is available, would you like to update?"
-            ):
-                _, release_json = update_app()
-                print("Successfully updated")
-                _print_release(release_json)
-                exit(0)
+            print("Checking for updates...", file=sys.stderr)
+            print("So you can enjoy the latest features and bug fixes", file=sys.stderr)
+            print(
+                "You can disable this by setting check_for_updates to False in the config",
+                file=sys.stderr,
+            )
+            is_latest, github_release_data = check_for_updates()
+            if not is_latest:
+                from rich.console import Console
+                from rich.markdown import Markdown
+                from .app_updater import update_app
+                from rich.prompt import Confirm
+
+                def _print_release(release_data):
+                    console = Console()
+                    body = Markdown(release_data["body"])
+                    tag = github_release_data["tag_name"]
+                    tag_title = release_data["name"]
+                    github_page_url = release_data["html_url"]
+                    console.print(f"Release Page: {github_page_url}")
+                    console.print(f"Tag: {tag}")
+                    console.print(f"Title: {tag_title}")
+                    console.print(body)
+
+                if Confirm.ask(
+                    "A new version of fastanime is available, would you like to update?"
+                ):
+                    _, release_json = update_app()
+                    print("Successfully updated")
+                    _print_release(release_json)
+                    exit(0)
+            else:
+                print("You are using the latest version of fastanime", file=sys.stderr)
 
     ctx.obj.manga = manga
     if log:

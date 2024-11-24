@@ -29,7 +29,12 @@ class Config(object):
         "https://anilist.co/api/v2/oauth/authorize?client_id=20148&response_type=token"
     )
     anime_provider: "AnimeProvider"
-    user_data = {"recent_anime": [], "animelist": [], "user": {}}
+    user_data = {
+        "recent_anime": [],
+        "animelist": [],
+        "user": {},
+        "meta": {"last_updated": 0},
+    }
     default_config = {
         "auto_next": "False",
         "auto_select": "True",

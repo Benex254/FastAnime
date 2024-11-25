@@ -73,7 +73,8 @@ class MegaCloud:
 
             # Fetch decryption script
             script_response = self.session.get(
-                megacloud["script"] + str(int(time.time() * 1000))
+                megacloud["script"] + str(int(time.time() * 1000)),
+                fresh=1,  # pyright: ignore
             )
             script_text = script_response.text
             if not script_text:

@@ -248,8 +248,6 @@ class HiAnimeApi(AnimeProvider):
                                         link_to_streams_response.json()
                                     )
 
-                                    # TODO: Hianime decided to fucking encrypt shit
-                                    # so got to fix it later
                                     return {
                                         "headers": {},
                                         "subtitles": [

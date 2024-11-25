@@ -1343,6 +1343,59 @@ def media_actions_menu(
         set_prefered_progress_tracking(config, fastanime_runtime_state, update=True)
         media_actions_menu(config, fastanime_runtime_state)
 
+    def _relations(config: "Config", fastanime_runtime_state: "FastAnimeRuntimeState"):
+        """Helper function to get anime recommendations
+        Args:
+            config: [TODO:description]
+            fastanime_runtime_state: [TODO:description]
+        """
+        relations = AniList.get_related_anime_for(
+            fastanime_runtime_state.selected_anime_id_anilist
+        )
+        if not relations[0]:
+            print("No recommendations found", relations[1])
+            input("Enter to continue...")
+            media_actions_menu(config, fastanime_runtime_state)
+            return
+
+        fastanime_runtime_state.anilist_results_data = {
+            "data": {
+                "Page": {"media": relations[1]["data"]["Media"]["relations"]["nodes"]}  # pyright:ignore
+            }
+        }
+        anilist_results_menu(config, fastanime_runtime_state)
+
+    def _recommendations(
+        config: "Config", fastanime_runtime_state: "FastAnimeRuntimeState"
+    ):
+        """Helper function to get anime recommendations
+        Args:
+            config: [TODO:description]
+            fastanime_runtime_state: [TODO:description]
+        """
+        recommendations = AniList.get_recommended_anime_for(
+            fastanime_runtime_state.selected_anime_id_anilist
+        )
+        if not recommendations[0]:
+            print("No recommendations found", recommendations[1])
+            input("Enter to continue...")
+            media_actions_menu(config, fastanime_runtime_state)
+            return
+
+        fastanime_runtime_state.anilist_results_data = {
+            "data": {
+                "Page": {
+                    "media": [
+                        media["media"]
+                        for media in recommendations[1]["data"]["Page"][
+                            "recommendations"  # pyright:ignore
+                        ]
+                    ]
+                }
+            }
+        }
+        anilist_results_menu(config, fastanime_runtime_state)
+
     icons = config.icons
     options = {
         f"{'📽️ ' if icons else ''}Stream ({progress}/{episodes_total})": _stream_anime,
@@ -1352,6 +1405,8 @@ def media_actions_menu(
         f"{'✨ ' if icons else ''}Progress Tracking": _set_progress_tracking,
         f"{'📥 ' if icons else ''}Add to List": _add_to_list,
         f"{'📤 ' if icons else ''}Remove from List": _remove_from_list,
+        f"{'📖 ' if icons else ''}Recommendations": _recommendations,
+        f"{'📖 ' if icons else ''}Relations": _relations,
         f"{'📖 ' if icons else ''}View Info": _view_info,
         f"{'🎧 ' if icons else ''}Change Translation Type": _change_translation_type,
         f"{'💽 ' if icons else ''}Change Provider": _change_provider,

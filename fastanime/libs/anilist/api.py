@@ -403,8 +403,8 @@ class AniListApi:
         return upcoming_anime
 
     # NOTE: THe following methods will probably be scraped soon
-    def get_recommended_anime_for(self, id: int, type="ANIME", page=1, *_, **kwargs):
-        variables = {"type": type, "page": page}
+    def get_recommended_anime_for(self, mediaRecommendationId, page=1, *_, **kwargs):
+        variables = {"mediaRecommendationId": mediaRecommendationId, "page": page}
         recommended_anime = self.get_data(recommended_query, variables)
         return recommended_anime
 
@@ -413,7 +413,7 @@ class AniListApi:
         characters = self.get_data(anime_characters_query, variables)
         return characters
 
-    def get_related_anime_for(self, id: int, type="ANIME", *_, **kwargs):
+    def get_related_anime_for(self, id: int, *_, **kwargs):
         variables = {"id": id}
         related_anime = self.get_data(anime_relations_query, variables)
         return related_anime

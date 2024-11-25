@@ -469,7 +469,7 @@ translation_type = {self.translation_type}
 # what server to use for a particular provider
 # allanime: [dropbox, sharepoint, wetransfer, gogoanime, wixmp]
 # animepahe: [kwik]
-# hianime: [HD1, HD2, StreamSB, StreamTape]
+# hianime: [HD1, HD2, StreamSB, StreamTape] : only HD2 for now
 # yugen: [gogoanime]
 # 'top' can also be used as a value for this option
 # 'top' will cause fastanime to auto select the first server it sees

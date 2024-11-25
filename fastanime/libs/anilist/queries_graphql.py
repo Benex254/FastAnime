@@ -738,69 +738,71 @@ query ($type: MediaType, $page: Int) {
 """
 
 recommended_query = """
-query ($type: MediaType, $page: Int) {
-  Page(perPage: 15, page: $page) {
-    media(type: $type, genre_not_in: ["hentai"]) {
-      recommendations(sort: RATING_DESC) {
-        nodes {
-          media {
-            id
-            idMal
-            title {
-              english
-              romaji
-              native
-            }
-            coverImage {
-              medium
-              large
-            }
-            mediaListEntry {
-              status
-              id
-              progress
-            }
-            description
-            episodes
-            trailer {
-              site
-              id
-            }
-            genres
-      synonyms
-            averageScore
-            popularity
-            streamingEpisodes {
-              title
-              thumbnail
-            }
-            favourites
-            tags {
-              name
-            }
-            startDate {
-              year
-              month
-              day
-            }
-            endDate {
-              year
-              month
-              day
-            }
-            status
-            nextAiringEpisode {
-              timeUntilAiring
-              airingAt
-              episode
-            }
-          }
+query ($mediaRecommendationId: Int, $page: Int) {
+  Page(perPage: 50, page: $page) {
+    recommendations(mediaRecommendationId: $mediaRecommendationId) {
+      media {
+        id
+        idMal
+        mediaListEntry {
+          status
+          id
+          progress
+        }
+        title {
+          english
+          romaji
+          native
+        }
+        coverImage {
+          medium
+          large
+        }
+        mediaListEntry {
+          status
+          id
+          progress
+        }
+        description
+        episodes
+        trailer {
+          site
+          id
+        }
+        genres
+        synonyms
+        averageScore
+        popularity
+        streamingEpisodes {
+          title
+          thumbnail
+        }
+        favourites
+        tags {
+          name
+        }
+        startDate {
+          year
+          month
+          day
+        }
+        endDate {
+          year
+          month
+          day
+        }
+        status
+        nextAiringEpisode {
+          timeUntilAiring
+          airingAt
+          episode
         }
       }
     }
   }
 }
 """
+
 
 anime_characters_query = """
 query ($id: Int, $type: MediaType) {
@@ -838,66 +840,59 @@ query ($id: Int, $type: MediaType) {
 
 
 anime_relations_query = """
-query ($type: MediaType, $page: Int) {
-  Page(perPage: 15, page: $page) {
-    media(
-      id: $id
-      sort: POPULARITY_DESC
-      type: $type
-      genre_not_in: ["hentai"]
-    ) {
-      relations {
-        nodes {
-          id
-          idMal
-          title {
-            english
-            romaji
-            native
-          }
-          coverImage {
-            medium
-            large
-          }
-          mediaListEntry {
-            status
-            id
-            progress
-          }
-          description
-          episodes
-          trailer {
-            site
-            id
-          }
-          genres
-      synonyms
-          averageScore
-          popularity
-          streamingEpisodes {
-            title
-            thumbnail
-          }
-          favourites
-          tags {
-            name
-          }
-          startDate {
-            year
-            month
-            day
-          }
-          endDate {
-            year
-            month
-            day
-          }
+query ($id: Int) {
+  Media(id: $id) {
+    relations {
+      nodes {
+        id
+        idMal
+        title {
+          english
+          romaji
+          native
+        }
+        coverImage {
+          medium
+          large
+        }
+        mediaListEntry {
           status
-          nextAiringEpisode {
-            timeUntilAiring
-            airingAt
-            episode
-          }
+          id
+          progress
+        }
+        description
+        episodes
+        trailer {
+          site
+          id
+        }
+        genres
+        synonyms
+        averageScore
+        popularity
+        streamingEpisodes {
+          title
+          thumbnail
+        }
+        favourites
+        tags {
+          name
+        }
+        startDate {
+          year
+          month
+          day
+        }
+        endDate {
+          year
+          month
+          day
+        }
+        status
+        nextAiringEpisode {
+          timeUntilAiring
+          airingAt
+          episode
         }
       }
     }

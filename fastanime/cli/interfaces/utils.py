@@ -308,6 +308,7 @@ def get_fzf_episode_preview(
                     template = textwrap.dedent(
                         f"""
                     ll=2
+                    ((FZF_PREVIEW_COLUMNS++))
                     while [ $ll -le $FZF_PREVIEW_COLUMNS ];do 
                         echo -n -e "{get_true_fg("─",*SEPARATOR_COLOR,bold=False)}"
                         ((ll++))

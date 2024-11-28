@@ -129,6 +129,16 @@ With the following extras available:
 - mpv - which installs python mpv
 - notifications - which installs plyer required for desktop notifications
 
+>[!IMPORTANT]
+> Due to unfortunate series of events the latest version will no longer, for now, be published on pypi
+>
+>  So use the direct link to the git repo
+> to get the latest
+>
+> so you don't miss out on features
+>
+> For example: `uv tool install https://github.com/Benexl/FastAnime.git` when using uv
+
 #### Using uv
 
 Recommended method of installation is using [uv](https://docs.astral.sh/uv/).

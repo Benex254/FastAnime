@@ -137,7 +137,7 @@ With the following extras available:
 >
 > so you don't miss out on features
 >
-> For example: `uv tool install https://github.com/Benexl/FastAnime.git` when using uv
+> For example: `uv tool install https://github.com/Benexl/FastAnime.git[standard]` when using uv
 
 #### Using uv
 

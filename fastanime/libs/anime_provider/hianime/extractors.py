@@ -1,11 +1,11 @@
 import hashlib
-import time
-import re
 import json
-from typing import List, Dict
-from Crypto.Cipher import AES
+import re
+import time
 from base64 import b64decode
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Dict, List
+
+from Crypto.Cipher import AES
 
 if TYPE_CHECKING:
     from ...common.requests_cacher import CachedRequestsSession

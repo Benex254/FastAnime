@@ -1,11 +1,10 @@
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from typing import Any
+    from typing import Any, Callable
 
     from ...libs.anilist.types import AnilistBaseMediaDataSchema
     from ...libs.anime_provider.types import Anime, EpisodeStream, SearchResult, Server
-    from typing import Callable
 
 
 class FastAnimeRuntimeState(object):

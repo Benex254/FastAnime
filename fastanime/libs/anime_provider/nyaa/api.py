@@ -32,7 +32,9 @@ class Nyaa(AnimeProvider):
 
     @debug_provider
     def search_for_anime(self, user_query: str, *args, **_):
-        self.search_results = search_for_anime_with_anilist(user_query, True)  # pyright: ignore
+        self.search_results = search_for_anime_with_anilist(
+            user_query, True
+        )  # pyright: ignore
         self.user_query = user_query
         return self.search_results
 

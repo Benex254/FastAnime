@@ -1,8 +1,8 @@
-import re
+import logging
 import os
+import re
 import shutil
 import subprocess
-import logging
 import time
 
 from ...constants import S_PLATFORM

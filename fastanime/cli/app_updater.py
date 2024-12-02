@@ -1,10 +1,10 @@
+import os
 import pathlib
 import re
 import shlex
 import shutil
 import subprocess
 import sys
-import os
 
 import requests
 from rich import print

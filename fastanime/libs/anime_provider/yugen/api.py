@@ -1,17 +1,18 @@
 import base64
+import re
 from itertools import cycle
+
 from yt_dlp.utils import (
-    get_element_text_and_html_by_tag,
-    get_elements_text_and_html_by_attribute,
     extract_attributes,
     get_element_by_attribute,
+    get_element_text_and_html_by_tag,
+    get_elements_text_and_html_by_attribute,
 )
-import re
-
 from yt_dlp.utils.traversal import get_element_html_by_attribute
-from .constants import YUGEN_ENDPOINT, SEARCH_URL
-from ..decorators import debug_provider
+
 from ..base_provider import AnimeProvider
+from ..decorators import debug_provider
+from .constants import SEARCH_URL, YUGEN_ENDPOINT
 
 
 # ** Adapted from anipy-cli **

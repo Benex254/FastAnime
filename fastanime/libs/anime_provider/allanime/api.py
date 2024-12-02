@@ -1,17 +1,18 @@
 import json
 import logging
 from typing import TYPE_CHECKING
+
 from ...anime_provider.base_provider import AnimeProvider
 from ..decorators import debug_provider
 from ..utils import give_random_quality, one_digit_symmetric_xor
 from .constants import (
-    API_ENDPOINT,
     API_BASE_URL,
+    API_ENDPOINT,
     API_REFERER,
-    DEFAULT_PER_PAGE,
     DEFAULT_COUNTRY_OF_ORIGIN,
     DEFAULT_NSFW,
     DEFAULT_PAGE,
+    DEFAULT_PER_PAGE,
     DEFAULT_UNKNOWN,
     MP4_SERVER_JUICY_STREAM_REGEX,
 )

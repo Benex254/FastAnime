@@ -1360,7 +1360,9 @@ def media_actions_menu(
 
         fastanime_runtime_state.anilist_results_data = {
             "data": {
-                "Page": {"media": relations[1]["data"]["Media"]["relations"]["nodes"]}  # pyright:ignore
+                "Page": {
+                    "media": relations[1]["data"]["Media"]["relations"]["nodes"]
+                }  # pyright:ignore
             }
         }
         anilist_results_menu(config, fastanime_runtime_state)
@@ -1728,34 +1730,22 @@ def fastanime_main_menu(
     options = {
         f"{'🔥 ' if icons else ''}Trending": AniList.get_trending,
         f"{'🎞️ ' if icons else ''}Recent": _recent,
-        f"{'📺 ' if icons else ''}Watching": lambda config,
-        media_list_type="Watching",
-        page=1: _handle_animelist(
+        f"{'📺 ' if icons else ''}Watching": lambda config, media_list_type="Watching", page=1: _handle_animelist(
             config, fastanime_runtime_state, media_list_type, page=page
         ),
-        f"{'⏸  ' if icons else ''}Paused": lambda config,
-        media_list_type="Paused",
-        page=1: _handle_animelist(
+        f"{'⏸  ' if icons else ''}Paused": lambda config, media_list_type="Paused", page=1: _handle_animelist(
             config, fastanime_runtime_state, media_list_type, page=page
         ),
-        f"{'🚮 ' if icons else ''}Dropped": lambda config,
-        media_list_type="Dropped",
-        page=1: _handle_animelist(
+        f"{'🚮 ' if icons else ''}Dropped": lambda config, media_list_type="Dropped", page=1: _handle_animelist(
             config, fastanime_runtime_state, media_list_type, page=page
         ),
-        f"{'📑 ' if icons else ''}Planned": lambda config,
-        media_list_type="Planned",
-        page=1: _handle_animelist(
+        f"{'📑 ' if icons else ''}Planned": lambda config, media_list_type="Planned", page=1: _handle_animelist(
             config, fastanime_runtime_state, media_list_type, page=page
         ),
-        f"{'✅ ' if icons else ''}Completed": lambda config,
-        media_list_type="Completed",
-        page=1: _handle_animelist(
+        f"{'✅ ' if icons else ''}Completed": lambda config, media_list_type="Completed", page=1: _handle_animelist(
             config, fastanime_runtime_state, media_list_type, page=page
         ),
-        f"{'🔁 ' if icons else ''}Rewatching": lambda config,
-        media_list_type="Rewatching",
-        page=1: _handle_animelist(
+        f"{'🔁 ' if icons else ''}Rewatching": lambda config, media_list_type="Rewatching", page=1: _handle_animelist(
             config, fastanime_runtime_state, media_list_type, page=page
         ),
         f"{'🔔 ' if icons else ''}Recently Updated Anime": AniList.get_most_recently_updated,

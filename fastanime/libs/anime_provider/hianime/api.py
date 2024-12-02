@@ -3,7 +3,6 @@ import re
 from html.parser import HTMLParser
 from itertools import cycle
 from urllib.parse import quote_plus
-from .extractors import MegaCloud
 
 from yt_dlp.utils import (
     clean_html,
@@ -18,6 +17,7 @@ from ..base_provider import AnimeProvider
 from ..decorators import debug_provider
 from ..utils import give_random_quality
 from .constants import SERVERS_AVAILABLE
+from .extractors import MegaCloud
 from .types import HiAnimeStream
 
 logger = logging.getLogger(__name__)

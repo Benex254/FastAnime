@@ -2,12 +2,12 @@ import click
 
 from ...completion_functions import anime_titles_shell_complete
 from .data import (
-    tags_available_list,
-    sorts_available,
-    media_statuses_available,
-    seasons_available,
     genres_available,
     media_formats_available,
+    media_statuses_available,
+    seasons_available,
+    sorts_available,
+    tags_available_list,
     years_available,
 )
 

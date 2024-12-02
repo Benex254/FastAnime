@@ -253,8 +253,9 @@ def run_cli(
             if not is_latest:
                 from rich.console import Console
                 from rich.markdown import Markdown
-                from .app_updater import update_app
                 from rich.prompt import Confirm
+
+                from .app_updater import update_app
 
                 def _print_release(release_data):
                     console = Console()

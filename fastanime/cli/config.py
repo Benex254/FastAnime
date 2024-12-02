@@ -3,16 +3,16 @@ import logging
 import os
 from configparser import ConfigParser
 from typing import TYPE_CHECKING
-from ..libs.fzf import FZF_DEFAULT_OPTS, HEADER
 
 from ..constants import (
+    ASSETS_DIR,
+    S_PLATFORM,
     USER_CONFIG_PATH,
     USER_DATA_PATH,
     USER_VIDEOS_DIR,
-    ASSETS_DIR,
     USER_WATCH_HISTORY_PATH,
-    S_PLATFORM,
 )
+from ..libs.fzf import FZF_DEFAULT_OPTS, HEADER
 from ..libs.rofi import Rofi
 
 logger = logging.getLogger(__name__)

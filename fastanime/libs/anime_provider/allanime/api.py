@@ -254,7 +254,7 @@ class AllAnime(AnimeProvider):
                 case "Kir":
                     logger.debug("Found streams from wetransfer")
                     return {
-                        "server": "wetransfer",
+                        "server": "weTransfer",
                         "headers": {"Referer": f"https://{API_BASE_URL}/"},
                         "subtitles": [],
                         "episode_title": (allanime_episode["notes"] or f"{anime_title}")
@@ -311,3 +311,50 @@ class AllAnime(AnimeProvider):
                 continue
             if server := _get_server(embed):
                 yield server
+
+if __name__=="__main__":
+    import subprocess
+
+    allanime=AllAnime(cache_requests="True",use_persistent_provider_store="False")
+    search_term = input("Enter the search term for the anime: ")
+    translation_type = input("Enter the translation type (sub/dub): ")
+
+    search_results = allanime.search_for_anime(search_keywords=search_term, translation_type=translation_type)
+
+    if not search_results["results"]:
+        print("No results found.")
+        exit()
+
+    print("Search Results:")
+    for idx, result in enumerate(search_results["results"], start=1):
+        print(f"{idx}. {result['title']} (ID: {result['id']})")
+
+    anime_choice = int(input("Enter the number of the anime you want to watch: ")) - 1
+    anime_id = search_results["results"][anime_choice]["id"]
+
+    anime_details = allanime.get_anime(anime_id)
+    print(f"Selected Anime: {anime_details['title']}")
+
+    print("Available Episodes:")
+    for idx, episode in enumerate(sorted(anime_details["availableEpisodesDetail"][translation_type],key=float), start=1):
+        print(f"{idx}. Episode {episode}")
+
+    episode_choice = int(input("Enter the number of the episode you want to watch: ")) - 1
+    episode_number = anime_details["availableEpisodesDetail"][translation_type][episode_choice]
+
+    streams = list(allanime.get_episode_streams(anime_id, episode_number, translation_type))
+    if not streams:
+        print("No streams available.")
+        exit()
+
+    print("Available Streams:")
+    for idx, stream in enumerate(streams, start=1):
+        print(f"{idx}. Server: {stream['server']}")
+
+    server_choice = int(input("Enter the number of the server you want to use: ")) - 1
+    selected_stream = streams[server_choice]
+
+    stream_link = selected_stream["links"][0]["link"]
+    print(f"Streaming from {selected_stream['server']}...")
+
+    subprocess.run(["mpv", stream_link])

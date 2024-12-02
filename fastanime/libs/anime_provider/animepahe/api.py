@@ -34,13 +34,12 @@ class AnimePahe(AnimeProvider):
     HEADERS = REQUEST_HEADERS
 
     @debug_provider
-    def search_for_anime(self, user_query: str, *args):
-        url = f"{ANIMEPAHE_ENDPOINT}m=search&q={user_query}"
+    def search_for_anime(self, search_keywords: str, *args, **kwargs):
+        url = f"{ANIMEPAHE_ENDPOINT}m=search&q={search_keywords}"
         response = self.session.get(
             url,
         )
-        if not response.ok:
-            return
+        response.raise_for_status()
         data: "AnimePaheSearchPage" = response.json()
         results = []
         for result in data["data"]:
@@ -171,7 +170,7 @@ class AnimePahe(AnimeProvider):
             logger.warning(
                 "[ANIMEPAHE-WARN]: embed url not found please report to the developers"
             )
-            return []
+            return
         # get embed page
         embed_response = self.session.get(
             embed_url, headers={"User-Agent": self.USER_AGENT, **SERVER_HEADERS}
@@ -196,6 +195,7 @@ class AnimePahe(AnimeProvider):
                 "link": juicy_stream,
             }
         )
+        return streams
 
     @debug_provider
     def get_episode_streams(
@@ -208,7 +208,7 @@ class AnimePahe(AnimeProvider):
             logger.error(
                 f"[ANIMEPAHE-ERROR]: Anime with ID {anime_id} not found in store"
             )
-            return []
+            return
 
         anime_title = anime_info["title"]
         episode = next(
@@ -224,7 +224,7 @@ class AnimePahe(AnimeProvider):
             logger.error(
                 f"[ANIMEPAHE-ERROR]: Episode {episode_number} doesn't exist for anime {anime_title}"
             )
-            return []
+            return
 
         # fetch the episode page
         url = f"{ANIMEPAHE_BASE}/play/{anime_id}/{episode['session']}"
@@ -252,3 +252,71 @@ class AnimePahe(AnimeProvider):
             # get embed url
             if _streams := self._get_streams(res_dict, streams, translation_type):
                 yield _streams
+
+
+if __name__ == "__main__":
+    import subprocess
+
+    animepahe = AnimePahe(cache_requests="True", use_persistent_provider_store="False")
+    search_term = input("Enter the search term for the anime: ")
+    translation_type = input("Enter the translation type (sub/dub): ")
+
+    search_results = animepahe.search_for_anime(
+        search_keywords=search_term, translation_type=translation_type
+    )
+
+    if not search_results or not search_results["results"]:
+        print("No results found.")
+        exit()
+
+    print("Search Results:")
+    for idx, result in enumerate(search_results["results"], start=1):
+        print(f"{idx}. {result['title']} (ID: {result['id']})")
+
+    anime_choice = int(input("Enter the number of the anime you want to watch: ")) - 1
+    anime_id = search_results["results"][anime_choice]["id"]
+
+    anime_details = animepahe.get_anime(anime_id)
+
+    if anime_details is None:
+        print("Failed to get anime details.")
+        exit()
+    print(f"Selected Anime: {anime_details['title']}")
+
+    print("Available Episodes:")
+    for idx, episode in enumerate(
+        sorted(anime_details["availableEpisodesDetail"][translation_type], key=float),
+        start=1,
+    ):
+        print(f"{idx}. Episode {episode}")
+
+    episode_choice = (
+        int(input("Enter the number of the episode you want to watch: ")) - 1
+    )
+    episode_number = anime_details["availableEpisodesDetail"][translation_type][
+        episode_choice
+    ]
+
+    streams = list(
+        animepahe.get_episode_streams(anime_id, episode_number, translation_type)
+    )
+    if not streams:
+        print("No streams available.")
+        exit()
+
+    print("Available Streams:")
+    for idx, stream in enumerate(streams, start=1):
+        print(f"{idx}. Server: {stream['server']}")
+
+    server_choice = int(input("Enter the number of the server you want to use: ")) - 1
+    selected_stream = streams[server_choice]
+
+    stream_link = selected_stream["links"][0]["link"]
+    mpv_args = ["mpv", stream_link]
+    headers = selected_stream["headers"]
+    if headers:
+        mpv_headers = "--http-header-fields="
+        for header_name, header_value in headers.items():
+            mpv_headers += f"{header_name}:{header_value},"
+        mpv_args.append(mpv_headers)
+    subprocess.run(mpv_args)

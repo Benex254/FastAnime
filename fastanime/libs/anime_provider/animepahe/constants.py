@@ -1,6 +1,8 @@
+import re
+
 ANIMEPAHE = "animepahe.ru"
 ANIMEPAHE_BASE = f"https://{ANIMEPAHE}"
-ANIMEPAHE_ENDPOINT = f"{ANIMEPAHE_BASE}/api?"
+ANIMEPAHE_ENDPOINT = f"{ANIMEPAHE_BASE}/api"
 
 SERVERS_AVAILABLE = ["kwik"]
 REQUEST_HEADERS = {
@@ -31,3 +33,5 @@ SERVER_HEADERS = {
     "Priority": "u=4",
     "TE": "trailers",
 }
+JUICY_STREAM_REGEX = re.compile(r"source='(.*)';")
+KWIK_RE = re.compile(r"Player\|(.+?)'")

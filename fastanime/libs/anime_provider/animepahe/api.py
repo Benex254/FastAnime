@@ -1,6 +1,5 @@
 import logging
 import random
-import re
 import time
 from typing import TYPE_CHECKING
 
@@ -15,6 +14,7 @@ from ..decorators import debug_provider
 from .constants import (
     ANIMEPAHE_BASE,
     ANIMEPAHE_ENDPOINT,
+    JUICY_STREAM_REGEX,
     REQUEST_HEADERS,
     SERVER_HEADERS,
 )
@@ -22,10 +22,8 @@ from .extractors import process_animepahe_embed_page
 
 if TYPE_CHECKING:
     from .types import AnimePaheAnimePage, AnimePaheSearchPage, AnimePaheSearchResult
-JUICY_STREAM_REGEX = re.compile(r"source='(.*)';")
-logger = logging.getLogger(__name__)
 
-KWIK_RE = re.compile(r"Player\|(.+?)'")
+logger = logging.getLogger(__name__)
 
 
 class AnimePahe(AnimeProvider):
@@ -35,9 +33,8 @@ class AnimePahe(AnimeProvider):
 
     @debug_provider
     def search_for_anime(self, search_keywords: str, *args, **kwargs):
-        url = f"{ANIMEPAHE_ENDPOINT}m=search&q={search_keywords}"
         response = self.session.get(
-            url,
+            ANIMEPAHE_ENDPOINT, params={"m": "search", "q": search_keywords}
         )
         response.raise_for_status()
         data: "AnimePaheSearchPage" = response.json()
@@ -76,12 +73,10 @@ class AnimePahe(AnimeProvider):
         self,
         data,
         session_id,
-        url,
+        params,
         page,
     ):
-        response = self.session.get(
-            url,
-        )
+        response = self.session.get(ANIMEPAHE_ENDPOINT, params=params)
         response.raise_for_status()
         if not data:
             data.update(response.json())
@@ -102,12 +97,16 @@ class AnimePahe(AnimeProvider):
                 )
             )
             page += 1
-            url = f"{ANIMEPAHE_ENDPOINT}m=release&id={session_id}&sort=episode_asc&page={page}"
             self._pages_loader(
                 data,
                 session_id,
-                url,
-                page,
+                params={
+                    "m": "release",
+                    "page": page,
+                    "id": session_id,
+                    "sort": "episode_asc",
+                },
+                page=page,
             )
         return data
 
@@ -118,13 +117,16 @@ class AnimePahe(AnimeProvider):
             anime_result: "AnimePaheSearchResult" = d
             data: "AnimePaheAnimePage" = {}  # pyright:ignore
 
-            url = f"{ANIMEPAHE_ENDPOINT}m=release&id={session_id}&sort=episode_asc&page={page}"
-
             data = self._pages_loader(
                 data,
                 session_id,
-                url,
-                page,
+                params={
+                    "m": "release",
+                    "id": session_id,
+                    "sort": "episode_asc",
+                    "page": page,
+                },
+                page=page,
             )
 
             if not data:
@@ -159,42 +161,52 @@ class AnimePahe(AnimeProvider):
             }
 
     @debug_provider
-    def _get_streams(self, res_dict, streams, translation_type):
-        embed_url = res_dict["data-src"]
-        data_audio = "dub" if res_dict["data-audio"] == "eng" else "sub"
-        # filter streams by translation_type
-        if data_audio != translation_type:
-            return
+    def _get_server(self, episode, res_dicts, anime_title, translation_type):
+        # get all links
+        streams = {
+            "server": "kwik",
+            "links": [],
+            "episode_title": f"{episode['title'] or anime_title}; Episode {episode['episode']}",
+            "subtitles": [],
+            "headers": {},
+        }
+        for res_dict in res_dicts:
+            # get embed url
+            embed_url = res_dict["data-src"]
+            data_audio = "dub" if res_dict["data-audio"] == "eng" else "sub"
+            # filter streams by translation_type
+            if data_audio != translation_type:
+                continue
 
-        if not embed_url:
-            logger.warning(
-                "[ANIMEPAHE-WARN]: embed url not found please report to the developers"
+            if not embed_url:
+                logger.warning(
+                    "[ANIMEPAHE-WARN]: embed url not found please report to the developers"
+                )
+                continue
+            # get embed page
+            embed_response = self.session.get(
+                embed_url, headers={"User-Agent": self.USER_AGENT, **SERVER_HEADERS}
             )
-            return
-        # get embed page
-        embed_response = self.session.get(
-            embed_url, headers={"User-Agent": self.USER_AGENT, **SERVER_HEADERS}
-        )
-        embed_response.raise_for_status()
-        embed_page = embed_response.text
+            embed_response.raise_for_status()
+            embed_page = embed_response.text
 
-        decoded_js = process_animepahe_embed_page(embed_page)
-        if not decoded_js:
-            logger.error("[ANIMEPAHE-ERROR]: failed to decode embed page")
-            return
-        juicy_stream = JUICY_STREAM_REGEX.search(decoded_js)
-        if not juicy_stream:
-            logger.error("[ANIMEPAHE-ERROR]: failed to find juicy stream")
-            return
-        juicy_stream = juicy_stream.group(1)
-        # add the link
-        streams["links"].append(
-            {
-                "quality": res_dict["data-resolution"],
-                "translation_type": data_audio,
-                "link": juicy_stream,
-            }
-        )
+            decoded_js = process_animepahe_embed_page(embed_page)
+            if not decoded_js:
+                logger.error("[ANIMEPAHE-ERROR]: failed to decode embed page")
+                continue
+            juicy_stream = JUICY_STREAM_REGEX.search(decoded_js)
+            if not juicy_stream:
+                logger.error("[ANIMEPAHE-ERROR]: failed to find juicy stream")
+                continue
+            juicy_stream = juicy_stream.group(1)
+            # add the link
+            streams["links"].append(
+                {
+                    "quality": res_dict["data-resolution"],
+                    "translation_type": data_audio,
+                    "link": juicy_stream,
+                }
+            )
         return streams
 
     @debug_provider
@@ -239,19 +251,10 @@ class AnimePahe(AnimeProvider):
         # data-audio
         # data-resolution
         res_dicts = [extract_attributes(item) for item in resolutionMenuItems]
-
-        # get all links
-        streams = {
-            "server": "kwik",
-            "links": [],
-            "episode_title": f"{episode['title'] or anime_title}; Episode {episode['episode']}",
-            "subtitles": [],
-            "headers": {},
-        }
-        for res_dict in res_dicts:
-            # get embed url
-            if _streams := self._get_streams(res_dict, streams, translation_type):
-                yield _streams
+        if _server := self._get_server(
+            episode, res_dicts, anime_title, translation_type
+        ):
+            yield _server
 
 
 if __name__ == "__main__":

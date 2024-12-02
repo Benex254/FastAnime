@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 # TODO: create tests for the api
 #
 # ** Based on ani-cli **
-class AllAnimeAPI(AnimeProvider):
+class AllAnime(AnimeProvider):
     """
     Provides a fast and effective interface to AllAnime site.
     """

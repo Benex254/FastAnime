@@ -15,7 +15,7 @@ from ..base_provider import AnimeProvider
 
 
 # ** Adapted from anipy-cli **
-class YugenApi(AnimeProvider):
+class Yugen(AnimeProvider):
     """
     Provides a fast and effective interface to YugenApi site.
     """

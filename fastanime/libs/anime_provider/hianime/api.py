@@ -39,7 +39,7 @@ class ParseAnchorAndImgTag(HTMLParser):
             self.a_tag = {attr[0]: attr[1] for attr in attrs}
 
 
-class HiAnimeApi(AnimeProvider):
+class HiAnime(AnimeProvider):
     # HEADERS = {"Referer": "https://hianime.to/home"}
 
     PROVIDER = "hianime"

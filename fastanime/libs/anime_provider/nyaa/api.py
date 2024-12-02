@@ -27,7 +27,7 @@ EXTRACT_USEFUL_INFO_PATTERN_2 = re.compile(
 )
 
 
-class NyaaApi(AnimeProvider):
+class Nyaa(AnimeProvider):
     search_results: SearchResults
     PROVIDER = "nyaa"
 

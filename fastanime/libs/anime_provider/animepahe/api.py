@@ -28,7 +28,7 @@ logger = logging.getLogger(__name__)
 KWIK_RE = re.compile(r"Player\|(.+?)'")
 
 
-class AnimePaheApi(AnimeProvider):
+class AnimePahe(AnimeProvider):
     search_page: "AnimePaheSearchPage"
     anime: "AnimePaheAnimePage"
     HEADERS = REQUEST_HEADERS

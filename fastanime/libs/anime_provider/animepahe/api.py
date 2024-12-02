@@ -18,7 +18,7 @@ from .constants import (
     REQUEST_HEADERS,
     SERVER_HEADERS,
 )
-from .utils import process_animepahe_embed_page
+from .extractors import process_animepahe_embed_page
 
 if TYPE_CHECKING:
     from .types import AnimePaheAnimePage, AnimePaheSearchPage, AnimePaheSearchResult

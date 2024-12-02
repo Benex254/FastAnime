@@ -6,11 +6,9 @@ from yt_dlp.utils.networking import random_user_agent
 from ...constants import APP_CACHE_DIR
 from .providers_store import ProviderStore
 
-
 class AnimeProvider:
     session: requests.Session
 
-    PROVIDER = ""
     USER_AGENT = random_user_agent()
     HEADERS = {}
 
@@ -30,7 +28,7 @@ class AnimeProvider:
         if use_persistent_provider_store.lower() == "true":
             self.store = ProviderStore(
                 "persistent",
-                self.PROVIDER,
+                self.__class__.__name__,
                 os.path.join(APP_CACHE_DIR, "anime_providers_store.db"),
             )
         else:

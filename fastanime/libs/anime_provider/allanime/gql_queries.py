@@ -1,4 +1,4 @@
-ALLANIME_SEARCH_GQL = """
+SEARCH_GQL = """
 query (
   $search: SearchInput
   $limit: Int
@@ -27,7 +27,7 @@ query (
 """
 
 
-ALLANIME_EPISODES_GQL = """\
+EPISODES_GQL = """\
 query (
   $showId: String!
   $translationType: VaildTranslationTypeEnumType!
@@ -45,7 +45,7 @@ query (
 }
 """
 
-ALLANIME_SHOW_GQL = """
+SHOW_GQL = """
 query ($showId: String!) {
   show(_id: $showId) {
     _id

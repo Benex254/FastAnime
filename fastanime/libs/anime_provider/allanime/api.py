@@ -1,8 +1,3 @@
-"""a module that handles the scraping of allanime
-
-abstraction over allanime api
-"""
-
 import json
 import logging
 from typing import TYPE_CHECKING
@@ -10,25 +5,22 @@ from typing import TYPE_CHECKING
 from ...anime_provider.base_provider import AnimeProvider
 from ..decorators import debug_provider
 from ..utils import give_random_quality, one_digit_symmetric_xor
-from .constants import ALLANIME_API_ENDPOINT, ALLANIME_BASE, ALLANIME_REFERER
-from .gql_queries import ALLANIME_EPISODES_GQL, ALLANIME_SEARCH_GQL, ALLANIME_SHOW_GQL
+from .constants import API_ENDPOINT, API_BASE_URL, API_REFERER
+from .gql_queries import EPISODES_GQL, SEARCH_GQL, SHOW_GQL
 
 if TYPE_CHECKING:
     from .types import AllAnimeEpisode
 logger = logging.getLogger(__name__)
 
 
-# TODO: create tests for the api
-#
-# ** Based on ani-cli **
 class AllAnime(AnimeProvider):
     HEADERS = {
-        "Referer": ALLANIME_REFERER,
+        "Referer": API_REFERER,
     }
 
     def _execute_graphql_query(self, query: str, variables: dict):
         response = self.session.get(
-            ALLANIME_API_ENDPOINT,
+            API_ENDPOINT,
             params={
                 "variables": json.dumps(variables),
                 "query": query,
@@ -38,7 +30,7 @@ class AllAnime(AnimeProvider):
         if response.ok:
             return response.json()["data"]
         else:
-            logger.error("[ALLANIME-ERROR]: ", response.text)
+            logger.error(response.text)
             return {}
 
     @debug_provider
@@ -62,7 +54,7 @@ class AllAnime(AnimeProvider):
             "translationtype": translation_type,
             "countryorigin": country_of_origin,
         }
-        search_results = self._execute_graphql_query(ALLANIME_SEARCH_GQL, variables)
+        search_results = self._execute_graphql_query(SEARCH_GQL, variables)
         page_info = search_results["shows"]["pageInfo"]
         results = []
         for result in search_results["shows"]["edges"]:
@@ -83,7 +75,7 @@ class AllAnime(AnimeProvider):
     @debug_provider
     def get_anime(self, show_id: str):
         variables = {"showId": show_id}
-        anime = self._execute_graphql_query(ALLANIME_SHOW_GQL, variables)
+        anime = self._execute_graphql_query(SHOW_GQL, variables)
         id: str = anime["show"]["_id"]
         title: str = anime["show"]["name"]
         availableEpisodesDetail = anime["show"]["availableEpisodesDetail"]
@@ -106,7 +98,7 @@ class AllAnime(AnimeProvider):
             "translationType": translation_type,
             "episodeString": episode,
         }
-        episode = self._execute_graphql_query(ALLANIME_EPISODES_GQL, variables)
+        episode = self._execute_graphql_query(EPISODES_GQL, variables)
         return episode["episode"]
 
     @debug_provider
@@ -152,11 +144,11 @@ class AllAnime(AnimeProvider):
                 url = one_digit_symmetric_xor(56, url)
 
             if "tools.fast4speed.rsvp" in url:
-                logger.debug("[ALLANIME]:Found streams from gogoanime")
+                logger.debug("Found streams from Yt")
                 return {
                     "server": "Yt",
                     "episode_title": f"{anime_title}; Episode {episode_number}",
-                    "headers": {"Referer": f"https://{ALLANIME_BASE}/"},
+                    "headers": {"Referer": f"https://{API_BASE_URL}/"},
                     "subtitles": [],
                     "links": [
                         {
@@ -167,7 +159,7 @@ class AllAnime(AnimeProvider):
                 }
 
             # get the stream url for an episode of the defined source names
-            embed_url = f"https://{ALLANIME_BASE}{url.replace('clock', 'clock.json')}"
+            embed_url = f"https://{API_BASE_URL}{url.replace('clock', 'clock.json')}"
             resp = self.session.get(
                 embed_url,
                 timeout=10,
@@ -176,10 +168,10 @@ class AllAnime(AnimeProvider):
             if resp.ok:
                 match embed["sourceName"]:
                     case "Luf-mp4":
-                        logger.debug("allanime:Found streams from gogoanime")
+                        logger.debug("Found streams from gogoanime")
                         return {
                             "server": "gogoanime",
-                            "headers": {"Referer": f"https://{ALLANIME_BASE}/"},
+                            "headers": {"Referer": f"https://{API_BASE_URL}/"},
                             "subtitles": [],
                             "episode_title": (
                                 allanime_episode["notes"] or f"{anime_title}"
@@ -188,10 +180,10 @@ class AllAnime(AnimeProvider):
                             "links": give_random_quality(resp.json()["links"]),
                         }
                     case "Kir":
-                        logger.debug("allanime:Found streams from wetransfer")
+                        logger.debug("Found streams from wetransfer")
                         return {
                             "server": "wetransfer",
-                            "headers": {"Referer": f"https://{ALLANIME_BASE}/"},
+                            "headers": {"Referer": f"https://{API_BASE_URL}/"},
                             "subtitles": [],
                             "episode_title": (
                                 allanime_episode["notes"] or f"{anime_title}"
@@ -200,10 +192,10 @@ class AllAnime(AnimeProvider):
                             "links": give_random_quality(resp.json()["links"]),
                         }
                     case "S-mp4":
-                        logger.debug("allanime:Found streams from sharepoint")
+                        logger.debug("Found streams from sharepoint")
                         return {
                             "server": "sharepoint",
-                            "headers": {"Referer": f"https://{ALLANIME_BASE}/"},
+                            "headers": {"Referer": f"https://{API_BASE_URL}/"},
                             "subtitles": [],
                             "episode_title": (
                                 allanime_episode["notes"] or f"{anime_title}"
@@ -212,10 +204,10 @@ class AllAnime(AnimeProvider):
                             "links": give_random_quality(resp.json()["links"]),
                         }
                     case "Sak":
-                        logger.debug("allanime:Found streams from dropbox")
+                        logger.debug("Found streams from dropbox")
                         return {
                             "server": "dropbox",
-                            "headers": {"Referer": f"https://{ALLANIME_BASE}/"},
+                            "headers": {"Referer": f"https://{API_BASE_URL}/"},
                             "subtitles": [],
                             "episode_title": (
                                 allanime_episode["notes"] or f"{anime_title}"
@@ -224,10 +216,10 @@ class AllAnime(AnimeProvider):
                             "links": give_random_quality(resp.json()["links"]),
                         }
                     case "Default":
-                        logger.debug("allanime:Found streams from wixmp")
+                        logger.debug("Found streams from wixmp")
                         return {
                             "server": "wixmp",
-                            "headers": {"Referer": f"https://{ALLANIME_BASE}/"},
+                            "headers": {"Referer": f"https://{API_BASE_URL}/"},
                             "subtitles": [],
                             "episode_title": (
                                 allanime_episode["notes"] or f"{anime_title}"

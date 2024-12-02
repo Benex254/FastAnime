@@ -140,8 +140,7 @@ class AllAnime(AnimeProvider):
             if not url:
                 return
             if url.startswith("--"):
-                url = url[2:]
-                url = one_digit_symmetric_xor(56, url)
+                url = one_digit_symmetric_xor(56, url[2:])
 
             if "tools.fast4speed.rsvp" in url:
                 logger.debug("Found streams from Yt")

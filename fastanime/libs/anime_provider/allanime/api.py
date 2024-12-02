@@ -22,27 +22,13 @@ logger = logging.getLogger(__name__)
 #
 # ** Based on ani-cli **
 class AllAnime(AnimeProvider):
-    """
-    Provides a fast and effective interface to AllAnime site.
-    """
-
-    api_endpoint = ALLANIME_API_ENDPOINT
     HEADERS = {
         "Referer": ALLANIME_REFERER,
     }
 
-    def _fetch_gql(self, query: str, variables: dict):
-        """main abstraction over all requests to the allanime api
-
-        Args:
-            query: [TODO:description]
-            variables: [TODO:description]
-
-        Returns:
-            [TODO:return]
-        """
+    def _execute_graphql_query(self, query: str, variables: dict):
         response = self.session.get(
-            self.api_endpoint,
+            ALLANIME_API_ENDPOINT,
             params={
                 "variables": json.dumps(variables),
                 "query": query,
@@ -58,37 +44,25 @@ class AllAnime(AnimeProvider):
     @debug_provider
     def search_for_anime(
         self,
-        user_query: str,
+        search_keywords: str,
         translation_type: str = "sub",
+        *,
+        limit=40,
+        page=1,
+        country_of_origin="all",
         nsfw=True,
         unknown=True,
         **kwargs,
     ):
-        """search for an anime title using allanime provider
-
-        Args:
-            nsfw ([TODO:parameter]): [TODO:description]
-            unknown ([TODO:parameter]): [TODO:description]
-            user_query: [TODO:description]
-            translation_type: [TODO:description]
-            **kwargs: [TODO:args]
-
-        Returns:
-            [TODO:return]
-        """
-        search = {"allowAdult": nsfw, "allowUnknown": unknown, "query": user_query}
-        limit = 40
-        translationtype = translation_type
-        countryorigin = "all"
-        page = 1
+        search = {"allowAdult": nsfw, "allowUnknown": unknown, "query": search_keywords}
         variables = {
             "search": search,
             "limit": limit,
             "page": page,
-            "translationtype": translationtype,
-            "countryorigin": countryorigin,
+            "translationtype": translation_type,
+            "countryorigin": country_of_origin,
         }
-        search_results = self._fetch_gql(ALLANIME_SEARCH_GQL, variables)
+        search_results = self._execute_graphql_query(ALLANIME_SEARCH_GQL, variables)
         page_info = search_results["shows"]["pageInfo"]
         results = []
         for result in search_results["shows"]["edges"]:
@@ -107,21 +81,13 @@ class AllAnime(AnimeProvider):
         return normalized_search_results
 
     @debug_provider
-    def get_anime(self, allanime_show_id: str):
-        """get an anime details given its id
-
-        Args:
-            allanime_show_id: [TODO:description]
-
-        Returns:
-            [TODO:return]
-        """
-        variables = {"showId": allanime_show_id}
-        anime = self._fetch_gql(ALLANIME_SHOW_GQL, variables)
+    def get_anime(self, show_id: str):
+        variables = {"showId": show_id}
+        anime = self._execute_graphql_query(ALLANIME_SHOW_GQL, variables)
         id: str = anime["show"]["_id"]
         title: str = anime["show"]["name"]
         availableEpisodesDetail = anime["show"]["availableEpisodesDetail"]
-        self.store.set(allanime_show_id, "anime_info", {"title": title})
+        self.store.set(show_id, "anime_info", {"title": title})
         type = anime.get("__typename")
         normalized_anime = {
             "id": id,
@@ -133,40 +99,20 @@ class AllAnime(AnimeProvider):
 
     @debug_provider
     def _get_anime_episode(
-        self, allanime_show_id: str, episode, translation_type: str = "sub"
+        self, show_id: str, episode, translation_type: str = "sub"
     ) -> "AllAnimeEpisode | dict":
-        """get the episode details and sources info
-
-        Args:
-            allanime_show_id: [TODO:description]
-            episode_string: [TODO:description]
-            translation_type: [TODO:description]
-
-        Returns:
-            [TODO:return]
-        """
         variables = {
-            "showId": allanime_show_id,
+            "showId": show_id,
             "translationType": translation_type,
             "episodeString": episode,
         }
-        episode = self._fetch_gql(ALLANIME_EPISODES_GQL, variables)
+        episode = self._execute_graphql_query(ALLANIME_EPISODES_GQL, variables)
         return episode["episode"]
 
     @debug_provider
     def get_episode_streams(
         self, anime_id, episode_number: str, translation_type="sub"
     ):
-        """get the streams of an episode
-
-        Args:
-            translation_type ([TODO:parameter]): [TODO:description]
-            anime: [TODO:description]
-            episode_number: [TODO:description]
-
-        Yields:
-            [TODO:description]
-        """
 
         anime_title = (self.store.get(anime_id, "anime_info", "") or {"title": ""})[
             "title"
@@ -179,7 +125,7 @@ class AllAnime(AnimeProvider):
 
         embeds = allanime_episode["sourceUrls"]
 
-        @debug_provider(self.PROVIDER.upper())
+        @debug_provider
         def _get_server(embed):
             # filter the working streams no need to get all since the others are mostly hsl
             # TODO: should i just get all the servers and handle the hsl??
@@ -206,6 +152,7 @@ class AllAnime(AnimeProvider):
                 url = one_digit_symmetric_xor(56, url)
 
             if "tools.fast4speed.rsvp" in url:
+                logger.debug("[ALLANIME]:Found streams from gogoanime")
                 return {
                     "server": "Yt",
                     "episode_title": f"{anime_title}; Episode {episode_number}",

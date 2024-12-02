@@ -4,7 +4,16 @@ from typing import TYPE_CHECKING
 from ...anime_provider.base_provider import AnimeProvider
 from ..decorators import debug_provider
 from ..utils import give_random_quality, one_digit_symmetric_xor
-from .constants import API_ENDPOINT, API_BASE_URL, API_REFERER
+from .constants import (
+    API_ENDPOINT,
+    API_BASE_URL,
+    API_REFERER,
+    DEFAULT_PER_PAGE,
+    DEFAULT_COUNTRY_OF_ORIGIN,
+    DEFAULT_NSFW,
+    DEFAULT_PAGE,
+    DEFAULT_UNKNOWN,
+)
 from .gql_queries import EPISODES_GQL, SEARCH_GQL, SHOW_GQL
 
 if TYPE_CHECKING:
@@ -68,13 +77,13 @@ class AllAnime(AnimeProvider):
     def search_for_anime(
         self,
         search_keywords: str,
-        translation_type: str = "sub",
+        translation_type: str,
         *,
-        limit=40,
-        page=1,
-        country_of_origin="all",
-        nsfw=True,
-        unknown=True,
+        limit=DEFAULT_PER_PAGE,
+        page=DEFAULT_PAGE,
+        country_of_origin=DEFAULT_COUNTRY_OF_ORIGIN,
+        nsfw=DEFAULT_NSFW,
+        unknown=DEFAULT_UNKNOWN,
         **kwargs,
     ):
         """
@@ -307,19 +316,24 @@ class AllAnime(AnimeProvider):
                 # "Ok",  # 3.5
                 # "Ss-Hls",  #  5.5
                 # "Mp4",  # 4
+                # Fm-Hls
             ):
+                logger.debug(f"Found  {embed['sourceName']} but ignoring")
                 continue
             if server := _get_server(embed):
                 yield server
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
     import subprocess
 
-    allanime=AllAnime(cache_requests="True",use_persistent_provider_store="False")
+    allanime = AllAnime(cache_requests="True", use_persistent_provider_store="False")
     search_term = input("Enter the search term for the anime: ")
     translation_type = input("Enter the translation type (sub/dub): ")
 
-    search_results = allanime.search_for_anime(search_keywords=search_term, translation_type=translation_type)
+    search_results = allanime.search_for_anime(
+        search_keywords=search_term, translation_type=translation_type
+    )
 
     if not search_results["results"]:
         print("No results found.")
@@ -336,13 +350,22 @@ if __name__=="__main__":
     print(f"Selected Anime: {anime_details['title']}")
 
     print("Available Episodes:")
-    for idx, episode in enumerate(sorted(anime_details["availableEpisodesDetail"][translation_type],key=float), start=1):
+    for idx, episode in enumerate(
+        sorted(anime_details["availableEpisodesDetail"][translation_type], key=float),
+        start=1,
+    ):
         print(f"{idx}. Episode {episode}")
 
-    episode_choice = int(input("Enter the number of the episode you want to watch: ")) - 1
-    episode_number = anime_details["availableEpisodesDetail"][translation_type][episode_choice]
+    episode_choice = (
+        int(input("Enter the number of the episode you want to watch: ")) - 1
+    )
+    episode_number = anime_details["availableEpisodesDetail"][translation_type][
+        episode_choice
+    ]
 
-    streams = list(allanime.get_episode_streams(anime_id, episode_number, translation_type))
+    streams = list(
+        allanime.get_episode_streams(anime_id, episode_number, translation_type)
+    )
     if not streams:
         print("No streams available.")
         exit()

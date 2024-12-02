@@ -1,4 +1,12 @@
-SERVERS_AVAILABLE = ["sharepoint", "dropbox", "gogoanime", "weTransfer", "wixmp", "Yt","mp4-upload"]
+SERVERS_AVAILABLE = [
+    "sharepoint",
+    "dropbox",
+    "gogoanime",
+    "weTransfer",
+    "wixmp",
+    "Yt",
+    "mp4-upload",
+]
 API_BASE_URL = "allanime.day"
 API_REFERER = "https://allanime.to/"
 API_ENDPOINT = f"https://api.{API_BASE_URL}/api/"
@@ -13,4 +21,6 @@ DEFAULT_PAGE = 1
 # regex stuff
 import re
 
-MP4_SERVER_JUICY_STREAM_REGEX = re.compile(r"video/mp4\",src:\"(https?://.*/video\.mp4)\"")
+MP4_SERVER_JUICY_STREAM_REGEX = re.compile(
+    r"video/mp4\",src:\"(https?://.*/video\.mp4)\""
+)

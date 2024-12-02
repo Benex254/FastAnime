@@ -6,6 +6,7 @@ from yt_dlp.utils.networking import random_user_agent
 from ...constants import APP_CACHE_DIR
 from .providers_store import ProviderStore
 
+
 class AnimeProvider:
     session: requests.Session
 

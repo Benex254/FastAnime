@@ -117,7 +117,9 @@ class Yugen(AnimeProvider):
 
         if sub_match:
             eps = int(sub_match.group(1))
-            data_map["availableEpisodesDetail"]["sub"] = list(map(str,range(1, eps + 1)))
+            data_map["availableEpisodesDetail"]["sub"] = list(
+                map(str, range(1, eps + 1))
+            )
 
         dub_match = re.search(
             r'<div class="ap-.+?">Episodes \(Dub\)</div><span class="description" .+?>(\d+)</span></div>',
@@ -126,7 +128,9 @@ class Yugen(AnimeProvider):
 
         if dub_match:
             eps = int(dub_match.group(1))
-            data_map["availableEpisodesDetail"]["dub"] = list(map(str,range(1, eps + 1)))
+            data_map["availableEpisodesDetail"]["dub"] = list(
+                map(str, range(1, eps + 1))
+            )
 
         name = get_element_text_and_html_by_tag("h1", html_page)
         if name is not None:
@@ -211,5 +215,10 @@ class Yugen(AnimeProvider):
             "episode_title": f"{anime_title}; Episode {episode_number}",
             "headers": {},
             "subtitles": [],
-            "links": [{"quality": quality, "link": link} for quality,link in zip(cycle(["1080","720","480","360"]),res["hls"])],
+            "links": [
+                {"quality": quality, "link": link}
+                for quality, link in zip(
+                    cycle(["1080", "720", "480", "360"]), res["hls"]
+                )
+            ],
         }

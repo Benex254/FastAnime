@@ -13,7 +13,7 @@ from .constants import (
     DEFAULT_NSFW,
     DEFAULT_PAGE,
     DEFAULT_UNKNOWN,
-    MP4_SERVER_JUICY_STREAM_REGEX
+    MP4_SERVER_JUICY_STREAM_REGEX,
 )
 from .gql_queries import EPISODES_GQL, SEARCH_GQL, SHOW_GQL
 
@@ -248,10 +248,10 @@ class AllAnime(AnimeProvider):
                     response = self.session.get(
                         url,
                         timeout=10,
-                    )      
+                    )
                     response.raise_for_status()
-                    embed_html=response.text.replace(" ","").replace("\n","")
-                    vid=MP4_SERVER_JUICY_STREAM_REGEX.search(embed_html)
+                    embed_html = response.text.replace(" ", "").replace("\n", "")
+                    vid = MP4_SERVER_JUICY_STREAM_REGEX.search(embed_html)
                     if not vid:
                         return
                     return {
@@ -260,7 +260,7 @@ class AllAnime(AnimeProvider):
                         "subtitles": [],
                         "episode_title": (allanime_episode["notes"] or f"{anime_title}")
                         + f"; Episode {episode_number}",
-                        "links": [{"link":vid.group(1),"quality":"1080"}],
+                        "links": [{"link": vid.group(1), "quality": "1080"}],
                     }
                 case "Fm-Hls":
                     # TODO: requires decoding obsfucated js (filemoon)
@@ -268,10 +268,10 @@ class AllAnime(AnimeProvider):
                     response = self.session.get(
                         url,
                         timeout=10,
-                    )      
+                    )
                     response.raise_for_status()
-                    embed_html=response.text.replace(" ", "").replace("\n","")
-                    vid=MP4_SERVER_JUICY_STREAM_REGEX.search(embed_html)
+                    embed_html = response.text.replace(" ", "").replace("\n", "")
+                    vid = MP4_SERVER_JUICY_STREAM_REGEX.search(embed_html)
                     if not vid:
                         return
                     return {
@@ -280,17 +280,17 @@ class AllAnime(AnimeProvider):
                         "subtitles": [],
                         "episode_title": (allanime_episode["notes"] or f"{anime_title}")
                         + f"; Episode {episode_number}",
-                        "links": [{"link":vid.group(1),"quality":"1080"}],
+                        "links": [{"link": vid.group(1), "quality": "1080"}],
                     }
                 case "Ok":
                     # TODO: requires decoding the obsfucated js (filemoon)
                     response = self.session.get(
                         url,
                         timeout=10,
-                    )      
+                    )
                     response.raise_for_status()
-                    embed_html=response.text.replace(" ","").replace("\n","")
-                    vid=MP4_SERVER_JUICY_STREAM_REGEX.search(embed_html)
+                    embed_html = response.text.replace(" ", "").replace("\n", "")
+                    vid = MP4_SERVER_JUICY_STREAM_REGEX.search(embed_html)
                     logger.debug("Found streams from Ok")
                     return {
                         "server": "filemoon",
@@ -305,9 +305,9 @@ class AllAnime(AnimeProvider):
                     response = self.session.get(
                         url,
                         timeout=10,
-                    )      
+                    )
                     response.raise_for_status()
-                    embed_html=response.text.replace(" ","").replace("\n","")
+                    embed_html = response.text.replace(" ", "").replace("\n", "")
                     logger.debug("Found streams from vid-mp4")
                     return {
                         "server": "Vid-mp4",
@@ -322,9 +322,9 @@ class AllAnime(AnimeProvider):
                     response = self.session.get(
                         url,
                         timeout=10,
-                    )      
+                    )
                     response.raise_for_status()
-                    embed_html=response.text.replace(" ","").replace("\n","")
+                    embed_html = response.text.replace(" ", "").replace("\n", "")
                     logger.debug("Found streams from Ss-Hls")
                     return {
                         "server": "StreamSb",
@@ -405,6 +405,7 @@ class AllAnime(AnimeProvider):
                         + f"; Episode {episode_number}",
                         "links": give_random_quality(response.json()["links"]),
                     }
+
         for embed in allanime_episode["sourceUrls"]:
             # filter the working streams no need to get all since the others are mostly hsl
             # TODO: should i just get all the servers and handle the hsl??
@@ -483,7 +484,7 @@ if __name__ == "__main__":
     selected_stream = streams[server_choice]
 
     stream_link = selected_stream["links"][0]["link"]
-    mpv_args=["mpv", stream_link]
+    mpv_args = ["mpv", stream_link]
     headers = selected_stream["headers"]
     if headers:
         mpv_headers = "--http-header-fields="

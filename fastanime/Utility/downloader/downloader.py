@@ -97,9 +97,7 @@ class YtDLPDownloader:
             if i == 0:
                 if force_ffmpeg:
                     options = options | {
-                        "external_downloader": {
-                            'default': 'ffmpeg'
-                        },
+                        "external_downloader": {"default": "ffmpeg"},
                         "external_downloader_args": {
                             "ffmpeg_i1": ["-v", "error", "-stats"],
                         },

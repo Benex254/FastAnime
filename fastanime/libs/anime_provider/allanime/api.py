@@ -13,6 +13,7 @@ from .constants import (
     DEFAULT_NSFW,
     DEFAULT_PAGE,
     DEFAULT_UNKNOWN,
+    MP4_SERVER_JUICY_STREAM_REGEX
 )
 from .gql_queries import EPISODES_GQL, SEARCH_GQL, SHOW_GQL
 
@@ -227,20 +228,112 @@ class AllAnime(AnimeProvider):
             if url.startswith("--"):
                 url = one_digit_symmetric_xor(56, url[2:])
 
-            if "tools.fast4speed.rsvp" in url:
-                logger.debug("Found streams from Yt")
-                return {
-                    "server": "Yt",
-                    "episode_title": f"{anime_title}; Episode {episode_number}",
-                    "headers": {"Referer": f"https://{API_BASE_URL}/"},
-                    "subtitles": [],
-                    "links": [
-                        {
-                            "link": url,
-                            "quality": "1080",
-                        }
-                    ],
-                }
+            match embed["sourceName"]:
+                case "Yt-mp4":
+                    logger.debug("Found streams from Yt")
+                    return {
+                        "server": "Yt",
+                        "episode_title": f"{anime_title}; Episode {episode_number}",
+                        "headers": {"Referer": f"https://{API_BASE_URL}/"},
+                        "subtitles": [],
+                        "links": [
+                            {
+                                "link": url,
+                                "quality": "1080",
+                            }
+                        ],
+                    }
+                case "Mp4":
+                    logger.debug("Found streams from Mp4")
+                    response = self.session.get(
+                        url,
+                        timeout=10,
+                    )      
+                    response.raise_for_status()
+                    embed_html=response.text.replace(" ","").replace("\n","")
+                    vid=MP4_SERVER_JUICY_STREAM_REGEX.search(embed_html)
+                    if not vid:
+                        return
+                    return {
+                        "server": "mp4-upload",
+                        "headers": {"Referer": "https://www.mp4upload.com/"},
+                        "subtitles": [],
+                        "episode_title": (allanime_episode["notes"] or f"{anime_title}")
+                        + f"; Episode {episode_number}",
+                        "links": [{"link":vid.group(1),"quality":"1080"}],
+                    }
+                case "Fm-Hls":
+                    # TODO: requires decoding obsfucated js (filemoon)
+                    logger.debug("Found streams from Fm-Hls")
+                    response = self.session.get(
+                        url,
+                        timeout=10,
+                    )      
+                    response.raise_for_status()
+                    embed_html=response.text.replace(" ", "").replace("\n","")
+                    vid=MP4_SERVER_JUICY_STREAM_REGEX.search(embed_html)
+                    if not vid:
+                        return
+                    return {
+                        "server": "filemoon",
+                        "headers": {"Referer": "https://www.mp4upload.com/"},
+                        "subtitles": [],
+                        "episode_title": (allanime_episode["notes"] or f"{anime_title}")
+                        + f"; Episode {episode_number}",
+                        "links": [{"link":vid.group(1),"quality":"1080"}],
+                    }
+                case "Ok":
+                    # TODO: requires decoding the obsfucated js (filemoon)
+                    response = self.session.get(
+                        url,
+                        timeout=10,
+                    )      
+                    response.raise_for_status()
+                    embed_html=response.text.replace(" ","").replace("\n","")
+                    vid=MP4_SERVER_JUICY_STREAM_REGEX.search(embed_html)
+                    logger.debug("Found streams from Ok")
+                    return {
+                        "server": "filemoon",
+                        "headers": {"Referer": f"https://{API_BASE_URL}/"},
+                        "subtitles": [],
+                        "episode_title": (allanime_episode["notes"] or f"{anime_title}")
+                        + f"; Episode {episode_number}",
+                        "links": give_random_quality(response.json()["links"]),
+                    }
+                case "Vid-mp4":
+                    # TODO: requires some serious work i think : )
+                    response = self.session.get(
+                        url,
+                        timeout=10,
+                    )      
+                    response.raise_for_status()
+                    embed_html=response.text.replace(" ","").replace("\n","")
+                    logger.debug("Found streams from vid-mp4")
+                    return {
+                        "server": "Vid-mp4",
+                        "headers": {"Referer": f"https://{API_BASE_URL}/"},
+                        "subtitles": [],
+                        "episode_title": (allanime_episode["notes"] or f"{anime_title}")
+                        + f"; Episode {episode_number}",
+                        "links": give_random_quality(response.json()["links"]),
+                    }
+                case "Ss-Hls":
+                    # TODO: requires some serious work i think : )
+                    response = self.session.get(
+                        url,
+                        timeout=10,
+                    )      
+                    response.raise_for_status()
+                    embed_html=response.text.replace(" ","").replace("\n","")
+                    logger.debug("Found streams from Ss-Hls")
+                    return {
+                        "server": "StreamSb",
+                        "headers": {"Referer": f"https://{API_BASE_URL}/"},
+                        "subtitles": [],
+                        "episode_title": (allanime_episode["notes"] or f"{anime_title}")
+                        + f"; Episode {episode_number}",
+                        "links": give_random_quality(response.json()["links"]),
+                    }
 
             # get the stream url for an episode of the defined source names
             response = self.session.get(
@@ -301,6 +394,17 @@ class AllAnime(AnimeProvider):
                         "links": give_random_quality(response.json()["links"]),
                     }
 
+                case "Ak":
+                    # TODO: works but needs further probing
+                    logger.debug("Found streams from Ak")
+                    return {
+                        "server": "Ak",
+                        "headers": {"Referer": f"https://{API_BASE_URL}/"},
+                        "subtitles": [],
+                        "episode_title": (allanime_episode["notes"] or f"{anime_title}")
+                        + f"; Episode {episode_number}",
+                        "links": give_random_quality(response.json()["links"]),
+                    }
         for embed in allanime_episode["sourceUrls"]:
             # filter the working streams no need to get all since the others are mostly hsl
             # TODO: should i just get all the servers and handle the hsl??
@@ -312,11 +416,12 @@ class AllAnime(AnimeProvider):
                 "Default",  # 8.5
                 "Yt-mp4",  # 7.9
                 "Kir",  # NA
-                # "Vid-mp4"  # 4
+                "Mp4",  # 4
+                # "Ak",#
+                # "Vid-mp4",  # 4
                 # "Ok",  # 3.5
                 # "Ss-Hls",  #  5.5
-                # "Mp4",  # 4
-                # Fm-Hls
+                # "Fm-Hls",#
             ):
                 logger.debug(f"Found  {embed['sourceName']} but ignoring")
                 continue
@@ -378,6 +483,11 @@ if __name__ == "__main__":
     selected_stream = streams[server_choice]
 
     stream_link = selected_stream["links"][0]["link"]
-    print(f"Streaming from {selected_stream['server']}...")
-
-    subprocess.run(["mpv", stream_link])
+    mpv_args=["mpv", stream_link]
+    headers = selected_stream["headers"]
+    if headers:
+        mpv_headers = "--http-header-fields="
+        for header_name, header_value in headers.items():
+            mpv_headers += f"{header_name}:{header_value},"
+        mpv_args.append(mpv_headers)
+    subprocess.run(mpv_args)

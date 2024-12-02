@@ -1,5 +1,5 @@
 default_language_version:
-  python: python3.10
+  python: python3.12
 
 repos:
   - repo: https://github.com/pycqa/isort
@@ -7,7 +7,7 @@ repos:
     hooks:
       - id: isort
         name: isort (python)
-        args: ["--profile", "black"] # Ensure compatibility with Black
+        args: ["--profile", "black"]
 
   - repo: https://github.com/PyCQA/autoflake
     rev: v2.2.1
@@ -20,10 +20,8 @@ repos:
             "--remove-all-unused-imports",
           ]
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    # Ruff version.
     rev: v0.4.10
     hooks:
-      # Run the linter.
       - id: ruff
         args: [--fix]
 
@@ -32,4 +30,4 @@ repos:
     hooks:
       - id: black
         name: black
-        language_version: python3.10 # to ensure compatibilty
+        #language_version: python3.10

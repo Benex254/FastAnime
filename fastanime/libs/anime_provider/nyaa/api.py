@@ -29,9 +29,8 @@ EXTRACT_USEFUL_INFO_PATTERN_2 = re.compile(
 
 class Nyaa(AnimeProvider):
     search_results: SearchResults
-    PROVIDER = "nyaa"
 
-    @debug_provider(PROVIDER.upper())
+    @debug_provider
     def search_for_anime(self, user_query: str, *args, **_):
         self.search_results = search_for_anime_with_anilist(
             user_query, True
@@ -39,7 +38,7 @@ class Nyaa(AnimeProvider):
         self.user_query = user_query
         return self.search_results
 
-    @debug_provider(PROVIDER.upper())
+    @debug_provider
     def get_anime(self, anilist_id: str, *_):
         for anime in self.search_results["results"]:
             if anime["id"] == anilist_id:
@@ -55,7 +54,7 @@ class Nyaa(AnimeProvider):
                     },
                 }
 
-    @debug_provider(PROVIDER.upper())
+    @debug_provider
     def get_episode_streams(
         self,
         anime_id: str,

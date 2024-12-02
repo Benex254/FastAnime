@@ -32,9 +32,8 @@ class AnimePahe(AnimeProvider):
     search_page: "AnimePaheSearchPage"
     anime: "AnimePaheAnimePage"
     HEADERS = REQUEST_HEADERS
-    PROVIDER = "animepahe"
 
-    @debug_provider(PROVIDER.upper())
+    @debug_provider
     def search_for_anime(self, user_query: str, *args):
         url = f"{ANIMEPAHE_ENDPOINT}m=search&q={user_query}"
         response = self.session.get(
@@ -73,7 +72,7 @@ class AnimePahe(AnimeProvider):
             ],
         }
 
-    @debug_provider(PROVIDER.upper())
+    @debug_provider
     def get_anime(self, session_id: str, *args):
         page = 1
         if d := self.store.get(str(session_id), "search_result"):
@@ -151,7 +150,7 @@ class AnimePahe(AnimeProvider):
                 ],
             }
 
-    @debug_provider(PROVIDER.upper())
+    @debug_provider
     def get_episode_streams(
         self, anime_id, episode_number: str, translation_type, *args
     ):

@@ -20,13 +20,12 @@ class Yugen(AnimeProvider):
     Provides a fast and effective interface to YugenApi site.
     """
 
-    PROVIDER = "yugen"
     api_endpoint = YUGEN_ENDPOINT
     # HEADERS = {
     #     "Referer": ALLANIME_REFERER,
     # }
 
-    @debug_provider(PROVIDER.upper())
+    @debug_provider
     def search_for_anime(
         self,
         user_query: str,
@@ -94,7 +93,7 @@ class Yugen(AnimeProvider):
             "results": results,
         }
 
-    @debug_provider(PROVIDER.upper())
+    @debug_provider
     def get_anime(self, anime_id: str, **kwargs):
         identifier = base64.b64decode(anime_id).decode()
         response = self.session.get(f"{YUGEN_ENDPOINT}/anime/{identifier}")
@@ -174,7 +173,7 @@ class Yugen(AnimeProvider):
 
         return data_map
 
-    @debug_provider(PROVIDER.upper())
+    @debug_provider
     def get_episode_streams(
         self, anime_id, episode_number: str, translation_type="sub"
     ):

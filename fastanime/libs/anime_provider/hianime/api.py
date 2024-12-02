@@ -42,9 +42,7 @@ class ParseAnchorAndImgTag(HTMLParser):
 class HiAnime(AnimeProvider):
     # HEADERS = {"Referer": "https://hianime.to/home"}
 
-    PROVIDER = "hianime"
-
-    @debug_provider(PROVIDER.upper())
+    @debug_provider
     def search_for_anime(self, anime_title: str, *args):
         query = quote_plus(anime_title)
         url = f"https://hianime.to/search?keyword={query}"
@@ -92,7 +90,7 @@ class HiAnime(AnimeProvider):
             self.store.set(result["id"], "search_result", result)
         return {"pageInfo": {}, "results": results}
 
-    @debug_provider(PROVIDER.upper())
+    @debug_provider
     def get_anime(self, hianime_id, *args):
         anime_result = {}
         if d := self.store.get(str(hianime_id), "search_result"):
@@ -145,7 +143,7 @@ class HiAnime(AnimeProvider):
                     "episodes_info": episodes_info,
                 }
 
-    @debug_provider(PROVIDER.upper())
+    @debug_provider
     def get_episode_streams(self, anime_id, episode, translation_type, *args):
         if d := self.store.get(str(anime_id), "anime_info"):
             episodes_info = d
@@ -192,7 +190,7 @@ class HiAnime(AnimeProvider):
                 if not servers_html:
                     return
 
-                @debug_provider(self.PROVIDER.upper())
+                @debug_provider
                 def _get_server(server_name, server_html):
                     # keys: [ data-type: translation_type, data-id: embed_id, data-server-id: server_id ]
                     servers_info = extract_attributes(server_html)

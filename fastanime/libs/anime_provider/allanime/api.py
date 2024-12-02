@@ -26,7 +26,6 @@ class AllAnime(AnimeProvider):
     Provides a fast and effective interface to AllAnime site.
     """
 
-    PROVIDER = "allanime"
     api_endpoint = ALLANIME_API_ENDPOINT
     HEADERS = {
         "Referer": ALLANIME_REFERER,
@@ -56,7 +55,7 @@ class AllAnime(AnimeProvider):
             logger.error("[ALLANIME-ERROR]: ", response.text)
             return {}
 
-    @debug_provider(PROVIDER.upper())
+    @debug_provider
     def search_for_anime(
         self,
         user_query: str,
@@ -107,7 +106,7 @@ class AllAnime(AnimeProvider):
         }
         return normalized_search_results
 
-    @debug_provider(PROVIDER.upper())
+    @debug_provider
     def get_anime(self, allanime_show_id: str):
         """get an anime details given its id
 
@@ -132,7 +131,7 @@ class AllAnime(AnimeProvider):
         }
         return normalized_anime
 
-    @debug_provider(PROVIDER.upper())
+    @debug_provider
     def _get_anime_episode(
         self, allanime_show_id: str, episode, translation_type: str = "sub"
     ) -> "AllAnimeEpisode | dict":
@@ -154,7 +153,7 @@ class AllAnime(AnimeProvider):
         episode = self._fetch_gql(ALLANIME_EPISODES_GQL, variables)
         return episode["episode"]
 
-    @debug_provider(PROVIDER.upper())
+    @debug_provider
     def get_episode_streams(
         self, anime_id, episode_number: str, translation_type="sub"
     ):

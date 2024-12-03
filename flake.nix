@@ -37,6 +37,7 @@
           mpv
           fastapi
           pycryptodome
+          pypresence
         ];
 
         # Ensure compatibility with the pyproject.toml

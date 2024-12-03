@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 import random
+import threading
 from typing import TYPE_CHECKING
 
 from click import clear
@@ -14,6 +15,7 @@ from yt_dlp.utils import sanitize_filename
 
 from ...anilist import AniList
 from ...constants import USER_CONFIG_PATH
+from ...libs.discord import discord
 from ...libs.fzf import fzf
 from ...libs.rofi import Rofi
 from ...Utility.data import anime_normalizer
@@ -54,6 +56,8 @@ def calculate_percentage_completion(start_time, end_time):
     except Exception:
         return 0
 
+def discord_updater(show,episode,switch):
+    discord.discord_connect(show,episode,switch)
 
 def media_player_controls(
     config: "Config", fastanime_runtime_state: "FastAnimeRuntimeState"
@@ -510,6 +514,12 @@ def provider_anime_episode_servers_menu(
         "[bold magenta] Episode: [/]",
         current_episode_number,
     )
+    # update discord activity for user
+    switch = threading.Event()
+    if config.discord:
+        discord_proc = threading.Thread(target=discord_updater, args=(provider_anime_title,current_episode_number,switch))
+        discord_proc.start()
+
     # try to get the timestamp you left off from if available
     start_time = config.watch_history.get(str(anime_id_anilist), {}).get(
         "episode_stopped_at", "0"
@@ -591,6 +601,10 @@ def provider_anime_episode_servers_menu(
             player=config.player,
         )
     print("Finished at: ", stop_time)
+
+    # stop discord activity updater
+    if config.discord:
+        switch.set()
 
     # update_watch_history
     # this will try to update the episode to be the next episode if delta has reached a specific threshhold

@@ -9,6 +9,7 @@ dependencies = [
   "click>=8.1.7",
   "inquirerpy>=0.3.4",
   "pycryptodome>=3.21.0",
+  "pypresence>=4.3.0",
   "requests>=2.32.3",
   "rich>=13.9.2",
   "thefuzz>=0.22.1",

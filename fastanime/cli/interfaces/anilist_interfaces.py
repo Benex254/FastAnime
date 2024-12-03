@@ -515,8 +515,8 @@ def provider_anime_episode_servers_menu(
         current_episode_number,
     )
     # update discord activity for user
+    switch = threading.Event()
     if config.discord:
-        switch = threading.Event()
         discord_proc = threading.Thread(target=discord_updater, args=(provider_anime_title,current_episode_number,switch))
         discord_proc.start()
 

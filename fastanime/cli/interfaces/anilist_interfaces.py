@@ -1361,8 +1361,10 @@ def media_actions_menu(
         fastanime_runtime_state.anilist_results_data = {
             "data": {
                 "Page": {
-                    "media": relations[1]["data"]["Media"]["relations"]["nodes"]
-                }  # pyright:ignore
+                    "media": relations[1]["data"]["Media"]["relations"][
+                        "nodes"
+                    ]  # pyright:ignore
+                }
             }
         }
         anilist_results_menu(config, fastanime_runtime_state)

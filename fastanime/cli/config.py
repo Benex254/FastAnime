@@ -45,6 +45,7 @@ class Config(object):
         "default_media_list_tracking": "None",
         "downloads_dir": USER_VIDEOS_DIR,
         "disable_mpv_popen": "True",
+        "discord": "False",
         "episode_complete_at": "80",
         "ffmpegthumbnailer_seek_time": "-1",
         "force_forward_tracking": "true",
@@ -111,6 +112,9 @@ class Config(object):
         )
         self.disable_mpv_popen = self.configparser.getboolean(
             "stream", "disable_mpv_popen"
+        )
+        self.discord = self.configparser.getboolean(
+            "general", "discord"
         )
         self.downloads_dir = self.configparser.get("general", "downloads_dir")
         self.episode_complete_at = self.configparser.getint(
@@ -436,6 +440,12 @@ use_persistent_provider_store = {self.use_persistent_provider_store}
 # no of recent anime to keep [0-50]
 # 0 will disable recent anime tracking
 recent = {self.recent}
+
+config.py
+# enable or disable discord activity updater
+# if you want to enable it, please follow the lnik below to register the app with discord account
+# https://discord.com/oauth2/authorize?client_id=1292070065583165512
+discord = {self.discord}
 
 
 [stream]

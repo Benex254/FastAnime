@@ -1,3 +1,5 @@
+import re
+
 SERVERS_AVAILABLE = [
     "sharepoint",
     "dropbox",
@@ -19,7 +21,6 @@ DEFAULT_PER_PAGE = 40
 DEFAULT_PAGE = 1
 
 # regex stuff
-import re
 
 MP4_SERVER_JUICY_STREAM_REGEX = re.compile(
     r"video/mp4\",src:\"(https?://.*/video\.mp4)\""

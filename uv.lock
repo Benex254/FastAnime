@@ -343,6 +343,7 @@ dependencies = [
     { name = "click" },
     { name = "inquirerpy" },
     { name = "pycryptodome" },
+    { name = "pypresence" },
     { name = "requests" },
     { name = "rich" },
     { name = "thefuzz" },
@@ -385,6 +386,7 @@ requires-dist = [
     { name = "plyer", marker = "extra == 'notifications'", specifier = ">=2.1.0" },
     { name = "plyer", marker = "extra == 'standard'", specifier = ">=2.1.0" },
     { name = "pycryptodome", specifier = ">=3.21.0" },
+    { name = "pypresence", specifier = ">=4.3.0" },
     { name = "requests", specifier = ">=2.32.3" },
     { name = "rich", specifier = ">=13.9.2" },
     { name = "thefuzz", specifier = ">=0.22.1" },
@@ -963,6 +965,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/73/6a/9d0057e312b85fbd17a79e1c1955d115fd9bbc78b85bab757777c8ef2307/pyinstaller_hooks_contrib-2024.10.tar.gz", hash = "sha256:8a46655e5c5b0186b5e527399118a9b342f10513eb1425c483fa4f6d02e8800c", size = 140592 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/a9/64/445861ee7a5fd32874c0f6cfe8222aacc8feda22539332e0d8ff50dadec6/pyinstaller_hooks_contrib-2024.10-py3-none-any.whl", hash = "sha256:ad47db0e153683b4151e10d231cb91f2d93c85079e78d76d9e0f57ac6c8a5e10", size = 338417 },
+]
+
+[[package]]
+name = "pypresence"
+version = "4.3.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/f4/2e/d110f862720b5e3ba1b0b719657385fc4151929befa2c6981f48360aa480/pypresence-4.3.0.tar.gz", hash = "sha256:a6191a3af33a9667f2a4ef0185577c86b962ee70aa82643c472768a6fed1fbf3", size = 10696 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/1e/40/1d30b30e18f81eb71365681223971a9822a89b3d6ee5269dd2aa955bc228/pypresence-4.3.0-py2.py3-none-any.whl", hash = "sha256:af878c6d49315084f1b108aec86b31915080614d9421d6dd3a44737aba9ff13f", size = 11778 },
 ]
 
 [[package]]

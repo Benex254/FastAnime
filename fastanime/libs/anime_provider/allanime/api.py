@@ -81,11 +81,11 @@ class AllAnime(AnimeProvider):
         search_keywords: str,
         translation_type: str,
         *,
+        nsfw=DEFAULT_NSFW,
+        unknown=DEFAULT_UNKNOWN,
         limit=DEFAULT_PER_PAGE,
         page=DEFAULT_PAGE,
         country_of_origin=DEFAULT_COUNTRY_OF_ORIGIN,
-        nsfw=DEFAULT_NSFW,
-        unknown=DEFAULT_UNKNOWN,
         **kwargs,
     ):
         """
@@ -134,7 +134,7 @@ class AllAnime(AnimeProvider):
         }
 
     @debug_provider
-    def get_anime(self, id: str):
+    def get_anime(self, id: str, **kwargs):
         """
         Fetches anime details using the provided show ID.
         Args:
@@ -179,7 +179,13 @@ class AllAnime(AnimeProvider):
         )["episode"]
 
     @debug_provider
-    def _get_server(self, embed, anime_title: str, allanime_episode: "AllAnimeEpisode"):
+    def _get_server(
+        self,
+        embed,
+        anime_title: str,
+        allanime_episode: "AllAnimeEpisode",
+        episode_number,
+    ):
         """
         Retrieves the streaming server information for a given anime episode based on the provided embed data.
         Args:
@@ -384,7 +390,7 @@ class AllAnime(AnimeProvider):
 
     @debug_provider
     def get_episode_streams(
-        self, anime_id, episode_number: str, translation_type="sub"
+        self, anime_id, episode_number: str, translation_type="sub", **kwargs
     ):
         """
         Retrieve streaming information for a specific episode of an anime.
@@ -425,7 +431,9 @@ class AllAnime(AnimeProvider):
             ):
                 logger.debug(f"Found  {embed['sourceName']} but ignoring")
                 continue
-            if server := self._get_server(embed, anime_title, allanime_episode):
+            if server := self._get_server(
+                embed, anime_title, allanime_episode, episode_number
+            ):
                 yield server
 
 

@@ -62,11 +62,7 @@ class AnimeProvider:
         )
 
     def search_for_anime(
-        self,
-        user_query,
-        translation_type,
-        nsfw=True,
-        unknown=True,
+        self, search_keywords, translation_type, **kwargs
     ) -> "SearchResults | None":
         """core abstraction over all providers search functionality
 
@@ -82,7 +78,7 @@ class AnimeProvider:
         """
         anime_provider = self.anime_provider
         results = anime_provider.search_for_anime(
-            user_query, translation_type, nsfw, unknown
+            search_keywords, translation_type, **kwargs
         )
 
         return results
@@ -90,6 +86,7 @@ class AnimeProvider:
     def get_anime(
         self,
         anime_id: str,
+        **kwargs,
     ) -> "Anime | None":
         """core abstraction over getting info of an anime from all providers
 
@@ -101,7 +98,7 @@ class AnimeProvider:
             [TODO:return]
         """
         anime_provider = self.anime_provider
-        results = anime_provider.get_anime(anime_id)
+        results = anime_provider.get_anime(anime_id, **kwargs)
 
         return results
 
@@ -110,6 +107,7 @@ class AnimeProvider:
         anime_id,
         episode: str,
         translation_type: str,
+        **kwargs,
     ) -> "Iterator[Server] | None":
         """core abstractions for getting juicy streams from all providers
 
@@ -124,6 +122,6 @@ class AnimeProvider:
         """
         anime_provider = self.anime_provider
         results = anime_provider.get_episode_streams(
-            anime_id, episode, translation_type
+            anime_id, episode, translation_type, **kwargs
         )
         return results

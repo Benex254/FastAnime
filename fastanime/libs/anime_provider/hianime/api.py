@@ -43,7 +43,7 @@ class HiAnime(AnimeProvider):
     # HEADERS = {"Referer": "https://hianime.to/home"}
 
     @debug_provider
-    def search_for_anime(self, anime_title: str, *args):
+    def search_for_anime(self, anime_title: str, translation_type, **kwargs):
         query = quote_plus(anime_title)
         url = f"https://hianime.to/search?keyword={query}"
         response = self.session.get(url)
@@ -91,7 +91,7 @@ class HiAnime(AnimeProvider):
         return {"pageInfo": {}, "results": results}
 
     @debug_provider
-    def get_anime(self, hianime_id, *args):
+    def get_anime(self, hianime_id, **kwargs):
         anime_result = {}
         if d := self.store.get(str(hianime_id), "search_result"):
             anime_result = d
@@ -144,7 +144,7 @@ class HiAnime(AnimeProvider):
                 }
 
     @debug_provider
-    def get_episode_streams(self, anime_id, episode, translation_type, *args):
+    def get_episode_streams(self, anime_id, episode, translation_type, **kwargs):
         if d := self.store.get(str(anime_id), "anime_info"):
             episodes_info = d
             episode_details = [

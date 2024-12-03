@@ -32,7 +32,7 @@ class AnimePahe(AnimeProvider):
     HEADERS = REQUEST_HEADERS
 
     @debug_provider
-    def search_for_anime(self, search_keywords: str, *args, **kwargs):
+    def search_for_anime(self, search_keywords: str, translation_type, **kwargs):
         response = self.session.get(
             ANIMEPAHE_ENDPOINT, params={"m": "search", "q": search_keywords}
         )
@@ -111,7 +111,7 @@ class AnimePahe(AnimeProvider):
         return data
 
     @debug_provider
-    def get_anime(self, session_id: str, *args):
+    def get_anime(self, session_id: str, **kwargs):
         page = 1
         if d := self.store.get(str(session_id), "search_result"):
             anime_result: "AnimePaheSearchResult" = d
@@ -211,7 +211,7 @@ class AnimePahe(AnimeProvider):
 
     @debug_provider
     def get_episode_streams(
-        self, anime_id, episode_number: str, translation_type, *args
+        self, anime_id, episode_number: str, translation_type, **kwargs
     ):
         anime_title = ""
         # extract episode details from memory

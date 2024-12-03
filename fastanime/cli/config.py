@@ -441,7 +441,6 @@ use_persistent_provider_store = {self.use_persistent_provider_store}
 # 0 will disable recent anime tracking
 recent = {self.recent}
 
-config.py
 # enable or disable discord activity updater
 # if you want to enable it, please follow the lnik below to register the app with discord account
 # https://discord.com/oauth2/authorize?client_id=1292070065583165512

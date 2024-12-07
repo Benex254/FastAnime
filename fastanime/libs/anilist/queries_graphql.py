@@ -193,8 +193,8 @@ mutation (
 """
 
 media_list_query = """
-query ($userId: Int, $status: MediaListStatus, $type: MediaType, $page: Int) {
-  Page(perPage: 15, page: $page) {
+query ($userId: Int, $status: MediaListStatus, $type: MediaType, $page: Int, $perPage: Int) {
+  Page(perPage: $perPage, page: $page) {
     pageInfo {
       currentPage
       total
@@ -406,8 +406,8 @@ query($query:String,%s){
 )
 
 trending_query = """
-query ($type: MediaType, $page: Int) {
-  Page(perPage: 15, page: $page) {
+query ($type: MediaType, $page: Int,$perPage:Int) {
+  Page(perPage: $perPage, page: $page) {
     media(sort: TRENDING_DESC, type: $type, genre_not_in: ["hentai"]) {
       id
       idMal
@@ -471,8 +471,8 @@ query ($type: MediaType, $page: Int) {
 
 # mosts
 most_favourite_query = """
-query ($type: MediaType, $page: Int) {
-  Page(perPage: 15, page: $page) {
+query ($type: MediaType, $page: Int,$perPage:Int) {
+  Page(perPage: $perPage, page: $page) {
     media(sort: FAVOURITES_DESC, type: $type, genre_not_in: ["hentai"]) {
       id
       idMal
@@ -539,8 +539,8 @@ query ($type: MediaType, $page: Int) {
 """
 
 most_scored_query = """
-query ($type: MediaType, $page: Int) {
-  Page(perPage: 15, page: $page) {
+query ($type: MediaType, $page: Int,$perPage:Int) {
+  Page(perPage: $perPage, page: $page) {
     media(sort: SCORE_DESC, type: $type, genre_not_in: ["hentai"]) {
       id
       idMal
@@ -603,8 +603,8 @@ query ($type: MediaType, $page: Int) {
 """
 
 most_popular_query = """
-query ($type: MediaType, $page: Int) {
-  Page(perPage: 15, page: $page) {
+query ($type: MediaType, $page: Int,$perPage:Int) {
+  Page(perPage: $perPage, page: $page) {
     media(sort: POPULARITY_DESC, type: $type, genre_not_in: ["hentai"]) {
       id
       idMal
@@ -667,8 +667,8 @@ query ($type: MediaType, $page: Int) {
 """
 
 most_recently_updated_query = """
-query ($type: MediaType, $page: Int) {
-  Page(perPage: 15, page: $page) {
+query ($type: MediaType, $page: Int,$perPage:Int) {
+  Page(perPage: $perPage, page: $page) {
     media(
       sort: UPDATED_AT_DESC
       type: $type
@@ -918,8 +918,8 @@ query ($id: Int,$type:MediaType) {
 """
 
 upcoming_anime_query = """
-query ($page: Int, $type: MediaType) {
-  Page(perPage: 15, page: $page) {
+query ($page: Int, $type: MediaType,$perPage:Int) {
+  Page(perPage: $perPage, page: $page) {
     pageInfo {
       total
       perPage

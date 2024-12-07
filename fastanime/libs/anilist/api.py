@@ -3,6 +3,7 @@ This is the core module availing all the abstractions of the anilist api
 """
 
 import logging
+import os
 from typing import TYPE_CHECKING
 
 import requests
@@ -139,7 +140,12 @@ class AniListApi:
         return self._make_authenticated_request(media_list_mutation, variables)
 
     def get_anime_list(
-        self, status: "AnilistMediaListStatus", type="ANIME", page=1, **kwargs
+        self,
+        status: "AnilistMediaListStatus",
+        type="ANIME",
+        page=1,
+        perPage=os.environ.get("FASTANIME_PER_PAGE", 15),
+        **kwargs,
     ) -> tuple[bool, "AnilistMediaLists"] | tuple[bool, None]:
         """gets an anime list from your media list given the list status
 
@@ -154,6 +160,7 @@ class AniListApi:
             "userId": self.user_id,
             "type": type,
             "page": page,
+            "perPage": int(perPage),
         }
         return self._make_authenticated_request(media_list_query, variables)
 
@@ -354,51 +361,92 @@ class AniListApi:
         variables = {"id": id}
         return self.get_data(anime_query, variables)
 
-    def get_trending(self, type="ANIME", page=1, *_, **kwargs):
+    def get_trending(
+        self,
+        type="ANIME",
+        page=1,
+        perPage=os.environ.get("FASTANIME_PER_PAGE", 15),
+        *_,
+        **kwargs,
+    ):
         """
         Gets the currently trending anime
         """
-        variables = {"type": type, "page": page}
+        variables = {"type": type, "page": page, "perPage": int(perPage)}
         trending = self.get_data(trending_query, variables)
         return trending
 
-    def get_most_favourite(self, type="ANIME", page=1, *_, **kwargs):
+    def get_most_favourite(
+        self,
+        type="ANIME",
+        page=1,
+        perPage=os.environ.get("FASTANIME_PER_PAGE", 15),
+        *_,
+        **kwargs,
+    ):
         """
         Gets the most favoured anime on anilist
         """
-        variables = {"type": type, "page": page}
+        variables = {"type": type, "page": page, "perPage": int(perPage)}
         most_favourite = self.get_data(most_favourite_query, variables)
         return most_favourite
 
-    def get_most_scored(self, type="ANIME", page=1, *_, **kwargs):
+    def get_most_scored(
+        self,
+        type="ANIME",
+        page=1,
+        perPage=os.environ.get("FASTANIME_PER_PAGE", 15),
+        *_,
+        **kwargs,
+    ):
         """
         Gets most scored anime on anilist
         """
-        variables = {"type": type, "page": page}
+        variables = {"type": type, "page": page, "perPage": int(perPage)}
         most_scored = self.get_data(most_scored_query, variables)
         return most_scored
 
-    def get_most_recently_updated(self, type="ANIME", page=1, *_, **kwargs):
+    def get_most_recently_updated(
+        self,
+        type="ANIME",
+        page=1,
+        perPage=os.environ.get("FASTANIME_PER_PAGE", 15),
+        *_,
+        **kwargs,
+    ):
         """
         Gets most recently updated anime from anilist
         """
-        variables = {"type": type, "page": page}
+        variables = {"type": type, "page": page, "perPage": int(perPage)}
         most_recently_updated = self.get_data(most_recently_updated_query, variables)
         return most_recently_updated
 
-    def get_most_popular(self, type="ANIME", page=1, **kwargs):
+    def get_most_popular(
+        self,
+        type="ANIME",
+        page=1,
+        perPage=os.environ.get("FASTANIME_PER_PAGE", 15),
+        **kwargs,
+    ):
         """
         Gets most popular anime on anilist
         """
-        variables = {"type": type, "page": page}
+        variables = {"type": type, "page": page, "perPage": int(perPage)}
         most_popular = self.get_data(most_popular_query, variables)
         return most_popular
 
-    def get_upcoming_anime(self, type="ANIME", page: int = 1, *_, **kwargs):
+    def get_upcoming_anime(
+        self,
+        type="ANIME",
+        page: int = 1,
+        perPage=os.environ.get("FASTANIME_PER_PAGE", 15),
+        *_,
+        **kwargs,
+    ):
         """
         Gets upcoming anime from anilist
         """
-        variables = {"page": page, "type": type}
+        variables = {"page": page, "type": type, "perPage": int(perPage)}
         upcoming_anime = self.get_data(upcoming_anime_query, variables)
         return upcoming_anime
 

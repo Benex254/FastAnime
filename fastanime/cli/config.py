@@ -59,6 +59,7 @@ class Config(object):
         "normalize_titles": "True",
         "notification_duration": "2",
         "max_cache_lifetime": "03:00:00",
+        "per_page": "15",
         "player": "mpv",
         "preferred_history": "local",
         "preferred_language": "english",
@@ -113,9 +114,7 @@ class Config(object):
         self.disable_mpv_popen = self.configparser.getboolean(
             "stream", "disable_mpv_popen"
         )
-        self.discord = self.configparser.getboolean(
-            "general", "discord"
-        )
+        self.discord = self.configparser.getboolean("general", "discord")
         self.downloads_dir = self.configparser.get("general", "downloads_dir")
         self.episode_complete_at = self.configparser.getint(
             "stream", "episode_complete_at"
@@ -148,6 +147,7 @@ class Config(object):
             + max_cache_lifetime[1] * 3600
             + max_cache_lifetime[2] * 60
         )
+        self.per_page = self.configparser.get("anilist", "per_page")
         self.player = self.configparser.get("stream", "player")
         self.preferred_history = self.configparser.get("stream", "preferred_history")
         self.preferred_language = self.configparser.get("general", "preferred_language")
@@ -567,6 +567,9 @@ format = {self.format}
 # while this option exists i will still recommend that you use mpv
 # since you will miss out on some features if you use the others
 player = {self.player}
+
+[anilist]
+per_page = {self.per_page}
 
 #
 # HOPE YOU ENJOY FASTANIME AND BE SURE TO STAR THE PROJECT ON GITHUB

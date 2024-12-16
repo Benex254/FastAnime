@@ -128,9 +128,13 @@ def update_app(force=False):
                 "install",
                 APP_NAME,
                 "-U",
-                "--user",
                 "--no-warn-script-location",
             ]
+            if sys.prefix == sys.base_prefix:
+                # ensure NOT in a venv, where --user flag can cause an error.
+                # TODO: Get value of 'include-system-site-packages' in pyenv.cfg.
+                args.append('--user')
+
             process = subprocess.run(args)
     if process.returncode == 0:
         return True, release_json

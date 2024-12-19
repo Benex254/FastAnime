@@ -100,6 +100,7 @@ class YtDLPDownloader:
                         "external_downloader": {"default": "ffmpeg"},
                         "external_downloader_args": {
                             "ffmpeg_i1": ["-v", "error", "-stats"],
+                            "ffmpeg_o1": ["-f", "mp4"],
                         },
                     }
                 if hls_use_mpegts:

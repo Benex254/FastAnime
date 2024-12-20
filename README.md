@@ -202,6 +202,8 @@ More pr's less issues 🙃
 
 Show your support by starring the GitHub repository.
 
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/Y8Y8ZAA7N)
+
 ## Disclaimer
 
 > [!IMPORTANT]
